@@ -3214,7 +3214,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
-      "verification_status": "group-level-slice-tests"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 2,
@@ -3286,7 +3286,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
-      "verification_status": "group-level-slice-tests"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 2,

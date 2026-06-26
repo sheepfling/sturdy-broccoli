@@ -60,6 +60,21 @@ Use `verify-main-2025` as the default direct `python1516_2025` proof lane. Use
 `verify-routes-2025` when you also need the bounded hosted
 `python1516_2025-fedpro-grpc` hygiene lane.
 
+If the failure question is narrower than those lanes, start with:
+
+```bash
+./tools/test-focus run execution-membership
+```
+
+Use that focused shard for join, resign, destroy, disconnect-without-resign,
+and not-joined reserve/register/release/delete/update/send/query/DDM guards before widening to repo-green or
+full 2025 route hygiene. It is the narrow rerun surface behind 2010 lifecycle
+and object-management execution-state rows plus 2025 execution-state rows
+`HLA2025-FI-SVC-005`, `HLA2025-FI-SVC-008`, `HLA2025-FI-SVC-010`,
+`HLA2025-FI-SVC-011`, `HLA2025-FI-SVC-051`, `HLA2025-FI-SVC-053`, `HLA2025-FI-SVC-057`,
+`HLA2025-FI-SVC-059`, `HLA2025-FI-SVC-061`, `HLA2025-FI-SVC-065`,
+`HLA2025-FI-SVC-070`, and `HLA2025-FI-SVC-077`.
+
 ### 2. Repo Green
 
 This is the default full verification lane for normal local development and CI.
@@ -70,8 +85,8 @@ Required outcome:
 - generated status and parity artifacts are produced
 - vendor prerequisites are still checked
 - blocked CERTI or Pitch runtime prerequisites do not fail the whole lane
-- the direct and hosted `python1516_2025` route evidence remains aligned with the
-  main 2025 Python RTI lane
+- the direct `python1516_2025` lane plus hosted FedPro route evidence remains
+  aligned with the main 2025 Python RTI lane
 
 If you need to inspect the Java toolchain that backs language-shim route evidence,
 use `./tools/java`.

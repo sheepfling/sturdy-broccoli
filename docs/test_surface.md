@@ -11,6 +11,9 @@ Use it when you want the shortest answer to:
 The supported front door is [`../tools/test-surface`](../tools/test-surface).
 For named focused reruns and restartable submodule work, use
 [`../tools/test-focus`](../tools/test-focus).
+For the canonical ownership registries, use
+[`verification/shard_registry.md`](verification/shard_registry.md) and
+[`verification/view_registry.md`](verification/view_registry.md).
 
 ## Shards Vs Views
 
@@ -126,6 +129,8 @@ Current shape guidance:
 
 These are valid view concepts, not separate shard definitions:
 
+- `execution-membership`
+- `python-2025-ddm`
 - `python-2025-ownership`
 - `python-2025-time`
 - `routes-2025`
@@ -137,6 +142,90 @@ Those focused targets may overlap the same underlying shard-owned tests.
 That overlap is acceptable because their purpose is analysis and focused reruns,
 not independent CI ownership. `Slice` remains an acceptable synonym when older
 notes or scripts already use it.
+
+For the full focused-target registry, alias inventory, and audit-view map, use
+[`verification/view_registry.md`](verification/view_registry.md).
+
+If the specific question is "did we break create, join, resign, destroy, or
+not-joined guard behavior?", use:
+
+```bash
+./tools/test-focus run execution-membership
+```
+
+That view intentionally overlaps:
+
+- `unit-scenarios-light` for shared federation-management scenario evidence
+- `unit-python-2025-core` for direct `python1516_2025` runtime evidence
+- `unit-transport-local` and `python1516_2025-routes` for hosted 2025
+  gRPC/FedPro route evidence plus the REST-hosted Python execution-membership
+  slice
+- 2010 backend negative-path suites for name-reservation, registration,
+  name-release, delete, update, interaction, query, and DDM
+  execution-member guards
+
+Treat this as the focused proof for "have we joined yet?" behavior on the
+exercised lifecycle and execution-affecting calls:
+
+- `createFederationExecution`
+- `joinFederationExecution`
+- `resignFederationExecution`
+- `destroyFederationExecution`
+
+- `updateAttributeValues`
+- `sendInteraction`
+- `deleteObjectInstance` and `localDeleteObjectInstance`
+- `requestAttributeValueUpdate`
+- `queryAttributeTransportationType`
+- `sendInteractionWithRegions`
+- `requestAttributeValueUpdateWithRegions`
+
+Treat that hosted overlap narrowly:
+
+- the current execution-membership slice proves direct runtime behavior plus the
+  hosted 2025 gRPC/FedPro route and the REST-hosted Python route
+- it does not by itself claim every other hosted transport or wrapper variant
+  beyond those explicit route families
+- use `./tools/test-focus run transport` when the question is generic gRPC/REST
+  transport behavior rather than this specific execution-membership proof
+
+Current exact membership of `execution-membership`:
+
+- 2010 backend guard tests:
+  - `tests/backends/test_python_backend_federation_extended.py::test_destroy_federation_execution_requires_no_joined_federates`
+  - `tests/backends/test_python_backend_federation_extended.py::test_resign_federation_execution_rejects_not_connected_and_not_joined`
+  - `tests/backends/test_python_backend_federation_extended.py::test_disconnect_requires_resign_and_marks_backend_not_connected`
+  - `tests/backends/test_python_backend_object_ownership_extended.py::test_reserve_object_instance_name_rejects_not_connected_not_joined_and_save_restore`
+  - `tests/backends/test_python_backend_object_ownership_extended.py::test_register_object_instance_rejects_not_connected_not_joined_name_in_use_and_save_restore`
+  - `tests/backends/test_python_backend_object_ownership_extended.py::test_name_release_and_query_interaction_transport_tail_reject_not_connected_not_joined_and_save_restore`
+  - `tests/backends/test_python_backend_object_ownership_extended.py::test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore`
+  - `tests/backends/test_python_backend_object_ownership_extended.py::test_update_attribute_values_rejects_not_connected_not_joined_unknown_object_invalid_time_not_owned_and_save_restore`
+  - `tests/backends/test_python_backend_object_ownership_extended.py::test_send_interaction_rejects_not_connected_not_joined_invalid_inputs_and_invalid_time`
+  - `tests/backends/test_python_backend_object_ownership_extended.py::test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore`
+  - `tests/backends/test_python_backend_object_ownership_extended.py::test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore`
+  - `tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_send_interaction_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore`
+  - `tests/backends/test_python_backend_time_ddm_extended.py::test_request_attribute_value_update_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore`
+- shared scenario proof:
+  - `tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_join_precondition_matrix`
+  - `tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_resign_precondition_matrix`
+- 2025 direct runtime proof:
+  - `tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_federation_lifecycle_negative_scenario_end_to_end`
+  - `tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_resign_precondition_scenario_end_to_end`
+  - `tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_reports_federation_executions_and_members`
+- hosted 2025 route proof:
+  - `tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_federation_lifecycle_negative_scenario_over_fedpro_route`
+  - `tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_join_precondition_scenario_over_fedpro_route`
+  - `tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_resign_precondition_scenario_over_fedpro_route`
+  - `tests/transport/test_rest_transport.py::test_2025_rest_transport_server_runs_shared_federation_lifecycle_negative_scenario`
+  - `tests/transport/test_rest_transport.py::test_2025_rest_transport_server_runs_shared_join_precondition_scenario`
+  - `tests/transport/test_rest_transport.py::test_2025_rest_transport_server_runs_shared_resign_precondition_scenario`
+
+If the specific question is "did we break 2025 DDM region routing, passive
+aliases, overlap filtering, or restore cleanup?", use:
+
+```bash
+./tools/test-focus run python-2025-ddm
+```
 
 ## Python 2025 Main Surface
 

@@ -78,6 +78,7 @@ def test_tools_readme_declares_canonical_operator_surface() -> None:
     assert "./tools/vendor-probe-review" in text
     assert "./tools/vendor-edge" in text
     assert "./tools/rti-options" in text
+    assert "./tools/contracts" in text
     assert "./tools/compliance" in text
     assert "./tools/fom-overview" in text
     assert "./tools/fom-validate" in text
@@ -131,6 +132,7 @@ def test_scripts_readme_declares_implementation_boundary() -> None:
     assert "./tools/vendor-green [profile]" in text
     assert "./tools/vendor-probe-review" in text
     assert "./tools/vendor-edge" in text
+    assert "./tools/contracts" in text
     assert "./tools/fom-validate" in text
     assert "./tools/fom-siso-showcase" in text
     assert "./tools/fom-roundtrip" in text

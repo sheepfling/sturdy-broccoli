@@ -10,6 +10,7 @@ from hla.verification.repo_internal.requirements_packet import load_imported_hla
 RECONCILIATION_PATH = (
     Path(__file__).resolve().parents[2]
     / "requirements"
+    / "2010"
     / "hla1516_2_omt_xml_detailed_reconciliation.csv"
 )
 

@@ -93,7 +93,7 @@ class PythonRTIBackend(
     PythonRTIDdmMixin,
     PythonRTISupportMixin,
     RTIBackend,
-):
+    ):
     """A dependency-free RTIBackend implemented entirely in Python."""
 
     def __init__(
@@ -133,12 +133,24 @@ class PythonRTIBackend(
             for method_name in API_METADATA["RTIambassador"]
             if (service := getattr(self, "_svc_" + method_name, None)) is not None
         }
+        self._services_allowed_before_join = {
+            "connect",
+            "disconnect",
+            "createFederationExecution",
+            "destroyFederationExecution",
+            "listFederationExecutions",
+            "joinFederationExecution",
+        }
 
     def invoke(self, invocation: Invocation) -> Any:
         service = self._service_dispatch.get(invocation.method_name)
         if service is None:
             raise UnsupportedBackendService(f"Python in-memory RTI does not yet implement {invocation.method_name}")
         if invocation.method_name == "queryInteractionTransportationType" and len(invocation.args) == 1 and not invocation.kwargs:
+            args = invocation.args
+        elif not self.state.connected:
+            args = invocation.args
+        elif self.state.handle is None and invocation.method_name not in self._services_allowed_before_join:
             args = invocation.args
         else:
             args = resolve_java_arguments(invocation)

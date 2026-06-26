@@ -30,6 +30,9 @@ Short answer:
   - `unit-scenarios-light`
   - `unit-python-core` for local callback, naming, and narrow object-routing
     proofs that stay within the local backend lane
+- maintained focused rerun views:
+  - `./tools/test-focus run execution-membership`
+  - `./tools/test-focus run backends`
 
 ## Final Claim Rule
 
@@ -78,17 +81,16 @@ keep describing `CAP-OM` as vague or structurally unfinished.
 
 The current owner ledger has `391` object-management packet rows:
 
-- `274 mapped`
-- `117 partial`
+- `293 mapped`
+- `98 partial`
 
-The remaining `117 partial` rows cluster into stable categories:
+The remaining `98 partial` rows cluster into stable categories:
 
-- `25 EFF`
+- `20 EFF`
 - `25 CB_ORD`
-- `19 EXC_API`
+- `16 EXC_API`
 - `17 CB_ORDER`
-- `14 EXC`
-- `10 PRE`
+- `13 EXC`
 - `6 FED_CB`
 - `1 OVW`
 
@@ -120,7 +122,7 @@ They are rows where:
 
 ### Exception and precondition breadth tail
 
-The `19 EXC_API`, `14 EXC`, and `10 PRE` rows usually keep a broader negative
+The `16 EXC_API` and `13 EXC` rows usually keep a broader negative
 envelope than the current tests isolate directly.
 
 Typical pattern:
@@ -129,6 +131,81 @@ Typical pattern:
   known-object guards are already proven
 - the packet row still claims a larger clause-level exception or precondition
   universe than the direct witness currently isolates
+
+Recent tightening examples:
+
+- the `updateAttributeValues` exception rows no longer live in this partial
+  tail because direct negative-path witnesses now isolate the object-knownness,
+  attribute-definition, ownership, membership, connection, save/restore, and
+  invalid-logical-time failures they claimed
+- the `updateAttributeValues` precondition row no longer lives in this partial
+  tail because direct negative-path witnesses now isolate the applicable
+  connection-state, membership, handle-validation, ownership, invalid-logical-time,
+  and save/restore guard surface across the exercised overloads
+- the `reserveObjectInstanceName` precondition row no longer lives in this
+  partial tail because direct negative-path witnesses now isolate the
+  applicable connection-state, membership, and save or restore guard surface
+- the `registerObjectInstance` precondition row no longer lives in this partial
+  tail because direct negative-path witnesses now isolate the applicable
+  connection-state, membership, duplicate-name, and save or restore guard
+  surface across the exercised overloads
+- the `releaseObjectInstanceName` precondition row no longer lives in this
+  partial tail because direct negative-path witnesses now isolate the
+  applicable connection-state, membership, and save or restore guard surface
+- the `deleteObjectInstance` precondition row no longer lives in this partial
+  tail because direct negative-path witnesses now isolate the applicable
+  connection-state, membership, object-knownness, delete-privilege, and save
+  or restore guard surface
+- the `sendInteraction` precondition row no longer lives in this partial tail
+  because direct negative-path witnesses now isolate the applicable
+  connection-state, membership, publication-state, handle-validation, and
+  invalid-logical-time guard surface across the exercised overloads, while the
+  broader save or restore wording stays bounded separately
+- the `localDeleteObjectInstance` precondition row no longer lives in this
+  partial tail because direct negative-path witnesses now isolate the
+  applicable connection-state, membership, object-knownness, ownership-state,
+  and save/restore guard surface
+- the multiple-name reservation and release precondition rows no longer live in
+  this partial tail because direct negative-path witnesses now isolate the
+  applicable connection-state, membership, and save/restore guard surface for
+  `reserveMultipleObjectInstanceName` and
+  `releaseMultipleObjectInstanceName`
+- the object-instance overload exception row for
+  `requestAttributeValueUpdate` no longer lives in this partial tail because
+  direct negative-path witnesses now isolate the listed object-knownness,
+  attribute-definition, membership, connection, and save/restore failures
+- the `requestAttributeValueUpdate` precondition row no longer lives in this
+  partial tail because direct negative-path witnesses now isolate the
+  applicable connection-state, membership, handle-validation, and save/restore
+  precondition surface across the object-instance and class-wide overloads
+- the class-wide `requestAttributeValueUpdate` exception rows still remain
+  partial because the current backend reports an unknown class handle as
+  `InvalidObjectClassHandle` rather than the broader imported
+  `ObjectClassNotDefined` wording
+
+Execution-membership reading for this family:
+
+- after a federate resigns, before it joins, or after it disconnects, object
+  and interaction services are expected to reject the caller as not connected
+  or not joined rather than silently accept the operation
+- that includes basic delete, local-delete, update, send, request, and
+  transportation-query paths, not just federation-management services
+- that same joined-state guard surface also covers plain object registration on
+  the shared backend path before join and again after resign or disconnect
+
+Primary owner rows for that execution-state reading include:
+
+- `HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-PRE-001`
+- `HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-PRE-001`
+- `HLA1516.1-OM-6_8-REGISTEROBJECTINSTANCE-PRE-001`
+- `HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-PRE-001`
+- `HLA1516.1-OM-6_16-LOCALDELETEOBJECTINSTANCE-PRE-001`
+- `HLA1516.1-OM-6_10-UPDATEATTRIBUTEVALUES-PRE-001`
+- `HLA1516.1-OM-6_10-UPDATEATTRIBUTEVALUES-EXC-001`
+- `HLA1516.1-OM-6_12-SENDINTERACTION-PRE-001`
+- `HLA1516.1-OM-6_12-SENDINTERACTION-EXC-001`
+- `HLA1516.1-OM-6_19-REQUESTATTRIBUTEVALUEUPDATE-PRE-001`
+- `HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-PRE-001`
 
 ### Residual callback and overview tail
 
@@ -177,6 +254,25 @@ Primary evidence anchors:
 - `tests/backends/test_python_backend_support_services.py`
 - `tests/scenarios/test_target_radar_scenario.py`
 - `requirements/2010/traceability_matrix.csv`
+
+Use these rerun commands before dropping to raw file paths:
+
+- `./tools/test-focus run execution-membership` for joined-state guard
+  questions on update, send, request, and transportation-query behavior
+- `./tools/test-focus run backends` for the main 2010 object-management
+  backend slice
+- `./tools/test-surface run unit-scenarios-light` when the narrowest owning
+  shard is still the scenario layer
+
+High-signal execution-member guard anchors inside those suites include:
+
+- `test_update_attribute_values_rejects_not_connected_not_joined_unknown_object_invalid_time_not_owned_and_save_restore`
+- `test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore`
+- `test_register_object_instance_rejects_not_connected_not_joined_name_in_use_and_save_restore`
+- `test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore`
+- `test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore`
+- `test_ddm_send_interaction_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore`
+- `test_request_attribute_value_update_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore`
 
 ## Good Reading
 

@@ -10255,7 +10255,12 @@
       "declared_exceptions": [],
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
-        "tests/scenarios/test_support_services_backend_matrix.py"
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/backends/test_python_backend_support_services.py::test_support_handle_factory_rows_have_direct_runtime_witnesses",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_support_factory_and_decode_scenario_over_fedpro_route"
       ],
       "implementation_refs": [
         "hla.backends.python1516e.backend.PythonRTIBackend._svc_getMessageRetractionHandleFactory",
@@ -10269,7 +10274,11 @@
       "negative_expectation_count": 0,
       "negative_test_refs": [],
       "positive_test_refs": [
-        "tests/scenarios/test_support_services_backend_matrix.py"
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/backends/test_python_backend_support_services.py::test_support_handle_factory_rows_have_direct_runtime_witnesses",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_support_factory_and_decode_scenario_over_fedpro_route"
       ],
       "python_entry_point": "hla.backends.python1516e.backend.PythonRTIBackend._svc_getMessageRetractionHandleFactory",
       "python_name": "get_message_retraction_handle_factory",
@@ -10281,7 +10290,7 @@
       "source_overload_count": 0,
       "title": "Disable Callbacks service",
       "verification_asset_id": "ASSET-SUPPORT-SERVICES-HANDLE-FACTORIES",
-      "verification_status": "group-level-slice-tests"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -10498,7 +10507,12 @@
       "declared_exceptions": [],
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
-        "tests/scenarios/test_support_services_backend_matrix.py"
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/backends/test_python_backend_support_services.py::test_support_handle_factory_rows_have_direct_runtime_witnesses",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_support_factory_and_decode_scenario_over_fedpro_route"
       ],
       "implementation_refs": [
         "hla.backends.python1516e.backend.PythonRTIBackend._svc_getRegionHandleFactory",
@@ -10512,7 +10526,11 @@
       "negative_expectation_count": 0,
       "negative_test_refs": [],
       "positive_test_refs": [
-        "tests/scenarios/test_support_services_backend_matrix.py"
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/backends/test_python_backend_support_services.py::test_support_handle_factory_rows_have_direct_runtime_witnesses",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_support_factory_and_decode_scenario_over_fedpro_route"
       ],
       "python_entry_point": "hla.backends.python1516e.backend.PythonRTIBackend._svc_getRegionHandleFactory",
       "python_name": "get_region_handle_factory",
@@ -10524,7 +10542,7 @@
       "source_overload_count": 0,
       "title": "Disable Callbacks service",
       "verification_asset_id": "ASSET-SUPPORT-SERVICES-HANDLE-FACTORIES",
-      "verification_status": "group-level-slice-tests"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -12076,8 +12094,7 @@
       "Time Management": 23
     },
     "by_verification_status": {
-      "focused-executable-tests": 217,
-      "group-level-slice-tests": 2
+      "focused-executable-tests": 219
     },
     "mom_negative_summary": {
       "case_kind_counts": {

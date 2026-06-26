@@ -18,9 +18,9 @@ requirement disposition.
 
 | Proof level | Route / evidence anchors | Bounded claim reading |
 | --- | --- | --- |
-| `time-window-core` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_python_route_parity.py` | Proves pending timestamped inputs are not skipped and the Target/Radar window does not close before known `< window_end` inputs are delivered on the direct `python1516_2025` lane plus hosted replay. |
+| `time-window-core` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_python_route_parity.py` | Proves pending timestamped inputs are not skipped and the Target/Radar window does not close before known `< window_end` inputs are delivered on the direct `python1516_2025` lane plus hosted FedPro replay. |
 | `time-window-future-exclusion` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_python_route_parity.py`, `./tools/pitch time-window-probe` | Proves closure is blocked while another regulating federate could still legally send into the closing window; this is the current Pitch-safe two-federate vendor-credence route. |
-| `time-window-output-delivery` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_python_route_parity.py` | Proves the closed window can emit a legal timestamped output after closure on the direct lane and hosted replay. |
+| `time-window-output-delivery` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_python_route_parity.py` | Proves the closed window can emit a legal timestamped output after closure on the direct lane and hosted FedPro replay. |
 | `time-window-consumer-order` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_python_route_parity.py` | Proves downstream consumers observe the Target/Radar output in timestamp order relative to other timestamped traffic. |
 | `time-window-pipeline-two-scans` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_python_route_parity.py` | Proves one scan can be processed while the next scan is collected, without cross-window contamination. |
 | `time-window-receive-order-poison` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_python_route_parity.py` | Proves receive-order side traffic does not mutate a closed timestamp-managed scan window. |
@@ -57,5 +57,5 @@ requirement disposition.
 - For vendor credence, Pitch currently contributes only the two-federate
   `time-window-future-exclusion` and
   `time-window-save-restore-window-state` probes. Those narrow probes do not
-  replace the broader direct and hosted `python1516_2025` evidence for output,
-  consumer-order, pipeline, or restore-resume behavior.
+  replace the broader direct `python1516_2025` plus hosted FedPro replay
+  evidence for output, consumer-order, pipeline, or restore-resume behavior.

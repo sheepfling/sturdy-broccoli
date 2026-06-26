@@ -5,6 +5,7 @@ from importlib import resources
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from threading import Thread
+import uuid
 
 import pytest
 
@@ -18,14 +19,20 @@ from hla.rti import create_backend
 from hla.runtime.factory import create_rti_ambassador
 from hla.runtime.rti1516_2025_factory import create_rti_ambassador as create_2025_rti_ambassador
 from hla.verification import (
+    FederationLifecycleScenarioConfig,
+    JoinScenarioConfig,
     NegotiatedOwnershipScenarioConfig,
     OwnershipScenarioConfig,
+    ResignScenarioConfig,
     SynchronizationScenarioConfig,
     TwoFederateExchangeConfig,
     assert_two_federate_exchange_callback_history,
     run_two_federate_exchange_scenario,
     run_attribute_ownership_scenario,
+    run_federation_lifecycle_negative_scenario,
+    run_join_precondition_scenario,
     run_negotiated_attribute_ownership_scenario,
+    run_resign_precondition_scenario,
     run_synchronization_scenario,
 )
 from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
@@ -140,6 +147,155 @@ def test_rest_transport_registers_with_2025_backend_factory():
         rti.disconnect()
     finally:
         server.close()
+
+
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-BND-003")
+def test_2025_rest_transport_server_runs_shared_federation_lifecycle_negative_scenario():
+    from hla.fom.proto2025 import scenario_fom_paths
+
+    leader_server = start_2025_rest_server()
+    wing_server = start_2025_rest_server()
+    leader = None
+    wing = None
+    federation_name = f"rest-2025-shared-lifecycle-negative-{uuid.uuid4().hex[:8]}"
+    try:
+        leader = create_2025_rti_ambassador(transport={"kind": "rest", "base_url": leader_server.base_url})
+        wing = create_2025_rti_ambassador(transport={"kind": "rest", "base_url": wing_server.base_url})
+        config = FederationLifecycleScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=tuple(scenario_fom_paths("message-test")),
+            logical_time_implementation_name="HLAinteger64Time",
+        )
+
+        summary = run_federation_lifecycle_negative_scenario(
+            leader,
+            wing,
+            config=config,
+            leader_federate=RecordingFederateAmbassador(),
+            wing_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["federation_name"] == config.federation_name
+        assert summary["leader_handle"] is not None
+        assert summary["wing_handle"] is not None
+        assert type(summary["already_connected"]).__name__ == "AlreadyConnected"
+        assert type(summary["duplicate_create"]).__name__ == "FederationExecutionAlreadyExists"
+        assert type(summary["disconnect_while_joined"]).__name__ == "FederateIsExecutionMember"
+        assert type(summary["destroy_with_joined"]).__name__ == "FederatesCurrentlyJoined"
+        assert type(summary["destroy_missing"]).__name__ == "FederationExecutionDoesNotExist"
+    finally:
+        if wing is not None:
+            wing.close()
+        if leader is not None:
+            leader.close()
+        wing_server.close()
+        leader_server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-001",
+    "HLA2025-FI-001",
+    "HLA2025-FI-002",
+    "HLA2025-FI-SVC-004",
+    "HLA2025-FI-SVC-005",
+    "HLA2025-FI-SVC-006",
+    "HLA2025-FI-SVC-007",
+    "HLA2025-BND-003",
+)
+def test_2025_rest_transport_server_runs_shared_join_precondition_scenario():
+    from hla.fom.proto2025 import scenario_fom_paths
+
+    leader_server = start_2025_rest_server()
+    wing_server = start_2025_rest_server()
+    late_server = start_2025_rest_server()
+    leader = None
+    wing = None
+    late = None
+    federation_name = f"rest-2025-shared-join-preconditions-{uuid.uuid4().hex[:8]}"
+    try:
+        leader = create_2025_rti_ambassador(transport={"kind": "rest", "base_url": leader_server.base_url})
+        wing = create_2025_rti_ambassador(transport={"kind": "rest", "base_url": wing_server.base_url})
+        late = create_2025_rti_ambassador(transport={"kind": "rest", "base_url": late_server.base_url})
+        config = JoinScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=tuple(scenario_fom_paths("message-test")),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            late_name="Late",
+            federate_type="JoinFederate",
+            save_name=f"JOIN-BLOCK-{uuid.uuid4().hex[:8]}",
+        )
+
+        summary = run_join_precondition_scenario(
+            leader,
+            wing,
+            late,
+            config=config,
+            leader_federate=RecordingFederateAmbassador(),
+            wing_federate=RecordingFederateAmbassador(),
+            late_federate=RecordingFederateAmbassador(),
+        )
+
+        assert type(summary["not_connected"]).__name__ == "NotConnected"
+        assert type(summary["missing_federation"]).__name__ == "FederationExecutionDoesNotExist"
+        assert type(summary["duplicate_name"]).__name__ == "FederateNameAlreadyInUse"
+        assert type(summary["already_joined"]).__name__ == "FederateAlreadyExecutionMember"
+        assert type(summary["save_in_progress"]).__name__ == "SaveInProgress"
+        assert type(summary["restore_in_progress"]).__name__ == "RestoreInProgress"
+    finally:
+        if late is not None:
+            late.close()
+        if wing is not None:
+            wing.close()
+        if leader is not None:
+            leader.close()
+        late_server.close()
+        wing_server.close()
+        leader_server.close()
+
+
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-BND-003")
+def test_2025_rest_transport_server_runs_shared_resign_precondition_scenario():
+    leader_server = start_2025_rest_server()
+    wing_server = start_2025_rest_server()
+    leader = None
+    wing = None
+    federation_name = f"rest-2025-shared-resign-preconditions-{uuid.uuid4().hex[:8]}"
+    try:
+        leader = create_2025_rti_ambassador(transport={"kind": "rest", "base_url": leader_server.base_url})
+        wing = create_2025_rti_ambassador(transport={"kind": "rest", "base_url": wing_server.base_url})
+        config = ResignScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("resource:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="ResignFederate",
+        )
+
+        summary = run_resign_precondition_scenario(
+            leader,
+            wing,
+            config=config,
+            leader_federate=RecordingFederateAmbassador(),
+            wing_federate=RecordingFederateAmbassador(),
+        )
+
+        assert type(summary["not_connected"]).__name__ == "NotConnected"
+        assert type(summary["not_joined"]).__name__ == "FederateNotExecutionMember"
+        assert type(summary["invalid_action"]).__name__ == "InvalidResignAction"
+        assert type(summary["owns_attributes"]).__name__ == "FederateOwnsAttributes"
+        assert type(summary["acquisition_pending"]).__name__ == "OwnershipAcquisitionPending"
+        assert summary["object_instance"] is not None
+        assert summary["attribute"] is not None
+    finally:
+        if wing is not None:
+            wing.close()
+        if leader is not None:
+            leader.close()
+        wing_server.close()
+        leader_server.close()
 
 
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])

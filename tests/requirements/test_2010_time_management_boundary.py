@@ -37,3 +37,5 @@ def test_time_management_boundary_doc_records_current_family_shape() -> None:
     assert "`19 EXC_API`" in text
     assert "`1 OVW`" in text
     assert "mixed_backend_priority_boundaries.md" in text
+    assert "`./tools/test-focus run time`" in text
+    assert "`./tools/test-focus run backends`" in text

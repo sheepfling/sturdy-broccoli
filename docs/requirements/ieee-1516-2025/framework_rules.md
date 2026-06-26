@@ -42,7 +42,7 @@ disposition.
 | --- | ---: | ---: | --- | --- | --- | --- |
 | HLA2025-FR-001 | 5.1 | 31 | A federation shall have an HLA FOM documented according to the OMT. | `HLA2025-REQ-001`, `HLA2025-OMT-001`, `HLA2025-OMT-005`, `HLA2025-OMT-006` | `tests/test_rti1516_2025_validation.py`, `tests/factories/test_proto2025_fom_resources.py`, `tests/scenarios/test_proto2025_fom_showcase.py` | Closed through OMT validation, FOM resource packaging, and FOM-backed scenario proof rather than as a separate runtime rule. |
 | HLA2025-FR-002 | 5.2 | 32 | Simulation-associated object instance representation shall be in federates, not in the RTI. | `HLA2025-FI-001`, `HLA2025-FI-SVC-057`, `HLA2025-FI-SVC-059`, `HLA2025-FI-SVC-060`, `HLA2025-FI-SVC-065`, `HLA2025-FI-SVC-066` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `docs/plans/spec2025_finish_line.md` | Closed through object-exchange, delete/remove, and save/restore rollback evidence showing that RTI state is routing state while semantic object state remains federate-owned. |
-| HLA2025-FR-003 | 5.3 | 32 | All exchange of FOM data among joined federates shall occur via the RTI. | `HLA2025-FI-001`, `HLA2025-FI-SVC-057`, `HLA2025-FI-SVC-059`, `HLA2025-FI-SVC-060`, `HLA2025-FI-SVC-063`, `HLA2025-FI-SVC-064` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/backends/test_shim_route_trace_evidence.py` | Closed through direct and hosted route traces that show object and interaction exchange flowing through the selected RTI lane and callback path. |
+| HLA2025-FR-003 | 5.3 | 32 | All exchange of FOM data among joined federates shall occur via the RTI. | `HLA2025-FI-001`, `HLA2025-FI-SVC-057`, `HLA2025-FI-SVC-059`, `HLA2025-FI-SVC-060`, `HLA2025-FI-SVC-063`, `HLA2025-FI-SVC-064` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/backends/test_shim_route_trace_evidence.py` | Closed through direct-lane and hosted FedPro route traces that show object and interaction exchange flowing through the selected RTI lane and callback path. |
 | HLA2025-FR-004 | 5.4 | 32 | Joined federates shall interact with the RTI according to the HLA interface specification. | `HLA2025-FI-001`, `HLA2025-FI-002`, `HLA2025-FI-003`, `HLA2025-FI-004`, `HLA2025-FI-005`, `HLA2025-FI-006`, `HLA2025-FI-009` | `tests/test_hla_factory_composition.py`, `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py` | Closed through the direct `python1516_2025` API surface plus hosted FedPro route replay; Java/C++ remain binding-capability evidence rather than full behavior equivalence. |
 | HLA2025-FR-005 | 5.5 | 33 | An instance attribute shall be owned by at most one joined federate at a time. | `HLA2025-FI-001`, `HLA2025-FI-SVC-082`, `HLA2025-FI-SVC-083`, `HLA2025-FI-SVC-089`, `HLA2025-FI-SVC-090`, `HLA2025-FI-SVC-095` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_ownership_management_backend_matrix.py` | Closed through ownership acquisition/divestiture/query/restore evidence proving one-owner-at-a-time behavior on the main `python1516_2025` lane. |
 | HLA2025-FR-006 | 6.1 | 33 | Federates shall have a SOM documented according to the OMT. | `HLA2025-REQ-001`, `HLA2025-FR-001`, SOM/FOM service-usage rows in `hla_2025_requirement_depth_expansion.csv` | `docs/requirements/ieee-1516-2025/traceability_matrix.md`, `requirements/2025/depth/hla_2025_requirement_depth_expansion.csv`, `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv` | Still a bounded documentation/evidence rule. The repo tracks SOM/SOM-usage closure through the imported depth and harmonization packets rather than a native runtime-only claim. |
@@ -62,6 +62,51 @@ disposition.
 - The primary implementation lane behind the executable anchors above is
   `hla-backend-python1516-2025`. `hla-backend-shim` is not a runtime owner for these
   framework rules.
+
+## Latest Investigated Decision
+
+The framework umbrella slice was re-audited on `2026-06-26` against the
+current owner doc, harmonization ledger, child-row map, runtime tests,
+scenario suites, and traceability anchors for:
+
+- `HLA2025-FR-001` through `HLA2025-FR-010`
+
+Decision:
+
+- keep these rows as `duplicate/umbrella`
+- do not promote them to standalone `covered`
+
+Reason:
+
+1. the current child FI, OMT, traceability, scenario, ownership, and time
+   rows already carry the real executable or bounded documentation semantics
+   for these framework rules
+2. the current framework owner doc already records the narrow honest reading
+   for each rule without pretending that the framework layer is a second proof
+   bucket on top of the child rows
+3. no narrower standalone framework claim was identified that would do more
+   than restate the linked child-row proof
+4. converting these rows now would double-count child proof instead of
+   tightening it
+
+Current evidence reviewed for this decision included:
+
+- `tests/test_rti1516_2025_python1516_2025_runtime.py`
+- `tests/transport/test_grpc_transport_2025.py`
+- `tests/scenarios/test_proto2025_fom_showcase.py`
+- `tests/scenarios/test_target_radar_scenario.py`
+- `tests/scenarios/test_ownership_management_backend_matrix.py`
+- `tests/test_rti1516_2025_validation.py`
+- `docs/requirements/ieee-1516-2025/traceability_matrix.md`
+- `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
+
+Operational effect:
+
+- the framework slice remains a maintained umbrella boundary over linked child
+  proof
+- the active closeout queue should advance only when leadership wants literal
+  `691 / 691 covered` or when new narrower framework child claims are
+  intentionally introduced
 
 ## Exit Condition
 

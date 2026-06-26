@@ -29,7 +29,7 @@ Short answer:
 - primary shard:
   - `unit-scenarios-light`
 - wider ownership-family view only when needed:
-  - `./tools/test-focus run python-2025-ownership`
+  - `./tools/test-focus run backends`
 
 ## Final Claim Rule
 
@@ -146,6 +146,13 @@ Primary evidence anchors:
 - `tests/backends/test_python_backend_object_ownership_extended.py`
 - `tests/scenarios/test_ownership_management_backend_matrix.py`
 - `requirements/2010/traceability_matrix.csv`
+
+Use these rerun commands before dropping to raw file paths:
+
+- `./tools/test-focus run backends` for the main 2010 ownership-management
+  backend slice
+- `./tools/test-surface run unit-scenarios-light` when the narrowest owning
+  shard is still the scenario layer
 
 ## Good Reading
 

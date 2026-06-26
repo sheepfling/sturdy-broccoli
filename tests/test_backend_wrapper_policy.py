@@ -109,6 +109,9 @@ def test_certi_grpc_working_baseline_is_documented() -> None:
     route_text = (ROOT / "docs" / "backend_route_inventory_routes.md").read_text(encoding="utf-8")
     command_text = (ROOT / "docs" / "backend_route_inventory_commands.md").read_text(encoding="utf-8")
     ci_text = (ROOT / "scripts" / "ci" / "README.md").read_text(encoding="utf-8")
+    compliance_check_text = (
+        ROOT / "scripts" / "ci" / "check_generated_compliance_artifacts.sh"
+    ).read_text(encoding="utf-8")
 
     promoted = "test_grpc_transport_can_host_certi_exchange_end_to_end"
     assert promoted in command_text
@@ -116,6 +119,10 @@ def test_certi_grpc_working_baseline_is_documented() -> None:
     assert "./tools/vendor-green certi-patched" in command_text
     assert "patched CERTI-hosted gRPC" in ci_text
     assert "exchange. CERTI gRPC synchronization" in ci_text
+    assert "temporary `compliance.before/` restore snapshot" in ci_text
+    assert "that snapshot is comparison-only restore state for this check" in compliance_check_text
+    assert "not a live" in compliance_check_text
+    assert "owner surface or manager-facing handoff packet" in compliance_check_text
     assert "gRPC synchronization and ownership remain probe-only" in route_text
     assert "gRPC synchronization and ownership remain unstable" in command_text
 

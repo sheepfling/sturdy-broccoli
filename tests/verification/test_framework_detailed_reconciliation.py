@@ -8,6 +8,7 @@ from pathlib import Path
 RECONCILIATION_PATH = (
     Path(__file__).resolve().parents[2]
     / "requirements"
+    / "2010"
     / "hla1516_framework_detailed_reconciliation.csv"
 )
 

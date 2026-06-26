@@ -37,9 +37,24 @@ def run_two_federate_suite_for_pair_factory(
     *,
     hooks: TwoFederateSuiteHooks,
     extension_steps: int = 4,
+    event_sink: Callable[[dict[str, Any]], None] | None = None,
 ) -> dict[str, Any]:
-    timeline = TimelineRecorder(events=[])
+    timeline = TimelineRecorder(events=[], event_sink=event_sink)
 
+    def emit_phase(scenario: str, phase: str, **details: Any) -> None:
+        if event_sink is None:
+            return
+        event_sink(
+            {
+                "kind": "phase",
+                "provider": "two-federate",
+                "scenario": scenario,
+                "phase": phase,
+                "details": details,
+            }
+        )
+
+    emit_phase("exchange_time", "scenario-start")
     exchange_pub, exchange_sub, exchange_pub_fed, exchange_sub_fed = pair_factory("exchange_time", timeline)
     exchange_config = hooks.exchange_config_factory()
     exchange_summary = hooks.run_exchange_scenario(
@@ -55,8 +70,14 @@ def run_two_federate_suite_for_pair_factory(
         subscriber_federate=exchange_sub_fed,
         config=exchange_config,
     )
+    emit_phase(
+        "exchange_time",
+        "scenario-complete",
+        callback_count=len(exchange_pub_fed.records) + len(exchange_sub_fed.records),
+    )
     _cleanup_pair(exchange_pub, exchange_sub, federation_name=exchange_config.federation_name)
 
+    emit_phase("synchronization", "scenario-start")
     sync_leader, sync_wing, sync_leader_fed, sync_wing_fed = pair_factory("synchronization", timeline)
     sync_config = hooks.sync_config_factory()
     sync_summary = hooks.run_sync_scenario(
@@ -66,8 +87,14 @@ def run_two_federate_suite_for_pair_factory(
         leader_federate=sync_leader_fed,
         wing_federate=sync_wing_fed,
     )
+    emit_phase(
+        "synchronization",
+        "scenario-complete",
+        callback_count=len(sync_leader_fed.records) + len(sync_wing_fed.records),
+    )
     _cleanup_pair(sync_leader, sync_wing, federation_name=sync_config.federation_name)
 
+    emit_phase("ownership", "scenario-start")
     owner_rti, acquirer_rti, owner_fed, acquirer_fed = pair_factory("ownership", timeline)
     ownership_config = hooks.ownership_config_factory()
     ownership_summary = hooks.run_ownership_scenario(
@@ -77,8 +104,14 @@ def run_two_federate_suite_for_pair_factory(
         owner_federate=owner_fed,
         acquirer_federate=acquirer_fed,
     )
+    emit_phase(
+        "ownership",
+        "scenario-complete",
+        callback_count=len(owner_fed.records) + len(acquirer_fed.records),
+    )
     _cleanup_pair(owner_rti, acquirer_rti, federation_name=ownership_config.federation_name)
 
+    emit_phase("negotiated_ownership", "scenario-start")
     neg_owner_rti, neg_acquirer_rti, neg_owner_fed, neg_acquirer_fed = pair_factory("negotiated_ownership", timeline)
     negotiated_config = hooks.negotiated_config_factory()
     negotiated_summary = hooks.run_negotiated_scenario(
@@ -88,9 +121,15 @@ def run_two_federate_suite_for_pair_factory(
         owner_federate=neg_owner_fed,
         acquirer_federate=neg_acquirer_fed,
     )
+    emit_phase(
+        "negotiated_ownership",
+        "scenario-complete",
+        callback_count=len(neg_owner_fed.records) + len(neg_acquirer_fed.records),
+    )
     _cleanup_pair(neg_owner_rti, neg_acquirer_rti, federation_name=negotiated_config.federation_name)
 
     save_restore_config = hooks.save_restore_config_factory()
+    emit_phase("save_restore", "scenario-start")
     save_pub, save_sub, save_pub_fed, save_sub_fed = pair_factory("save_restore", timeline)
     save_restore_summary = hooks.run_save_restore_scenario(
         save_pub,
@@ -99,9 +138,15 @@ def run_two_federate_suite_for_pair_factory(
         left_federate=save_pub_fed,
         right_federate=save_sub_fed,
     )
+    emit_phase(
+        "save_restore",
+        "scenario-complete",
+        callback_count=len(save_pub_fed.records) + len(save_sub_fed.records),
+    )
     _cleanup_pair(save_pub, save_sub, federation_name=save_restore_config["federation_name"])
 
     ddm_config = hooks.ddm_config_factory()
+    emit_phase("ddm", "scenario-start")
     ddm_sender, ddm_receiver, ddm_sender_fed, ddm_receiver_fed = pair_factory("ddm", timeline)
     ddm_summary = hooks.run_ddm_scenario(
         ddm_sender,
@@ -110,9 +155,15 @@ def run_two_federate_suite_for_pair_factory(
         sender_federate=ddm_sender_fed,
         receiver_federate=ddm_receiver_fed,
     )
+    emit_phase(
+        "ddm",
+        "scenario-complete",
+        callback_count=len(ddm_sender_fed.records) + len(ddm_receiver_fed.records),
+    )
     _cleanup_pair(ddm_sender, ddm_receiver, federation_name=ddm_config["federation_name"])
 
     future_exclusion_config = hooks.future_exclusion_config_factory()
+    emit_phase("time_window_future_exclusion", "scenario-start")
     future_slow, future_radar, future_slow_fed, future_radar_fed = pair_factory("time_window_future_exclusion", timeline)
     future_exclusion_summary = hooks.run_future_exclusion_scenario(
         future_slow,
@@ -121,9 +172,15 @@ def run_two_federate_suite_for_pair_factory(
         slow_federate=future_slow_fed,
         radar_federate=future_radar_fed,
     )
+    emit_phase(
+        "time_window_future_exclusion",
+        "scenario-complete",
+        callback_count=len(future_slow_fed.records) + len(future_radar_fed.records),
+    )
     _cleanup_pair(future_slow, future_radar, federation_name=future_exclusion_config.federation_name)
 
     restore_state_config = hooks.restore_state_config_factory()
+    emit_phase("time_window_restore_state", "scenario-start")
     restore_truth, restore_radar, restore_truth_fed, restore_radar_fed = pair_factory("time_window_restore_state", timeline)
     restore_state_summary = hooks.run_restore_state_scenario(
         restore_truth,
@@ -132,11 +189,22 @@ def run_two_federate_suite_for_pair_factory(
         truth_federate=restore_truth_fed,
         radar_federate=restore_radar_fed,
     )
+    emit_phase(
+        "time_window_restore_state",
+        "scenario-complete",
+        callback_count=len(restore_truth_fed.records) + len(restore_radar_fed.records),
+    )
     _cleanup_pair(restore_truth, restore_radar, federation_name=restore_state_config.federation_name)
 
     extension_summary: Mapping[str, Any] | None = None
     if hooks.extension_summary_factory is not None:
-        extension_summary = hooks.extension_summary_factory(target_radar_steps=extension_steps)
+        emit_phase(hooks.extension_name or "extension", "scenario-start")
+        extension_summary = hooks.extension_summary_factory(target_radar_steps=extension_steps, event_sink=event_sink)
+        emit_phase(
+            hooks.extension_name or "extension",
+            "scenario-complete",
+            callback_count=int(extension_summary["scenario_row"]["callbacks"]),
+        )
 
     scenario_rows = [
         {

@@ -7,7 +7,7 @@ import json
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import Any, Callable, Mapping, Sequence
 
 from hla.foms.target_radar._internal.target_radar import TrackReport, Vec3, run_target_radar_scenario
 from .target_radar_backend_matrix import _make_backend_factory, run_target_radar_backend_matrix
@@ -532,6 +532,7 @@ def run_target_radar_proof(
     target_radar_steps: int = 4,
     dt: float = 1.0,
     backend_options_by_kind: Mapping[str, Mapping[str, Any]] | None = None,
+    event_sink: Callable[[dict[str, Any]], None] | None = None,
 ) -> dict[str, Any]:
     backend_matrix = run_target_radar_backend_matrix(
         backends,
@@ -544,6 +545,7 @@ def run_target_radar_proof(
         federation_name="TargetRadarProofFederation",
         steps=target_radar_steps,
         dt=dt,
+        event_sink=event_sink,
     )
     proof = {
         "backend": proof_backend,
@@ -571,6 +573,7 @@ def write_target_radar_proof_artifacts(
     target_radar_steps: int = 4,
     dt: float = 1.0,
     backend_options_by_kind: Mapping[str, Mapping[str, Any]] | None = None,
+    event_sink: Callable[[dict[str, Any]], None] | None = None,
 ) -> TargetRadarProofPaths:
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -580,6 +583,7 @@ def write_target_radar_proof_artifacts(
         target_radar_steps=target_radar_steps,
         dt=dt,
         backend_options_by_kind=backend_options_by_kind,
+        event_sink=event_sink,
     )
     paths = TargetRadarProofPaths(
         output_dir=output_dir,

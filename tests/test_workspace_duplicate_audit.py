@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib.util
 import json
 from pathlib import Path
 import sys
@@ -8,17 +9,19 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS_DIR = ROOT / "scripts"
-if str(SCRIPTS_DIR) not in sys.path:
-    sys.path.insert(0, str(SCRIPTS_DIR))
+MODULE_PATH = SCRIPTS_DIR / "detect_workspace_duplicates.py"
+MODULE_SPEC = importlib.util.spec_from_file_location("detect_workspace_duplicates", MODULE_PATH)
+assert MODULE_SPEC is not None and MODULE_SPEC.loader is not None
+detect_workspace_duplicates = importlib.util.module_from_spec(MODULE_SPEC)
+sys.modules[MODULE_SPEC.name] = detect_workspace_duplicates
+MODULE_SPEC.loader.exec_module(detect_workspace_duplicates)
 
-from detect_workspace_duplicates import (
-    build_duplicate_audit,
-    build_duplicate_worklist,
-    clean_same_content_source_duplicates,
-    strict_duplicate_candidates,
-    write_duplicate_audit,
-    write_duplicate_worklist,
-)
+build_duplicate_audit = detect_workspace_duplicates.build_duplicate_audit
+build_duplicate_worklist = detect_workspace_duplicates.build_duplicate_worklist
+clean_same_content_source_duplicates = detect_workspace_duplicates.clean_same_content_source_duplicates
+strict_duplicate_candidates = detect_workspace_duplicates.strict_duplicate_candidates
+write_duplicate_audit = detect_workspace_duplicates.write_duplicate_audit
+write_duplicate_worklist = detect_workspace_duplicates.write_duplicate_worklist
 
 
 def test_build_duplicate_audit_classifies_same_diff_and_orphan(tmp_path: Path) -> None:

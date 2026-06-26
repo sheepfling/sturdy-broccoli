@@ -11,10 +11,14 @@ def test_requirements_remaining_closure_uses_current_2010_large_family_story() -
     text = DOC.read_text(encoding="utf-8")
 
     assert "`CAP-XML`: `364 partial`" in text
+    assert "`CAP-OM`: `103 partial`" in text
     assert "`CAP-OMT`: `2 partial`" in text
     assert "`CAP-API`: `394 partial`" not in text
     assert "omt_xml_bounded_family.md" in text
     assert "There are also no remaining active `2010` closeout buckets in this note." in text
+    assert "`25` `partial` rows where Python is still `vendor-divergent`" in text
+    assert "`14` OMT or 1516.2 breadth rows" in text
+    assert "hla1516_framework_detailed_reconciliation.csv" in text
 
 
 def test_requirements_remaining_closure_keeps_owner_companion_split_explicit() -> None:

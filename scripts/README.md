@@ -40,6 +40,7 @@ Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
 - `./tools/vendor-probe-review` canonical repeated-run probe review and promotion-review artifact flow
 - `./tools/vendor-edge` canonical vendor edge matrix flow
 - `./tools/rti-options` canonical generated RTI route/options matrix flow
+- `./tools/contracts` canonical generated HLA interface contracts reference flow
 - `./tools/shim-routes` canonical language-shim route matrix and mixed-language demo flow
 - `./tools/java` canonical Java toolchain inventory front door
 - `./tools/fom-overview` canonical merged FOM/MIM overview artifact flow
@@ -50,6 +51,7 @@ Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
 - `./tools/fom-siso-pitch-2010-micro-strict` canonical six-row real-2010 Pitch-only SISO micro parity flow
 - `./tools/fom-siso-pitch-micro-parity` canonical Pitch-eligible SISO micro parity flow across the bounded 2010 and 2025 micro rows
 - `./tools/fom-siso-runtime-launcher` canonical larger-federation launcher-oriented runtime SISO packet flow
+- `./tools/fom-siso-runtime-observer` canonical live federation-subscriber control plane for SISO, two-federate, and target-radar runtime lanes
 - `./tools/fom-siso-runtime-showcase` canonical runtime-backed SISO showcase packet flow
 - `./tools/fom-siso-showcase` canonical standards-backed showcase packet for Link 16, RPR 3.0, and Space FOM
 - `./tools/fom-corpus-classification` canonical corpus bucketing flow with `Edition Scope`
@@ -271,7 +273,7 @@ New generated backlog artifacts:
 - `ci/target_radar_proof.sh`: target/radar proof packet
 - `ci/section8_backend_matrix_gate.py`: cross-backend Section 8 matrix
 - `ci/vendor_edge_matrix.py`: vendor edge slice with `time-query` and `negotiated-ownership` subprofiles
-- `ci/check_generated_docs.sh`: generated backend alias inventory sync
+- `ci/check_generated_docs.sh`: generated doc sync for the backend alias inventory, Java interface spec mapping, FOM inventory view, and HLA interface contracts reference
 
 ### Local State And Repo Plumbing
 

@@ -25,7 +25,9 @@ def test_tools_test_focus_help_describes_inventory_run_and_resume() -> None:
     assert "./tools/test-focus run target-radar" in result.stdout
     assert "./tools/test-focus run fom-target-radar" in result.stdout
     assert "./tools/test-focus run rti-factory" in result.stdout
+    assert "./tools/test-focus run execution-membership" in result.stdout
     assert "./tools/test-focus run python-2025-time" in result.stdout
+    assert "./tools/test-focus run python-2025-ddm" in result.stdout
     assert "./tools/test-focus run save-restore-2025" in result.stdout
     assert "./tools/test-focus run routes-2025" in result.stdout
     assert "./tools/test-focus resume python-2025-runtime" in result.stdout
@@ -52,9 +54,11 @@ def test_tools_test_focus_inventory_json_lists_expected_targets() -> None:
         "fom",
         "target-radar",
         "python-2025-runtime",
+        "execution-membership",
         "python-2025-time",
         "python-2025-save-restore",
         "python-2025-ownership",
+        "python-2025-ddm",
         "python-2025-mom-callbacks",
         "transport",
         "routes-2025",
@@ -70,6 +74,13 @@ def test_tools_test_focus_inventory_json_lists_expected_targets() -> None:
     assert "rti-factory" in targets["rti-core"]["aliases"]
     assert "bridge-jpype" in targets["jpype"]["aliases"]
     assert "save-restore-2025" in targets["python-2025-save-restore"]["aliases"]
+    assert "membership-guards" in targets["execution-membership"]["aliases"]
+    assert "ddm-2025" in targets["python-2025-ddm"]["aliases"]
+    assert "gRPC/FedPro lane and the REST-hosted Python route" in targets["execution-membership"]["description"]
+    assert "hosted gRPC/FedPro save/restore" in targets["python-2025-save-restore"]["description"]
+    assert "hosted gRPC/FedPro route" in targets["python-2025-ownership"]["description"]
+    assert "hosted gRPC/FedPro route" in targets["python-2025-ddm"]["description"]
+    assert "hosted gRPC/FedPro route" in targets["python-2025-mom-callbacks"]["description"]
 
 
 def test_tools_test_focus_run_accepts_alias_target_name() -> None:

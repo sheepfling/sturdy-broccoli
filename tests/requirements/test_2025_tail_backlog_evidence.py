@@ -32,9 +32,12 @@ PYTHON2025_BACKEND_EVIDENCE_PATH = "packages/hla-backend-python1516-2025/src/hla
 PYTHON2025_BACKEND_PACKAGE_PATH = "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/"
 SHIM_BACKEND_EVIDENCE_PATH = "packages/hla-backend-shim/src/hla/backends/shim/backend.py"
 CALLBACK_BINDING_DELTA_DOC = "docs/requirements/ieee-1516-2025/callback_binding_deltas.md"
+FRAMEWORK_RULES_DOC = "docs/requirements/ieee-1516-2025/framework_rules.md"
 BINDING_HOSTED_BOUNDARY_DOC = "docs/requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md"
 OMT_XS_ANY_DOC = "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md"
 RETIRED_LEGACY_MAPPING_DOC = "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md"
+TAIL_WORKLIST_DOC = "docs/plans/2025_python_rti_100_percent_worklist.md"
+UMBRELLA_WORKLIST_DOC = "docs/plans/2025_python_rti_umbrella_decomposition_worklist.md"
 SUPPORT_SERVICES_DOC = "docs/requirements/ieee-1516-2025/support_services_bounded_proof.md"
 TIME_MANAGEMENT_DOC = "docs/requirements/ieee-1516-2025/time_management_bounded_proof.md"
 FEDERATION_MANAGEMENT_DOC = "docs/requirements/ieee-1516-2025/federation_management_bounded_proof.md"
@@ -56,6 +59,7 @@ DELTA_UMBRELLA_IDS = {
     "HLA2025-BIND-FEDPRO-001",
     "HLA2025-BIND-JAVA-CPP-001",
 }
+FRAMEWORK_UMBRELLA_IDS = {f"HLA2025-FR-{index:03d}" for index in range(1, 11)}
 RETIRED_LEGACY_IDS = {
     "HLA2025-FI-RET-001",
     "HLA2025-FI-RET-002",
@@ -82,6 +86,7 @@ RETIRED_LEGACY_IDS = {
     "HLA2025-OMT-RET-012",
     "HLA2025-OMT-RET-013",
 }
+NON_COVERED_2025_IDS = DELTA_UMBRELLA_IDS | FRAMEWORK_UMBRELLA_IDS | RETIRED_LEGACY_IDS
 
 
 @pytest.mark.requirements("HLA2025-MIL-001", "HLA2025-MIL-002", "HLA2025-TRACE-001")
@@ -117,6 +122,187 @@ def test_harmonization_packets_repoint_delta_umbrella_rows_to_real_callback_bind
             evidence = str(row.get("suggested_repo_evidence_path", ""))
             assert CALLBACK_BINDING_DELTA_DOC in evidence
             assert placeholder_prefix not in evidence
+
+
+@pytest.mark.requirements("HLA2025-FI-CB-001", "HLA2025-FI-CB-008", "HLA2025-BIND-FEDPRO-001", "HLA2025-BIND-JAVA-CPP-001")
+def test_delta_umbrella_rows_are_explicit_evidenced_owner_doc_closures_not_missing_evidence_rows() -> None:
+    expected_rationale = (
+        "Backlog-theme delta row is intentionally maintained as a non-standalone umbrella; "
+        "child FI/binding rows plus the canonical owner doc carry the executable proof."
+    )
+    expected_repo_status = (
+        "owner-doc-closed: explicit repo evidence anchors and executable test anchors are recorded; "
+        "keep duplicate/umbrella"
+    )
+    expected_closure_task = (
+        "Keep the child-row links, canonical owner doc, and binding-specific evidence anchors synchronized; "
+        "do not relabel this umbrella row as standalone proof."
+    )
+    expected_risk = (
+        "Delta hints are now tied to concrete source traces, child FI rows, and binding-specific test anchors; "
+        "the remaining risk is double-counting them as standalone proof."
+    )
+    expected_promotion_rule = (
+        "Promote to covered only if the repo introduces a narrower standalone claim beyond the current child-row map; "
+        "otherwise keep duplicate/umbrella with explicit owner-doc evidence."
+    )
+
+    for row in _csv_rows(HARMONIZATION_DISPOSITION_CSV):
+        if row["id"] in DELTA_UMBRELLA_IDS:
+            assert row["disposition_rationale"] == expected_rationale
+            assert row["repo_evidence_status"] == expected_repo_status
+            assert row["closure_task"] == expected_closure_task
+            assert row["coverage_risk_addressed"] == expected_risk
+            assert row["promotion_rule"] == expected_promotion_rule
+
+    for row in _json_rows(HARMONIZATION_DISPOSITION_JSON):
+        if str(row.get("id", "")) in DELTA_UMBRELLA_IDS:
+            assert str(row.get("disposition_rationale", "")) == expected_rationale
+            assert str(row.get("repo_evidence_status", "")) == expected_repo_status
+            assert str(row.get("closure_task", "")) == expected_closure_task
+            assert str(row.get("coverage_risk_addressed", "")) == expected_risk
+            assert str(row.get("promotion_rule", "")) == expected_promotion_rule
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FR-010")
+def test_framework_umbrella_rows_are_explicit_evidenced_owner_doc_closures_not_missing_evidence_rows() -> None:
+    expected_rationale = (
+        "Framework umbrella row is intentionally maintained as a non-standalone parent; "
+        "linked child FI/OMT/runtime rows plus the canonical owner doc carry the executable or bounded proof."
+    )
+    expected_repo_status = (
+        "owner-doc-closed: explicit repo evidence anchors, child-row links, and bounded executable anchors are recorded; "
+        "keep duplicate/umbrella"
+    )
+    expected_closure_task = (
+        "Keep the child-row map, canonical owner doc, and linked FI/OMT/runtime evidence anchors synchronized; "
+        "do not relabel this framework umbrella as standalone proof."
+    )
+    expected_risk = (
+        "Framework umbrella rows are now tied to concrete child requirements and evidence anchors; "
+        "the remaining risk is double-counting them as standalone proof instead of parent normalization rows."
+    )
+    expected_promotion_rule = (
+        "Promote to covered only if the repo introduces a narrower standalone framework claim beyond the current child-row map; "
+        "otherwise keep duplicate/umbrella with explicit owner-doc evidence."
+    )
+
+    for row in _csv_rows(HARMONIZATION_DISPOSITION_CSV):
+        if row["id"] in FRAMEWORK_UMBRELLA_IDS:
+            assert row["disposition_rationale"] == expected_rationale
+            assert row["repo_evidence_status"] == expected_repo_status
+            assert row["closure_task"] == expected_closure_task
+            assert row["coverage_risk_addressed"] == expected_risk
+            assert row["promotion_rule"] == expected_promotion_rule
+
+    for row in _json_rows(HARMONIZATION_DISPOSITION_JSON):
+        if str(row.get("id", "")) in FRAMEWORK_UMBRELLA_IDS:
+            assert str(row.get("disposition_rationale", "")) == expected_rationale
+            assert str(row.get("repo_evidence_status", "")) == expected_repo_status
+            assert str(row.get("closure_task", "")) == expected_closure_task
+            assert str(row.get("coverage_risk_addressed", "")) == expected_risk
+            assert str(row.get("promotion_rule", "")) == expected_promotion_rule
+
+
+@pytest.mark.requirements("HLA2025-RET-001", "HLA2025-RET-003")
+def test_retired_legacy_rows_are_explicit_evidenced_owner_doc_closures_not_missing_evidence_rows() -> None:
+    expected_rationale = (
+        "Legacy-only diff row; keep out of 2025 normative coverage unless compatibility/migration mode is explicitly tested."
+    )
+    expected_repo_status = "legacy-only: excluded unless compatibility support is intentional"
+    expected_closure_task = (
+        "Confirm retired/replacement mapping, decide compatibility mode, and ensure legacy-only item is excluded from 2025 normative coverage counts."
+    )
+    expected_risk = "Retired rows prevent legacy-only requirements from being miscounted as 2025 obligations."
+    expected_promotion_rule = (
+        "Promote to covered only after at least one repo evidence anchor and one executable/fixture test anchor are recorded; umbrella rows require child-row links."
+    )
+    expected_evidence = "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md; migration/compatibility fixture if supported"
+
+    for row in _csv_rows(HARMONIZATION_DISPOSITION_CSV):
+        if row["id"] in RETIRED_LEGACY_IDS:
+            assert row["suggested_repo_evidence_path"] == expected_evidence
+            assert row["disposition_rationale"] == expected_rationale
+            assert row["repo_evidence_status"] == expected_repo_status
+            assert row["closure_task"] == expected_closure_task
+            assert row["coverage_risk_addressed"] == expected_risk
+            assert row["promotion_rule"] == expected_promotion_rule
+
+    for row in _json_rows(HARMONIZATION_DISPOSITION_JSON):
+        if str(row.get("id", "")) in RETIRED_LEGACY_IDS:
+            assert str(row.get("suggested_repo_evidence_path", "")) == expected_evidence
+            assert str(row.get("disposition_rationale", "")) == expected_rationale
+            assert str(row.get("repo_evidence_status", "")) == expected_repo_status
+            assert str(row.get("closure_task", "")) == expected_closure_task
+            assert str(row.get("coverage_risk_addressed", "")) == expected_risk
+            assert str(row.get("promotion_rule", "")) == expected_promotion_rule
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-CB-001", "HLA2025-RET-001")
+def test_all_current_non_covered_2025_rows_have_explicit_owner_docs_and_closeout_fields() -> None:
+    csv_rows = {row["id"]: row for row in _csv_rows(HARMONIZATION_DISPOSITION_CSV) if row["id"] in NON_COVERED_2025_IDS}
+    json_rows = {
+        str(row.get("id", "")): row
+        for row in _json_rows(HARMONIZATION_DISPOSITION_JSON)
+        if str(row.get("id", "")) in NON_COVERED_2025_IDS
+    }
+
+    assert set(csv_rows) == NON_COVERED_2025_IDS
+    assert set(json_rows) == NON_COVERED_2025_IDS
+
+    for requirement_id in sorted(NON_COVERED_2025_IDS):
+        csv_row = csv_rows[requirement_id]
+        json_row = json_rows[requirement_id]
+
+        if requirement_id in FRAMEWORK_UMBRELLA_IDS:
+            expected_doc = FRAMEWORK_RULES_DOC
+            expected_disposition = "duplicate/umbrella"
+        elif requirement_id in DELTA_UMBRELLA_IDS:
+            expected_doc = CALLBACK_BINDING_DELTA_DOC
+            expected_disposition = "duplicate/umbrella"
+        else:
+            expected_doc = RETIRED_LEGACY_MAPPING_DOC
+            expected_disposition = "retired/legacy-only"
+
+        assert csv_row["harmonization_disposition"] == expected_disposition
+        assert str(json_row.get("harmonization_disposition", "")) == expected_disposition
+        assert expected_doc in csv_row["suggested_repo_evidence_path"]
+        assert expected_doc in str(json_row.get("suggested_repo_evidence_path", ""))
+
+        for field in (
+            "suggested_repo_evidence_path",
+            "disposition_rationale",
+            "repo_evidence_status",
+            "closure_task",
+            "coverage_risk_addressed",
+            "promotion_rule",
+        ):
+            assert csv_row[field].strip()
+            assert str(json_row.get(field, "")).strip()
+            assert csv_row[field] == str(json_row.get(field, ""))
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-CB-001", "HLA2025-RET-001")
+def test_all_current_non_covered_2025_rows_are_enumerated_in_owner_docs_and_execution_worklists() -> None:
+    framework_text = (ROOT / FRAMEWORK_RULES_DOC).read_text(encoding="utf-8")
+    delta_text = (ROOT / CALLBACK_BINDING_DELTA_DOC).read_text(encoding="utf-8")
+    retired_text = (ROOT / RETIRED_LEGACY_MAPPING_DOC).read_text(encoding="utf-8")
+    tail_worklist_text = (ROOT / TAIL_WORKLIST_DOC).read_text(encoding="utf-8")
+    umbrella_worklist_text = (ROOT / UMBRELLA_WORKLIST_DOC).read_text(encoding="utf-8")
+
+    for requirement_id in sorted(FRAMEWORK_UMBRELLA_IDS):
+        assert requirement_id in framework_text
+        assert requirement_id in tail_worklist_text
+        assert requirement_id in umbrella_worklist_text
+
+    for requirement_id in sorted(DELTA_UMBRELLA_IDS):
+        assert requirement_id in delta_text
+        assert requirement_id in tail_worklist_text
+        assert requirement_id in umbrella_worklist_text
+
+    for requirement_id in sorted(RETIRED_LEGACY_IDS):
+        assert requirement_id in retired_text
+        assert requirement_id in tail_worklist_text
 
 
 @pytest.mark.requirements("HLA2025-OMT-COMP-006", "HLA2025-OMT-COMP-039", "HLA2025-OMT-COMP-224")

@@ -33,6 +33,7 @@ def test_federation_management_partial_tail_current_shape_is_stable() -> None:
 
 def test_federation_management_boundary_doc_records_current_family_shape() -> None:
     text = BOUNDARY_DOC.read_text(encoding="utf-8")
+    normalized = " ".join(text.split())
 
     assert "2010 Federation-Management Bounded Family" in text
     assert "## Default Final Stance" in text
@@ -44,3 +45,22 @@ def test_federation_management_boundary_doc_records_current_family_shape() -> No
     assert "`23 EFF`" in text
     assert "`17 CB_ORD`" in text
     assert "`15 EXC`" in text
+    assert "`./tools/test-focus run execution-membership`" in text
+    assert "`./tools/test-focus run backends`" in text
+    assert "`./tools/test-surface run unit-scenarios-light`" in text
+    assert "Execution-membership guard coverage is also part of the current 2010 bounded reading" in normalized
+    assert "`NotConnected` or `FederateNotExecutionMember`" in text
+    assert "`FederatesCurrentlyJoined`" in text
+    assert "`FederationExecutionDoesNotExist`" in text
+    assert "[`object_management_bounded_family.md`](object_management_bounded_family.md)" in text
+    assert "Current exact execution-membership evidence anchors for this 2010 reading:" in text
+    assert "test_destroy_federation_execution_requires_no_joined_federates" in text
+    assert "test_resign_federation_execution_rejects_not_connected_and_not_joined" in text
+    assert "test_disconnect_requires_resign_and_marks_backend_not_connected" in text
+    assert "test_update_attribute_values_rejects_not_connected_not_joined_unknown_object_invalid_time_not_owned_and_save_restore" in text
+    assert "test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore" in text
+    assert "test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore" in text
+    assert "test_ddm_send_interaction_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore" in text
+    assert "test_request_attribute_value_update_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore" in text
+    assert "test_python_backend_join_precondition_matrix" in text
+    assert "test_python_backend_resign_precondition_matrix" in text

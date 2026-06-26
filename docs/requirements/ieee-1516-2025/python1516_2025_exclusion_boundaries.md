@@ -49,7 +49,7 @@ requirement-granularity, or OMT-scope limits around the claim.
 ## What Still Counts As In Scope
 
 The exclusions above do not weaken the repo's current bounded executable claim
-for the direct and hosted Python 2025 lanes:
+for the direct `python1516_2025` lane plus hosted FedPro replay:
 
 - direct `python1516_2025` runtime proof remains owned by `hla-backend-python1516-2025`
 - hosted FedPro proof remains route evidence over that same runtime

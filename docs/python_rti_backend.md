@@ -194,7 +194,8 @@ The current bounded claim is:
 
 - the Python-centered 2025 surface is validated as a bounded working RTI
   surface across federation management, object management, time management,
-  support services, callbacks, OMT handling, and binding and hosted routes
+  support services, callbacks, OMT handling, and binding routes plus the
+  hosted FedPro route
 
 What that currently includes:
 

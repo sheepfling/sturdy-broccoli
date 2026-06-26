@@ -82,6 +82,19 @@ This means:
   retired-row exclusion discipline, and bounded route or binding scope honesty
   rather than stale row-level review debt
 
+Read the current backend-resolution posture separately from those
+dispositions:
+
+- the direct `python1516_2025` lane is the primary runtime owner behind the
+  covered row set
+- Java/C++ standard-shim surfaces remain wrapper or capability layers over
+  that lane rather than alternate RTI owners
+- hosted FedPro evidence remains a bounded hosted-route surface over
+  `hla-backend-python1516-2025`, not a second implementation lane
+- any Pitch proto HLA 4 / `202X` overlap remains explicit vendor-resolution
+  context and must stay in linked owner docs or backend-resolution artifacts
+  instead of being inferred from grouped coverage counts
+
 ## Coverage Risks Addressed
 
 | Coverage risk | What changed in this pass | Remaining gate |
@@ -90,7 +103,8 @@ This means:
 | FI service depth needs service-level accounting | All 196 FI rows now carry Java/C++/FedPro surface status and service-level closure tasks, and the full FI catalog now points at direct executable Python evidence. | Keep future FI behavior changes synchronized with finish-line slices and executable anchors. |
 | SOM/FOM service-utilization rows lacked reconciled closure | All 196 service-utilization rows now point at direct parser/roundtrip evidence plus renumbered-differential checks and the covered FI catalog they mirror. | Keep serviceUtilization parser semantics and FI cross-checks synchronized when object-model handling changes. |
 | OMT component depth is not proof | The remaining OMT component rows are now either promoted into the supported shared parser/serializer subset or normalized into explicit bounded owner-doc readings instead of being left partial. | Keep narrowing broad claims, add direct fixtures when support expands, and replace bounded owner-doc language only when parser/serializer/runtime evidence exists. |
-| Delta hints are not authoritative | Delta rows remain `duplicate/umbrella`; none are promoted to coverage without child-row links. | Review 2010/2025 source traces and bind each delta to concrete service/schema rows. |
+| Delta hints are not standalone proof | Delta rows remain `duplicate/umbrella`, but each current delta row is now tied to concrete child FI/binding evidence and its canonical owner doc rather than left in evidence-anchor debt. | Keep the child-row maps, owner docs, and binding-specific evidence anchors synchronized when the delta families change. |
+| Framework rules are not standalone proof | Framework rows remain `duplicate/umbrella`, but each current framework row is now tied to concrete child FI/OMT/runtime evidence and its canonical owner doc rather than left in evidence-anchor debt. | Keep the child-row maps, owner docs, and linked FI/OMT/runtime evidence anchors synchronized when the framework family changes. |
 | Retired mappings can pollute 2025 coverage | Legacy-only rows are isolated as `retired/legacy-only` with explicit exclusion rules. | Decide compatibility/migration support and add migration fixtures only where intentional. |
 
 ## Promotion Rule

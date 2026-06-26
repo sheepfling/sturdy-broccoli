@@ -8,6 +8,7 @@ from pathlib import Path
 RECONCILIATION_PATH = (
     Path(__file__).resolve().parents[2]
     / "requirements"
+    / "2010"
     / "hla1516_1_clause_10_sup_detailed_reconciliation.csv"
 )
 
@@ -48,4 +49,3 @@ def test_clause10_support_test_rows_have_direct_evidence_and_mapped_companion_sl
         test_ids = [item.strip() for item in row["current_test_id"].split(";") if item.strip()]
         assert len(test_ids) >= 2
         assert all(_node_exists(test_id) for test_id in test_ids)
-

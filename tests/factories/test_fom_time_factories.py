@@ -5,7 +5,9 @@ from hla.backends.common import (
     BackendConversionError,
     Invocation,
     ResolvedJavaInvocation,
+    install_deterministic_java_invocation_router,
     reset_java_invocation_resolver,
+    resolve_java_invocation_deterministic,
     set_java_invocation_resolver,
 )
 from hla.bridges.java.common import JavaBridge, JavaRTIBackend, JavaValueConverter, resolve_java_invocation
@@ -432,6 +434,55 @@ def test_java_backend_request_attribute_value_update_prefers_exact_handle_type()
     method_name, args = java_rti.calls[-1]
     assert method_name == "requestAttributeValueUpdate"
     assert args[0] == ("native-object", 17)
+    assert args[1][0] == "handle_set"
+    assert args[2] == b"tag"
+
+
+def test_java_backend_can_run_through_deterministic_invocation_router():
+    java_rti = _RecordingJavaRTI()
+    backend = JavaRTIBackend(java_rti_ambassador=java_rti, bridge=RecordingBridge())
+    object_handle = backend.converter.handle_registry.to_python(ObjectInstanceHandle, ("native-object", 17))
+    attribute_handle = backend.converter.handle_registry.to_python(AttributeHandle, ("native-attribute", 3))
+    rti = make_rti_ambassador(backend)
+
+    previous = install_deterministic_java_invocation_router()
+    try:
+        rti.requestAttributeValueUpdate(object_handle, {attribute_handle}, b"tag")
+    finally:
+        set_java_invocation_resolver(previous)
+        reset_java_invocation_resolver()
+
+    method_name, args = java_rti.calls[-1]
+    assert method_name == "requestAttributeValueUpdate"
+    assert args[0] == ("native-object", 17)
+    assert args[1][0] == "handle_set"
+    assert args[2] == b"tag"
+
+
+def test_java_backend_prefers_backend_local_resolver_over_global_swap():
+    java_rti = _RecordingJavaRTI()
+    backend = JavaRTIBackend(
+        java_rti_ambassador=java_rti,
+        bridge=RecordingBridge(),
+        invocation_resolver=resolve_java_invocation_deterministic,
+    )
+    object_handle = backend.converter.handle_registry.to_python(ObjectInstanceHandle, ("native-object", 23))
+    attribute_handle = backend.converter.handle_registry.to_python(AttributeHandle, ("native-attribute", 5))
+    rti = make_rti_ambassador(backend)
+
+    def _alternate_resolver(invocation: Invocation) -> ResolvedJavaInvocation:
+        return ResolvedJavaInvocation(args=("wrong-route",), param_types=("String",), overload=None)
+
+    previous = set_java_invocation_resolver(_alternate_resolver)
+    try:
+        rti.requestAttributeValueUpdate(object_handle, {attribute_handle}, b"tag")
+    finally:
+        set_java_invocation_resolver(previous)
+        reset_java_invocation_resolver()
+
+    method_name, args = java_rti.calls[-1]
+    assert method_name == "requestAttributeValueUpdate"
+    assert args[0] == ("native-object", 23)
     assert args[1][0] == "handle_set"
     assert args[2] == b"tag"
 

@@ -3,6 +3,9 @@
 This note is the row-level audit companion to the 691-row harmonization ledger in
 `requirements/2025/harmonization/`.
 
+For the current umbrella-row execution surface, use
+[`2025_python_rti_umbrella_decomposition_worklist.md`](2025_python_rti_umbrella_decomposition_worklist.md).
+
 It answers a narrow question:
 
 Does the repo now have an explicit requirement-by-requirement audit across the
@@ -41,6 +44,27 @@ Area closure is currently:
 - Callback/configuration/binding deltas: `duplicate/umbrella=12`
 - Retired / replacement mapping candidates: `retired/legacy-only=24`
 
+## Recommended 100 Percent Metric Rule
+
+Use two separate percentages:
+
+1. `100% dispositioned` across all `691` tracked rows
+2. `100% covered` across the active normative non-retired non-umbrella rows
+
+That active denominator is currently:
+
+- `691` total tracked rows
+- minus `22` `duplicate/umbrella` rows
+- minus `24` `retired/legacy-only` rows
+- equals `645` active normative non-retired non-umbrella rows
+
+Current result on that denominator:
+
+- `645 / 645 = 100% covered` on active normative non-retired non-umbrella rows
+
+Do not restate that as `691 / 691 covered`.
+The remaining `46` rows are explicit owner-note classes, not hidden gaps.
+
 ## What This Audit Proves
 
 The repo no longer lacks a row-level 2025 audit.
@@ -62,6 +86,29 @@ current Python 2025 RTI lane rather than only broad slice summaries, while
 `hla-backend-shim` stays in a compatibility-wrapper role instead of becoming a
 second implementation owner.
 
+Read that backend-resolution split explicitly:
+
+- `hla-backend-python1516-2025` remains the primary direct 2025 runtime owner
+- Java and C++ standard-shim routes remain wrapper-only capability surfaces
+  over that runtime lane, not alternate RTI owners
+- hosted FedPro evidence remains a bounded route surface over the same runtime
+  lane, not a second 2025 implementation owner
+- any Pitch proto HLA 4 / `202X` overlap remains explicit vendor-resolution
+  context rather than inferred closure of the grouped 2025 rows
+
+For the `22` remaining `duplicate/umbrella` rows, this audit now has an
+explicit child-owner and shard-owner companion:
+
+- framework umbrella rows remain owned by
+  [`../requirements/ieee-1516-2025/framework_rules.md`](../requirements/ieee-1516-2025/framework_rules.md)
+- callback/configuration/binding umbrella rows remain owned by
+  [`../requirements/ieee-1516-2025/callback_binding_deltas.md`](../requirements/ieee-1516-2025/callback_binding_deltas.md)
+- exact child-row links, primary shard owners, and direct-promotion criteria
+  now live in
+  [`2025_python_rti_umbrella_decomposition_worklist.md`](2025_python_rti_umbrella_decomposition_worklist.md)
+- canonical shard ownership terms live in
+  [`../verification/shard_registry.md`](../verification/shard_registry.md)
+
 ## What This Audit Does Not Prove
 
 This is still not a full unconditional 2025 conformance pass.
@@ -76,6 +123,18 @@ The row-level audit remains bounded because:
 - Java and C++ bindings remain artifact/runtime-capability bounded
 - hosted FedPro remains a bounded runtime slice rather than a full RTI
   semantics or MOM action/request conformance pass
+- Pitch proto HLA 4 / `202X` comparison material remains vendor-resolution
+  context, not proof that the grouped 2025 Python RTI rows have a second
+  independent backend owner
+
+Read the umbrella class precisely:
+
+- the `22` umbrella rows are not missing proof-owner rows
+- they are explicit parent or normalization rows whose child proof already
+  exists
+- the remaining decision is whether to leave them outside the direct-support
+  denominator or deliberately replace them with narrower direct executable
+  claims
 
 ## Working Conclusion
 
@@ -84,6 +143,8 @@ The correct statement now is:
 - the repo has a real requirement-by-requirement audit across the tracked 2025
   universe
 - that audit supports a bounded working-surface claim
+- that audit supports `100% covered` on the active normative non-retired
+  non-umbrella denominator
 - that audit does not by itself justify a full all-covered IEEE 1516.1-2025
   conformance claim
 - the remaining question is no longer whether a row-level audit exists, but

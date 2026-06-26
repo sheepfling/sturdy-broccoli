@@ -73,9 +73,18 @@ def _queue_sort_key(item: BacklogQueueItem) -> tuple[int, int, str]:
     return (-planned, -seeded, item.queue_item)
 
 
-def _derive_next_action(kinds: Counter[str], statuses: Counter[str], family: str) -> str:
+def _derive_next_action(kinds: Counter[str], statuses: Counter[str], family: str, rows: tuple[BacklogRow, ...]) -> str:
     if family == "Transports":
         return "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
+    if (
+        family == "Federation Management"
+        and set(kinds) == {"EFF"}
+        and all(row.source_file == "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv" for row in rows)
+    ):
+        return (
+            "Optional: tighten this bounded FM state-vector tail into a single direct witness if broader granularity is desired; "
+            "otherwise preserve the explicit bounded owner reading."
+        )
     if statuses.get("seeded"):
         return "Split the seeded row into implementation-driving subrequirements with direct tests."
     if kinds.get("MOM"):
@@ -154,7 +163,7 @@ def _build_queue_items(rows: list[BacklogRow], family: str) -> tuple[BacklogQueu
                 requirement_ids=requirement_ids,
                 acceptance_tests=acceptance_tests,
                 implementation_areas=implementation_areas,
-                suggested_next_action=_derive_next_action(kinds, statuses, family),
+                suggested_next_action=_derive_next_action(kinds, statuses, family, tuple(group)),
             )
         )
     return tuple(sorted(items, key=_queue_sort_key))

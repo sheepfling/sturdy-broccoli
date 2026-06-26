@@ -23,6 +23,7 @@ from hla.rti1516e.enums import (
     SaveFailureReason,
     SynchronizationPointFailureReason,
 )
+from hla.rti1516e.exceptions import InvalidResignAction
 from hla.rti1516e.handles import (
     AttributeHandle,
     AttributeHandleSet,
@@ -259,7 +260,10 @@ class HostedRTICommandProcessor:
         if command == "CONNECT":
             callback_model = CallbackModel[str(fields[0])]
             local_settings = str(fields[1]) if len(fields) >= 2 and fields[1] not in {"", None} else None
-            self.rti.connect(self.federate, callback_model, local_settings)
+            if local_settings is None:
+                self.rti.connect(self.federate, callback_model)
+            else:
+                self.rti.connect(self.federate, callback_model, local_settings)
             return TransportResponse()
         if command == "DISCONNECT":
             self.rti.disconnect()
@@ -292,7 +296,11 @@ class HostedRTICommandProcessor:
                 handle = self.rti.join_federation_execution(federate_type, federation_name)
             return TransportResponse(fields=(str(int(handle.value)),))
         if command == "RESIGN":
-            self.rti.resign_federation_execution(ResignAction[str(fields[0])])
+            try:
+                action = ResignAction[str(fields[0])]
+            except KeyError as exc:
+                raise InvalidResignAction(str(fields[0])) from exc
+            self.rti.resign_federation_execution(action)
             return TransportResponse()
         if command == "REQUEST_FEDERATION_SAVE":
             label = str(fields[0])
@@ -401,6 +409,18 @@ class HostedRTICommandProcessor:
             else:
                 handle = self.rti.register_object_instance(ObjectClassHandle(int(fields[0])))
             return TransportResponse(fields=(str(int(handle.value)),))
+        if command == "RESERVE_OBJECT_INSTANCE_NAME":
+            self.rti.reserve_object_instance_name(str(fields[0]))
+            return TransportResponse()
+        if command == "RELEASE_OBJECT_INSTANCE_NAME":
+            self.rti.release_object_instance_name(str(fields[0]))
+            return TransportResponse()
+        if command == "RESERVE_MULTIPLE_OBJECT_INSTANCE_NAME":
+            self.rti.reserve_multiple_object_instance_name(set(str(value) for value in fields))
+            return TransportResponse()
+        if command == "RELEASE_MULTIPLE_OBJECT_INSTANCE_NAME":
+            self.rti.release_multiple_object_instance_name(set(str(value) for value in fields))
+            return TransportResponse()
         if command == "REGISTER_OBJECT_INSTANCE_WITH_REGIONS":
             if len(fields) >= 3 and fields[2]:
                 handle = self.rti.register_object_instance_with_regions(
@@ -680,9 +700,12 @@ class HostedRTICommandProcessor:
             self.rti.retract(MessageRetractionHandle(int(fields[0])))
             return TransportResponse()
         if command == "EVOKE":
-            return TransportResponse(fields=self._evoke(single=True, minimum=float(fields[0])))
+            minimum = float(fields[0]) if fields else 0.0
+            return TransportResponse(fields=self._evoke(single=True, minimum=minimum))
         if command == "EVOKE_MANY":
-            return TransportResponse(fields=self._evoke(single=False, minimum=float(fields[0]), maximum=float(fields[1])))
+            minimum = float(fields[0]) if fields else 0.0
+            maximum = float(fields[1]) if len(fields) >= 2 else minimum
+            return TransportResponse(fields=self._evoke(single=False, minimum=minimum, maximum=maximum))
         if command == "CLOSE":
             self.close()
             return TransportResponse()

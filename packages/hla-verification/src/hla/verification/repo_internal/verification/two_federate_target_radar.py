@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Callable
 
 from hla.rti1516e.time import HLAfloat64Time
 from hla.rti1516e.datatypes import RangeBounds
@@ -13,11 +13,16 @@ from hla.verification.scenario_target_radar_time import (
 )
 
 
-def build_two_federate_target_radar_summary(*, target_radar_steps: int = 4) -> dict[str, Any]:
+def build_two_federate_target_radar_summary(
+    *,
+    target_radar_steps: int = 4,
+    event_sink: Callable[[dict[str, Any]], None] | None = None,
+) -> dict[str, Any]:
     result = run_target_radar_scenario(
         federation_name="TwoFederateSuiteTargetRadar",
         steps=target_radar_steps,
         fom_modules=[target_radar_fom_path()],
+        event_sink=event_sink,
     )
     return {
         "scenario_row": {

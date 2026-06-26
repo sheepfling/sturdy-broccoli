@@ -14,17 +14,22 @@ Use this rule:
 If you are not sure where to start, use one of these first:
 
 - `Testing`: [`repo_green_quickstart.md`](repo_green_quickstart.md), [`test_surface.md`](test_surface.md), [`local_verification_commands.md`](local_verification_commands.md), [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
+- `Testing ownership model`: [`verification/shard_registry.md`](verification/shard_registry.md), [`verification/view_registry.md`](verification/view_registry.md)
 - `Requirements`: [`requirements/ieee-1516-2010/README.md`](requirements/ieee-1516-2010/README.md), [`requirements/ieee-1516-2025/README.md`](requirements/ieee-1516-2025/README.md), [`verification/README.md`](verification/README.md), [`spec_reading_map.md`](spec_reading_map.md)
+- `Execution rules`: [`requirements/ieee-1516-2010/README.md`](requirements/ieee-1516-2010/README.md), [`requirements/ieee-1516-2025/README.md`](requirements/ieee-1516-2025/README.md), [`test_surface.md`](test_surface.md)
 - `Requirements exports`: [`verification/requirement_compliance_exports.md`](verification/requirement_compliance_exports.md)
 - `Requirements status`: [`plans/requirements_completion_audit.md`](plans/requirements_completion_audit.md), [`plans/requirements_remaining_closure.md`](plans/requirements_remaining_closure.md)
+- `Requirements closeout program`: [`plans/PLN-004_python_rti_100_percent_compliance_plan.md`](plans/PLN-004_python_rti_100_percent_compliance_plan.md), [`plans/2025_python_rti_100_percent_worklist.md`](plans/2025_python_rti_100_percent_worklist.md), [`plans/2010_python_rti_bounded_family_execution_worklist.md`](plans/2010_python_rti_bounded_family_execution_worklist.md)
 - `Backend | Transport | FOM`: [`work_surfaces.md`](work_surfaces.md), [`backend_transport_fom_selection_guide.md`](backend_transport_fom_selection_guide.md)
 
 Practical routing rule:
 
 - use `Requirements` for claim ownership, bounded proof notes, and traceability
+- use `Execution rules` when the question is join, resign, destroy, disconnect, or not-joined reserve/register/update/send/query behavior
 - use `Testing` for shard choice, reruns, and repo-green execution
 - use `Requirements exports` only for boss-facing CSV/XLSX handoff packets
 - use `Requirements status` when the question is whether closeout is honestly done
+- use `Requirements closeout program` when the question is how the repo defines honest `100%` and which exact 2025 or 2010 buckets still govern that answer
 - do not use one overloaded status reading to imply both canonical requirement
   disposition and backend support
 
@@ -37,16 +42,20 @@ Practical routing rule:
 | run the first pure-Python example | `2010 | 2025` -> [`first_run.md`](first_run.md) |
 | choose among backend, transport, and FOM lanes from one page | `Backend | Transport | FOM` -> [`backend_transport_fom_selection_guide.md`](backend_transport_fom_selection_guide.md) |
 | wrap a Java RTI with JPype or Py4J as lightly as possible | `Backend` -> [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md) |
+| inspect the full Java HLA interface-to-route mapping in one deterministic reference | `Backend` -> [`reference/java_interface_spec_mapping.md`](reference/java_interface_spec_mapping.md) |
+| inspect the canonical 2010 HLA service and callback contract table | `Backend` -> [`reference/hla_interface_contracts.md`](reference/hla_interface_contracts.md) |
 | understand the fuller Java adaptation and management story | `Backend` -> [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md) |
 | extend or swap a transport or variant gRPC layer | `Transport` -> [`extending_ambassador_transports.md`](extending_ambassador_transports.md) -> [`transport_extension_playbook.md`](transport_extension_playbook.md) |
 | decide whether a change belongs to FOM shape, transport wiring, or adapter dialect | `Runtime` -> [`federate_cli_change_map.md`](federate_cli_change_map.md) |
 | work on FOM validation, inspection, or UI/tooling | `FOM` -> [`fom_tooling_front_door.md`](fom_tooling_front_door.md) |
 | run focused tests, rerun failures, or pick a restart lane | `Testing` -> [`test_surface.md`](test_surface.md) -> [`local_verification_commands.md`](local_verification_commands.md) |
-| understand which shard owns a requirement status change and which views may overlap it | `Testing` -> [`test_surface.md`](test_surface.md) -> `Requirements` -> [`verification/README.md`](verification/README.md) |
+| understand which shard owns a requirement status change and which views may overlap it | `Testing` -> [`test_surface.md`](test_surface.md) -> [`verification/shard_registry.md`](verification/shard_registry.md) -> [`verification/view_registry.md`](verification/view_registry.md) |
 | understand what the repo claims, what is proven, and where the evidence lives | `Requirements` -> [`requirements/ieee-1516-2010/README.md`](requirements/ieee-1516-2010/README.md) or [`requirements/ieee-1516-2025/README.md`](requirements/ieee-1516-2025/README.md) -> [`verification/README.md`](verification/README.md) -> [`spec_reading_map.md`](spec_reading_map.md) |
+| verify the basic execution-state rules for 2010 or 2025, including join, destroy, and not-joined update/send/query guards | `Execution rules` -> [`requirements/ieee-1516-2010/README.md`](requirements/ieee-1516-2010/README.md) or [`requirements/ieee-1516-2025/README.md`](requirements/ieee-1516-2025/README.md) -> [`test_surface.md`](test_surface.md) |
 | understand backend-specific support without confusing it with canonical requirement status | `Requirements` -> [`spec_reading_map.md`](spec_reading_map.md) -> [`requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md`](requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md) or [`requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md`](requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md) |
 | generate a boss-facing CSV or XLSX compliance packet for 2010 and 2025 | `Requirements exports` -> [`verification/requirement_compliance_exports.md`](verification/requirement_compliance_exports.md) |
 | find the honest current answer to whether requirements closeout is actually complete | `Requirements status` -> [`plans/requirements_completion_audit.md`](plans/requirements_completion_audit.md) -> [`plans/requirements_remaining_closure.md`](plans/requirements_remaining_closure.md) |
+| understand what still blocks honest `100%` for the 2025 lane or which 2010 bounded buckets remain intentional | `Requirements closeout program` -> [`plans/2025_python_rti_100_percent_worklist.md`](plans/2025_python_rti_100_percent_worklist.md) or [`plans/2010_python_rti_bounded_family_execution_worklist.md`](plans/2010_python_rti_bounded_family_execution_worklist.md) -> [`plans/PLN-004_python_rti_100_percent_compliance_plan.md`](plans/PLN-004_python_rti_100_percent_compliance_plan.md) |
 | get Pitch + Docker running on a new machine with the least painful path | `Backend` -> [`pitch_docker_first_run.md`](pitch_docker_first_run.md) |
 | verify Java/C++ shim route prerequisites and standard-shim build state | `Backend` -> [`java_toolchain.md`](java_toolchain.md) -> [`cpp_toolchain.md`](cpp_toolchain.md) -> [`language_shim_routes.md`](language_shim_routes.md) |
 | understand orchestration, callback pumping, and performance limits | `Runtime` -> [`federation_orchestration.md`](federation_orchestration.md) |
@@ -102,6 +111,9 @@ If you already know what you need, pick a lane:
   [`local_verification_commands.md`](local_verification_commands.md)
 - `Testing` -> choose a lane or focused restart target:
   [`test_surface.md`](test_surface.md)
+- `Testing` -> inspect the canonical shard and view registries:
+  [`verification/shard_registry.md`](verification/shard_registry.md),
+  [`verification/view_registry.md`](verification/view_registry.md)
 - `Testing` -> get to repo-green and diagnose failures as a junior:
   [`repo_green_quickstart.md`](repo_green_quickstart.md),
   [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
@@ -120,6 +132,10 @@ If you already know what you need, pick a lane:
 - `Requirements status` -> inspect whether closeout is actually finished and what still blocks it:
   [`plans/requirements_completion_audit.md`](plans/requirements_completion_audit.md),
   [`plans/requirements_remaining_closure.md`](plans/requirements_remaining_closure.md)
+- `Requirements closeout program` -> inspect the honest `100%` denominator rule and remaining 2025/2010 governing buckets:
+  [`plans/PLN-004_python_rti_100_percent_compliance_plan.md`](plans/PLN-004_python_rti_100_percent_compliance_plan.md),
+  [`plans/2025_python_rti_100_percent_worklist.md`](plans/2025_python_rti_100_percent_worklist.md),
+  [`plans/2010_python_rti_bounded_family_execution_worklist.md`](plans/2010_python_rti_bounded_family_execution_worklist.md)
 - `Requirements` -> inspect requirement-facing bounded proof notes for the main 2025 lane:
   [`requirements/ieee-1516-2025/python1516_2025_direct_bounded_proof.md`](requirements/ieee-1516-2025/python1516_2025_direct_bounded_proof.md),
   [`requirements/ieee-1516-2025/save_restore_bounded_proof.md`](requirements/ieee-1516-2025/save_restore_bounded_proof.md),
@@ -136,6 +152,7 @@ If you already know what you need, pick a lane:
   [`../packages/hla-vendor-pitch/docs/pitch_vs_python_baseline.md`](../packages/hla-vendor-pitch/docs/pitch_vs_python_baseline.md)
 - `Backend` -> minimally wrap Java RTIs through JPype or Py4J:
   [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md),
+  [`reference/java_interface_spec_mapping.md`](reference/java_interface_spec_mapping.md),
   [`java_bridge_wrapping_guide.md`](java_bridge_wrapping_guide.md),
   [`java_bridge_encoding_and_bytes.md`](java_bridge_encoding_and_bytes.md),
   [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md),
@@ -178,6 +195,9 @@ Use these when you need structure, not onboarding:
 - [verification/requirement_compliance_exports.md](verification/requirement_compliance_exports.md): generated CSV/XLSX boss-facing handoff packets for the separate `2010 / 1516e` and `2025 / 1516_2025` compliance surfaces
 - [plans/requirements_completion_audit.md](plans/requirements_completion_audit.md): current honest answer to "are we actually done?"
 - [plans/requirements_remaining_closure.md](plans/requirements_remaining_closure.md): exact remaining buckets plus shard-vs-view ownership rules
+- [plans/PLN-004_python_rti_100_percent_compliance_plan.md](plans/PLN-004_python_rti_100_percent_compliance_plan.md): honest `100%` rule, denominator policy, and execution order for the 2025-then-2010 compliance program
+- [plans/2025_python_rti_100_percent_worklist.md](plans/2025_python_rti_100_percent_worklist.md): exact 2025 non-covered row inventory and the current `645 / 645` active-denominator reading
+- [plans/2010_python_rti_bounded_family_execution_worklist.md](plans/2010_python_rti_bounded_family_execution_worklist.md): exact remaining 2010 bounded families, mixed-backend rows, and tighten-versus-stay-bounded rules
 - [requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md](requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md): tracked proto2025 and Target/Radar example/FOM-backed scenario boundary for the bounded `python1516_2025` claim
 - [requirements/ieee-1516-2025/save_restore_bounded_proof.md](requirements/ieee-1516-2025/save_restore_bounded_proof.md): explicit save/restore rollback-family boundary for lifecycle control, routing/policy rollback, ownership rollback, and time-window rollback on the bounded `python1516_2025` claim
 - [requirements/ieee-1516-2025/callback_bounded_proof.md](requirements/ieee-1516-2025/callback_bounded_proof.md): explicit callback-delivery family boundary for direct/hosted `python1516_2025` callback proofs, callback-control hygiene, and callback surface limits on the bounded `python1516_2025` claim
@@ -188,6 +208,8 @@ Use these when you need structure, not onboarding:
 - [extending_ambassador_transports.md](extending_ambassador_transports.md): one-page guide to in-process vs remote routes, transport seams, and where to extend ambassador connection or wire-format logic
 - [transport_extension_playbook.md](transport_extension_playbook.md): concrete implementation playbook for variant `grpc` layers, new transport kinds, and hosted route adapters
 - [java_bridge_minimal_protocol_recipe.md](java_bridge_minimal_protocol_recipe.md): shortest JPype/Py4J wrapping recipe for standard Java RTIs
+- [reference/java_interface_spec_mapping.md](reference/java_interface_spec_mapping.md): full method-by-method Java HLA interface mapping with explicit route-policy labels
+- [reference/hla_interface_contracts.md](reference/hla_interface_contracts.md): canonical 2010 HLA service and callback contract table with generated alias signatures
 - [java_bridge_wrapping_guide.md](java_bridge_wrapping_guide.md): fuller JPype/Py4J wrapping guide
 - [java_bridge_encoding_and_bytes.md](java_bridge_encoding_and_bytes.md): Java encoder, `byte[]`, `userSuppliedTag`, and JPype/Py4J byte-preservation guide
 - [java_bridge_overload_resolution.md](java_bridge_overload_resolution.md): how shared Python-side overload selection and callback signature handling keep JPype and Py4J aligned

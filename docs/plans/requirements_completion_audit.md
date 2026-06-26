@@ -28,6 +28,63 @@ Presentation rule:
   and linked backend-resolution companions
 - backend-specific support must stay in explicit backend-resolution columns or
   linked artifacts rather than being collapsed into the audit conclusion
+- checked-in comparison snapshots such as
+  `analysis/compliance/compliance.before/` are historical restore or diff
+  surfaces, not the live owner answer to "are we done?"
+
+## Current Metrics Snapshot
+
+These metrics come from the current canonical ledgers and the freshly generated
+presentation packet.
+
+### 2025 / 1516_2025
+
+- row-level tracked universe: `691`
+- active normative non-retired non-umbrella denominator: `645`
+- current direct coverage on that active denominator: `645 / 645 = 100%`
+- explicit non-covered classes outside that denominator:
+  - `22` `duplicate/umbrella`
+  - `24` `retired/legacy-only`
+- grouped spreadsheet packet summary:
+  - `64` grouped buckets total
+  - `57` `covered`
+  - `5` `duplicate/umbrella`
+  - `2` `retired/legacy-only`
+
+### 2010 / 1516e
+
+- backend-compliance packet denominator: `934` matrix rows
+- canonical status split in that packet:
+  - `799` `pass`
+  - `40` `implemented-slice`
+  - `1` `implemented-smoke`
+  - `94` `partial`
+- current Python runtime resolution in that packet:
+  - `830` `verified`
+  - `25` `vendor-divergent`
+  - `79` `not-applicable`
+- defended policy-parent packet:
+  - `12` intentionally bounded broad partial parents
+  - `26` passing supported-subset child proofs
+- exact `partial` shape inside the packet:
+  - `40` `partial` rows with Python already `verified`
+  - `25` `partial` rows with Python still `vendor-divergent`
+  - `29` `partial` rows with Python `not-applicable`
+  - `5` of the `94` `partial` rows are section or area scaffolding rows with no standalone requirement ID
+- current `vendor-divergent` composition inside the `2010` packet:
+  - `14` OMT or 1516.2 family breadth rows from `requirements/2010/hla1516_2_omt.csv`
+  - `4` federation-management effect-vector rows from `requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv`
+  - `3` framework or architecture rows owned by `requirements/2010/hla1516_framework_detailed_reconciliation.csv`
+  - `2` supported-subset policy parents from `curated-clause5-6`
+  - `2` support-service factory helper rows for `getMessageRetractionHandleFactory` and `getRegionHandleFactory`
+
+Interpretation rule:
+
+- the `2025` headline `100%` is an active-normative direct-coverage claim
+- the `2010` packet is primarily a backend-compliance and bounded-family
+  closure view, not a single all-rows direct-coverage percentage
+- do not collapse those two denominators into one cross-edition completion
+  number
 
 ## Short Answer
 
@@ -119,22 +176,60 @@ Current reading:
 1. some clause-level 2010 rows are intentionally maintained as bounded
    mixed-backend partials
    - current evidence source: [`requirements_remaining_closure.md`](requirements_remaining_closure.md)
+   - current `2010` execution companion:
+     [`2010_python_rti_bounded_family_execution_worklist.md`](2010_python_rti_bounded_family_execution_worklist.md)
    - canonical backend-resolution companion:
      [`../../requirements/2010/hla1516_1_priority_backend_resolution.csv`](../../requirements/2010/hla1516_1_priority_backend_resolution.csv)
    - human-facing boundary note:
      [`../../docs/requirements/ieee-1516-2010/mixed_backend_priority_boundaries.md`](../../docs/requirements/ieee-1516-2010/mixed_backend_priority_boundaries.md)
-   - examples include:
-     - lost-federate detection and MOM reporting
-     - automatic resign handling for lost federates
-     - RO messages must never become received TSO messages
+   - current shard-owner registry:
+     [`../verification/shard_registry.md`](../verification/shard_registry.md)
+   - the direct mixed-backend clause tail is now exactly:
+     - `HLA1516.1-FM-4.1.5-001` lost-federate detection and MOM reporting
+     - `HLA1516.1-FM-4.1.5-002` automatic resign handling for lost federates
+     - `HLA1516.1-TM-8.1.2-003` RO messages must never become received TSO messages
    - this is no longer a documentation-ownership gap
    - it remains a bounded evidence-shape limit until broader backend closure is
      deliberately pursued
-2. many 2010 rows are still honest only as bounded supported subsets
+2. the `2010` packet no longer contains any `planned` inventory rows
+   separate from the maintained bounded-family tails
+   - current evidence source:
+     [`2010_python_rti_bounded_family_execution_worklist.md`](2010_python_rti_bounded_family_execution_worklist.md)
+   - former packet placeholders are now settled explicitly as:
+     - `5` `pass` OMT area rows
+     - `7` bounded `partial` OMT/XML area rows
+     - `1` `implemented-slice` Annex E schema witness
+   - this means the remaining 2010 work is no longer about clearing hidden
+     planning placeholders
+   - it is about whether the repo wants to tighten the remaining bounded
+     `partial` families beyond their current explicit owner readings
+3. many 2010 rows are still honest only as bounded supported subsets
    - this is acceptable for the closeout model used here
    - it means the edition is not fully `mapped` requirement-by-requirement, but
      it does not by itself leave an active ownership or closeout gap
-3. one large 2010 family is now structurally settled as a bounded owner surface
+   - the boss-facing export now exposes that defended subset surface directly in:
+     - `analysis/compliance/presentation_packets/requirements_2010_backend_compliance_policy_parents.csv`
+     - workbook tab `policy_parents`
+   - that surface exists to make clear that the `12` defended broad partial
+     parents are not the same thing as open Python-lane failures
+   - the remaining decision is now explicit:
+     keep the bounded family as-is, or tighten it with narrower direct proof
+     recorded in
+     [`2010_python_rti_bounded_family_execution_worklist.md`](2010_python_rti_bounded_family_execution_worklist.md)
+4. the remaining `2010` Python `vendor-divergent` packet rows are no longer one undifferentiated blocker class
+   - the `25` rows now fall into explicit owner buckets:
+     - `14` OMT or 1516.2 breadth rows already covered by
+       [`../../docs/requirements/ieee-1516-2010/omt_xml_bounded_family.md`](../../docs/requirements/ieee-1516-2010/omt_xml_bounded_family.md)
+     - `4` Clause 4 FM effect-vector rows already covered by
+       [`../../docs/requirements/ieee-1516-2010/federation_management_bounded_family.md`](../../docs/requirements/ieee-1516-2010/federation_management_bounded_family.md)
+     - `3` framework or architecture rows owned by
+       [`../../requirements/2010/hla1516_framework_detailed_reconciliation.csv`](../../requirements/2010/hla1516_framework_detailed_reconciliation.csv)
+     - `2` supported-subset policy parents already exposed in the `policy_parents` export
+     - `2` support-service factory-helper rows that still remain narrow Clause 10 negative-path breadth boundaries:
+       `REQ-RTI-SS-10_44-getMessageRetractionHandleFactory` and
+       `REQ-RTI-SS-10_44-getRegionHandleFactory`
+   - that means the remaining `vendor-divergent` label is mostly an ownership classification fact, not a sign of unresolved documentation ambiguity
+5. one large 2010 family is now structurally settled as a bounded owner surface
    even though its row-level ledger remains `partial`
    - owner doc:
      [`../../docs/requirements/ieee-1516-2010/federation_management_bounded_family.md`](../../docs/requirements/ieee-1516-2010/federation_management_bounded_family.md)
@@ -143,7 +238,7 @@ Current reading:
    - current bounded reading is already explicit for the `109` remaining rows
    - this reduces documentation-ownership ambiguity, but does not by itself
      finish the rest of the 2010 partial-family program
-4. another large 2010 family is now structurally settled as a bounded owner
+6. another large 2010 family is now structurally settled as a bounded owner
    surface even though its row-level ledger remains `partial`
    - owner doc:
      [`../../docs/requirements/ieee-1516-2010/support_services_bounded_family.md`](../../docs/requirements/ieee-1516-2010/support_services_bounded_family.md)
@@ -152,16 +247,16 @@ Current reading:
    - current bounded reading is already explicit for the `129` remaining rows
    - this reduces documentation-ownership ambiguity, but does not by itself
      finish the rest of the 2010 partial-family program
-5. another large 2010 family is now structurally settled as a bounded owner
+7. another large 2010 family is now structurally settled as a bounded owner
    surface even though its row-level ledger remains `partial`
    - owner doc:
      [`../../docs/requirements/ieee-1516-2010/object_management_bounded_family.md`](../../docs/requirements/ieee-1516-2010/object_management_bounded_family.md)
    - owner companion:
      [`../../requirements/2010/hla1516_1_om_detailed_reconciliation.csv`](../../requirements/2010/hla1516_1_om_detailed_reconciliation.csv)
-   - current bounded reading is already explicit for the `117` remaining rows
+   - current bounded reading is already explicit for the `113` remaining rows
    - this reduces documentation-ownership ambiguity, but does not by itself
      finish the rest of the 2010 partial-family program
-6. another 2010 family is now structurally settled as a bounded owner surface
+8. another 2010 family is now structurally settled as a bounded owner surface
    even though its row-level ledger remains `partial`
    - owner doc:
      [`../../docs/requirements/ieee-1516-2010/time_management_bounded_family.md`](../../docs/requirements/ieee-1516-2010/time_management_bounded_family.md)
@@ -170,7 +265,7 @@ Current reading:
    - current bounded reading is already explicit for the `58` remaining rows
    - this reduces documentation-ownership ambiguity, but does not by itself
      finish the rest of the 2010 partial-family program
-7. another 2010 family is now structurally settled as a bounded owner surface
+9. another 2010 family is now structurally settled as a bounded owner surface
    even though its row-level ledger remains `partial`
    - owner doc:
      [`../../docs/requirements/ieee-1516-2010/declaration_management_bounded_family.md`](../../docs/requirements/ieee-1516-2010/declaration_management_bounded_family.md)
@@ -179,7 +274,7 @@ Current reading:
    - current bounded reading is already explicit for the `38` remaining rows
    - this reduces documentation-ownership ambiguity, but does not by itself
      finish the rest of the 2010 partial-family program
-8. another 2010 family is now structurally settled as a bounded owner surface
+10. another 2010 family is now structurally settled as a bounded owner surface
    even though its row-level ledger remains `partial`
    - owner doc:
      [`../../docs/requirements/ieee-1516-2010/data_distribution_management_bounded_family.md`](../../docs/requirements/ieee-1516-2010/data_distribution_management_bounded_family.md)
@@ -188,7 +283,7 @@ Current reading:
    - current bounded reading is already explicit for the `46` remaining rows
    - this reduces documentation-ownership ambiguity, but does not by itself
      finish the rest of the 2010 partial-family program
-9. another 2010 family is now structurally settled as a bounded owner surface
+11. another 2010 family is now structurally settled as a bounded owner surface
    even though its row-level ledger remains `partial`
    - owner doc:
      [`../../docs/requirements/ieee-1516-2010/ownership_management_bounded_family.md`](../../docs/requirements/ieee-1516-2010/ownership_management_bounded_family.md)
@@ -197,7 +292,7 @@ Current reading:
    - current bounded reading is already explicit for the `30` remaining rows
    - this reduces documentation-ownership ambiguity, but does not by itself
      widen the family to full row-by-row mapped proof
-10. the last XML-centered 2010 family is also now structurally settled as a
+12. the last XML-centered 2010 family is also now structurally settled as a
     bounded owner surface even though its row-level ledgers remain `partial`
     - owner doc:
       [`../../docs/requirements/ieee-1516-2010/omt_xml_bounded_family.md`](../../docs/requirements/ieee-1516-2010/omt_xml_bounded_family.md)
@@ -214,11 +309,28 @@ Current reading:
 
 The 2010 surface is structurally coherent and its remaining `partial` rows now
 have explicit bounded owner readings.
+No separate `2010` `planned` inventory remains in the current packet.
+The former placeholder rows are now explicitly classified as:
+
+- `5` `pass` OMT area rows
+- `7` bounded `partial` OMT/XML area rows
+- `1` `implemented-slice` Annex E schema witness
+
 It is not a fully `mapped` requirement-by-requirement edition, but it no longer
-has an active 2010 closeout bucket caused by missing ownership or vague
+has an active 2010 closeout ambiguity caused by missing ownership or vague
 remaining-work language.
 The clause-level mixed-backend rows remain intentionally bounded rather than
 fully cross-backend closed.
+
+That means the remaining closeout question is no longer "who owns the `2010`
+bounded rows?"
+It is:
+
+- should the bounded rows stay in their current explicit final-state reading,
+  or should the repo deliberately tighten them into narrower direct executable
+  claims?
+- and which currently bounded partial families, if any, should be converted
+  into narrower direct proof instead of remaining explicit summary-owner claims?
 
 ## 2025 Audit
 
@@ -267,16 +379,25 @@ Grouped bucket counts should not be read as row counts.
      - `24` retired/legacy-only rows
      - `22` duplicate/umbrella rows
      - many covered rows still rely on bounded supported-scope language
+   - current umbrella execution companion:
+     [`2025_python_rti_umbrella_decomposition_worklist.md`](2025_python_rti_umbrella_decomposition_worklist.md)
+   - current shard-owner registry:
+     [`../verification/shard_registry.md`](../verification/shard_registry.md)
 2. the grouped closeout view is now fully dispositioned, but that does not by itself prove final all-covered closeout
    - current evidence source: [`requirements_remaining_closure.md`](requirements_remaining_closure.md)
    - grouped disposition counts now show:
      - `57` covered groups
      - `5` duplicate/umbrella groups
      - `2` retired/legacy-only groups
+   - there are no grouped `planned` or grouped `partial` rows left
    - this removes the stale grouped proof debt, but the repo still has to keep
      bounded row-level claims, umbrella rows, and retired rows honest
 3. several 2025 claims remain explicitly artifact-gated or route-bounded
    - canonical owner docs behind those limits:
+     - framework umbrella rows:
+       [`../../docs/requirements/ieee-1516-2025/framework_rules.md`](../../docs/requirements/ieee-1516-2025/framework_rules.md)
+     - callback/configuration/binding umbrella rows:
+       [`../../docs/requirements/ieee-1516-2025/callback_binding_deltas.md`](../../docs/requirements/ieee-1516-2025/callback_binding_deltas.md)
      - bindings and hosted routes:
        [`../../docs/requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md`](../../docs/requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md)
      - Pitch proto HLA 4 / `202X` backend-resolution lane:
@@ -289,6 +410,35 @@ Grouped bucket counts should not be read as row counts.
    - hosted FedPro is a bounded runtime slice, not a second complete RTI lane
    - OMT `xs:any` coverage is payload-preserving tolerance, not arbitrary
      third-party extension execution semantics
+   - the `22` umbrella rows are not missing-owner rows; they are parent or
+     normalization rows whose child proof already exists and whose exact
+     child-owner/shard-owner map now lives in
+     [`2025_python_rti_umbrella_decomposition_worklist.md`](2025_python_rti_umbrella_decomposition_worklist.md)
+4. the 2025 federation-management closeout is now owner-clean, but one
+   lifecycle-control seam is still intentionally narrower than the broader
+   family proof notes
+   - canonical owner note:
+     [`../../docs/requirements/ieee-1516-2025/federation_management_bounded_proof.md`](../../docs/requirements/ieee-1516-2025/federation_management_bounded_proof.md)
+   - canonical grouped owner ledger:
+     [`../../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`](../../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv)
+   - exact lifecycle rows for this execution-state reading:
+     - `HLA2025-FI-SVC-005` destroy federation execution
+     - `HLA2025-FI-SVC-008` list federation execution members
+     - `HLA2025-FI-SVC-010` join federation execution
+     - `HLA2025-FI-SVC-011` resign federation execution
+   - the direct lane and hosted FedPro route already cover the broader
+     federation-management proof families for those rows
+   - the REST-hosted Python route is intentionally kept in the narrower
+     execution-membership slice only:
+     lifecycle-negative, join-precondition, and resign-precondition control
+   - that narrower slice is still explicit about the state-machine outcomes:
+     `NotConnected` before connect or after disconnect,
+     `FederateNotExecutionMember` before join and again after resign,
+     `FederatesCurrentlyJoined` while destroy is attempted with joined
+     members, and `FederationExecutionDoesNotExist` after destroy succeeds
+   - this is no longer an ownership gap; it is an intentionally bounded
+     route-claim boundary that should not be overstated as full REST parity
+     across every broader federation-management family
 
 ### Current honest statement for 2025
 
@@ -305,14 +455,21 @@ The remaining 2025 limits are now maintained boundary choices:
 - bounded route, binding, backend-resolution, and tolerance-only claims that
   intentionally stay narrower than all-covered conformance language
 
+That means the remaining closeout question is no longer "who owns the umbrella
+rows?"
+It is "should those umbrella rows stay outside the direct-support denominator,
+or should the repo deliberately replace them with narrower direct executable
+claims?"
+
 ## Cross-Edition Blocking Themes
 
-Across both editions, the remaining blockers fall into these classes:
+Across both editions, the remaining blockers to a stronger all-covered
+conformance claim fall into these classes:
 
 | Blocking class | 2010 | 2025 |
 | --- | --- | --- |
 | explicit planned proof gaps | no active closeout buckets remain; maintained bounded rows remain | no active grouped 2025 planned buckets remain |
-| high-volume partial families | no active closeout buckets remain; maintained bounded owner notes remain | no grouped partial families remain; maintained bounded owner notes remain |
+| high-volume partial families | maintained bounded owner-note families remain | no grouped partial families remain; maintained bounded owner notes remain |
 | umbrella rows that are not standalone proof | no active umbrella buckets remain | maintained boundary class |
 | retired or legacy-only exclusions | no major 2010 equivalent | maintained boundary class |
 | route/binding/artifact-gated bounded claims | maintained boundary class | maintained boundary class |

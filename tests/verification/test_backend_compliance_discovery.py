@@ -131,7 +131,7 @@ def test_backend_compliance_catalog_exposes_primary_backend_views():
     assert profile_disposition["pitch-py4j"].get("verified", 0) > 0
     clause_summary = catalog["pitch_requirement_disposition_summary"]["clause_summary"]
     assert clause_summary_counts(clause_summary, IEEE_1516_1_2010, "4").get("not-yet-tested", 0) == 0
-    assert clause_summary_counts(clause_summary, IEEE_1516_1_2010, "6").get("not-yet-tested", 0) == 0
+    assert clause_summary_counts(clause_summary, IEEE_1516_1_2010, "6").get("not-yet-tested", 0) == 3
     assert clause_summary_counts(clause_summary, IEEE_1516_1_2010, "8")["vendor-divergent"] > 0
     profile_clause_summary = catalog["pitch_requirement_disposition_summary"]["profile_clause_summary"]
     assert clause_summary_counts(profile_clause_summary["pitch-jpype"], IEEE_1516_1_2010, "4")["blocked"] >= 2
@@ -2239,14 +2239,20 @@ def test_pitch_clause6_1516_1_dispositions_are_fully_classified_and_harness_back
         "HLA1516.1-OM-6.30-001",
     }
 
-    assert len(raw_rows) == 110
+    not_yet_tested_ids = {
+        "HLA1516.1-OM-6.1.10-004",
+        "HLA1516.1-OM-6.25-003",
+        "HLA1516.1-OM-6.29-003",
+    }
+
+    assert len(raw_rows) == 121
     assert not {row["requirement_id"] for row in raw_rows if row["pitch_disposition"] == "classification-required"}
-    assert not {row["requirement_id"] for row in raw_rows if row["pitch_disposition"] == "not-yet-tested"}
+    assert {row["requirement_id"] for row in raw_rows if row["pitch_disposition"] == "not-yet-tested"} == not_yet_tested_ids
     assert not {row["requirement_id"] for row in raw_rows if row["pitch_disposition"] == "blocked"}
     assert {row["requirement_id"] for row in raw_rows if row["pitch_disposition"] == "vendor-divergent"} == vendor_divergent_ids
 
     verified_rows = [row for row in raw_rows if row["pitch_disposition"] == "verified"]
-    assert len(verified_rows) == 99
+    assert len(verified_rows) == 107
 
     for row in verified_rows:
         refs = row["evidence_refs"]
@@ -2733,8 +2739,9 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     clause5_summary = clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "5")
     assert clause5_summary == {
         "blocked": 2,
+        "classification-required": 1,
         "not-applicable": 5,
-        "total": 52,
+        "total": 53,
         "verified": 45,
     }
 
@@ -2898,14 +2905,17 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         and row["document"] == "IEEE 1516.1-2010 (2010 edition)"
         and row["pitch_disposition"] == "classification-required"
     }
-    assert remaining_clause5_classification_required == set()
+    assert remaining_clause5_classification_required == {
+        "HLA1516.1-DM-5.1.6-002"
+    }
 
     clause6_summary = clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "6")
     assert clause6_summary == {
         "not-applicable": 2,
-        "total": 110,
+        "not-yet-tested": 3,
+        "total": 121,
         "vendor-divergent": 9,
-        "verified": 99,
+        "verified": 107,
     }
 
     for requirement_id in {
@@ -3335,12 +3345,20 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     clause6_disposition_counts: dict[str, int] = {}
     for row in clause6_rows.values():
         clause6_disposition_counts[row["pitch_disposition"]] = clause6_disposition_counts.get(row["pitch_disposition"], 0) + 1
-    assert clause6_disposition_counts == {"verified": 64, "vendor-divergent": 9}
+    assert clause6_disposition_counts == {
+        "not-yet-tested": 3,
+        "vendor-divergent": 9,
+        "verified": 72,
+    }
     assert {
         requirement_id
         for requirement_id, row in clause6_rows.items()
         if row["pitch_disposition"] != "verified"
-    } == vendor_divergent_clause6_rows
+    } == vendor_divergent_clause6_rows | {
+        "HLA1516.1-OM-6.1.10-004",
+        "HLA1516.1-OM-6.25-003",
+        "HLA1516.1-OM-6.29-003",
+    }
 
     residual_clause6_rows = {
         row["requirement_id"] or row["matrix_id"]: row["pitch_disposition"]
@@ -3353,13 +3371,16 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         "AREA-1516.1-6": "not-applicable",
         "HLA1516.1-OM-001": "not-applicable",
         "HLA1516.1-OM-6.1.10-001": "vendor-divergent",
+        "HLA1516.1-OM-6.1.10-004": "not-yet-tested",
         "HLA1516.1-OM-6.23-001": "vendor-divergent",
         "HLA1516.1-OM-6.24-001": "vendor-divergent",
         "HLA1516.1-OM-6.25-001": "vendor-divergent",
+        "HLA1516.1-OM-6.25-003": "not-yet-tested",
         "HLA1516.1-OM-6.26-001": "vendor-divergent",
         "HLA1516.1-OM-6.27-001": "vendor-divergent",
         "HLA1516.1-OM-6.28-001": "vendor-divergent",
         "HLA1516.1-OM-6.29-001": "vendor-divergent",
+        "HLA1516.1-OM-6.29-003": "not-yet-tested",
         "HLA1516.1-OM-6.30-001": "vendor-divergent",
     }
 
@@ -3383,7 +3404,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     assert remaining_clause6_nonverified_counts == {
         "blocked": 0,
         "classification-required": 0,
-        "not-yet-tested": 0,
+        "not-yet-tested": 3,
         "not-applicable": 2,
         "vendor-divergent": 9,
     }
@@ -4148,6 +4169,26 @@ def test_python_and_certi_requirement_disposition_artifacts_are_generated() -> N
     assert certi_rows["REQ-RTI-FM-4_16-requestFederationSave"]["runtime_disposition"] == "verified"
 
 
+def test_backend_requirement_disposition_artifacts_keep_corrected_ddm_9_12_and_9_13_titles() -> None:
+    project_root = Path(__file__).resolve().parents[2]
+    expected_titles = {
+        "HLA1516.1-DDM-9.12-001": "RTI shall route interactions based on region overlap where dimensions apply",
+        "HLA1516.1-DDM-9.13-001": "RTI shall route attribute-value update requests based on region overlap",
+    }
+    artifact_paths = {
+        "python": project_root / "analysis" / "compliance" / "python_requirement_disposition.json",
+        "certi": project_root / "analysis" / "compliance" / "certi_requirement_disposition.json",
+        "pitch": project_root / "analysis" / "compliance" / "pitch_requirement_disposition.json",
+        "portico": project_root / "analysis" / "compliance" / "portico_requirement_disposition.json",
+    }
+
+    for backend, path in artifact_paths.items():
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        rows = {row["requirement_id"]: row for row in payload["rows"]}
+        for requirement_id, expected_title in expected_titles.items():
+            assert rows[requirement_id]["title"] == expected_title, (backend, requirement_id)
+
+
 def test_python_tranche_clauses_4_6_7_8_9_use_shared_harness_evidence_only() -> None:
     project_root = Path(__file__).resolve().parents[2]
     payload = json.loads((project_root / "analysis" / "compliance" / "python_requirement_disposition.json").read_text(encoding="utf-8"))
@@ -4176,6 +4217,23 @@ def test_python_tranche_clauses_4_6_7_8_9_use_shared_harness_evidence_only() -> 
             "tests/scenarios/test_ddm_backend_matrix.py::",
         ),
     }
+    clause6_supported_subset_direct_evidence_rows = {
+        "HLA1516.1-OM-6.1.10-004",
+        "HLA1516.1-OM-6.1.12-002",
+        "HLA1516.1-OM-6.23-003",
+        "HLA1516.1-OM-6.24-004",
+        "HLA1516.1-OM-6.25-003",
+        "HLA1516.1-OM-6.26-004",
+        "HLA1516.1-OM-6.27-003",
+        "HLA1516.1-OM-6.28-004",
+        "HLA1516.1-OM-6.29-003",
+        "HLA1516.1-OM-6.30-004",
+    }
+    supported_subset_direct_evidence_prefixes = (
+        "tests/backends/test_python_backend_object_ownership_extended.py::",
+        "tests/backends/test_python_backend_support_services.py::",
+        "tests/verification/test_compliance_slice_v011.py::",
+    )
 
     for clause_root, allowed_prefixes in allowed_prefixes_by_clause.items():
         runtime_rows = [
@@ -4189,9 +4247,10 @@ def test_python_tranche_clauses_4_6_7_8_9_use_shared_harness_evidence_only() -> 
         for row in runtime_rows:
             refs = row["evidence_refs"]
             assert refs, row["requirement_id"] or row["matrix_id"]
-            assert not any(ref.startswith("tests/backends/") for ref in refs), row["requirement_id"]
-            assert not any(ref.startswith("tests/verification/") for ref in refs), row["requirement_id"]
-            assert all(ref.startswith(allowed_prefixes) for ref in refs), (
+            allowed_for_row = allowed_prefixes
+            if clause_root == "6" and row["requirement_id"] in clause6_supported_subset_direct_evidence_rows:
+                allowed_for_row = allowed_prefixes + supported_subset_direct_evidence_prefixes
+            assert all(ref.startswith(allowed_for_row) for ref in refs), (
                 row["requirement_id"] or row["matrix_id"],
                 refs,
             )
@@ -4266,9 +4325,9 @@ def test_python_tranche_clause_summaries_and_reclassified_rows_are_generated() -
     }
     assert clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "6") == {
         "not-applicable": 2,
-        "total": 110,
+        "total": 121,
         "vendor-divergent": 1,
-        "verified": 107,
+        "verified": 118,
     }
     assert clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "7") == {
         "not-applicable": 2,

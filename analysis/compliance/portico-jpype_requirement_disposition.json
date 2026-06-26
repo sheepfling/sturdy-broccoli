@@ -323,7 +323,7 @@
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
       "section_ref": "IEEE 1516-2010 Time concept rules",
-      "title": "The repo shall map time concepts to 1516.1 time services and grant/order semantics"
+      "title": "The repo shall map time concepts to 1516.1 time services and grant/order semantics, including logical time and ordering relationships"
     },
     {
       "clause_root": "4",
@@ -1195,7 +1195,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.10",
-      "title": "Resign Federation Execution shall be covered by direct service tests and transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Resign Federation Execution shall be covered by direct service tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -1299,7 +1299,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.11",
-      "title": "Register Federation Synchronization Point shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Register Federation Synchronization Point shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -1403,7 +1403,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.12",
-      "title": "Synchronization Point Registration callbacks shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Synchronization Point Registration callbacks shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -1507,7 +1507,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.13",
-      "title": "Announce Synchronization Point shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Announce Synchronization Point shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -1611,7 +1611,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.14",
-      "title": "Synchronization Point Achieved shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Synchronization Point Achieved shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -1728,7 +1728,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.15",
-      "title": "Federation Synchronized shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Federation Synchronized shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -1832,7 +1832,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.16",
-      "title": "Request Federation Save shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Request Federation Save shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -1936,7 +1936,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.17",
-      "title": "Initiate Federate Save shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Initiate Federate Save shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -2040,7 +2040,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.18",
-      "title": "Federate Save Begun shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Federate Save Begun shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -2144,7 +2144,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.19",
-      "title": "Federate Save Complete and Federate Save Not Complete shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Federate Save Complete and Federate Save Not Complete shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -2248,7 +2248,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.2",
-      "title": "Connect shall be covered by direct service tests and transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Connect shall be covered by direct service tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -2352,7 +2352,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.20",
-      "title": "Federation Saved and Federation Not Saved shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Federation Saved and Federation Not Saved shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -2456,7 +2456,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.21",
-      "title": "Abort Federation Save shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Abort Federation Save shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -2560,7 +2560,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.22",
-      "title": "Query Federation Save Status shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Query Federation Save Status shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -2664,7 +2664,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.23",
-      "title": "Federation Save Status Response shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Federation Save Status Response shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -2768,7 +2768,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.24",
-      "title": "Request Federation Restore shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Request Federation Restore shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -2872,7 +2872,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.25",
-      "title": "Request Federation Restore confirmation shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Request Federation Restore confirmation shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -2976,7 +2976,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.26",
-      "title": "Federation Restore Begun shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Federation Restore Begun shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -3080,7 +3080,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.27",
-      "title": "Initiate Federate Restore shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Initiate Federate Restore shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -3184,7 +3184,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.28",
-      "title": "Federate Restore Complete and Federate Restore Not Complete shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Federate Restore Complete and Federate Restore Not Complete shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -3288,7 +3288,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.29",
-      "title": "Federation Restored and Federation Not Restored shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Federation Restored and Federation Not Restored shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -3392,7 +3392,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.3",
-      "title": "Disconnect shall be covered by direct service tests and transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Disconnect shall be covered by direct service tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -3496,7 +3496,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.30",
-      "title": "Abort Federation Restore shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Abort Federation Restore shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -3600,7 +3600,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.31",
-      "title": "Query Federation Restore Status shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Query Federation Restore Status shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -3704,7 +3704,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.32",
-      "title": "Federation Restore Status Response shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Federation Restore Status Response shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -3808,7 +3808,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.5",
-      "title": "Create Federation Execution shall be covered by direct service tests plus transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Create Federation Execution shall be covered by direct service tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -3912,7 +3912,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.6",
-      "title": "Destroy Federation Execution shall be covered by direct service tests plus transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Destroy Federation Execution shall be covered by direct service tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -4016,7 +4016,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.9",
-      "title": "Join Federation Execution shall be covered by direct service tests and transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Join Federation Execution shall be covered by direct service tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "5",
@@ -4250,7 +4250,7 @@
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75",
-      "title": "The RTI shall implement declaration-management services for publication"
+      "title": "The RTI shall implement declaration-management services for publication, subscription, registration control, and the associated error and precondition behavior"
     },
     {
       "clause_root": "5",
@@ -4420,6 +4420,19 @@
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1.6",
       "title": "RTI shall support subscribing with update rate reduction where applicable."
+    },
+    {
+      "clause_root": "5",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [],
+      "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-DM-5.1.6-002",
+      "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
+      "requirement_id": "HLA1516.1-DM-5.1.6-002",
+      "runtime_disposition": "classification-required",
+      "runtime_status": "",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1.6",
+      "title": "RTI shall apply explicit and FOM-declared update-rate designators across direct, inherited, and region-based object-class subscriptions within the currently implemented logical-time subset."
     },
     {
       "clause_root": "5",
@@ -5203,7 +5216,7 @@
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76",
-      "title": "The RTI shall implement object-management services for registration"
+      "title": "The RTI shall implement object-management services for registration, update, delete, discovery, and interaction delivery behavior"
     },
     {
       "clause_root": "6",
@@ -5327,6 +5340,19 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence_refs": [],
       "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-OM-6.1.10-004",
+      "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
+      "requirement_id": "HLA1516.1-OM-6.1.10-004",
+      "runtime_disposition": "classification-required",
+      "runtime_status": "",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.10",
+      "title": "RTI shall honor FOM-declared reliable and best-effort transportation defaults for object updates and interactions in the currently supported transport subset."
+    },
+    {
+      "clause_root": "6",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [],
+      "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-OM-6.1.11-001",
       "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
       "requirement_id": "HLA1516.1-OM-6.1.11-001",
@@ -5340,6 +5366,19 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence_refs": [],
       "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-OM-6.1.11-002",
+      "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
+      "requirement_id": "HLA1516.1-OM-6.1.11-002",
+      "runtime_disposition": "classification-required",
+      "runtime_status": "",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.11",
+      "title": "RTI shall preserve externally visible reflect and interaction callback semantics for the currently implemented direct unbatched delivery subset."
+    },
+    {
+      "clause_root": "6",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [],
+      "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-OM-6.1.12-001",
       "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
       "requirement_id": "HLA1516.1-OM-6.1.12-001",
@@ -5347,6 +5386,19 @@
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.12",
       "title": "RTI shall honor update-rate reduction when reflecting attribute updates."
+    },
+    {
+      "clause_root": "6",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [],
+      "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-OM-6.1.12-002",
+      "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
+      "requirement_id": "HLA1516.1-OM-6.1.12-002",
+      "runtime_disposition": "classification-required",
+      "runtime_status": "",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.12",
+      "title": "RTI shall throttle timed reflected attribute delivery according to explicit and FOM-declared update-rate designators while preserving receive-order delivery that has no logical-time basis."
     },
     {
       "clause_root": "6",
@@ -5788,7 +5840,20 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.23",
-      "title": "RTI shall support Request Attribute Transportation Type Change for the currently implemented reliable and best-effort transport subset and persist that selected attribute transport state across restore."
+      "title": "RTI shall support Request Attribute Transportation Type Change for the currently implemented reliable and best-effort transport subset."
+    },
+    {
+      "clause_root": "6",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [],
+      "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-OM-6.23-003",
+      "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
+      "requirement_id": "HLA1516.1-OM-6.23-003",
+      "runtime_disposition": "classification-required",
+      "runtime_status": "",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.23",
+      "title": "RTI shall persist selected attribute transportation overrides across restore in the currently implemented reliable and best-effort transport subset."
     },
     {
       "clause_root": "6",
@@ -5834,6 +5899,19 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence_refs": [],
       "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-OM-6.24-004",
+      "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
+      "requirement_id": "HLA1516.1-OM-6.24-004",
+      "runtime_disposition": "classification-required",
+      "runtime_status": "",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.24",
+      "title": "RTI shall route Confirm Attribute Transportation Type Change only to the federate that requested the change in the currently implemented reliable and best-effort transport subset."
+    },
+    {
+      "clause_root": "6",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [],
+      "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-OM-6.25-001",
       "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
       "requirement_id": "HLA1516.1-OM-6.25-001",
@@ -5854,6 +5932,19 @@
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.25",
       "title": "RTI shall report stored attribute transportation overrides for the currently implemented reliable and best-effort transport subset."
+    },
+    {
+      "clause_root": "6",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [],
+      "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-OM-6.25-003",
+      "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
+      "requirement_id": "HLA1516.1-OM-6.25-003",
+      "runtime_disposition": "classification-required",
+      "runtime_status": "",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.25",
+      "title": "RTI shall report the default reliable attribute transportation type when no explicit override exists in the currently implemented transport subset."
     },
     {
       "clause_root": "6",
@@ -5899,6 +5990,19 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence_refs": [],
       "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-OM-6.26-004",
+      "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
+      "requirement_id": "HLA1516.1-OM-6.26-004",
+      "runtime_disposition": "classification-required",
+      "runtime_status": "",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.26",
+      "title": "RTI shall route Report Attribute Transportation Type only to the federate that issued the corresponding query in the currently implemented reliable and best-effort transport subset."
+    },
+    {
+      "clause_root": "6",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [],
+      "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-OM-6.27-001",
       "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
       "requirement_id": "HLA1516.1-OM-6.27-001",
@@ -5918,7 +6022,20 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.27",
-      "title": "RTI shall support Request Interaction Transportation Type Change for the currently implemented reliable and best-effort transport subset and persist that selected interaction transport state across restore."
+      "title": "RTI shall support Request Interaction Transportation Type Change for the currently implemented reliable and best-effort transport subset."
+    },
+    {
+      "clause_root": "6",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [],
+      "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-OM-6.27-003",
+      "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
+      "requirement_id": "HLA1516.1-OM-6.27-003",
+      "runtime_disposition": "classification-required",
+      "runtime_status": "",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.27",
+      "title": "RTI shall persist selected interaction transportation overrides across restore in the currently implemented reliable and best-effort transport subset."
     },
     {
       "clause_root": "6",
@@ -5964,6 +6081,19 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence_refs": [],
       "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-OM-6.28-004",
+      "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
+      "requirement_id": "HLA1516.1-OM-6.28-004",
+      "runtime_disposition": "classification-required",
+      "runtime_status": "",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.28",
+      "title": "RTI shall route Confirm Interaction Transportation Type Change only to the federate that requested the change in the currently implemented reliable and best-effort transport subset."
+    },
+    {
+      "clause_root": "6",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [],
+      "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-OM-6.29-001",
       "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
       "requirement_id": "HLA1516.1-OM-6.29-001",
@@ -5984,6 +6114,19 @@
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.29",
       "title": "RTI shall report stored interaction transportation overrides for the currently implemented reliable and best-effort transport subset."
+    },
+    {
+      "clause_root": "6",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [],
+      "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-OM-6.29-003",
+      "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
+      "requirement_id": "HLA1516.1-OM-6.29-003",
+      "runtime_disposition": "classification-required",
+      "runtime_status": "",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.29",
+      "title": "RTI shall report the default reliable interaction transportation type when no explicit override exists in the currently implemented transport subset."
     },
     {
       "clause_root": "6",
@@ -6036,6 +6179,19 @@
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.30",
       "title": "RTI shall not emit Report Interaction Transportation Type when the corresponding query is rejected for invalid state or invalid interaction inputs."
+    },
+    {
+      "clause_root": "6",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [],
+      "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-OM-6.30-004",
+      "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
+      "requirement_id": "HLA1516.1-OM-6.30-004",
+      "runtime_disposition": "classification-required",
+      "runtime_status": "",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.30",
+      "title": "RTI shall route Report Interaction Transportation Type only to the federate that issued the corresponding query in the currently implemented reliable and best-effort transport subset."
     },
     {
       "clause_root": "6",
@@ -6438,7 +6594,7 @@
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77",
-      "title": "The RTI shall implement ownership-management services for unconditional"
+      "title": "The RTI shall implement ownership-management services for unconditional, negotiated, acquisition, divestiture, and release-request flows"
     },
     {
       "clause_root": "7",
@@ -6984,7 +7140,7 @@
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78",
-      "title": "The RTI shall implement time-management services for regulation"
+      "title": "The RTI shall implement time-management services for regulation, constrained behavior, query services, lookahead, order control, and grant delivery"
     },
     {
       "clause_root": "8",
@@ -7660,7 +7816,7 @@
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79",
-      "title": "The RTI shall implement DDM services for region creation"
+      "title": "The RTI shall implement DDM services for region creation, routing, and filtered delivery behavior"
     },
     {
       "clause_root": "9",
@@ -7738,7 +7894,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.12",
-      "title": "RTI shall route attribute updates based on region overlap"
+      "title": "RTI shall route interactions based on region overlap where dimensions apply"
     },
     {
       "clause_root": "9",
@@ -7751,7 +7907,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.13",
-      "title": "RTI shall route interactions based on region overlap where dimensions apply"
+      "title": "RTI shall route attribute-value update requests based on region overlap"
     },
     {
       "clause_root": "9",
@@ -8713,7 +8869,7 @@
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710",
-      "title": "The RTI shall implement support services for lookups"
+      "title": "The RTI shall implement support services for lookups, factories, callback control, advisory behavior, and related support operations"
     },
     {
       "clause_root": "10",
@@ -8999,7 +9155,7 @@
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a711",
-      "title": "The RTI shall implement MOM behavior for tables"
+      "title": "The RTI shall implement MOM behavior for tables, reports, service actions, observer reconstruction, and service-reporting state"
     },
     {
       "clause_root": "11",
@@ -12053,8 +12209,8 @@
       "requirement_id": "REQ-OMT-SCHEMA-001",
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
-      "section_ref": "1516.2-2010 Annex E",
-      "title": "Annex E schema-level conformance checking is identified explicitly and remains planned"
+      "section_ref": "1516.2-2010 \u00a7Annex E",
+      "title": "Annex E schema-family conformance validation is executable for the carried standard schemas and round-trip witnesses"
     }
   ],
   "summary": {
@@ -12089,14 +12245,14 @@
         "total": 281
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a75": {
-        "classification-required": 50,
+        "classification-required": 51,
         "not-applicable": 2,
-        "total": 52
+        "total": 53
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a76": {
-        "classification-required": 108,
+        "classification-required": 119,
         "not-applicable": 2,
-        "total": 110
+        "total": 121
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a77": {
         "classification-required": 37,
@@ -12172,10 +12328,10 @@
       }
     },
     "disposition_counts": {
-      "classification-required": 819,
+      "classification-required": 831,
       "not-applicable": 103
     },
-    "row_count": 922,
+    "row_count": 934,
     "source_artifact": "analysis/compliance/portico_requirement_disposition.json"
   }
 }

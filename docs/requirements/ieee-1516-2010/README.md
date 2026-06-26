@@ -38,6 +38,122 @@ Use this order:
 2. pick one requirement family or clause ledger
 3. open `verification/README.md` when you need the proof packet or executable evidence side
 
+## Basic Execution Rules
+
+Use this section when the question is whether the 2010 requirement surface
+already covers the basic federation-execution state rules:
+
+- this is the canonical 2010 "have we joined yet?" rule family for
+  execution-affecting calls
+
+- connect before RTI interaction
+- create and destroy federation execution preconditions
+- joined versus not-joined execution-member guards
+- plain object registration rejected until the caller has joined
+- delete, local-delete, update, interaction, query, and region-gated DDM
+  services rejected until the caller has joined
+- concretely, `updateAttributeValues`, `sendInteraction`,
+  `requestAttributeValueUpdate`, `queryAttributeTransportationType`,
+  `sendInteractionWithRegions`, and
+  `requestAttributeValueUpdateWithRegions` all stay inside that joined-state
+  guard family
+- after resign, those execution-affecting services continue to reject the
+  caller as no longer joined, including delete/local-delete plus the
+  region-gated DDM send and request-update variants
+- resign before disconnect
+- destroy rejected while federates are still joined
+- after destroy succeeds, later destroy or join attempts against that missing
+  federation reject with `FederationExecutionDoesNotExist`
+- federation membership listing and reporting
+
+Primary owner surfaces:
+
+- `requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv` for the
+  Clause 4 service-level `PRE`, `EFF`, and `EXC` rows
+- `requirements/2010/hla1516_1_fm_detailed_reconciliation.csv` for the
+  canonical 2010 federation-management closure rows
+- [`../execution_membership_rules.md`](../execution_membership_rules.md) for
+  one cross-edition index covering join, destroy, update, delete, query, and
+  region-gated not-joined rules
+- [`federation_management_bounded_family.md`](federation_management_bounded_family.md)
+  for the bounded-family reading when a Clause 4 row remains `partial`
+- [`object_management_bounded_family.md`](object_management_bounded_family.md)
+  for the bounded-family reading covering not-joined rejection on update,
+  interaction, and query services
+- [`data_distribution_management_bounded_family.md`](data_distribution_management_bounded_family.md)
+  for the bounded-family reading covering not-joined rejection on
+  region-gated send and request-update services
+
+Representative 2010 requirement rows for this rule set:
+
+- `HLA1516.1-FM-4_2-RTIAPI-001-EXC` for connect-state guard exceptions
+- `HLA1516.1-FM-4_6-RTIAPI-001-EXC` for destroy rejection while federates are
+  still joined and for missing-federation rejection
+- `HLA1516.1-FM-4_9-RTIAPI-001-EXC` for join preconditions, duplicate-name
+  rejection, already-joined rejection, and not-connected rejection
+- `HLA1516.1-FM-4_10-RTIAPI-001-EXC` for resign preconditions and joined-state
+  exit guards
+- `HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-PRE-001` for not-joined single-name
+  reservation preconditions on the exercised path
+- `HLA1516.1-OM-6_8-REGISTEROBJECTINSTANCE-PRE-001` for not-joined register
+  preconditions and duplicate-name or save-restore guards on the exercised
+  overloads
+- `HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-PRE-001` for not-joined delete
+  preconditions on the exercised overloads
+- `HLA1516.1-OM-6_16-LOCALDELETEOBJECTINSTANCE-PRE-001` for not-joined
+  local-delete preconditions on the exercised overload
+- `HLA1516.1-OM-6_10-UPDATEATTRIBUTEVALUES-PRE-001` for not-joined update
+  preconditions
+- `HLA1516.1-OM-6_12-SENDINTERACTION-PRE-001` for not-joined interaction-send
+  preconditions on the exercised overloads
+- `HLA1516.1-OM-6_10-UPDATEATTRIBUTEVALUES-EXC-001` for the explicit
+  `updateAttributeValues` membership and connection exception envelope
+- `HLA1516.1-OM-6_12-SENDINTERACTION-EXC-001` for the matching
+  `sendInteraction` membership and connection exception envelope
+- `HLA1516.1-OM-6_19-REQUESTATTRIBUTEVALUEUPDATE-PRE-001` for not-joined
+  attribute-value-update request preconditions
+- `HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-PRE-001` for not-joined
+  transportation-query preconditions on the supported transport subset
+- `HLA1516.1-DDM-9_12-SENDINTERACTIONWITHREGIONS-PRE-001` for not-joined
+  region-gated interaction-send preconditions
+- `HLA1516.1-DDM-9_12-SENDINTERACTIONWITHREGIONS-EXC-001` for the explicit
+  `sendInteractionWithRegions` membership and connection exception envelope
+- `HLA1516.1-DDM-9_13-REQUESTATTRIBUTEVALUEUPDATEWITHREGIONS-PRE-001` for
+  not-joined region-gated attribute-value-update request preconditions
+- `HLA1516.1-DDM-9_13-REQUESTATTRIBUTEVALUEUPDATEWITHREGIONS-EXC-001` for the
+  explicit `requestAttributeValueUpdateWithRegions` membership and connection
+  exception envelope
+
+The main execution-state guard exceptions are already part of that ownership
+surface:
+
+- `NotConnected`
+- `FederateNotExecutionMember`
+- `FederatesCurrentlyJoined`
+- `FederationExecutionDoesNotExist`
+
+Primary executable anchors:
+
+- `tests/backends/test_python_backend_federation_extended.py`
+- `tests/backends/test_python_backend_object_ownership_extended.py`
+- `tests/backends/test_python_backend_time_ddm_extended.py`
+- `tests/scenarios/test_federation_lifecycle_backend_matrix.py`
+- `tests/scenarios/test_federation_management_backend_matrix.py`
+- `./tools/test-focus run execution-membership`
+
+Use these concrete anchors first when the question is "have we proved the
+basic execution lifecycle rules?" rather than "which broader bounded-family
+tail remains partial?".
+
+The intended 2010 state-machine reading is:
+
+- `NotConnected` before connect or after disconnect
+- `FederateNotExecutionMember` before join and again after resign
+- `FederatesCurrentlyJoined` when destroy is attempted while members are still
+  joined
+- `FederationExecutionDoesNotExist` after the federation has already been
+  destroyed
+
 ## Shards And Views
 
 Use the shared matrix model from
@@ -124,11 +240,44 @@ Reading rule:
 2. then open the supporting proof artifact or packet from `verification/README.md`
 3. only after that widen to broader scenario, OMT, or cross-family views
 
+## Honest 100 Percent Reading
+
+Use this section when the question is not just "which 2010 owner doc applies?"
+but "what would it take to finish the remaining bounded 2010 story honestly?"
+
+Current closeout reading:
+
+- the current `2010` backend-compliance packet no longer contains any hidden
+  `planned` inventory
+- the remaining non-`pass` packet rows are maintained bounded-family,
+  mixed-backend, or explicitly aggregated OMT/XML boundary surfaces
+- the active question is no longer whether owner docs are missing
+- the active question is whether the repo wants to tighten specific bounded
+  rows into narrower direct proof or keep the current bounded final-state
+  reading
+
+Use these owner companions for that closeout program:
+
+- [`../../plans/PLN-004_python_rti_100_percent_compliance_plan.md`](../../plans/PLN-004_python_rti_100_percent_compliance_plan.md)
+- [`../../plans/2010_python_rti_bounded_family_execution_worklist.md`](../../plans/2010_python_rti_bounded_family_execution_worklist.md)
+- [`../../plans/requirements_completion_audit.md`](../../plans/requirements_completion_audit.md)
+
+Reading rule:
+
+1. use this README for the canonical 2010 owner map
+2. use `2010_python_rti_bounded_family_execution_worklist.md` for the exact
+   bounded buckets, primary shards, and tighten-versus-stay-bounded rule
+3. use `requirements_completion_audit.md` for the cross-edition honest answer
+   to whether closeout is finished
+
 ## Related Docs
 
 - [`../../verification/README.md`](../../verification/README.md)
 - [`../../verification/requirement_compliance_exports.md`](../../verification/requirement_compliance_exports.md)
+- [`../../plans/PLN-004_python_rti_100_percent_compliance_plan.md`](../../plans/PLN-004_python_rti_100_percent_compliance_plan.md)
+- [`../../plans/requirements_completion_audit.md`](../../plans/requirements_completion_audit.md)
 - [`../../plans/requirements_remaining_closure.md`](../../plans/requirements_remaining_closure.md)
+- [`../../plans/2010_python_rti_bounded_family_execution_worklist.md`](../../plans/2010_python_rti_bounded_family_execution_worklist.md)
 - [`mixed_backend_priority_boundaries.md`](mixed_backend_priority_boundaries.md)
 - [`federation_management_bounded_family.md`](federation_management_bounded_family.md)
 - [`declaration_management_bounded_family.md`](declaration_management_bounded_family.md)

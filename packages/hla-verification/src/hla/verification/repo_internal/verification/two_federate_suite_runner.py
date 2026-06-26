@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Callable, Mapping
 
 from hla.verification.scenario_exchange import (
     assert_two_federate_exchange_callback_history,
@@ -104,8 +104,14 @@ def run_two_federate_suite(
     *,
     target_radar_steps: int = 4,
     runtime_launchers: Mapping[str, RuntimeProfileLauncher] | None = None,
+    event_sink: Callable[[dict[str, Any]], None] | None = None,
 ) -> dict[str, Any]:
-    primary_summary = run_python_two_federate_suite(target_radar_steps=target_radar_steps)
+    primary_summary = run_two_federate_suite_for_pair_factory(
+        _make_python_pair,
+        hooks=_SUITE_HOOKS,
+        extension_steps=target_radar_steps,
+        event_sink=event_sink,
+    )
     profiles = build_profile_artifacts(
         primary_summary,
         _run_profile_summary,
@@ -138,10 +144,15 @@ def write_two_federate_suite_artifacts(
     *,
     target_radar_steps: int = 4,
     runtime_launchers: Mapping[str, RuntimeProfileLauncher] | None = None,
+    event_sink: Callable[[dict[str, Any]], None] | None = None,
 ) -> SuitePaths:
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
-    summary = run_two_federate_suite(target_radar_steps=target_radar_steps, runtime_launchers=runtime_launchers)
+    summary = run_two_federate_suite(
+        target_radar_steps=target_radar_steps,
+        runtime_launchers=runtime_launchers,
+        event_sink=event_sink,
+    )
     paths = SuitePaths(
         output_dir=output_path,
         summary_json=output_path / "two_federate_suite_summary.json",

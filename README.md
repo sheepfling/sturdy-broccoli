@@ -141,8 +141,10 @@ Start here, in order:
 
 1. [`docs/repo_green_quickstart.md`](docs/repo_green_quickstart.md): shortest path to repo green
 2. [`docs/test_surface.md`](docs/test_surface.md): every named lane and shard, including `matrix`
-3. [`docs/local_verification_commands.md`](docs/local_verification_commands.md): exact commands
-4. [`docs/junior_test_diagnosis_runbook.md`](docs/junior_test_diagnosis_runbook.md): failure restart path
+3. [`docs/verification/shard_registry.md`](docs/verification/shard_registry.md): canonical shard ownership and repo-green gating map
+4. [`docs/verification/view_registry.md`](docs/verification/view_registry.md): overlapping focused-target and audit-view registry
+5. [`docs/local_verification_commands.md`](docs/local_verification_commands.md): exact commands
+6. [`docs/junior_test_diagnosis_runbook.md`](docs/junior_test_diagnosis_runbook.md): failure restart path
 
 Top-level testing commands that matter:
 
@@ -159,6 +161,34 @@ Top-level testing commands that matter:
 Use [`docs/test_surface.md`](docs/test_surface.md) when the question is which
 lane to run. Use [`docs/local_verification_commands.md`](docs/local_verification_commands.md)
 when the question is the exact command list.
+
+If the question is narrower than repo-green or the main 2025 lanes, use the
+focused execution-state shard first:
+
+- run `./tools/test-focus run execution-membership` for join, resign, destroy,
+  disconnect-without-resign, and not-joined
+  reserve/register/release/delete/update/send/query/DDM guards
+- that focused target is the narrow owner-facing rerun surface behind
+  2010 rows `HLA1516.1-FM-4_6-RTIAPI-001-EXC`,
+  `HLA1516.1-FM-4_9-RTIAPI-001-EXC`,
+  `HLA1516.1-FM-4_10-RTIAPI-001-EXC`,
+  `HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-PRE-001`,
+  `HLA1516.1-OM-6_8-REGISTEROBJECTINSTANCE-PRE-001`,
+  `HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-PRE-001`,
+  `HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-PRE-001`,
+  `HLA1516.1-OM-6_10-UPDATEATTRIBUTEVALUES-EXC-001`,
+  `HLA1516.1-OM-6_12-SENDINTERACTION-PRE-001`,
+  `HLA1516.1-OM-6_12-SENDINTERACTION-EXC-001`,
+  `HLA1516.1-OM-6_19-REQUESTATTRIBUTEVALUEUPDATE-PRE-001`, and
+  `HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-PRE-001`
+- it also owns the matching 2025 execution-state rows
+  `HLA2025-FI-SVC-005`, `HLA2025-FI-SVC-008`, `HLA2025-FI-SVC-010`,
+  `HLA2025-FI-SVC-011`, `HLA2025-FI-SVC-059`, `HLA2025-FI-SVC-061`,
+  `HLA2025-FI-SVC-070`, and `HLA2025-FI-SVC-077`; the same shared-backend
+  guard witnesses also back the joined-state slices of `HLA2025-FI-SVC-051`,
+  `HLA2025-FI-SVC-053`, `HLA2025-FI-SVC-057`, and `HLA2025-FI-SVC-065`
+- use the broader transport lane only when the question is generic REST/gRPC
+  plumbing rather than execution-membership behavior
 
 ## Requirements
 
@@ -178,12 +208,21 @@ Use this reading surface when the question is:
 - where is the proof for a capability family?
 - which requirement-facing note should I read first?
 
+If the question is "are we actually at an honest `100%` closeout yet?" or
+"what still blocks literal all-covered reporting?", continue with:
+
+5. [`docs/plans/requirements_completion_audit.md`](docs/plans/requirements_completion_audit.md)
+6. [`docs/plans/2025_python_rti_100_percent_worklist.md`](docs/plans/2025_python_rti_100_percent_worklist.md)
+7. [`docs/plans/2010_python_rti_bounded_family_execution_worklist.md`](docs/plans/2010_python_rti_bounded_family_execution_worklist.md)
+8. [`docs/plans/PLN-004_python_rti_100_percent_compliance_plan.md`](docs/plans/PLN-004_python_rti_100_percent_compliance_plan.md)
+
 ## Common Tasks
 
 If you need a specific lane or deeper task guide:
 
 - three main work surfaces: [`docs/work_surfaces.md`](docs/work_surfaces.md)
 - testing front doors: [`docs/repo_green_quickstart.md`](docs/repo_green_quickstart.md), [`docs/test_surface.md`](docs/test_surface.md), [`docs/junior_test_diagnosis_runbook.md`](docs/junior_test_diagnosis_runbook.md)
+- shard and view ownership registries: [`docs/verification/shard_registry.md`](docs/verification/shard_registry.md), [`docs/verification/view_registry.md`](docs/verification/view_registry.md)
 - requirements and proof front doors: [`docs/requirements/ieee-1516-2010/README.md`](docs/requirements/ieee-1516-2010/README.md), [`docs/requirements/ieee-1516-2025/README.md`](docs/requirements/ieee-1516-2025/README.md), [`docs/verification/README.md`](docs/verification/README.md), [`docs/spec_reading_map.md`](docs/spec_reading_map.md)
 - repo-green failure diagnosis: [`docs/junior_test_diagnosis_runbook.md`](docs/junior_test_diagnosis_runbook.md)
 - Pitch + Docker first-run path: [`docs/pitch_docker_first_run.md`](docs/pitch_docker_first_run.md)

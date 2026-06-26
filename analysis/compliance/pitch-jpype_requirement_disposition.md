@@ -14,8 +14,8 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) §11 | 37 | 0 | 0 | 0 | 0 | 2 | 35 |
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 0 | 0 | 0 | 9 | 1 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §4 | 281 | 274 | 2 | 3 | 0 | 2 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §5 | 52 | 45 | 2 | 0 | 0 | 5 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §6 | 110 | 99 | 0 | 9 | 0 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §5 | 53 | 45 | 2 | 0 | 0 | 5 | 1 |
+| IEEE 1516.1-2010 (2010 edition) §6 | 121 | 107 | 0 | 9 | 3 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §7 | 39 | 27 | 0 | 10 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §8 | 61 | 41 | 0 | 18 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §9 | 31 | 29 | 0 | 0 | 0 | 2 | 0 |
@@ -61,7 +61,7 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | IEEE 1516-2010 | unknown | HLA1516-RULE-001 | classification-required | extracted-requirement | The repo shall map federation-level architectural rules to RTI lifecycle behavior and federation-state transitions |
 | IEEE 1516-2010 | unknown | HLA1516-FW-001 | classification-required | extracted-requirement | The repo shall treat IEEE 1516-2010 as the top-level framework and keep federate behavior |
 | IEEE 1516-2010 | unknown | HLA1516-OBJ-001 | classification-required | extracted-requirement | The repo shall distinguish object-model concepts from programming-language objects and map them to the 1516.1 object services and 1516.2 OMT structure |
-| IEEE 1516-2010 | unknown | HLA1516-TIME-001 | not-applicable | extracted-requirement | The repo shall map time concepts to 1516.1 time services and grant/order semantics |
+| IEEE 1516-2010 | unknown | HLA1516-TIME-001 | not-applicable | extracted-requirement | The repo shall map time concepts to 1516.1 time services and grant/order semantics, including logical time and ordering relationships |
 | IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_5-createFederationExecutionWithMIM | vendor-divergent | service-requirement | Create Federation Execution service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | AREA-1516.1-4 | not-applicable | section-area | Federation management |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-001 | not-applicable | curated-seed | The RTI shall implement federation-management services for create, join, resign, destroy, save, restore, synchronization, and related lifecycle behavior |
@@ -70,22 +70,26 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.5-EXC-001 | vendor-divergent | extracted-requirement | Create Federation Execution shall distinguish duplicate-name, FOM-open, FOM-read, MIM-open, MIM-read, invalid-time-factory, inconsistent-FOM, and invalid-standard-MIM-designator failures. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.9-EXC-001 | vendor-divergent | extracted-requirement | Join Federation Execution shall distinguish not-connected, missing-federation, duplicate-federate-name, already-joined, save-in-progress, restore-in-progress, FOM-open, FOM-read, invalid-time-factory, and inconsistent-FOM failures. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | AREA-1516.1-5 | not-applicable | section-area | Declaration management |
-| IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-001 | not-applicable | extracted-requirement | The RTI shall implement declaration-management services for publication |
+| IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-001 | not-applicable | extracted-requirement | The RTI shall implement declaration-management services for publication, subscription, registration control, and the associated error and precondition behavior |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.1.1-001 | not-applicable | extracted-requirement | Each FDD class shall have at most one immediate superclass. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.1.1-002 | not-applicable | extracted-requirement | Object classes shall expose declared and inherited available attributes. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.1.1-003 | not-applicable | extracted-requirement | Interaction classes shall expose declared and inherited available parameters. |
+| IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.1.6-002 | classification-required | extracted-requirement | RTI shall apply explicit and FOM-declared update-rate designators across direct, inherited, and region-based object-class subscriptions within the currently implemented logical-time subset. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.3-002 | blocked | extracted-requirement | Unpublishing shall remove the federate’s ability to update the specified attributes. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.5-002 | blocked | extracted-requirement | Unpublishing an interaction class shall remove the federate’s ability to send interactions of that class. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | AREA-1516.1-6 | not-applicable | section-area | Object management |
-| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-001 | not-applicable | extracted-requirement | The RTI shall implement object-management services for registration |
+| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-001 | not-applicable | extracted-requirement | The RTI shall implement object-management services for registration, update, delete, discovery, and interaction delivery behavior |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.1.10-001 | vendor-divergent | extracted-requirement | RTI shall use transportation types for object updates and interactions as defined by the FDD and service arguments. |
+| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.1.10-004 | not-yet-tested | extracted-requirement | RTI shall honor FOM-declared reliable and best-effort transportation defaults for object updates and interactions in the currently supported transport subset. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.23-001 | vendor-divergent | extracted-requirement | RTI shall provide Request Attribute Transportation Type Change across the full transportation semantic space defined by the standard. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.24-001 | vendor-divergent | extracted-requirement | RTI shall invoke Confirm Attribute Transportation Type Change across the full transportation semantic space. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.25-001 | vendor-divergent | extracted-requirement | RTI shall provide Query Attribute Transportation Type across the full transportation semantic space defined by the standard. |
+| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.25-003 | not-yet-tested | extracted-requirement | RTI shall report the default reliable attribute transportation type when no explicit override exists in the currently implemented transport subset. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.26-001 | vendor-divergent | extracted-requirement | RTI shall invoke Report Attribute Transportation Type across the full transportation semantic space. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.27-001 | vendor-divergent | extracted-requirement | RTI shall provide Request Interaction Transportation Type Change across the full transportation semantic space defined by the standard. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.28-001 | vendor-divergent | extracted-requirement | RTI shall invoke Confirm Interaction Transportation Type Change across the full transportation semantic space. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.29-001 | vendor-divergent | extracted-requirement | RTI shall provide Query Interaction Transportation Type across the full transportation semantic space defined by the standard. |
+| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.29-003 | not-yet-tested | extracted-requirement | RTI shall report the default reliable interaction transportation type when no explicit override exists in the currently implemented transport subset. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.30-001 | vendor-divergent | extracted-requirement | RTI shall invoke Report Interaction Transportation Type across the full transportation semantic space. |
 | IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_14-cancelNegotiatedAttributeOwnershipDivestiture | vendor-divergent | service-requirement | Cancel Negotiated Attribute Ownership Divestiture service |
 | IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_15-cancelAttributeOwnershipAcquisition | vendor-divergent | service-requirement | Cancel Attribute Ownership Acquisition service |
@@ -94,7 +98,7 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) | 7 | REQ-FED-OWN-7_5-requestDivestitureConfirmation | vendor-divergent | service-requirement | Request Divestiture Confirmation service |
 | IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_6-confirmDivestiture | vendor-divergent | service-requirement | Confirm Divestiture service |
 | IEEE 1516.1-2010 (2010 edition) | 7 | AREA-1516.1-7 | not-applicable | section-area | Ownership management |
-| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-001 | not-applicable | extracted-requirement | The RTI shall implement ownership-management services for unconditional |
+| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-001 | not-applicable | extracted-requirement | The RTI shall implement ownership-management services for unconditional, negotiated, acquisition, divestiture, and release-request flows |
 | IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.10-001 | vendor-divergent | extracted-requirement | RTI shall support cancellation of ownership acquisition attempts |
 | IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.11-001 | vendor-divergent | extracted-requirement | RTI shall report cancellation confirmation where required |
 | IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.3-001 | vendor-divergent | extracted-requirement | RTI shall provide negotiated attribute ownership divestiture |
@@ -104,7 +108,7 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_21-retract | vendor-divergent | service-requirement | Retract service |
 | IEEE 1516.1-2010 (2010 edition) | 8 | REQ-FED-TM-8_22-requestRetraction | vendor-divergent | service-requirement | Request Retraction service |
 | IEEE 1516.1-2010 (2010 edition) | 8 | AREA-1516.1-8 | not-applicable | section-area | Time management |
-| IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-001 | not-applicable | extracted-requirement | The RTI shall implement time-management services for regulation |
+| IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-001 | not-applicable | extracted-requirement | The RTI shall implement time-management services for regulation, constrained behavior, query services, lookahead, order control, and grant delivery |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.1-001 | vendor-divergent | extracted-requirement | RTI shall represent modeled time as points on the HLA time axis |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.1-002 | vendor-divergent | extracted-requirement | RTI shall coordinate logical time advancement with object updates and interactions |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.1.1-001 | vendor-divergent | extracted-requirement | RTI shall treat attribute updates interactions object deletes and DDM region messages as HLA messages |
@@ -120,7 +124,7 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.10-001 | vendor-divergent | extracted-requirement | RTI shall provide Next Message Request |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.21-001 | vendor-divergent | extracted-requirement | RTI shall provide Retract |
 | IEEE 1516.1-2010 (2010 edition) | 9 | AREA-1516.1-9 | not-applicable | section-area | Data distribution management |
-| IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-001 | not-applicable | extracted-requirement | The RTI shall implement DDM services for region creation |
+| IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-001 | not-applicable | extracted-requirement | The RTI shall implement DDM services for region creation, routing, and filtered delivery behavior |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_10-getObjectInstanceName | not-yet-tested | service-requirement | Get Object Instance Name service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_11-getAttributeHandle | not-yet-tested | service-requirement | Get Attribute Handle service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_12-getAttributeName | not-yet-tested | service-requirement | Get Attribute Name service |
@@ -186,7 +190,7 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_8-getKnownObjectClassHandle | not-yet-tested | service-requirement | Get Known Object Class Handle service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_9-getObjectInstanceHandle | not-yet-tested | service-requirement | Get Object Instance Handle service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | AREA-1516.1-10 | not-applicable | section-area | Support services |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-001 | not-applicable | extracted-requirement | The RTI shall implement support services for lookups |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-001 | not-applicable | extracted-requirement | The RTI shall implement support services for lookups, factories, callback control, advisory behavior, and related support operations |
 | IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.1-001 | not-yet-tested | extracted-requirement | RTI shall provide services for name/handle lookup |
 | IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.1-002 | not-yet-tested | extracted-requirement | RTI shall provide services for advisory switches |
 | IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.1-003 | not-yet-tested | extracted-requirement | RTI shall provide services for ordering transportation and dimension metadata queries |
@@ -208,7 +212,7 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.8-001 | not-yet-tested | extracted-requirement | RTI shall return parameter handles by parameter name and interaction class |
 | IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.9-001 | not-yet-tested | extracted-requirement | RTI shall return parameter names by parameter handle and interaction class |
 | IEEE 1516.1-2010 (2010 edition) | 11 | AREA-1516.1-11 | not-applicable | section-area | Management object model |
-| IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-001 | not-applicable | extracted-requirement | The RTI shall implement MOM behavior for tables |
+| IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-001 | not-applicable | extracted-requirement | The RTI shall implement MOM behavior for tables, reports, service actions, observer reconstruction, and service-reporting state |
 | IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-11.1-001 | classification-required | extracted-requirement | RTI shall expose management information through standard MOM objects and interactions |
 | IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-11.1-002 | classification-required | extracted-requirement | MOM shall use the OMT format |
 | IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-11.1-003 | classification-required | extracted-requirement | FDD for a federation execution shall include all MOM elements |
@@ -413,4 +417,4 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | multi-section | 12 | REQ-SAVE-RESTORE-CALLBACK-POLICY-001 | not-applicable | verification-slice | Save/restore treats callback enablement as local runtime policy rather than persisted federation state |
 | multi-section | 12 | REQ-SAVE-RESTORE-ROUTING-STATE-001 | classification-required | verification-slice | Save/restore reinstates saved object and interaction subscription-routing state rather than preserving dirty post-save declaration mutations |
 | multi-section | 12 | REQ-SAVE-RESTORE-TRANSIENT-STATE-001 | not-applicable | verification-slice | Save/restore discards stale pre-restore callback-queue and message-retraction bookkeeping state |
-| multi-section | unknown | REQ-OMT-SCHEMA-001 | classification-required | verification-slice | Annex E schema-level conformance checking is identified explicitly and remains planned |
+| multi-section | unknown | REQ-OMT-SCHEMA-001 | classification-required | verification-slice | Annex E schema-family conformance validation is executable for the carried standard schemas and round-trip witnesses |

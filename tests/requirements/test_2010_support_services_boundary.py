@@ -34,3 +34,9 @@ def test_support_services_boundary_doc_records_current_family_shape() -> None:
     assert "`43 PRE`" in text
     assert "`43 EXC`" in text
     assert "`43 EXC_API`" in text
+    assert "`REQ-RTI-SS-10_44-getMessageRetractionHandleFactory`" in text
+    assert "`REQ-RTI-SS-10_44-getRegionHandleFactory`" in text
+    assert "`python_runtime_disposition=vendor-divergent`" in text
+    assert "`analysis/compliance/service_conformance.json`" in text
+    assert "`./tools/test-focus run backends`" in text
+    assert "`./tools/test-surface run unit-scenarios-light`" in text

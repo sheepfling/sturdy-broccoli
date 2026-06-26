@@ -39,7 +39,7 @@
 | IEEE 1516.1-2010 (2010 edition) §10.41 | 1 | 0 | 0 | focused-executable-tests=1 |
 | IEEE 1516.1-2010 (2010 edition) §10.42 | 1 | 0 | 0 | focused-executable-tests=1 |
 | IEEE 1516.1-2010 (2010 edition) §10.43 | 1 | 0 | 0 | focused-executable-tests=1 |
-| IEEE 1516.1-2010 (2010 edition) §10.44 | 18 | 2 | 0 | focused-executable-tests=18, group-level-slice-tests=2 |
+| IEEE 1516.1-2010 (2010 edition) §10.44 | 20 | 0 | 0 | focused-executable-tests=20 |
 | IEEE 1516.1-2010 (2010 edition) §10.5 | 1 | 0 | 0 | focused-executable-tests=1 |
 | IEEE 1516.1-2010 (2010 edition) §10.6 | 1 | 0 | 0 | focused-executable-tests=1 |
 | IEEE 1516.1-2010 (2010 edition) §10.7 | 1 | 0 | 0 | focused-executable-tests=1 |

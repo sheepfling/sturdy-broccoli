@@ -25,7 +25,7 @@ The rule is simple:
 - `test.py`: pytest wrapper for the selected test set
 - `time.sh`: dedicated HLA 1516.1-2010 time-management suite gate
 - `full_sequence.py`: full verification sequence, including type annotations
-- `check_generated_compliance_artifacts.sh`: fail when `analysis/compliance/` is stale relative to `scripts/generate_compliance_artifacts.py`
+- `check_generated_compliance_artifacts.sh`: fail when `analysis/compliance/` is stale relative to `scripts/generate_compliance_artifacts.py`; uses a temporary `compliance.before/` restore snapshot during the check, not a live owner surface
 - `repo_green.py`: explicit repo-green wrapper around `full_sequence.py`
 - `seed_suite.sh`: default local seed suite
 - `github_ci_local.py`: run GitHub CI lanes locally from top to bottom, with explicit modes for the default Ubuntu stack, required vendor lanes, vendor-edge matrix, probe-review matrix, vendor-smoke workflow, or the full combined sequence
@@ -76,7 +76,7 @@ The rule is simple:
 
 ### Docs / Generated Artifacts
 
-- `check_generated_docs.sh`: verify generated backend alias inventory
+- `check_generated_docs.sh`: verify generated backend alias inventory, Java interface spec mapping, FOM inventory view, and HLA interface contracts reference
 - `check_doc_links.py`: verify Markdown link integrity, catch repo-root-relative assumptions in docs, and fail when curated docs become orphaned from the main doc front doors
 
 ## Help Convention

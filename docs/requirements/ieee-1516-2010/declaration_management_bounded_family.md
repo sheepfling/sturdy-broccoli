@@ -30,6 +30,8 @@ Short answer:
   - `unit-foundation`
   - `unit-scenarios-light` when declaration state only becomes visible through
     multi-federate update or receive behavior
+- maintained focused rerun views:
+  - `./tools/test-focus run backends`
 
 ## Final Claim Rule
 
@@ -146,6 +148,13 @@ Primary evidence anchors:
 - `tests/backends/test_python_backend_time_ddm_extended.py`
 - `tests/backends/test_python_backend.py`
 - `requirements/2010/traceability_matrix.csv`
+
+Use these rerun commands before dropping to raw file paths:
+
+- `./tools/test-focus run backends` for the main 2010 declaration-management
+  backend slice
+- `./tools/test-surface run unit-scenarios-light` when declaration state is
+  only visible through multi-federate scenario behavior
 
 ## Good Reading
 

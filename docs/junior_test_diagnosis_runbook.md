@@ -22,7 +22,9 @@ or one concern. Use:
 ./tools/test-focus run java-bridges
 ./tools/test-focus run jpype
 ./tools/test-focus run target-radar
+./tools/test-focus run execution-membership
 ./tools/test-focus run python-2025-time
+./tools/test-focus run python-2025-ddm
 ./tools/test-focus run python-2025-runtime -- --maxfail=1
 ./tools/test-focus resume python-2025-runtime
 ```
@@ -35,6 +37,7 @@ If you think in submodule names instead of target ids, use aliases:
 ./tools/test-focus run fom-target-radar
 ./tools/test-focus run rti-factory
 ./tools/test-focus run bridge-jpype
+./tools/test-focus run membership-guards
 ./tools/test-focus run save-restore-2025
 ./tools/test-focus run finish-line-2025
 ```
@@ -96,6 +99,13 @@ Common lanes:
 
 If you do not know where to start, `./tools/python verify` is the default
 repo-green lane.
+
+If you need the canonical shard names, alias hints, or the difference between a
+shard and a view, use:
+
+- [`test_surface.md`](test_surface.md)
+- [`verification/shard_registry.md`](verification/shard_registry.md)
+- [`verification/view_registry.md`](verification/view_registry.md)
 
 If the repo-green unit phase is too broad, use:
 
@@ -201,8 +211,10 @@ Use these when you do not want the whole lane.
 ./tools/test-focus run foundation
 ./tools/test-focus run fom
 ./tools/test-focus run target-radar
+./tools/test-focus run execution-membership
 ./tools/test-focus run rti-core
 ./tools/test-focus run python-2025-time
+./tools/test-focus run python-2025-ddm
 ./tools/test-focus run python-2025-save-restore
 ./tools/test-focus run python-2025-ownership
 ./tools/test-focus run python-2025-mom-callbacks
@@ -213,6 +225,92 @@ Use these when you do not want the whole lane.
 ```
 
 Treat these as the normal package/theme restart surface.
+
+Use `./tools/test-focus run execution-membership` when the failure smells like:
+
+- a join or resign precondition regression
+- destroy while still joined
+- disconnect without resign
+- update, interaction, query, or DDM calls being accepted after a federate is
+  no longer an execution member
+
+Use that target specifically for the exercised execution-affecting calls:
+
+- `updateAttributeValues`
+- `sendInteraction`
+- `deleteObjectInstance` and `localDeleteObjectInstance`
+- `requestAttributeValueUpdate`
+- `queryAttributeTransportationType`
+- `sendInteractionWithRegions`
+- `requestAttributeValueUpdateWithRegions`
+
+Keep the hosted-route scope honest:
+
+- this focused target includes the direct lanes plus the hosted 2025
+  gRPC/FedPro and REST-hosted execution-membership proof
+- it is not the generic transport lane
+- if the question is "did generic REST or gRPC transport plumbing regress?" use
+  `./tools/test-focus run transport`
+
+Current exact membership of `execution-membership`:
+
+- 2010 lifecycle and not-joined guards:
+- `test_destroy_federation_execution_requires_no_joined_federates`
+- `test_resign_federation_execution_rejects_not_connected_and_not_joined`
+- `test_disconnect_requires_resign_and_marks_backend_not_connected`
+- `test_reserve_object_instance_name_rejects_not_connected_not_joined_and_save_restore`
+- `test_register_object_instance_rejects_not_connected_not_joined_name_in_use_and_save_restore`
+- `test_name_release_and_query_interaction_transport_tail_reject_not_connected_not_joined_and_save_restore`
+- `test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore`
+- `test_update_attribute_values_rejects_not_connected_not_joined_unknown_object_invalid_time_not_owned_and_save_restore`
+- `test_send_interaction_rejects_not_connected_not_joined_invalid_inputs_and_invalid_time`
+- `test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore`
+  - `test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore`
+  - `test_ddm_send_interaction_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore`
+  - `test_request_attribute_value_update_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore`
+- shared federation-management scenario guards:
+  - `test_python_backend_join_precondition_matrix`
+  - `test_python_backend_resign_precondition_matrix`
+- 2025 direct runtime guards:
+  - `test_2025_provider_runs_federation_lifecycle_negative_scenario_end_to_end`
+  - `test_2025_provider_runs_resign_precondition_scenario_end_to_end`
+  - `test_2025_provider_reports_federation_executions_and_members`
+- hosted 2025 route guards:
+  - `test_2025_transport_server_runs_shared_federation_lifecycle_negative_scenario_over_fedpro_route`
+  - `test_2025_transport_server_runs_shared_join_precondition_scenario_over_fedpro_route`
+  - `test_2025_transport_server_runs_shared_resign_precondition_scenario_over_fedpro_route`
+  - `test_2025_rest_transport_server_runs_shared_federation_lifecycle_negative_scenario`
+  - `test_2025_rest_transport_server_runs_shared_join_precondition_scenario`
+  - `test_2025_rest_transport_server_runs_shared_resign_precondition_scenario`
+
+Current primary requirement owners behind `execution-membership`:
+
+- 2010 federation-management lifecycle rows
+  `HLA1516.1-FM-4_6-RTIAPI-001-EXC`,
+  `HLA1516.1-FM-4_9-RTIAPI-001-EXC`, and
+  `HLA1516.1-FM-4_10-RTIAPI-001-EXC`
+- 2010 object-management joined-state rows
+  `HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-PRE-001`,
+  `HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-PRE-001`,
+  `HLA1516.1-OM-6_8-REGISTEROBJECTINSTANCE-PRE-001`,
+  `HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-PRE-001`,
+  `HLA1516.1-OM-6_10-UPDATEATTRIBUTEVALUES-EXC-001`,
+  `HLA1516.1-OM-6_12-SENDINTERACTION-PRE-001`,
+  `HLA1516.1-OM-6_12-SENDINTERACTION-EXC-001`,
+  `HLA1516.1-OM-6_19-REQUESTATTRIBUTEVALUEUPDATE-PRE-001`, and
+  `HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-PRE-001`
+- 2025 federation-management execution-state rows `HLA2025-FI-SVC-005`,
+  `HLA2025-FI-SVC-008`, `HLA2025-FI-SVC-010`, and `HLA2025-FI-SVC-011`
+- 2025 object-management execution-state rows `HLA2025-FI-SVC-051`, `HLA2025-FI-SVC-053`,
+  `HLA2025-FI-SVC-057`, `HLA2025-FI-SVC-059`, `HLA2025-FI-SVC-061`,
+  `HLA2025-FI-SVC-065`, `HLA2025-FI-SVC-070`, and `HLA2025-FI-SVC-077`
+
+Use `./tools/test-focus run python-2025-ddm` when the failure smells like:
+
+- region overlap routing
+- `attributesInScope` or `attributesOutOfScope` transitions
+- passive DDM alias behavior
+- restore or disconnect cleanup for queued DDM delivery
 
 ### Direct Python example routes
 

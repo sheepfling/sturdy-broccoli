@@ -18,7 +18,7 @@ disposition.
 
 | Family | Rows | Evidence anchors | Bounded claim reading |
 | --- | --- | --- | --- |
-| Lifecycle control | `HLA2025-FI-SVC-018`, `HLA2025-FI-SVC-019`, `HLA2025-FI-SVC-020`, `HLA2025-FI-SVC-021`, `HLA2025-FI-SVC-022`, `HLA2025-FI-SVC-023`, `HLA2025-FI-SVC-026`, `HLA2025-FI-SVC-027`, `HLA2025-FI-SVC-028`, `HLA2025-FI-SVC-029`, `HLA2025-FI-SVC-030`, `HLA2025-FI-SVC-031`, `HLA2025-FI-SVC-032` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_save_restore_backend_matrix.py` | Closed as bounded runtime proof for request, initiate, begun, complete, failure, abort, and precondition/status control flow for federation save and restore across the direct `python1516_2025` lane and hosted FedPro replay. |
+| Lifecycle control | `HLA2025-FI-SVC-018`, `HLA2025-FI-SVC-019`, `HLA2025-FI-SVC-020`, `HLA2025-FI-SVC-021`, `HLA2025-FI-SVC-022`, `HLA2025-FI-SVC-023`, `HLA2025-FI-SVC-026`, `HLA2025-FI-SVC-027`, `HLA2025-FI-SVC-028`, `HLA2025-FI-SVC-029`, `HLA2025-FI-SVC-030`, `HLA2025-FI-SVC-031`, `HLA2025-FI-SVC-032` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/transport/test_rest_transport.py`, `tests/scenarios/test_save_restore_backend_matrix.py` | Closed as bounded runtime proof for request, initiate, begun, complete, failure, abort, and precondition/status control flow for federation save and restore across the direct `python1516_2025` lane, hosted FedPro replay, and the REST-hosted Python route. |
 | Shared scenario rollback | `HLA2025-REQ-002` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_save_restore_backend_matrix.py` | Closed as bounded runtime proof that a saved federation returns to the saved baseline rather than preserving dirty post-save state across shared backend-neutral save/restore scenarios. |
 | Routing and policy rollback | `HLA2025-FI-SVC-024`, `HLA2025-FI-SVC-025`, `HLA2025-FI-SVC-033`, `HLA2025-FI-SVC-034` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_save_restore_backend_matrix.py` | Closed as bounded runtime proof for callback-delivery policy recovery, transport/order policy rollback, object/interaction subscriber-routing rollback, directed DDM rollback, and stale queued callback cleanup after restore. |
 | Ownership rollback | `HLA2025-FI-005` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_save_restore_backend_matrix.py` | Closed as bounded runtime proof for ownership gauntlets, in-flight acquisition/divestiture rollback, and cross-federate owner-visibility recovery after restore. |
@@ -26,12 +26,27 @@ disposition.
 
 ## Save/Restore Closure Notes
 
+- The maintained focused rerun view for this bounded family is
+  `./tools/test-focus run python-2025-save-restore`.
+- The direct aggregate proof lane is `./tools/python verify-main-2025`, and
+  the paired hosted replay lane is `./tools/python verify-routes-2025`.
 - The direct executable owner behind these proof families is
   `hla-backend-python1516-2025`. `hla-backend-shim` is not an implementation owner
   for this bounded save/restore claim.
 - The hosted `python1516_2025-fedpro-grpc` route replays every current proof family
   above, but it remains a bounded hosted route over `hla-backend-python1516-2025`,
   not a second RTI implementation lane.
+- The lifecycle-control family is intentionally the only current save/restore
+  family promoted to the REST-hosted Python route, and its owner rows are
+  `HLA2025-FI-SVC-018`, `HLA2025-FI-SVC-019`, `HLA2025-FI-SVC-020`,
+  `HLA2025-FI-SVC-021`, `HLA2025-FI-SVC-022`, `HLA2025-FI-SVC-023`,
+  `HLA2025-FI-SVC-026`, `HLA2025-FI-SVC-027`, `HLA2025-FI-SVC-028`,
+  `HLA2025-FI-SVC-029`, `HLA2025-FI-SVC-030`, `HLA2025-FI-SVC-031`, and
+  `HLA2025-FI-SVC-032`.
+- The REST-hosted Python route currently extends the lifecycle-control family
+  above through explicit save, restore, abort, and status-path witnesses, but
+  the broader rollback families remain direct-lane plus hosted FedPro proof
+  until narrower REST rollback evidence is added.
 - The current bounded proof also covers restore-failure, restore-abort,
   participant/status exception control flow, transport/order metadata
   persistence, local-delete object-known-state recovery, and rollback of dirty

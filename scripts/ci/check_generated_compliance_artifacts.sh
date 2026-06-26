@@ -27,6 +27,12 @@ usage: ./scripts/ci/check_generated_compliance_artifacts.sh
 Run the compliance artifact generator, fail if it would change the committed
 analysis/compliance packet, and restore the pre-run workspace snapshot before
 exiting.
+
+Implementation note:
+- the script copies `analysis/compliance/` into a temporary
+  `compliance.before/` snapshot under a temp root
+- that snapshot is comparison-only restore state for this check, not a live
+  owner surface or manager-facing handoff packet
 EOF
 }
 

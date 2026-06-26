@@ -22,19 +22,21 @@ def test_requirements_corpus_blocks_are_explicit_and_separate() -> None:
     assert REQUIREMENTS_2010.is_dir()
     assert REQUIREMENTS_2025.is_dir()
 
-    root_2010_files = sorted(
+    root_files = sorted(
         path.name
         for path in REQUIREMENTS.iterdir()
         if path.is_file() and path.name not in {"README.md", ".DS_Store"}
     )
-    block_2010_files = sorted(path.name for path in REQUIREMENTS_2010.iterdir() if path.name != "README.md")
-    assert block_2010_files == root_2010_files
+    assert root_files == []
+
+    block_2010_files = sorted(path.name for path in REQUIREMENTS_2010.iterdir() if path.is_file() and path.name != "README.md")
+    assert block_2010_files
 
     for path in REQUIREMENTS_2010.iterdir():
         if path.name == "README.md":
             continue
-        assert path.is_symlink(), path
-        assert path.resolve() == REQUIREMENTS / path.name
+        assert path.is_file(), path
+        assert not path.is_symlink(), path
 
     block_2025_files = sorted(path.name for path in REQUIREMENTS_2025.iterdir() if path.is_file())
     assert block_2025_files == sorted(REQUIREMENTS_2025_FILENAMES)

@@ -82,6 +82,47 @@ Default final stance:
   2025 service or schema names rather than aliasing them silently into native
   conformance.
 
+## Latest Investigated Decision
+
+The retired/legacy-only slice was re-audited on `2026-06-26` against the
+current owner doc, harmonization ledger, grouped worklist rows, replacement
+mapping notes, and finish-line evidence surfaces for:
+
+- `HLA2025-FI-RET-001` through `HLA2025-FI-RET-011`
+- `HLA2025-OMT-RET-001` through `HLA2025-OMT-RET-013`
+
+Decision:
+
+- keep these rows as `retired/legacy-only`
+- do not promote them to standalone `covered`
+
+Reason:
+
+1. the current differential and harmonization packets already establish that
+   these are legacy 2010 spellings or schema tokens rather than active native
+   2025 obligations
+2. the candidate 2025 replacements are already carried by the native 2025 FI,
+   time, switch, and OMT rows where applicable, so promoting the retired rows
+   would blur replacement behavior with legacy-name compatibility
+3. no repo-owned compatibility or migration mode was identified that would
+   justify treating these legacy-only rows as directly implemented support
+4. converting them now would overclaim compatibility semantics that the repo
+   does not currently prove
+
+Current evidence reviewed for this decision included:
+
+- `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
+- `requirements/2025/harmonization/hla_2025_harmonization_worklist.csv`
+- `docs/plans/spec2025_finish_line.md`
+- `docs/requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md`
+- `tests/requirements/test_2025_tail_backlog_evidence.py`
+
+Operational effect:
+
+- the retired slice remains a maintained explicit exclusion boundary
+- the active closeout queue should advance only if the repo intentionally
+  starts a compatibility or migration program for one or more legacy rows
+
 ## Exit Condition
 
 Treat this bucket as closed for current closeout purposes when all of these are

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 """Verification tests for the IEEE/HLA 2010 editorial-edition requirements matrix."""
 
+import csv
 from pathlib import Path
 
 from hla.verification.repo_internal.verification.requirements_matrix_artifacts import (
@@ -30,8 +31,13 @@ def test_requirements_matrix_2010_covers_section_areas_service_rows_and_verifica
     assert by_id["REQ-MOM-OBSERVER-001"]["kind"] == "verification-slice"
     assert by_id["REQ-MOM-OBSERVER-001"]["positive_test_refs"]
     assert by_id["REQ-OMT-4-omt_components"]["kind"] == "omt-area"
-    assert by_id["REQ-OMT-4_2-object_class_structure"]["status"] == "pass"
-    assert by_id["REQ-OMT-Annex_E-schema"]["status"] == "planned"
+    assert by_id["REQ-OMT-4_2-object_class_structure"]["status"] in {"pass", "partial"}
+    assert by_id["REQ-OMT-4_1-object_model_identification"]["status"] == "pass"
+    assert by_id["REQ-OMT-4_8-user_supplied_tag_table"]["status"] == "pass"
+    assert by_id["REQ-OMT-Annex_E-schema"]["status"] == "partial"
+    assert by_id["REQ-OMT-Annex_E-schema"]["positive_test_refs"]
+    assert by_id["REQ-OMT-SCHEMA-001"]["status"] == "implemented-slice"
+    assert by_id["REQ-OMT-SCHEMA-001"]["positive_test_refs"]
     assert by_id["HLA1516.1-DM-5.2-001"]["kind"] == "extracted-requirement"
     assert "publishObjectClassAttributes" in by_id["HLA1516.1-DM-5.2-001"]["linked_methods"]
     assert by_id["HLA1516.1-TM-8.2-002"]["status"] == "pass"
@@ -67,23 +73,79 @@ def test_requirements_matrix_2010_covers_section_areas_service_rows_and_verifica
     assert by_id["HLA1516.1-OM-6.10-003"]["status"] in {"pass", "partial"}
     assert by_id["HLA1516.1-OM-6.10-005"]["status"] == "pass"
     assert by_id["HLA1516.1-OM-6.12-005"]["status"] == "pass"
+    assert by_id["HLA1516.1-DM-5.1.6-001"]["supported_subset_for"] == ["HLA1516.1-DM-5.1.6-002"]
+    assert by_id["HLA1516.1-DM-5.1.6-002"]["status"] == "pass"
+    assert by_id["HLA1516.1-OM-6.1.11-001"]["supported_subset_for"] == ["HLA1516.1-OM-6.1.11-002"]
+    assert by_id["HLA1516.1-OM-6.1.11-002"]["status"] == "pass"
+    assert by_id["HLA1516.1-OM-6.1.12-001"]["supported_subset_for"] == ["HLA1516.1-OM-6.1.12-002"]
+    assert by_id["HLA1516.1-OM-6.1.12-002"]["status"] == "pass"
     assert by_id["HLA1516.1-OM-6.1.10-002"]["status"] == "pass"
     assert by_id["HLA1516.1-OM-6.1.10-003"]["status"] == "pass"
+    assert by_id["HLA1516.1-OM-6.1.10-004"]["status"] == "pass"
+    assert by_id["HLA1516.1-OM-6.1.10-001"]["supported_subset_for"] == [
+        "HLA1516.1-OM-6.1.10-002",
+        "HLA1516.1-OM-6.1.10-003",
+        "HLA1516.1-OM-6.1.10-004",
+    ]
     assert by_id["REQ-OM-TRANSPORT-BEST-EFFORT-001"]["status"] == "implemented-slice"
     assert by_id["HLA1516.1-OM-6.23-001"]["status"] == "partial"
+    assert by_id["HLA1516.1-OM-6.23-001"]["supported_subset_for"] == [
+        "HLA1516.1-OM-6.23-002",
+        "HLA1516.1-OM-6.23-003",
+    ]
     assert by_id["HLA1516.1-OM-6.23-002"]["status"] == "pass"
+    assert by_id["HLA1516.1-OM-6.23-003"]["status"] == "pass"
+    assert by_id["HLA1516.1-OM-6.24-001"]["supported_subset_for"] == [
+        "HLA1516.1-OM-6.24-002",
+        "HLA1516.1-OM-6.24-003",
+        "HLA1516.1-OM-6.24-004",
+    ]
     assert by_id["HLA1516.1-OM-6.24-002"]["status"] == "pass"
     assert by_id["HLA1516.1-OM-6.24-003"]["status"] == "pass"
+    assert by_id["HLA1516.1-OM-6.24-004"]["status"] == "pass"
+    assert by_id["HLA1516.1-OM-6.25-001"]["supported_subset_for"] == [
+        "HLA1516.1-OM-6.25-002",
+        "HLA1516.1-OM-6.25-003",
+    ]
     assert by_id["HLA1516.1-OM-6.25-002"]["status"] == "pass"
+    assert by_id["HLA1516.1-OM-6.25-003"]["status"] == "pass"
+    assert by_id["HLA1516.1-OM-6.26-001"]["supported_subset_for"] == [
+        "HLA1516.1-OM-6.26-002",
+        "HLA1516.1-OM-6.26-003",
+        "HLA1516.1-OM-6.26-004",
+    ]
     assert by_id["HLA1516.1-OM-6.26-002"]["status"] == "pass"
     assert by_id["HLA1516.1-OM-6.26-003"]["status"] == "pass"
+    assert by_id["HLA1516.1-OM-6.26-004"]["status"] == "pass"
     assert by_id["HLA1516.1-OM-6.27-001"]["status"] == "partial"
+    assert by_id["HLA1516.1-OM-6.27-001"]["supported_subset_for"] == [
+        "HLA1516.1-OM-6.27-002",
+        "HLA1516.1-OM-6.27-003",
+    ]
     assert by_id["HLA1516.1-OM-6.27-002"]["status"] == "pass"
+    assert by_id["HLA1516.1-OM-6.27-003"]["status"] == "pass"
+    assert by_id["HLA1516.1-OM-6.28-001"]["supported_subset_for"] == [
+        "HLA1516.1-OM-6.28-002",
+        "HLA1516.1-OM-6.28-003",
+        "HLA1516.1-OM-6.28-004",
+    ]
     assert by_id["HLA1516.1-OM-6.28-002"]["status"] == "pass"
     assert by_id["HLA1516.1-OM-6.28-003"]["status"] == "pass"
+    assert by_id["HLA1516.1-OM-6.28-004"]["status"] == "pass"
+    assert by_id["HLA1516.1-OM-6.29-001"]["supported_subset_for"] == [
+        "HLA1516.1-OM-6.29-002",
+        "HLA1516.1-OM-6.29-003",
+    ]
     assert by_id["HLA1516.1-OM-6.29-002"]["status"] == "pass"
+    assert by_id["HLA1516.1-OM-6.29-003"]["status"] == "pass"
+    assert by_id["HLA1516.1-OM-6.30-001"]["supported_subset_for"] == [
+        "HLA1516.1-OM-6.30-002",
+        "HLA1516.1-OM-6.30-003",
+        "HLA1516.1-OM-6.30-004",
+    ]
     assert by_id["HLA1516.1-OM-6.30-002"]["status"] == "pass"
     assert by_id["HLA1516.1-OM-6.30-003"]["status"] == "pass"
+    assert by_id["HLA1516.1-OM-6.30-004"]["status"] == "pass"
 
 
 def test_requirements_matrix_2010_uses_edition_qualified_2010_documents() -> None:
@@ -110,6 +172,47 @@ def test_requirements_matrix_2010_writers_emit_review_assets(tmp_path: Path):
     assert "REQ-MOM-OBSERVER-001" in csv_text
     assert "REQ-OMT-4-omt_components" in csv_text
     assert "HLA1516.1-DM-5.2-001" in csv_text
+
+
+def test_checked_in_requirements_matrix_2010_csv_matches_current_generator_for_bounded_omt_rows() -> None:
+    project_root = Path(__file__).resolve().parents[2]
+    matrix = build_requirements_matrix_2010(project_root, version="0.13.0")
+    generated_by_id = {row["matrix_id"]: row for row in matrix["rows"]}
+    checked_in_rows = list(csv.DictReader((project_root / "analysis" / "compliance" / "requirements_matrix_2010.csv").open()))
+    checked_in_by_id = {row["matrix_id"]: row for row in checked_in_rows}
+
+    assert "planned" not in {row["status"] for row in checked_in_rows}
+
+    for requirement_id in (
+        "REQ-OMT-4_1-object_model_identification",
+        "REQ-OMT-4_8-user_supplied_tag_table",
+        "REQ-OMT-Annex_E-schema",
+        "REQ-OMT-SCHEMA-001",
+    ):
+        assert checked_in_by_id[requirement_id]["status"] == generated_by_id[requirement_id]["status"]
+        assert checked_in_by_id[requirement_id]["title"] == generated_by_id[requirement_id]["title"]
+
+
+def test_repo_does_not_keep_stale_duplicate_2010_direct_matrix_artifact() -> None:
+    project_root = Path(__file__).resolve().parents[2]
+
+    assert not (project_root / "analysis" / "compliance" / "requirements_matrix_2010.direct.csv").exists()
+
+
+def test_requirements_matrix_2010_keeps_bounded_family_summary_rows_partial() -> None:
+    project_root = Path(__file__).resolve().parents[2]
+    matrix = build_requirements_matrix_2010(project_root, version="0.13.0")
+    by_id = {row["matrix_id"]: row for row in matrix["rows"]}
+
+    for requirement_id in (
+        "HLA1516.1-FM-001",
+        "HLA1516.1-TM-001",
+        "HLA1516.1-DDM-001",
+        "HLA1516.1-OWN-001",
+        "HLA1516.1-SUP-001",
+        "HLA1516.1-MOM-001",
+    ):
+        assert by_id[requirement_id]["status"] == "partial"
 
 
 def test_clause4_requirements_matrix_rows_use_shared_harness_backing_refs() -> None:

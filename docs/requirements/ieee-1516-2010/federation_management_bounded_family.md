@@ -30,6 +30,9 @@ Short answer:
   - `unit-scenarios-light`
   - `unit-python-core` for lifecycle and save/restore slices that stay within
     the local backend lane
+- maintained focused rerun views:
+  - `./tools/test-focus run execution-membership`
+  - `./tools/test-focus run backends`
 
 ## Final Claim Rule
 
@@ -171,6 +174,47 @@ Primary evidence anchors:
 - `tests/scenarios/test_federation_management_backend_matrix.py`
 - `tests/verification/test_requirements_ledger_v013.py`
 - `requirements/2010/traceability_matrix.csv`
+
+Execution-membership guard coverage is also part of the current 2010 bounded
+reading:
+
+- before join, after resign, or after disconnect, update, interaction, query,
+  and DDM-side execution attempts are expected to fail with
+  `NotConnected` or `FederateNotExecutionMember`
+- destroy remains rejected with `FederatesCurrentlyJoined` until the joined
+  federates resign
+- after a successful destroy, repeated destroy or join attempts against that
+  federation are expected to fail with `FederationExecutionDoesNotExist`
+- those cross-clause execution-state rules are intentionally read together with
+  [`object_management_bounded_family.md`](object_management_bounded_family.md)
+  and the focused `execution-membership` rerun slice rather than pretending
+  they belong only to one Clause 4 row
+
+Current exact execution-membership evidence anchors for this 2010 reading:
+
+- federation-management backend guards:
+  - `tests/backends/test_python_backend_federation_extended.py::test_destroy_federation_execution_requires_no_joined_federates`
+  - `tests/backends/test_python_backend_federation_extended.py::test_resign_federation_execution_rejects_not_connected_and_not_joined`
+  - `tests/backends/test_python_backend_federation_extended.py::test_disconnect_requires_resign_and_marks_backend_not_connected`
+- object/update/query and DDM guard witnesses that share the same joined-state
+  rule:
+  - `tests/backends/test_python_backend_object_ownership_extended.py::test_update_attribute_values_rejects_not_connected_not_joined_unknown_object_invalid_time_not_owned_and_save_restore`
+  - `tests/backends/test_python_backend_object_ownership_extended.py::test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore`
+  - `tests/backends/test_python_backend_object_ownership_extended.py::test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore`
+  - `tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_send_interaction_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore`
+  - `tests/backends/test_python_backend_time_ddm_extended.py::test_request_attribute_value_update_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore`
+- shared federation-management scenario guards:
+  - `tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_join_precondition_matrix`
+  - `tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_resign_precondition_matrix`
+
+Use these rerun commands before dropping to raw file paths:
+
+- `./tools/test-focus run execution-membership` for join, resign, destroy,
+  disconnect, and not-joined guard questions
+- `./tools/test-focus run backends` for broader 2010 federation-management
+  backend behavior
+- `./tools/test-surface run unit-scenarios-light` when the narrowest owning
+  shard is still the scenario layer
 
 ## Good Reading
 

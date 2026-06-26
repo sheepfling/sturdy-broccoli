@@ -190,6 +190,7 @@ class TargetFederate(NullFederateAmbassador):
         position: Vec3 = Vec3(10_000.0, 1_000.0, 2_000.0),
         velocity: Vec3 = Vec3(250.0, 30.0, 0.0),
         rcs_square_meters: float = 12.5,
+        event_sink: Callable[[dict[str, Any]], None] | None = None,
     ) -> None:
         self.name = name
         self.position = position
@@ -203,6 +204,20 @@ class TargetFederate(NullFederateAmbassador):
         self.object_handle: ObjectInstanceHandle | None = None
         self.events: list[tuple[str, Any]] = []
         self._pending_rcs_requests: list[tuple[ObjectInstanceHandle, bytes]] = []
+        self._event_sink = event_sink
+
+    def _emit(self, event_name: str, payload: Any) -> None:
+        self.events.append((event_name, payload))
+        if self._event_sink is not None:
+            self._event_sink(
+                {
+                    "kind": "callback" if event_name == "provide_attribute_value_update" else "scenario-event",
+                    "provider": "target-radar",
+                    "actor": "target",
+                    "event": event_name,
+                    "payload": _safe_payload(payload),
+                }
+            )
 
     def setup(self, rti: Any) -> None:
         self.rti = rti
@@ -219,7 +234,7 @@ class TargetFederate(NullFederateAmbassador):
 
     def step(self, *, time_seconds: float, dt: float) -> None:
         self.position = self.position.add_scaled(self.velocity, dt)
-        self.events.append(("step", {"time_seconds": time_seconds, "position": self.position}))
+        self._emit("step", {"time_seconds": time_seconds, "position": self.position})
         self.update_position_velocity(tag=f"target-step-{time_seconds:g}".encode("ascii"))
 
     def update_position_velocity(self, *, tag: bytes) -> None:
@@ -253,7 +268,7 @@ class TargetFederate(NullFederateAmbassador):
         user_supplied_tag: bytes,
         *extra: Any,
     ) -> None:
-        self.events.append(("provide_attribute_value_update", (the_object, set(the_attributes), user_supplied_tag)))
+        self._emit("provide_attribute_value_update", (the_object, set(the_attributes), user_supplied_tag))
         if self.object_handle is None or the_object != self.object_handle:
             return
         if self.rcs_attr in set(the_attributes):
@@ -300,6 +315,23 @@ class RadarFederate(NullFederateAmbassador):
         self.track_reports: list[TrackReport] = []
         self.events: list[tuple[str, Any]] = []
         self._pending_track_contacts: list[ObjectInstanceHandle] = []
+        self._event_sink: Callable[[dict[str, Any]], None] | None = None
+
+    def bind_event_sink(self, event_sink: Callable[[dict[str, Any]], None] | None) -> None:
+        self._event_sink = event_sink
+
+    def _emit(self, event_name: str, payload: Any) -> None:
+        self.events.append((event_name, payload))
+        if self._event_sink is not None:
+            self._event_sink(
+                {
+                    "kind": "callback" if event_name in {"discover", "reflect"} else "scenario-event",
+                    "provider": "target-radar",
+                    "actor": "radar",
+                    "event": event_name,
+                    "payload": _safe_payload(payload),
+                }
+            )
 
     def setup(self, rti: Any) -> None:
         self.rti = rti
@@ -334,7 +366,7 @@ class RadarFederate(NullFederateAmbassador):
     def discover_object_instance(self, the_object: ObjectInstanceHandle, the_object_class: ObjectClassHandle, object_name: str, *extra: Any) -> None:
         if self.target_class is not None and the_object_class == self.target_class:
             self.contacts[the_object] = RadarContact(the_object, str(object_name))
-            self.events.append(("discover", (the_object, the_object_class, object_name)))
+            self._emit("discover", (the_object, the_object_class, object_name))
 
     def reflect_attribute_values(
         self,
@@ -354,7 +386,7 @@ class RadarFederate(NullFederateAmbassador):
         if self.rcs_attr in the_attributes:
             contact.rcs_square_meters = decode_float(the_attributes[self.rcs_attr])
             rcs_updated = True
-        self.events.append(("reflect", (the_object, dict(the_attributes), user_supplied_tag)))
+        self._emit("reflect", (the_object, dict(the_attributes), user_supplied_tag))
         if rcs_updated and contact.position is not None and contact.rcs_square_meters is not None:
             self._pending_track_contacts.append(the_object)
 
@@ -362,7 +394,7 @@ class RadarFederate(NullFederateAmbassador):
         assert self.rti is not None
         assert self.rcs_attr is not None
         for object_handle in list(self.contacts):
-            self.events.append(("query_rcs", object_handle))
+            self._emit("query_rcs", object_handle)
             self.rti.request_attribute_value_update(object_handle, {self.rcs_attr}, b"radar-rcs-query")
 
     def flush_pending_track_reports(self) -> int:
@@ -427,7 +459,7 @@ class RadarFederate(NullFederateAmbassador):
             b"track-report",
         )
         self.track_reports.append(report)
-        self.events.append(("track", report))
+        self._emit("track", report)
         return report
 
 
@@ -476,6 +508,7 @@ def run_target_radar_scenario(
     radar: RadarFederate | None = None,
     fom_modules: Iterable[Any] | None = None,
     cleanup: bool = True,
+    event_sink: Callable[[dict[str, Any]], None] | None = None,
 ) -> ScenarioResult:
     """Run the single-target/radar scenario with any backend-neutral RTI pair.
 
@@ -488,8 +521,10 @@ def run_target_radar_scenario(
     if rti_factory is None:
         rti_factory = _python_pair_factory()
 
-    target = target or TargetFederate()
+    target = target or TargetFederate(event_sink=event_sink)
     radar = radar or RadarFederate()
+    if hasattr(radar, "bind_event_sink"):
+        radar.bind_event_sink(event_sink)
     target_rti = _call_factory(rti_factory, "target")
     radar_rti = _call_factory(rti_factory, "radar")
     target_callback_model, _target_resign_action = _edition_enums_for_rti(target_rti)
@@ -497,6 +532,15 @@ def run_target_radar_scenario(
 
     target_rti.connect(target, target_callback_model.HLA_EVOKED)
     radar_rti.connect(radar, radar_callback_model.HLA_EVOKED)
+    if event_sink is not None:
+        event_sink(
+            {
+                "kind": "phase",
+                "provider": "target-radar",
+                "phase": "connected",
+                "details": {"federation_name": federation_name},
+            }
+        )
 
     try:
         target_rti.create_federation_execution(federation_name, list(fom_modules or ["TargetRadarFOMmodule.xml"]))
@@ -505,13 +549,40 @@ def run_target_radar_scenario(
 
     target_rti.join_federation_execution("SingleTarget", "target", federation_name)
     radar_rti.join_federation_execution("Radar", "radar", federation_name)
+    if event_sink is not None:
+        event_sink(
+            {
+                "kind": "phase",
+                "provider": "target-radar",
+                "phase": "joined",
+                "details": {"federation_name": federation_name},
+            }
+        )
 
     # Radar subscribes before the target registers, so discovery is observable.
     radar.setup(radar_rti)
     target.setup(target_rti)
     _drain_callbacks(target_rti, radar_rti)
+    if event_sink is not None:
+        event_sink(
+            {
+                "kind": "phase",
+                "provider": "target-radar",
+                "phase": "setup-complete",
+                "details": {"steps": steps, "dt": dt},
+            }
+        )
 
     for step_index in range(1, steps + 1):
+        if event_sink is not None:
+            event_sink(
+                {
+                    "kind": "phase",
+                    "provider": "target-radar",
+                    "phase": "step-start",
+                    "details": {"step_index": step_index, "time_seconds": step_index * dt},
+                }
+            )
         target.step(time_seconds=step_index * dt, dt=dt)
         _drain_callbacks(target_rti, radar_rti)
         radar.query_rcs_for_all_contacts()
@@ -529,6 +600,15 @@ def run_target_radar_scenario(
         target_rti.time_advance_request(HLAinteger64Time(step_index))
         radar_rti.time_advance_request(HLAinteger64Time(step_index))
         _drain_callbacks(target_rti, radar_rti)
+        if event_sink is not None:
+            event_sink(
+                {
+                    "kind": "phase",
+                    "provider": "target-radar",
+                    "phase": "step-complete",
+                    "details": {"step_index": step_index, "track_reports": len(radar.track_reports)},
+                }
+            )
 
     backend_kinds = (
         getattr(getattr(target_rti, "backend_info", None), "kind", "unknown"),
@@ -543,6 +623,15 @@ def run_target_radar_scenario(
         target_events=list(target.events),
         radar_events=list(radar.events),
     )
+    if event_sink is not None:
+        event_sink(
+            {
+                "kind": "phase",
+                "provider": "target-radar",
+                "phase": "scenario-complete",
+                "details": {"track_reports": len(result.track_reports)},
+            }
+        )
 
     if cleanup:
         for rti in (radar_rti, target_rti):

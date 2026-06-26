@@ -128,6 +128,13 @@ forms:
 ./tools/test-surface run scenarios
 ```
 
+For the canonical shard list, repo-green gating model, and overlapping view
+registry, use:
+
+- [`test_surface.md`](test_surface.md)
+- [`verification/shard_registry.md`](verification/shard_registry.md)
+- [`verification/view_registry.md`](verification/view_registry.md)
+
 Use this when:
 
 - you want structural failures before the broader policy/doc lane
@@ -227,6 +234,21 @@ Use this when:
 - full repo-green is too slow
 - you already know the failure area
 - you need a restartable work loop
+
+If the failure area is specifically execution-state behavior, start with:
+
+```bash
+./tools/test-focus run execution-membership
+```
+
+Use that focused target for join, resign, destroy, disconnect-without-resign,
+and not-joined reserve/register/release/delete/update/send/query/DDM guards before widening to repo-green or
+full 2025 route hygiene. It is the narrow rerun surface behind 2010 lifecycle
+and object-management execution-state rows plus 2025 execution-state rows
+`HLA2025-FI-SVC-005`, `HLA2025-FI-SVC-008`, `HLA2025-FI-SVC-010`,
+`HLA2025-FI-SVC-011`, `HLA2025-FI-SVC-051`, `HLA2025-FI-SVC-053`, `HLA2025-FI-SVC-057`,
+`HLA2025-FI-SVC-059`, `HLA2025-FI-SVC-061`, `HLA2025-FI-SVC-065`,
+`HLA2025-FI-SVC-070`, and `HLA2025-FI-SVC-077`.
 
 ### Step 3: Rerun One Failing File
 

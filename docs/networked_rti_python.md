@@ -42,7 +42,8 @@ Use it when you want:
 
 - the Python RTI semantics you already use locally
 - a separate process boundary for testing or deployment
-- the same federate code to work with direct and hosted 2010 routes
+- the same federate code to work with the direct 2010 lane and the hosted
+  2010 Python RTI route
 
 Start a hosted Python RTI server:
 
@@ -74,8 +75,8 @@ That route is the documented `python1516e` over gRPC path in
 The 2025 hosted path is narrower and more explicit.
 
 It is not documented as a generic "remote Python RTI" abstraction. It is the
-current transport-hosted FedPro route over the main full `python1516_2025` Python RTI
-lane.
+current transport-hosted FedPro route over the main full direct
+`python1516_2025` Python RTI lane.
 
 In other words, the hosted 2025 route is evidence over the primary
 `hla-backend-python1516-2025` runtime. It is not a separate 2025 implementation
@@ -93,9 +94,10 @@ The relevant pieces are:
 
 The repo now exposes this hosted 2025 path through
 `create_rti_ambassador("python1516_2025", transport=...)`. That factory spelling
-resolves onto the same hosted FedPro route over `hla-backend-python1516-2025`, so
-the explicit server-plus-typed-transport path and the factory spelling now
-describe one runtime lane rather than separate ownership paths.
+resolves onto the same bounded hosted FedPro route over
+`hla-backend-python1516-2025`, so the explicit server-plus-typed-transport path
+and the factory spelling now describe one runtime lane rather than separate
+ownership paths.
 
 Keep the ownership wording strict here:
 

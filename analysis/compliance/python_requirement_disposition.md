@@ -8,12 +8,12 @@ This audit projects the shared HLA 2010 requirements matrix onto `python` so eve
 |---|---:|---:|---:|---:|---:|---:|---:|
 | IEEE 1516-2010 unknown | 4 | 0 | 0 | 3 | 0 | 1 | 0 |
 | IEEE 1516-2010 §12 | 21 | 21 | 0 | 0 | 0 | 0 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §10 | 86 | 82 | 0 | 2 | 0 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §10 | 86 | 84 | 0 | 0 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §11 | 37 | 35 | 0 | 0 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 9 | 0 | 0 | 0 | 1 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §4 | 281 | 275 | 0 | 4 | 0 | 2 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §5 | 52 | 49 | 0 | 1 | 0 | 2 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §6 | 110 | 107 | 0 | 1 | 0 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §5 | 53 | 50 | 0 | 1 | 0 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §6 | 121 | 118 | 0 | 1 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §7 | 39 | 37 | 0 | 0 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §8 | 61 | 59 | 0 | 0 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §9 | 31 | 29 | 0 | 0 | 0 | 2 | 0 |
@@ -38,7 +38,7 @@ This audit projects the shared HLA 2010 requirements matrix onto `python` so eve
 | IEEE 1516-2010 | unknown | HLA1516-RULE-001 | vendor-divergent | extracted-requirement | The repo shall map federation-level architectural rules to RTI lifecycle behavior and federation-state transitions |
 | IEEE 1516-2010 | unknown | HLA1516-FW-001 | vendor-divergent | extracted-requirement | The repo shall treat IEEE 1516-2010 as the top-level framework and keep federate behavior |
 | IEEE 1516-2010 | unknown | HLA1516-OBJ-001 | vendor-divergent | extracted-requirement | The repo shall distinguish object-model concepts from programming-language objects and map them to the 1516.1 object services and 1516.2 OMT structure |
-| IEEE 1516-2010 | unknown | HLA1516-TIME-001 | not-applicable | extracted-requirement | The repo shall map time concepts to 1516.1 time services and grant/order semantics |
+| IEEE 1516-2010 | unknown | HLA1516-TIME-001 | not-applicable | extracted-requirement | The repo shall map time concepts to 1516.1 time services and grant/order semantics, including logical time and ordering relationships |
 | IEEE 1516.1-2010 (2010 edition) | 4 | AREA-1516.1-4 | not-applicable | section-area | Federation management |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-001 | not-applicable | curated-seed | The RTI shall implement federation-management services for create, join, resign, destroy, save, restore, synchronization, and related lifecycle behavior |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.10-EFF-001 | vendor-divergent | extracted-requirement | Successful Resign Federation Execution shall remove the federate from federation membership, remove or divest owned objects as directed by the resign action, remove synchronization-point participation, refresh time advancement processing, and clear local publication and subscription state. |
@@ -46,23 +46,21 @@ This audit projects the shared HLA 2010 requirements matrix onto `python` so eve
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.5-EFF-001 | vendor-divergent | extracted-requirement | Successful Create Federation Execution shall install the federation, resolve and merge the supplied FOM modules, supply the standard MIM by default when needed, and choose a logical time factory compatible with the merged model. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.9-EFF-001 | vendor-divergent | extracted-requirement | Successful Join Federation Execution shall allocate a federate handle, bind the federate to the target federation, initialize logical time and lookahead state, merge any accepted additional FOM modules, and register the federate in the federation state. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | AREA-1516.1-5 | not-applicable | section-area | Declaration management |
-| IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-001 | not-applicable | extracted-requirement | The RTI shall implement declaration-management services for publication |
+| IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-001 | not-applicable | extracted-requirement | The RTI shall implement declaration-management services for publication, subscription, registration control, and the associated error and precondition behavior |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.1.6-001 | vendor-divergent | extracted-requirement | RTI shall support subscribing with update rate reduction where applicable. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | AREA-1516.1-6 | not-applicable | section-area | Object management |
-| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-001 | not-applicable | extracted-requirement | The RTI shall implement object-management services for registration |
+| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-001 | not-applicable | extracted-requirement | The RTI shall implement object-management services for registration, update, delete, discovery, and interaction delivery behavior |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.1.11-001 | vendor-divergent | extracted-requirement | RTI may combine, package, or passelize messages without changing externally visible semantics. |
 | IEEE 1516.1-2010 (2010 edition) | 7 | AREA-1516.1-7 | not-applicable | section-area | Ownership management |
-| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-001 | not-applicable | extracted-requirement | The RTI shall implement ownership-management services for unconditional |
+| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-001 | not-applicable | extracted-requirement | The RTI shall implement ownership-management services for unconditional, negotiated, acquisition, divestiture, and release-request flows |
 | IEEE 1516.1-2010 (2010 edition) | 8 | AREA-1516.1-8 | not-applicable | section-area | Time management |
-| IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-001 | not-applicable | extracted-requirement | The RTI shall implement time-management services for regulation |
+| IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-001 | not-applicable | extracted-requirement | The RTI shall implement time-management services for regulation, constrained behavior, query services, lookahead, order control, and grant delivery |
 | IEEE 1516.1-2010 (2010 edition) | 9 | AREA-1516.1-9 | not-applicable | section-area | Data distribution management |
-| IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-001 | not-applicable | extracted-requirement | The RTI shall implement DDM services for region creation |
-| IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getMessageRetractionHandleFactory | vendor-divergent | service-requirement | Disable Callbacks service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getRegionHandleFactory | vendor-divergent | service-requirement | Disable Callbacks service |
+| IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-001 | not-applicable | extracted-requirement | The RTI shall implement DDM services for region creation, routing, and filtered delivery behavior |
 | IEEE 1516.1-2010 (2010 edition) | 10 | AREA-1516.1-10 | not-applicable | section-area | Support services |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-001 | not-applicable | extracted-requirement | The RTI shall implement support services for lookups |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-001 | not-applicable | extracted-requirement | The RTI shall implement support services for lookups, factories, callback control, advisory behavior, and related support operations |
 | IEEE 1516.1-2010 (2010 edition) | 11 | AREA-1516.1-11 | not-applicable | section-area | Management object model |
-| IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-001 | not-applicable | extracted-requirement | The RTI shall implement MOM behavior for tables |
+| IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-001 | not-applicable | extracted-requirement | The RTI shall implement MOM behavior for tables, reports, service actions, observer reconstruction, and service-reporting state |
 | IEEE 1516.1-2010 (2010 edition) | 12 | AREA-1516.1-12 | not-applicable | section-area | Programming language mappings |
 | IEEE 1516.2-2010 (2010 edition) | 4 | HLA1516.2-ID-001 | vendor-divergent | extracted-requirement | OMT parser shall capture object model identification metadata sufficient to distinguish the module and preserve provenance |
 | IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4-omt_components | not-applicable | omt-area | HLA OMT components |
@@ -138,4 +136,4 @@ This audit projects the shared HLA 2010 requirements matrix onto `python` so eve
 | multi-section | 12 | REQ-SAVE-RESTORE-OBJECT-STATE-001 | not-applicable | verification-slice | Save/restore reinstates saved object existence, name mapping, attribute values, and ownership state |
 | multi-section | 12 | REQ-SAVE-RESTORE-FEDERATE-LOCAL-STATE-001 | not-applicable | verification-slice | Save/restore reinstates saved federate runtime flags, policy switches, reporting switches, conveyance state, order-override state, and transportation-override state |
 | multi-section | 12 | REQ-SAVE-RESTORE-TRANSIENT-STATE-001 | not-applicable | verification-slice | Save/restore discards stale pre-restore callback-queue and message-retraction bookkeeping state |
-| multi-section | unknown | REQ-OMT-SCHEMA-001 | not-applicable | verification-slice | Annex E schema-level conformance checking is identified explicitly and remains planned |
+| multi-section | unknown | REQ-OMT-SCHEMA-001 | not-applicable | verification-slice | Annex E schema-family conformance validation is executable for the carried standard schemas and round-trip witnesses |

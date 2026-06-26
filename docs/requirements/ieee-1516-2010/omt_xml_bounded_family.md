@@ -129,6 +129,10 @@ Primary evidence anchors:
 - `tests/mom/test_mom_catalog_validation_v012.py`
 - `requirements/2010/traceability_matrix.csv`
 
+The matrix also now carries `REQ-OMT-SCHEMA-001` as an explicit
+`implemented-slice` witness for Annex E schema-family validation and
+schema-valid round-trip behavior.
+
 ## Good Reading
 
 Good reading:

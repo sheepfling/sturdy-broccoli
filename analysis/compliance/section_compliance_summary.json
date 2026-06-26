@@ -669,7 +669,7 @@
       }
     },
     {
-      "exact_requirement_evidence_rows": 18,
+      "exact_requirement_evidence_rows": 20,
       "implementation_status_counts": {
         "pure-python-reference-handler": 20
       },
@@ -699,11 +699,10 @@
         "RTIambassador.getTimeFactory",
         "RTIambassador.getTransportationTypeHandleFactory"
       ],
-      "no_requirement_evidence_rows": 2,
+      "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "verification_status_counts": {
-        "focused-executable-tests": 18,
-        "group-level-slice-tests": 2
+        "focused-executable-tests": 20
       }
     },
     {

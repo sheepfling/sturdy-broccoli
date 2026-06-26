@@ -43,6 +43,185 @@ family notes or backend-resolution companions.
 Those rows stay out of the active gap table unless a deliberate scope expansion
 or new evidence change reopens them.
 
+The `2010` backend-compliance packet no longer carries any `planned`
+inventory rows.
+The former OMT placeholder rows are not treated as active open buckets in this
+register because they are now classified explicitly in
+[`2010_python_rti_bounded_family_execution_worklist.md`](2010_python_rti_bounded_family_execution_worklist.md)
+as:
+
+- `5` `pass` OMT area rows
+- `7` bounded `partial` OMT/XML area rows
+- `1` `implemented-slice` Annex E schema witness
+
+Use that worklist when the question is whether to tighten those bounded rows
+further.
+Use this gap register only when one of those classes becomes an actively opened
+closeout bucket with a specific owner doc, owner companion, and exit
+condition.
+
+Scope-expansion candidates and recent decisions under the current honest-`100%`
+program:
+
+| Bucket | Owner doc | Owner companion | Current evidence | Missing proof to close | Exit condition |
+| --- | --- | --- | --- | --- | --- |
+| 2010 mixed-backend priority rows | `docs/requirements/ieee-1516-2010/mixed_backend_priority_boundaries.md` | `requirements/2010/hla1516_1_priority_backend_resolution.csv` plus `requirements/2010/traceability_matrix.csv` | Python already proves the three current row families strongly; backend-resolution truth is explicit | narrower Python-only claim or materially broader cross-backend evidence for the lost-federate and RO/TSO ordering rows | either the canonical requirement rows are intentionally narrowed with explicit backend-resolution consequences, or the broader backend rows close honestly enough to move beyond the current bounded `partial` reading |
+
+Latest investigated decision:
+
+- on `2026-06-26`, the `2010 mixed-backend priority rows` bucket was re-audited
+  and kept as an explicit bounded/backend-resolution surface
+- the current owner doc, backend-resolution ledger, traceability rows, and
+  targeted owning shard commands all support that reading
+- no narrower canonical claim was identified that would preserve the current
+  cross-backend row semantics without changing the claim surface
+- treat this bucket as maintained boundary documentation unless later backend
+  evidence materially changes the mixed-backend dispositions or leadership
+  explicitly wants a narrower Python-only claim
+- on `2026-06-26`, the `2010 CAP-SUP bounded family` was also re-audited and
+  kept as an explicit bounded family surface
+- the current owner doc, reconciliation companion, reconciliation verifier,
+  and owning shard command all support that reading
+- the current tail remains a uniform bounded `43 PRE`, `43 EXC`, and
+  `43 EXC_API` negative-envelope family
+- no narrower direct claim was identified that would preserve the current
+  Clause 10 row meanings without adding new exhaustive per-service
+  negative-matrix proof
+- treat this bucket as maintained boundary documentation unless future
+  per-service negative-matrix evidence materially changes the bounded family
+  disposition or leadership explicitly funds that tighter proof scope
+- on `2026-06-26`, the `2010 CAP-DM bounded family` was also re-audited and
+  kept as an explicit bounded family surface
+- the current owner doc, reconciliation companion, reconciliation verifier,
+  and owning shard commands all support that reading
+- the current tail remains a stable bounded `12 PRE`, `12 EXC`, and
+  `14 EXC_API` Clause 5 family envelope
+- no narrower direct claim was identified that would preserve the current
+  Clause 5 row meanings without adding new isolated per-row precondition or
+  negative-path proof
+- treat this bucket as maintained boundary documentation unless future Clause 5
+  witnesses materially change the bounded family disposition or leadership
+  explicitly funds that tighter proof scope
+- on `2026-06-26`, the `2010 CAP-TM bounded family` was also re-audited and
+  kept as an explicit bounded family surface
+- the current owner doc, reconciliation companion, reconciliation verifier,
+  and owning shard command all support that reading
+- the current tail remains a stable bounded `19 PRE`, `19 EXC`, `19 EXC_API`,
+  and `1 OVW` Clause 8 family envelope
+- no narrower direct claim was identified that would preserve the current
+  Clause 8 row meanings without adding new isolated per-row negative or
+  overview-decomposition proof
+- treat this bucket as maintained boundary documentation unless future
+  isolated Clause 8 witnesses materially change the bounded family disposition
+  or leadership explicitly funds that tighter proof scope
+- on `2026-06-26`, the `2010 CAP-FM bounded family` was also re-audited and
+  kept as an explicit bounded family surface
+- the current owner doc, reconciliation companion, reconciliation verifier,
+  and owning shard commands all support that reading
+- the current tail remains a stable bounded `43 ARG`, `23 EFF`, `17 CB_ORD`,
+  `15 EXC`, and `11` residual Clause 4 family envelope
+- no narrower direct claim was identified that would preserve the current
+  Clause 4 row meanings without adding new row-level decomposition or direct
+  runtime connection-loss callback proof
+- treat this bucket as maintained boundary documentation unless future Clause 4
+  decomposition or direct fault-surface witnesses materially change the
+  bounded family disposition or leadership explicitly funds that tighter proof
+  scope
+- on `2026-06-26`, the `2010 CAP-OM bounded family` was also re-audited and
+  kept as an explicit bounded family surface
+- the current owner doc, reconciliation companion, reconciliation verifier,
+  and owning shard commands all support that reading
+- the current tail now remains a stable bounded `25 EFF`, `25 CB_ORD`,
+  `17 CB_ORDER`, `16 EXC_API`, `13 EXC`, `6 FED_CB`, and
+  `1 OVW` Clause 6 family envelope
+- the recent `updateAttributeValues` exception rows and the object-instance
+  overload exception row for `requestAttributeValueUpdate` are no longer part
+  of that bounded tail
+- the `updateAttributeValues` precondition row is also no longer part of that
+  bounded tail because the current direct negative-path witnesses now isolate
+  the applicable connection, membership, handle-validation, ownership,
+  invalid-logical-time, and save/restore guards
+- the `reserveObjectInstanceName` precondition row is also no longer part of
+  that bounded tail because the current direct negative-path witnesses now
+  isolate the applicable connection, membership, and save or restore guards
+- the `registerObjectInstance` precondition row is also no longer part of that
+  bounded tail because the current direct negative-path witnesses now isolate
+  the applicable connection, membership, duplicate-name, and save or restore
+  guards across the exercised overloads
+- the `releaseObjectInstanceName` precondition row is also no longer part of
+  that bounded tail because the current direct negative-path witnesses now
+  isolate the applicable connection, membership, and save or restore guards
+- the `localDeleteObjectInstance` precondition row is also no longer part of
+  that bounded tail because the current direct negative-path witnesses now
+  isolate the applicable connection, membership, object-knownness,
+  ownership-state, and save/restore guards
+- the `deleteObjectInstance` precondition row is also no longer part of that
+  bounded tail because the current direct negative-path witnesses now isolate
+  the applicable connection, membership, object-knownness, delete-privilege,
+  and save or restore guards
+- the `sendInteraction` precondition row is also no longer part of that
+  bounded tail because the current direct negative-path witnesses now isolate
+  the applicable connection, membership, publication-state, handle-validation,
+  and invalid-logical-time guards across the exercised overloads, while the
+  broader save or restore wording stays bounded separately
+- the multiple-name reservation and release precondition rows are also no
+  longer part of that bounded tail because the current direct negative-path
+  witnesses now isolate the applicable connection, membership, and
+  save/restore guards
+- the `requestAttributeValueUpdate` precondition row is also no longer part of
+  that bounded tail because the current direct negative-path witnesses now
+  isolate the applicable connection, membership, handle-validation, and
+  save/restore guards across both overloads
+- the remaining class-wide `requestAttributeValueUpdate` exception rows stay
+  intentionally bounded because the backend reports
+  `InvalidObjectClassHandle` rather than the broader imported
+  `ObjectClassNotDefined` wording
+- no narrower direct claim was identified that would preserve the current
+  Clause 6 row meanings without adding new isolated per-row callback-order,
+  effect-vector, or negative-path proof
+- treat this bucket as maintained boundary documentation unless future Clause 6
+  witnesses materially change the bounded family disposition or leadership
+  explicitly funds that tighter proof scope
+- on `2026-06-26`, the `2010 CAP-OWN bounded family` was also re-audited and
+  kept as an explicit bounded family surface
+- the current owner doc, reconciliation companion, reconciliation verifier,
+  and owning shard commands all support that reading
+- the current tail remains a stable bounded `8 PRE`, `11 EXC`, and
+  `11 EXC_API` Clause 7 family envelope
+- no narrower direct claim was identified that would preserve the current
+  Clause 7 row meanings without adding new isolated per-row negative-path
+  proof
+- treat this bucket as maintained boundary documentation unless future Clause 7
+  negative-path witnesses materially change the bounded family disposition or
+  leadership explicitly funds that tighter proof scope
+- on `2026-06-26`, the `2010 CAP-DDM bounded family` was also re-audited and
+  kept as an explicit bounded family surface
+- the current owner doc, reconciliation companion, reconciliation verifier,
+  and owning shard commands all support that reading
+- the current tail now remains a stable bounded `6 EXC` and `10 EXC_API`
+  Clause 9 family envelope
+- no narrower direct claim was identified that would preserve the current
+  Clause 9 row meanings without adding new isolated per-row negative-path
+  proof
+- treat this bucket as maintained boundary documentation unless future Clause 9
+  negative-path witnesses materially change the bounded family disposition or
+  leadership explicitly funds that tighter proof scope
+- on `2026-06-26`, the `2010 CAP-XML / CAP-OMT bounded family` was also
+  re-audited and kept as an explicit bounded family surface
+- the current owner doc, reconciliation companions, reconciliation verifiers,
+  and owning shard command all support that reading
+- the current XML tail remains a stable bounded `274 XML_ELEM`, `89 XML_TYPE`,
+  and `1 CLAUSE12_13_DETAIL` envelope
+- the current OMT tail remains a stable bounded `2` Annex B normalization-row
+  envelope
+- no narrower direct claim was identified that would preserve the current XML
+  and OMT row meanings without adding new one-row-per-element, one-row-per-
+  type, or stronger executable normalization proof
+- treat this bucket as maintained boundary documentation unless future XML atom
+  witnesses or stronger runtime normalization proof materially change the
+  bounded family disposition or leadership explicitly funds that tighter proof
+  scope
+
 Settled but still useful reference:
 
 - `docs/requirements/ieee-1516-2010/mixed_backend_priority_boundaries.md`
@@ -111,6 +290,53 @@ all owned by explicit umbrella, exclusion, backend-resolution, route-bounded,
 or tolerance-only owner notes.
 Those rows stay out of the active gap table unless a deliberate scope expansion
 or evidence change reopens them.
+
+Maintained optional scope-expansion candidates under the current honest-`100%`
+program:
+
+| Bucket | Owner doc | Owner companion | Current evidence | Missing proof to close | Exit condition |
+| --- | --- | --- | --- | --- | --- |
+| 2025 callback-control umbrella slice (`HLA2025-FI-CB-002` through `HLA2025-FI-CB-004`) | `docs/requirements/ieee-1516-2025/callback_binding_deltas.md` | `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv` plus `requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv` | child FI service rows and direct runtime tests already carry explicit EVOKED, queue-drain, and enable/disable callback evidence | narrower standalone callback-control claims that do more than summarize the child rows and are explicitly tied to their narrowest shard owners | the umbrella rows are either intentionally left as non-standalone with the current child-owner map, or replaced by narrower direct callback-control claims with explicit executable anchors and owner-doc updates |
+| 2025 directed-interaction callback umbrella slice (`HLA2025-FI-CB-007`) | `docs/requirements/ieee-1516-2025/callback_binding_deltas.md` | `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv` plus route-parity artifacts and `requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv` | child directed-interaction FI rows, direct runtime tests, and hosted FedPro route-parity evidence already carry explicit directed callback semantics | narrower standalone directed-interaction callback-parameterization claims that do more than summarize the child rows and are explicitly tied to their narrowest shard owners | the umbrella row is either intentionally left as non-standalone with the current child-owner map, or replaced by a narrower direct directed-callback claim with explicit executable anchors and owner-doc updates |
+| 2025 configuration/auth umbrella slice (`HLA2025-FI-CFG-001`, `HLA2025-FI-AUTH-001`) | `docs/requirements/ieee-1516-2025/callback_binding_deltas.md` | `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv` plus `requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv` | child connect rows, factory composition tests, and hosted FedPro request-shape evidence already carry explicit configuration-result and credentials behavior | narrower standalone configuration-result or authorization-credentials claims that do more than summarize the child connect rows and are explicitly tied to their narrowest shard owners | the umbrella rows are either intentionally left as non-standalone with the current child-owner map, or replaced by narrower direct connect-auth/config claims with explicit executable anchors and owner-doc updates |
+| 2025 Java/C++ binding umbrella slice (`HLA2025-BIND-JAVA-CPP-001`) | `docs/requirements/ieee-1516-2025/callback_binding_deltas.md` | `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv` plus route-parity artifacts, shim-route evidence packets, and `requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv` | child binding rows, standard-shim artifact tests, and shim-route traces already carry explicit Java/C++ wrapper-capability evidence | narrower standalone Java/C++ binding-capability claims that do more than summarize the child rows and are explicitly tied to their narrowest shard owners | the umbrella row is either intentionally left as non-standalone with the current child-owner map, or replaced by a narrower direct binding-capability claim with explicit executable anchors and owner-doc updates |
+| 2025 FedPro protocol umbrella slice (`HLA2025-BIND-FEDPRO-001`) | `docs/requirements/ieee-1516-2025/callback_binding_deltas.md` | `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv` plus route-parity artifacts and `requirements/2025/harmonization/hla_2025_harmonization_worklist.csv` | hosted-route parity, protocol assets, and route matrix evidence already exist | narrower direct protocol-capability claims that separate transport adaptation proof from broad umbrella wording | the current bounded hosted-route reading is either preserved explicitly, or replaced by narrower direct FedPro protocol-capability claims with explicit proto/callback/error-mapping evidence |
+
+Latest investigated decision:
+
+- on `2026-06-26`, the `2025 framework umbrella rows` were re-audited and
+  kept as an explicit umbrella boundary
+- current framework owner docs, child-row maps, traceability anchors, and
+  runtime/scenario evidence already carry the real child-proof semantics
+- no narrower standalone framework claim was identified that would avoid
+  double-counting existing child proof
+- treat that slice as maintained boundary documentation unless later work adds
+  genuinely narrower direct framework child claims
+- on `2026-06-26`, the `2025 callback-control umbrella slice` was re-audited
+  and kept as an explicit umbrella boundary
+- current child FI service rows plus runtime and transport tests already carry
+  the direct callback semantics
+- no narrower standalone callback-control claim was identified that would avoid
+  double-counting existing child proof
+- treat that slice as maintained boundary documentation unless later work adds
+  a genuinely narrower direct callback-control claim
+- on `2026-06-26`, the `2025 FedPro protocol umbrella slice` was also
+  re-audited and kept as an explicit bounded hosted-route boundary
+- current child binding row `HLA2025-BND-003`, hosted-route owner docs, route
+  parity artifacts, and transport tests already carry the real protocol-facing
+  claim
+- no narrower standalone FedPro protocol-capability claim was identified that
+  would avoid restating existing bounded route traceability
+- treat that slice as maintained boundary documentation unless later work adds
+  a genuinely narrower direct protocol-capability claim
+- on `2026-06-26`, the `2025 retired/legacy-only rows` were also re-audited
+  and kept as an explicit exclusion boundary
+- current retired owner docs, harmonization ledgers, grouped worklist rows,
+  and finish-line evidence already carry the intended legacy-only reading
+- no compatibility or migration mode was identified that would justify
+  promoting those rows into active 2025 support claims
+- treat that slice as maintained exclusion documentation unless the repo later
+  deliberately opens a compatibility or migration program
 
 Settled but still useful reference:
 

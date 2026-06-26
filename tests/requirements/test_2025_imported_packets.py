@@ -153,9 +153,78 @@ def test_imported_requirement_disposition_packet_tracks_repo_reconciled_coverage
         1 for row in pitch_row_rows
         if row["pitch_202x_row_resolution"] == "bounded-fi-overlap-only"
     ) == 196
+    assert sum(
+        1 for row in pitch_row_rows
+        if row["pitch_202x_row_resolution"] == "mirrored-fi-cross-check-only"
+    ) == 196
+    assert sum(
+        1 for row in pitch_row_rows
+        if row["pitch_202x_row_resolution"] == "not-a-pitch-runtime-owner"
+    ) == 253
+    assert sum(
+        1 for row in pitch_row_rows
+        if row["pitch_202x_row_resolution"] == "umbrella-only-child-fi-owned"
+    ) == 12
+    assert sum(
+        1 for row in pitch_row_rows
+        if row["pitch_202x_row_resolution"] == "framework-umbrella-child-owned"
+    ) == 10
+    assert sum(
+        1 for row in pitch_row_rows
+        if row["pitch_202x_row_resolution"] == "legacy-only-no-active-pitch-claim"
+    ) == 24
     assert all(
         row["pitch_202x_owner_doc"] == "docs/requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md"
         for row in pitch_row_rows
+    )
+    assert all(
+        row["pitch_202x_group_owner"] == "requirements/2025/harmonization/hla_2025_pitch_202x_group_resolution.csv"
+        for row in pitch_row_rows
+    )
+    assert all(row["pitch_202x_scope_note"].strip() for row in pitch_row_rows)
+    assert all(
+        row["pitch_202x_primary_command"] == "./tools/pitch 202x-micro-certify"
+        and row["pitch_202x_evidence_packet"]
+        == "artifacts/pitch_202x_micro_certification/pitch_202x_micro_certification_summary.json; artifacts/pitch_202x_micro_certification/pitch_202x_micro_certification_report.md; packages/hla-vendor-pitch/docs/pitch_vs_python_baseline.md"
+        and "does not prove clause-complete service parity for this exact row." in row["pitch_202x_scope_note"]
+        for row in pitch_row_rows
+        if row["pitch_202x_row_resolution"] == "bounded-fi-overlap-only"
+    )
+    assert all(
+        row["pitch_202x_primary_command"] == "./tools/pitch 202x-micro-certify"
+        and row["pitch_202x_evidence_packet"]
+        == "artifacts/pitch_202x_micro_certification/pitch_202x_micro_certification_summary.json; artifacts/pitch_202x_micro_certification/pitch_202x_micro_certification_report.md; packages/hla-vendor-pitch/docs/pitch_vs_python_baseline.md"
+        and "do not treat it as standalone vendor closure." in row["pitch_202x_scope_note"]
+        for row in pitch_row_rows
+        if row["pitch_202x_row_resolution"] == "umbrella-only-child-fi-owned"
+    )
+    assert all(
+        row["pitch_202x_primary_command"] == ""
+        and row["pitch_202x_evidence_packet"] == ""
+        and "mirrored FI owner row" in row["pitch_202x_scope_note"]
+        for row in pitch_row_rows
+        if row["pitch_202x_row_resolution"] == "mirrored-fi-cross-check-only"
+    )
+    assert all(
+        row["pitch_202x_primary_command"] == ""
+        and row["pitch_202x_evidence_packet"] == ""
+        and "rather than a Pitch proto HLA 4 / 202X runtime lane." in row["pitch_202x_scope_note"]
+        for row in pitch_row_rows
+        if row["pitch_202x_row_resolution"] == "not-a-pitch-runtime-owner"
+    )
+    assert all(
+        row["pitch_202x_primary_command"] == ""
+        and row["pitch_202x_evidence_packet"] == ""
+        and "instead of this umbrella row." in row["pitch_202x_scope_note"]
+        for row in pitch_row_rows
+        if row["pitch_202x_row_resolution"] == "framework-umbrella-child-owned"
+    )
+    assert all(
+        row["pitch_202x_primary_command"] == ""
+        and row["pitch_202x_evidence_packet"] == ""
+        and "does not make an active Pitch proto HLA 4 / 202X behavior-support claim." in row["pitch_202x_scope_note"]
+        for row in pitch_row_rows
+        if row["pitch_202x_row_resolution"] == "legacy-only-no-active-pitch-claim"
     )
     assert "coverage_risk_addressed" in rows[0]
     legacy_field = _ascii_token(
@@ -172,3 +241,51 @@ def test_imported_requirement_disposition_packet_tracks_repo_reconciled_coverage
     assert legacy_prefix not in combined_text
     assert legacy_area_token not in combined_text
     assert legacy_phrase_token not in combined_text
+
+
+@pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-FI-002", "HLA2025-TRACE-001")
+def test_covered_fi_service_rows_are_consistently_covered_in_disposition_review_queue_and_binding_matrix() -> None:
+    expected_note = (
+        "Covered by repo evidence anchor and executable test; "
+        "binding or route parity beyond the claimed slice remains separate where noted."
+    )
+
+    disposition_rows = {
+        row["id"]: row
+        for row in csv.DictReader(
+            (HARMONIZATION_DIR / "hla_2025_requirement_disposition_ledger.csv").open(
+                newline="", encoding="utf-8"
+            )
+        )
+    }
+    review_rows = {
+        row["id"]: row
+        for row in csv.DictReader(
+            (HARMONIZATION_DIR / "hla_2025_review_queue.csv").open(
+                newline="", encoding="utf-8"
+            )
+        )
+    }
+    matrix_rows = {
+        row["id"]: row
+        for row in csv.DictReader(
+            (HARMONIZATION_DIR / "hla_2025_fi_binding_surface_matrix.csv").open(
+                newline="", encoding="utf-8"
+            )
+        )
+    }
+
+    tracked_ids = {
+        requirement_id
+        for requirement_id, row in disposition_rows.items()
+        if requirement_id in review_rows
+        and requirement_id in matrix_rows
+        and row["harmonization_disposition"] == "covered"
+        and review_rows[requirement_id]["harmonization_disposition"] == "covered"
+    }
+
+    assert len(tracked_ids) == 196
+
+    for requirement_id in tracked_ids:
+        assert matrix_rows[requirement_id]["disposition"] == "covered"
+        assert matrix_rows[requirement_id]["risk_note"] == expected_note

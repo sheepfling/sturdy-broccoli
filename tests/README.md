@@ -31,6 +31,44 @@ The routine 2025 proof commands behind those surfaces are:
 - `./tools/python verify-routes-2025` when you also need the bounded hosted
   `python1516_2025-fedpro-grpc` hygiene lane
 
+If the question is specifically "did we break join, resign, destroy, or
+not-joined guard behavior?", do not jump straight to the broader 2025 route or
+transport lanes. Start with:
+
+- `./tools/test-focus run execution-membership`
+
+That focused target owns the basic execution-state rule rerun surface for both
+editions:
+
+- 2010 federation-management rows
+  `HLA1516.1-FM-4_6-RTIAPI-001-EXC`,
+  `HLA1516.1-FM-4_9-RTIAPI-001-EXC`, and
+  `HLA1516.1-FM-4_10-RTIAPI-001-EXC`
+- 2010 object-management rows
+  `HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-PRE-001`,
+  `HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-PRE-001`,
+  `HLA1516.1-OM-6_8-REGISTEROBJECTINSTANCE-PRE-001`,
+  `HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-PRE-001`,
+  `HLA1516.1-OM-6_10-UPDATEATTRIBUTEVALUES-EXC-001`,
+  `HLA1516.1-OM-6_12-SENDINTERACTION-PRE-001`,
+  `HLA1516.1-OM-6_12-SENDINTERACTION-EXC-001`,
+  `HLA1516.1-OM-6_19-REQUESTATTRIBUTEVALUEUPDATE-PRE-001`, and
+  `HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-PRE-001`
+- 2025 federation-management rows `HLA2025-FI-SVC-005`,
+  `HLA2025-FI-SVC-008`, `HLA2025-FI-SVC-010`, and `HLA2025-FI-SVC-011`
+- 2025 object-management rows `HLA2025-FI-SVC-051`, `HLA2025-FI-SVC-053`,
+  `HLA2025-FI-SVC-057`, `HLA2025-FI-SVC-059`, `HLA2025-FI-SVC-061`,
+  `HLA2025-FI-SVC-065`, `HLA2025-FI-SVC-070`, and `HLA2025-FI-SVC-077`
+
+Use the owner docs when you need the full requirement-to-test chain:
+
+- `../docs/test_surface.md`
+- `../docs/junior_test_diagnosis_runbook.md`
+- `../docs/verification/shard_registry.md`
+- `../docs/verification/view_registry.md`
+- `../docs/requirements/ieee-1516-2010/README.md`
+- `../docs/requirements/ieee-1516-2025/README.md`
+
 ## Test Families
 
 - `tests/backends/`: backend adapter, shim, and generic backend-unit coverage. Start here for pure API and adapter behavior; do not start here if you only want the first runnable scenario.

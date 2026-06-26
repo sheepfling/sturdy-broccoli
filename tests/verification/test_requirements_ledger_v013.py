@@ -127,6 +127,85 @@ def test_requirements_matrix_writer_emits_vendor_columns(tmp_path: Path):
     csv_path = write_requirements_matrix_2010_csv(tmp_path / "requirements_matrix.csv", project_root, version="0.13.0")
     csv_text = csv_path.read_text(encoding="utf-8")
 
-    assert "python_runtime_status,certi_runtime_status,pitch_runtime_status,vendor_evidence_refs,vendor_notes,vendor_source,vendor_profile_bucket,vendor_profile_refs,vendor_profile_notes,vendor_profile_source" in csv_text
+    assert "python_runtime_status,python_runtime_disposition" in csv_text
+    assert "certi_runtime_status,certi_runtime_disposition" in csv_text
+    assert "portico_runtime_status,portico_runtime_disposition" in csv_text
+    assert "pitch_runtime_status,pitch_runtime_disposition,pitch_jpype_runtime_disposition,pitch_py4j_runtime_disposition" in csv_text
+    assert "vendor_evidence_refs,vendor_notes,vendor_source,vendor_profile_bucket,vendor_profile_refs,vendor_profile_notes,vendor_profile_source" in csv_text
     assert "docs/backend_conformance_matrix.md" in csv_text
     assert "docs/rti_options_and_test_matrix.md" in csv_text
+
+
+def test_checked_in_supported_subset_packets_include_update_rate_child_rows() -> None:
+    project_root = Path(__file__).resolve().parents[2]
+    defended_partials = (project_root / "analysis" / "compliance" / "defended_partials_index.md").read_text(encoding="utf-8")
+    supported_subset_policy = (project_root / "analysis" / "compliance" / "supported_subset_policy.md").read_text(encoding="utf-8")
+
+    assert "HLA1516.1-DM-5.1.6-002 (IEEE 1516.1-2010 (2010 edition) §5.1.6)" in defended_partials
+    assert "HLA1516.1-OM-6.1.11-002 (IEEE 1516.1-2010 (2010 edition) §6.1.11)" in defended_partials
+    assert "HLA1516.1-OM-6.1.12-002 (IEEE 1516.1-2010 (2010 edition) §6.1.12)" in defended_partials
+    assert "- Supported-subset status counts: pass=2" in supported_subset_policy
+    assert "| HLA1516.1-DM-5.1.6-002 | IEEE 1516.1-2010 (2010 edition) §5.1.6 | pass | HLA1516.1-DM-5.1.6-001 |" in supported_subset_policy
+    assert "| HLA1516.1-OM-6.1.12-002 | IEEE 1516.1-2010 (2010 edition) §6.1.12 | pass | HLA1516.1-OM-6.1.12-001 |" in supported_subset_policy
+
+
+def test_checked_in_supported_subset_packets_include_unbatched_callback_child_row() -> None:
+    project_root = Path(__file__).resolve().parents[2]
+    defended_partials = (project_root / "analysis" / "compliance" / "defended_partials_index.md").read_text(encoding="utf-8")
+    supported_subset_policy = (project_root / "analysis" / "compliance" / "supported_subset_policy.md").read_text(encoding="utf-8")
+
+    assert "| HLA1516.1-OM-6.1.11-001 | IEEE 1516.1-2010 (2010 edition) §6.1.11 | unbatched-callback-delivery-only | HLA1516.1-OM-6.1.11-002 (IEEE 1516.1-2010 (2010 edition) §6.1.11) |" in defended_partials
+    assert "## Unbatched callback delivery subset" in supported_subset_policy
+    assert "- Supported-subset status counts: pass=1" in supported_subset_policy
+    assert "| HLA1516.1-OM-6.1.11-002 | IEEE 1516.1-2010 (2010 edition) §6.1.11 | pass | HLA1516.1-OM-6.1.11-001 |" in supported_subset_policy
+
+
+def test_checked_in_supported_subset_packets_include_transport_default_child_row() -> None:
+    project_root = Path(__file__).resolve().parents[2]
+    defended_partials = (project_root / "analysis" / "compliance" / "defended_partials_index.md").read_text(encoding="utf-8")
+    supported_subset_policy = (project_root / "analysis" / "compliance" / "supported_subset_policy.md").read_text(encoding="utf-8")
+
+    assert "HLA1516.1-OM-6.1.10-004 (IEEE 1516.1-2010 (2010 edition) §6.1.10)" in defended_partials
+    assert "- Supported-subset status counts: pass=25" in supported_subset_policy
+    assert "| HLA1516.1-OM-6.1.10-004 | IEEE 1516.1-2010 (2010 edition) §6.1.10 | pass | HLA1516.1-OM-6.1.10-001 |" in supported_subset_policy
+
+
+def test_checked_in_supported_subset_packets_split_transport_request_and_restore_rows() -> None:
+    project_root = Path(__file__).resolve().parents[2]
+    defended_partials = (project_root / "analysis" / "compliance" / "defended_partials_index.md").read_text(encoding="utf-8")
+    supported_subset_policy = (project_root / "analysis" / "compliance" / "supported_subset_policy.md").read_text(encoding="utf-8")
+
+    assert "HLA1516.1-OM-6.23-003 (IEEE 1516.1-2010 (2010 edition) §6.23)" in defended_partials
+    assert "HLA1516.1-OM-6.27-003 (IEEE 1516.1-2010 (2010 edition) §6.27)" in defended_partials
+    assert "- Supported-subset status counts: pass=25" in supported_subset_policy
+    assert "| HLA1516.1-OM-6.23-002 | IEEE 1516.1-2010 (2010 edition) §6.23 | pass | HLA1516.1-OM-6.23-001 |" in supported_subset_policy
+    assert "| HLA1516.1-OM-6.23-003 | IEEE 1516.1-2010 (2010 edition) §6.23 | pass | HLA1516.1-OM-6.23-001 |" in supported_subset_policy
+    assert "| HLA1516.1-OM-6.27-002 | IEEE 1516.1-2010 (2010 edition) §6.27 | pass | HLA1516.1-OM-6.27-001 |" in supported_subset_policy
+    assert "| HLA1516.1-OM-6.27-003 | IEEE 1516.1-2010 (2010 edition) §6.27 | pass | HLA1516.1-OM-6.27-001 |" in supported_subset_policy
+
+
+def test_checked_in_supported_subset_packets_include_transport_callback_requester_routing_rows() -> None:
+    project_root = Path(__file__).resolve().parents[2]
+    defended_partials = (project_root / "analysis" / "compliance" / "defended_partials_index.md").read_text(encoding="utf-8")
+    supported_subset_policy = (project_root / "analysis" / "compliance" / "supported_subset_policy.md").read_text(encoding="utf-8")
+
+    assert "HLA1516.1-OM-6.24-004 (IEEE 1516.1-2010 (2010 edition) §6.24)" in defended_partials
+    assert "HLA1516.1-OM-6.26-004 (IEEE 1516.1-2010 (2010 edition) §6.26)" in defended_partials
+    assert "HLA1516.1-OM-6.28-004 (IEEE 1516.1-2010 (2010 edition) §6.28)" in defended_partials
+    assert "HLA1516.1-OM-6.30-004 (IEEE 1516.1-2010 (2010 edition) §6.30)" in defended_partials
+    assert "| HLA1516.1-OM-6.24-004 | IEEE 1516.1-2010 (2010 edition) §6.24 | pass | HLA1516.1-OM-6.24-001 |" in supported_subset_policy
+    assert "| HLA1516.1-OM-6.26-004 | IEEE 1516.1-2010 (2010 edition) §6.26 | pass | HLA1516.1-OM-6.26-001 |" in supported_subset_policy
+    assert "| HLA1516.1-OM-6.28-004 | IEEE 1516.1-2010 (2010 edition) §6.28 | pass | HLA1516.1-OM-6.28-001 |" in supported_subset_policy
+    assert "| HLA1516.1-OM-6.30-004 | IEEE 1516.1-2010 (2010 edition) §6.30 | pass | HLA1516.1-OM-6.30-001 |" in supported_subset_policy
+
+
+def test_checked_in_supported_subset_packets_include_transport_query_default_rows() -> None:
+    project_root = Path(__file__).resolve().parents[2]
+    defended_partials = (project_root / "analysis" / "compliance" / "defended_partials_index.md").read_text(encoding="utf-8")
+    supported_subset_policy = (project_root / "analysis" / "compliance" / "supported_subset_policy.md").read_text(encoding="utf-8")
+
+    assert "HLA1516.1-OM-6.25-003 (IEEE 1516.1-2010 (2010 edition) §6.25)" in defended_partials
+    assert "HLA1516.1-OM-6.29-003 (IEEE 1516.1-2010 (2010 edition) §6.29)" in defended_partials
+    assert "- Supported-subset status counts: pass=25" in supported_subset_policy
+    assert "| HLA1516.1-OM-6.25-003 | IEEE 1516.1-2010 (2010 edition) §6.25 | pass | HLA1516.1-OM-6.25-001 |" in supported_subset_policy
+    assert "| HLA1516.1-OM-6.29-003 | IEEE 1516.1-2010 (2010 edition) §6.29 | pass | HLA1516.1-OM-6.29-001 |" in supported_subset_policy

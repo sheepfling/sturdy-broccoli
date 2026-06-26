@@ -4,31 +4,62 @@ This brief is written for a program/technical leadership audience. It explains w
 
 ## Executive Summary
 
-The Python RTI is now the repo's strongest reference backend and meets the current Python compliance end state as a fully classified backend:
+The Python RTI is now the repo's strongest `2010 / 1516e` reference backend,
+but leadership should read it through two separate denominators:
 
-- `919` total requirement rows classified
-- `818` `verified`
-- `78` `not-applicable`
-- `23` `vendor-divergent`
-- `0` `blocked`
-- `0` `not-yet-tested`
-- `0` `classification-required`
+- canonical `2010` backend-compliance packet:
+  - `934` rows
+  - `799` `pass`
+  - `40` `implemented-slice`
+  - `1` `implemented-smoke`
+  - `94` `partial`
+- Python runtime projection inside that packet:
+  - `830` `verified`
+  - `79` `not-applicable`
+  - `25` `vendor-divergent`
+  - `0` `blocked`
+  - `0` `not-yet-tested`
+  - `0` `classification-required`
 
 See:
 
 - `analysis/compliance/python_final_requirements_report.md`
 - `analysis/compliance/python_requirement_disposition.json`
 - `analysis/compliance/python_requirement_disposition.md`
+- `docs/verification/requirement_compliance_exports.md`
 
-In practical terms, this means the Python RTI no longer has unknown or untested requirement rows in its committed matrix projection. Every row is either proven, intentionally out of scope, or explicitly marked as a known divergence.
+Reading rule for leadership packets:
 
-That is not the same as saying "every applicable requirement is perfectly spec-identical." The remaining `23` residuals are intentional `vendor-divergent` classifications, not open test debt.
+- this brief is a downstream summary surface, not the canonical owner ledger
+- the canonical requirement status still lives in the owner ledgers, bounded
+  family docs, and linked backend-resolution artifacts
+- if leadership needs spreadsheet handoff packets, generate them from the
+  canonical sources rather than treating this brief as the source of truth
+
+In practical terms, this means the Python runtime projection no longer has
+unknown or untested runtime rows in the committed matrix. Every Python row is
+either proven, intentionally out of scope, or explicitly marked as a known
+divergence.
+
+That is not the same as saying:
+
+- every `2010` packet row is already a standalone all-passed witness
+- every applicable requirement is perfectly spec-identical
+
+The remaining `25` residuals are intentional `vendor-divergent`
+classifications, not open test debt, and the canonical packet still keeps
+bounded `partial` rows explicit.
 
 ## Recommended Executive Framing
 
 Use this as the headline:
 
-> We now have a fully classified Python RTI reference backend with no open compliance rows. It proves federation management, synchronization, packaged FOM loading, time management, and hosted networked operation. The remaining vendor-divergent items are explicit, documented policy choices, not unresolved test gaps.
+> We now have a Python RTI reference lane with no open runtime-classification
+> rows in the committed 2010 matrix projection. It proves federation
+> management, synchronization, packaged FOM loading, time management, and
+> hosted networked operation. The remaining vendor-divergent items and bounded
+> packet partials are explicit documented policy or scope readings, not hidden
+> test gaps.
 
 Then keep the distinction clear:
 
@@ -36,7 +67,8 @@ Then keep the distinction clear:
 - `not-applicable` means intentionally out of scope
 - `vendor-divergent` means intentionally different or only partially modeled by policy, not unfinished work
 
-Do not present the residual `23` as bugs unless the discussion is specifically about strict spec parity.
+Do not present the residual `25` as bugs unless the discussion is specifically
+about strict spec parity.
 
 Put the divergent rows in an appendix or a secondary "intentional residuals" slide, not on the main success slide.
 
@@ -45,7 +77,7 @@ Put the divergent rows in an appendix or a secondary "intentional residuals" sli
 At a high level, the project now has:
 
 - a clean HLA 2010 specification surface in `hla-rti1516e`
-- a pure Python RTI backend in `hla-backend-inmemory`
+- a pure Python RTI lane in `hla-backend-python1516e`
 - a shared verification harness in `hla-verification`
 - packaged FOM support, including `hla-fom-target-radar`
 - hosted transport layers for networked operation over REST and gRPC
@@ -54,7 +86,7 @@ At a high level, the project now has:
 The package split is intentional and visible in:
 
 - `docs/package_dependency_tree.md`
-- `packages/hla-backend-inmemory/README.md`
+- `packages/hla-backend-python1516e/README.md`
 - `packages/hla-transport-rest/README.md`
 - `packages/hla-transport-grpc/README.md`
 - `packages/hla-bridge-java-jpype/README.md`
@@ -270,8 +302,8 @@ Evidence:
 - `tests/time/test_section8_backend_matrix.py`
 - `tests/time/test_lookahead_backend_matrix.py`
 - `tests/scenarios/test_time_management_federation.py`
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/time_queue_delivery.py`
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/time_queue_grants.py`
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/time_queue_delivery.py`
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/time_queue_grants.py`
 
 What is **not** yet honestly claimed:
 
@@ -294,9 +326,9 @@ Representative evidence:
 
 - `tests/time/test_lookahead_backend_matrix.py`
 - `packages/hla-verification/src/hla.verification/section8_matrix.py`
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/state.py`
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/time_queue_delivery.py`
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/time_queue_grants.py`
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/state.py`
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/time_queue_delivery.py`
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/time_queue_grants.py`
 
 ## What Is Still Not Perfect
 
@@ -304,11 +336,11 @@ The Python RTI is not "zero divergence."
 
 The remaining residuals are:
 
-- `23` `vendor-divergent`
-- `78` `not-applicable`
+- `25` `vendor-divergent`
+- `79` `not-applicable`
 - `0` open states
 
-The most relevant remaining divergences for leadership discussion are the `6` IEEE 1516.1 rows still marked `vendor-divergent`:
+The most relevant remaining divergences for leadership discussion are the `6` IEEE 1516.1 rows still marked `vendor-divergent` in the Python disposition packet:
 
 - `HLA1516.1-FM-4.2-EFF-001`
 - `HLA1516.1-FM-4.5-EFF-001`
@@ -319,12 +351,46 @@ The most relevant remaining divergences for leadership discussion are the `6` IE
 
 These are not missing tests. They are explicit policy calls where the repo does not yet claim full spec-shaped behavior or a single all-in-one witness for the whole semantic effect.
 
+There is a second, different residual surface that matters for audit language:
+
+- the Python disposition packet has `0` open runtime states
+- the canonical 2010 matrix still keeps `12` broad-spec parent rows at `partial`
+
+That is intentional. Those `12` rows are defended policy parents, not unresolved Python execution gaps. The repo now pairs them with explicit narrower child claims in:
+
+- `analysis/compliance/supported_subset_policy.md`
+- `analysis/compliance/defended_partials_index.md`
+
+The defended parent set is:
+
+- `HLA1516.1-DM-5.1.6-001`
+- `HLA1516.1-OM-6.1.10-001`
+- `HLA1516.1-OM-6.1.11-001`
+- `HLA1516.1-OM-6.1.12-001`
+- `HLA1516.1-OM-6.23-001`
+- `HLA1516.1-OM-6.24-001`
+- `HLA1516.1-OM-6.25-001`
+- `HLA1516.1-OM-6.26-001`
+- `HLA1516.1-OM-6.27-001`
+- `HLA1516.1-OM-6.28-001`
+- `HLA1516.1-OM-6.29-001`
+- `HLA1516.1-OM-6.30-001`
+
+Leadership-safe interpretation:
+
+- the Python lane has no open runtime-classification states
+- the canonical `2010` packet still contains bounded `partial` rows
+- the remaining `partial` rows are scope-bound parent clauses or broader
+  packet-level bounded families that now have explicit supported-subset
+  witnesses or bounded owner docs underneath them
+- the honest gap is breadth of full standards wording, not missing implementation evidence for the narrower behaviors we already claim
+
 ## Recommended Boss-Level Framing
 
 The safest accurate summary is:
 
 1. We now have a real Python RTI reference implementation, not just a toy adapter.
-2. It is fully classified against the repo's HLA 2010 requirements matrix with no open Python rows left.
+2. Its runtime projection has no open Python classification rows left, while the canonical `2010` packet still keeps bounded `partial` rows explicit.
 3. Federation lifecycle, synchronization, FOM loading, MOM/MIM handling, time management, and hosted network transports are all exercised with executable evidence.
 4. The architecture is no longer locked to a single in-process Python federate model; the package split, transports, and Java bridges are deliberate preparation for broader interoperability.
 5. Target Radar is proven as a packaged example scenario. RPR 3.0 is not yet a claimed proof surface and should be presented as the next major qualification target.
@@ -332,4 +398,4 @@ The safest accurate summary is:
 
 ## One-Minute Talk Track
 
-"We built a spec-driven HLA 2010 RTI reference stack with Python as the first fully classified backend. The Python RTI now has no open compliance rows left in our committed matrix: every requirement is either verified, intentionally not applicable, or explicitly classified as a known divergence. We can stand up federations, synchronize federates, load packaged FOMs like Target Radar, preserve standard MIM behavior, and exercise HLA time-management semantics including lookahead, GALT, and LITS. We also proved the RTI can be hosted over REST and gRPC, so the architecture is not trapped on one machine or inside one Python process. What we have not claimed yet is full RPR 3.0 qualification or a benchmarked faster-than-real-time throughput number. Those are the next credibility tranches, not hidden gaps in what is already claimed."
+"We built a spec-driven HLA 2010 RTI reference stack with Python as the main reference lane. The Python runtime projection now has no open runtime-classification rows left in our committed matrix: every Python row is either verified, intentionally not applicable, or explicitly classified as a known divergence. The broader 2010 packet still keeps bounded partial rows explicit, and those are documented scope or backend-boundary readings rather than hidden Python failures. We can stand up federations, synchronize federates, load packaged FOMs like Target Radar, preserve standard MIM behavior, and exercise HLA time-management semantics including lookahead, GALT, and LITS. We also proved the RTI can be hosted over REST and gRPC, so the architecture is not trapped on one machine or inside one Python process. What we have not claimed yet is full RPR 3.0 qualification or a benchmarked faster-than-real-time throughput number. Those are the next credibility tranches, not hidden gaps in what is already claimed."

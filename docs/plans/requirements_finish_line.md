@@ -19,6 +19,7 @@ For the canonical bucket owners behind the 2010 surface, use:
 
 - [`../requirements/ieee-1516-2010/README.md`](../requirements/ieee-1516-2010/README.md)
 - [`../../requirements/2010/README.md`](../../requirements/2010/README.md)
+- [`2010_python_rti_bounded_family_execution_worklist.md`](2010_python_rti_bounded_family_execution_worklist.md)
 
 For the canonical bucket owners behind the 2025 surface, use:
 
@@ -50,15 +51,33 @@ Reading rule:
 - canonical owner docs now exist for the main 2010 bounded-family tails, the
   remaining mixed-backend 2010 priority rows, and the main 2025 umbrella,
   retired, binding-hosted, and Pitch proto HLA 4 / `202X` boundary buckets
+- execution companions now exist for the remaining `2010` bounded-family class
+  and the remaining `2025` umbrella-row class
 
 ## What still needs to happen
 
-Finish the remaining requirement work by closing the rows that still fall into
-one of these buckets:
+The repo no longer has active top-level `planned` bucket inventory in the
+canonical `2010` or grouped `2025` closeout surfaces.
 
-- `planned` rows with no executable proof yet
-- `partial` rows that are intentionally narrower than the standard wording
-- vendor-divergent rows that need an explicit supported-boundary test
+The remaining work is now about whether to preserve or deliberately tighten the
+maintained bounded classes below:
+
+- `2010` bounded partial families that already have explicit owner notes
+- `2010` bounded mixed-backend priority rows with separate backend-resolution
+  companions
+- `2025` `duplicate/umbrella` rows that intentionally stay non-standalone
+- `2025` `retired/legacy-only` rows that intentionally stay explicit
+  exclusions
+- bounded route, binding, backend-resolution, or tolerance-only claim surfaces
+  that should not be overstated as unconditional conformance
+
+Use this rule:
+
+- if leadership wants the current honest bounded-closeout posture, preserve
+  those owner readings and keep the linked companions synchronized
+- if leadership wants a stronger all-covered or broader compatibility claim,
+  fund narrower direct executable proof and update the owner docs, ledgers, and
+  exports together
 
 ## Finish rule
 
@@ -70,6 +89,11 @@ Do not treat this as done until each remaining row has one of these outcomes:
 
 If a row cannot be finished without changing scope, keep the broad row partial
 and document the narrower behavior rather than inflating the claim.
+
+For `2010`, the bounded-family tightening decisions now live in
+[`2010_python_rti_bounded_family_execution_worklist.md`](2010_python_rti_bounded_family_execution_worklist.md).
+For `2025`, the umbrella-row tightening decisions now live in
+[`2025_python_rti_umbrella_decomposition_worklist.md`](2025_python_rti_umbrella_decomposition_worklist.md).
 
 ## Ownership Rule
 
@@ -110,10 +134,16 @@ Practical owner rule:
 
 ## Stop condition
 
-The requirements work is finished when the remaining backlog is reduced to:
+For the current honest bounded-closeout program, the requirements work is
+finished when:
 
-- explicit planned work that is intentionally out of scope, or
-- partial rows whose narrower scope is fully documented and tested
+- no active closeout buckets remain due to missing ownership, missing links, or
+  stale grouped `planned` inventory
+- every maintained bounded class has a canonical owner doc plus companion
+  artifact and an explicit rerun surface
+- every stronger-than-supported broad claim has either been narrowed honestly
+  or replaced by direct executable proof
 
-Anything else means the requirements catalog still contains claims that are too
-strong for the evidence we have.
+For a stronger all-covered or compatibility-expansion program, more work
+remains until the maintained bounded classes themselves are converted into
+narrower direct claims.

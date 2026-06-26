@@ -120,7 +120,7 @@ executable RTI surface across:
 - time management, including GALT/LITS queries and bounded lookahead proofs
 - support services and callback flows
 - OMT parsing, validation, and explicit unsupported-boundary handling
-- direct and hosted Python 2025 route variants
+- the direct `python1516_2025` lane plus the hosted FedPro route variant
 
 The direct in-process proof is important here, not just the hosted route:
 
@@ -304,7 +304,7 @@ So when the repo says the current 2025 lane is a substantively validated
 working Python RTI surface, the strongest bounded claim is now:
 
 - the main `hla-backend-python1516-2025` runtime clears those named proof families
-  across direct and hosted Python 2025 routes
+  across the direct `python1516_2025` lane and the hosted FedPro route
 - `hla-backend-shim` remains a legacy compatibility shim and should not be treated
   as an implementation-owner proof bucket
 - Java/C++ and other wrapper lanes remain supporting seam evidence over the
@@ -457,7 +457,8 @@ That promotion is justified when the claim is phrased carefully:
 - `hla-backend-shim` is retained only as temporary import-compatibility
   legacy compatibility behavior over that runtime
 - it is the main full backend for bounded working-surface claims
-- direct and hosted proof should continue to stay green as the shim narrows
+- direct-lane proof and hosted-FedPro route proof should continue to stay green
+  as the shim narrows
 
 This is not the same as saying:
 

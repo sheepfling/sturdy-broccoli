@@ -213,7 +213,7 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710",
       "service_group": "Support services",
       "source": "support_services",
-      "status": "partial",
+      "status": "pass",
       "title": "Support services",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -286,11 +286,16 @@
       "vendor_source": ""
     },
     {
-      "artifact_refs": [],
+      "artifact_refs": [
+        "requirements/2010/hla1516_2_omt.csv",
+        "requirements/2010/hla1516_2_priority_omt.csv"
+      ],
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516.2-2010 (2010 edition)",
       "implementation_refs": [
+        "hla2010/backends/python/backend.py",
+        "hla2010/fom.py",
         "hla2010/fom.py::parse_fom_xml"
       ],
       "kind": "omt-area",
@@ -302,6 +307,17 @@
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
       "positive_test_refs": [
+        "test_parse_fom_xml_extracts_identification_names_and_reference_datatypes",
+        "test_parse_fom_xml_extracts_switch_table_settings_and_merge_summary",
+        "test_parse_fom_xml_extracts_synchronization_table_and_merge_summary",
+        "test_parse_fom_xml_extracts_transportation_update_rate_and_datatype_tables",
+        "test_parse_fom_xml_preserves_notes_and_catalog_notes",
+        "test_parse_fom_xml_rejects_duplicate_dimension_names",
+        "test_parse_fom_xml_requires_and_preserves_model_identification_metadata",
+        "test_parse_standard_mim_xml_extracts_structured_datatype_definitions",
+        "test_python_rti_resolves_fom_path_and_uses_requested_time_factory",
+        "tests/backends/test_python_backend.py",
+        "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_time_factories.py::test_python_rti_resolves_fom_path_and_uses_requested_time_factory",
         "tests/scenarios/test_startup_sync_fom_java_translation_v09.py::test_strict_fom_lookup_rejects_unknown_names",
         "tests/time/test_mom_mim_and_time_semantics_v010.py::test_mom_fom_module_request_reports_requested_module_payload"
@@ -312,7 +328,7 @@
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74",
       "service_group": "OMT/FOM",
       "source": "omt_components",
-      "status": "pass",
+      "status": "partial",
       "title": "HLA OMT components",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -323,11 +339,15 @@
       "vendor_source": ""
     },
     {
-      "artifact_refs": [],
+      "artifact_refs": [
+        "requirements/2010/hla1516_2_priority_omt.csv"
+      ],
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516.2-2010 (2010 edition)",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "hla2010/fom.py"
+      ],
       "kind": "omt-area",
       "matrix_id": "REQ-OMT-4_1-object_model_identification",
       "negative_test_refs": [],
@@ -336,14 +356,16 @@
       "pitch_runtime_disposition": "classification-required",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
-      "positive_test_refs": [],
+      "positive_test_refs": [
+        "tests/factories/test_fom_omt_parsing.py"
+      ],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",
       "requirement_id": "REQ-OMT-4_1-object_model_identification",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.1",
       "service_group": "OMT/FOM",
       "source": "object_model_identification",
-      "status": "planned",
+      "status": "pass",
       "title": "Object model identification",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -354,11 +376,15 @@
       "vendor_source": ""
     },
     {
-      "artifact_refs": [],
+      "artifact_refs": [
+        "requirements/2010/hla1516_2_omt.csv",
+        "requirements/2010/hla1516_2_priority_omt.csv"
+      ],
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516.2-2010 (2010 edition)",
       "implementation_refs": [
+        "hla2010/fom.py",
         "hla2010/fom.py::parse_fom_xml"
       ],
       "kind": "omt-area",
@@ -370,6 +396,8 @@
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
       "positive_test_refs": [
+        "test_python_rti_resolves_fom_path_and_uses_requested_time_factory",
+        "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_time_factories.py::test_python_rti_resolves_fom_path_and_uses_requested_time_factory",
         "tests/scenarios/test_startup_sync_fom_java_translation_v09.py::test_strict_fom_lookup_rejects_unknown_names",
         "tests/time/test_mom_mim_and_time_semantics_v010.py::test_mom_fom_module_request_reports_requested_module_payload"
@@ -380,7 +408,7 @@
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.2",
       "service_group": "OMT/FOM",
       "source": "object_class_structure",
-      "status": "pass",
+      "status": "partial",
       "title": "Object class structure table",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -391,11 +419,15 @@
       "vendor_source": ""
     },
     {
-      "artifact_refs": [],
+      "artifact_refs": [
+        "requirements/2010/hla1516_2_omt.csv",
+        "requirements/2010/hla1516_2_priority_omt.csv"
+      ],
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516.2-2010 (2010 edition)",
       "implementation_refs": [
+        "hla2010/fom.py",
         "hla2010/fom.py::parse_fom_xml"
       ],
       "kind": "omt-area",
@@ -407,6 +439,8 @@
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
       "positive_test_refs": [
+        "test_python_rti_resolves_fom_path_and_uses_requested_time_factory",
+        "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_time_factories.py::test_python_rti_resolves_fom_path_and_uses_requested_time_factory",
         "tests/scenarios/test_startup_sync_fom_java_translation_v09.py::test_strict_fom_lookup_rejects_unknown_names",
         "tests/time/test_mom_mim_and_time_semantics_v010.py::test_mom_fom_module_request_reports_requested_module_payload"
@@ -417,7 +451,7 @@
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.3",
       "service_group": "OMT/FOM",
       "source": "interaction_class_structure",
-      "status": "pass",
+      "status": "partial",
       "title": "Interaction class structure table",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -428,11 +462,15 @@
       "vendor_source": ""
     },
     {
-      "artifact_refs": [],
+      "artifact_refs": [
+        "requirements/2010/hla1516_2_omt.csv",
+        "requirements/2010/hla1516_2_priority_omt.csv"
+      ],
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516.2-2010 (2010 edition)",
       "implementation_refs": [
+        "hla2010/fom.py",
         "hla2010/fom.py::parse_fom_xml"
       ],
       "kind": "omt-area",
@@ -444,6 +482,8 @@
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
       "positive_test_refs": [
+        "test_python_rti_resolves_fom_path_and_uses_requested_time_factory",
+        "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_time_factories.py::test_python_rti_resolves_fom_path_and_uses_requested_time_factory",
         "tests/scenarios/test_startup_sync_fom_java_translation_v09.py::test_strict_fom_lookup_rejects_unknown_names",
         "tests/time/test_mom_mim_and_time_semantics_v010.py::test_mom_fom_module_request_reports_requested_module_payload"
@@ -454,7 +494,7 @@
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.4",
       "service_group": "OMT/FOM",
       "source": "attribute_table",
-      "status": "pass",
+      "status": "partial",
       "title": "Attribute table",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -465,11 +505,15 @@
       "vendor_source": ""
     },
     {
-      "artifact_refs": [],
+      "artifact_refs": [
+        "requirements/2010/hla1516_2_omt.csv",
+        "requirements/2010/hla1516_2_priority_omt.csv"
+      ],
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516.2-2010 (2010 edition)",
       "implementation_refs": [
+        "hla2010/fom.py",
         "hla2010/fom.py::parse_fom_xml"
       ],
       "kind": "omt-area",
@@ -481,6 +525,8 @@
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
       "positive_test_refs": [
+        "test_python_rti_resolves_fom_path_and_uses_requested_time_factory",
+        "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_time_factories.py::test_python_rti_resolves_fom_path_and_uses_requested_time_factory",
         "tests/scenarios/test_startup_sync_fom_java_translation_v09.py::test_strict_fom_lookup_rejects_unknown_names",
         "tests/time/test_mom_mim_and_time_semantics_v010.py::test_mom_fom_module_request_reports_requested_module_payload"
@@ -491,7 +537,7 @@
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.5",
       "service_group": "OMT/FOM",
       "source": "parameter_table",
-      "status": "pass",
+      "status": "partial",
       "title": "Parameter table",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -502,11 +548,15 @@
       "vendor_source": ""
     },
     {
-      "artifact_refs": [],
+      "artifact_refs": [
+        "requirements/2010/hla1516_2_omt.csv",
+        "requirements/2010/hla1516_2_priority_omt.csv"
+      ],
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516.2-2010 (2010 edition)",
       "implementation_refs": [
+        "hla2010/fom.py",
         "hla2010/fom.py::parse_fom_xml"
       ],
       "kind": "omt-area",
@@ -518,6 +568,8 @@
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
       "positive_test_refs": [
+        "test_parse_fom_xml_rejects_duplicate_dimension_names",
+        "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_time_factories.py::test_python_rti_resolves_fom_path_and_uses_requested_time_factory",
         "tests/scenarios/test_startup_sync_fom_java_translation_v09.py::test_strict_fom_lookup_rejects_unknown_names",
         "tests/time/test_mom_mim_and_time_semantics_v010.py::test_mom_fom_module_request_reports_requested_module_payload"
@@ -528,7 +580,7 @@
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.6",
       "service_group": "OMT/FOM",
       "source": "dimension_table",
-      "status": "pass",
+      "status": "partial",
       "title": "Dimension table",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -539,11 +591,15 @@
       "vendor_source": ""
     },
     {
-      "artifact_refs": [],
+      "artifact_refs": [
+        "requirements/2010/hla1516_2_omt.csv",
+        "requirements/2010/hla1516_2_priority_omt.csv"
+      ],
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516.2-2010 (2010 edition)",
       "implementation_refs": [
+        "hla2010/fom.py",
         "hla2010/fom.py::parse_fom_xml"
       ],
       "kind": "omt-area",
@@ -555,6 +611,8 @@
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
       "positive_test_refs": [
+        "test_parse_fom_xml_extracts_identification_names_and_reference_datatypes",
+        "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_time_factories.py::test_python_rti_resolves_fom_path_and_uses_requested_time_factory",
         "tests/scenarios/test_startup_sync_fom_java_translation_v09.py::test_strict_fom_lookup_rejects_unknown_names",
         "tests/time/test_mom_mim_and_time_semantics_v010.py::test_mom_fom_module_request_reports_requested_module_payload"
@@ -565,7 +623,7 @@
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.7",
       "service_group": "OMT/FOM",
       "source": "time_representation_table",
-      "status": "pass",
+      "status": "partial",
       "title": "Time representation table",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -576,11 +634,16 @@
       "vendor_source": ""
     },
     {
-      "artifact_refs": [],
+      "artifact_refs": [
+        "requirements/2010/hla1516_2_priority_omt.csv"
+      ],
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516.2-2010 (2010 edition)",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "hla2010/backends/python/backend.py",
+        "hla2010/fom.py"
+      ],
       "kind": "omt-area",
       "matrix_id": "REQ-OMT-4_8-user_supplied_tag_table",
       "negative_test_refs": [],
@@ -589,14 +652,17 @@
       "pitch_runtime_disposition": "classification-required",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
-      "positive_test_refs": [],
+      "positive_test_refs": [
+        "tests/backends/test_python_backend.py",
+        "tests/factories/test_fom_omt_parsing.py"
+      ],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",
       "requirement_id": "REQ-OMT-4_8-user_supplied_tag_table",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.8",
       "service_group": "OMT/FOM",
       "source": "user_supplied_tag_table",
-      "status": "planned",
+      "status": "pass",
       "title": "User-supplied tag table",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -607,11 +673,16 @@
       "vendor_source": ""
     },
     {
-      "artifact_refs": [],
+      "artifact_refs": [
+        "requirements/2010/hla1516_2_omt.csv",
+        "requirements/2010/hla1516_2_priority_omt.csv"
+      ],
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516.2-2010 (2010 edition)",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "hla2010/fom.py"
+      ],
       "kind": "omt-area",
       "matrix_id": "REQ-OMT-4_9-synchronization_table",
       "negative_test_refs": [],
@@ -620,14 +691,17 @@
       "pitch_runtime_disposition": "classification-required",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
-      "positive_test_refs": [],
+      "positive_test_refs": [
+        "test_parse_fom_xml_extracts_synchronization_table_and_merge_summary",
+        "tests/factories/test_fom_omt_parsing.py"
+      ],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",
       "requirement_id": "REQ-OMT-4_9-synchronization_table",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.9",
       "service_group": "OMT/FOM",
       "source": "synchronization_table",
-      "status": "planned",
+      "status": "partial",
       "title": "Synchronization table",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -638,11 +712,16 @@
       "vendor_source": ""
     },
     {
-      "artifact_refs": [],
+      "artifact_refs": [
+        "requirements/2010/hla1516_2_omt.csv",
+        "requirements/2010/hla1516_2_priority_omt.csv"
+      ],
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516.2-2010 (2010 edition)",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "hla2010/fom.py"
+      ],
       "kind": "omt-area",
       "matrix_id": "REQ-OMT-4_10-transportation_type_table",
       "negative_test_refs": [],
@@ -651,14 +730,17 @@
       "pitch_runtime_disposition": "classification-required",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
-      "positive_test_refs": [],
+      "positive_test_refs": [
+        "test_parse_fom_xml_extracts_transportation_update_rate_and_datatype_tables",
+        "tests/factories/test_fom_omt_parsing.py"
+      ],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",
       "requirement_id": "REQ-OMT-4_10-transportation_type_table",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.10",
       "service_group": "OMT/FOM",
       "source": "transportation_type_table",
-      "status": "planned",
+      "status": "partial",
       "title": "Transportation type table",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -669,11 +751,16 @@
       "vendor_source": ""
     },
     {
-      "artifact_refs": [],
+      "artifact_refs": [
+        "requirements/2010/hla1516_2_omt.csv",
+        "requirements/2010/hla1516_2_priority_omt.csv"
+      ],
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516.2-2010 (2010 edition)",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "hla2010/fom.py"
+      ],
       "kind": "omt-area",
       "matrix_id": "REQ-OMT-4_11-update_rate_table",
       "negative_test_refs": [],
@@ -682,14 +769,17 @@
       "pitch_runtime_disposition": "classification-required",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
-      "positive_test_refs": [],
+      "positive_test_refs": [
+        "test_parse_fom_xml_extracts_transportation_update_rate_and_datatype_tables",
+        "tests/factories/test_fom_omt_parsing.py"
+      ],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",
       "requirement_id": "REQ-OMT-4_11-update_rate_table",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.11",
       "service_group": "OMT/FOM",
       "source": "update_rate_table",
-      "status": "planned",
+      "status": "partial",
       "title": "Update rate table",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -700,11 +790,16 @@
       "vendor_source": ""
     },
     {
-      "artifact_refs": [],
+      "artifact_refs": [
+        "requirements/2010/hla1516_2_omt.csv",
+        "requirements/2010/hla1516_2_priority_omt.csv"
+      ],
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516.2-2010 (2010 edition)",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "hla2010/fom.py"
+      ],
       "kind": "omt-area",
       "matrix_id": "REQ-OMT-4_12-switches_table",
       "negative_test_refs": [],
@@ -713,14 +808,17 @@
       "pitch_runtime_disposition": "classification-required",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
-      "positive_test_refs": [],
+      "positive_test_refs": [
+        "test_parse_fom_xml_extracts_switch_table_settings_and_merge_summary",
+        "tests/factories/test_fom_omt_parsing.py"
+      ],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",
       "requirement_id": "REQ-OMT-4_12-switches_table",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.12",
       "service_group": "OMT/FOM",
       "source": "switches_table",
-      "status": "planned",
+      "status": "partial",
       "title": "Switches table",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -731,11 +829,16 @@
       "vendor_source": ""
     },
     {
-      "artifact_refs": [],
+      "artifact_refs": [
+        "requirements/2010/hla1516_2_omt.csv",
+        "requirements/2010/hla1516_2_priority_omt.csv"
+      ],
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516.2-2010 (2010 edition)",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "hla2010/fom.py"
+      ],
       "kind": "omt-area",
       "matrix_id": "REQ-OMT-4_13-datatype_table",
       "negative_test_refs": [],
@@ -744,14 +847,17 @@
       "pitch_runtime_disposition": "classification-required",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
-      "positive_test_refs": [],
+      "positive_test_refs": [
+        "test_parse_standard_mim_xml_extracts_structured_datatype_definitions",
+        "tests/factories/test_fom_omt_parsing.py"
+      ],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",
       "requirement_id": "REQ-OMT-4_13-datatype_table",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.13",
       "service_group": "OMT/FOM",
       "source": "datatype_table",
-      "status": "planned",
+      "status": "partial",
       "title": "Datatype tables",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -762,11 +868,16 @@
       "vendor_source": ""
     },
     {
-      "artifact_refs": [],
+      "artifact_refs": [
+        "requirements/2010/hla1516_2_omt.csv",
+        "requirements/2010/hla1516_2_priority_omt.csv"
+      ],
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516.2-2010 (2010 edition)",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "hla2010/fom.py"
+      ],
       "kind": "omt-area",
       "matrix_id": "REQ-OMT-4_14-notes_table",
       "negative_test_refs": [],
@@ -775,14 +886,17 @@
       "pitch_runtime_disposition": "classification-required",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
-      "positive_test_refs": [],
+      "positive_test_refs": [
+        "test_parse_fom_xml_preserves_notes_and_catalog_notes",
+        "tests/factories/test_fom_omt_parsing.py"
+      ],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",
       "requirement_id": "REQ-OMT-4_14-notes_table",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.14",
       "service_group": "OMT/FOM",
       "source": "notes_table",
-      "status": "planned",
+      "status": "partial",
       "title": "Notes table",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -793,11 +907,15 @@
       "vendor_source": ""
     },
     {
-      "artifact_refs": [],
+      "artifact_refs": [
+        "requirements/2010/hla1516_2_priority_omt.csv"
+      ],
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516.2-2010 (2010 edition)",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "docs/verification/requirements_hierarchy.md"
+      ],
       "kind": "omt-area",
       "matrix_id": "REQ-OMT-5-lexicon",
       "negative_test_refs": [],
@@ -806,14 +924,16 @@
       "pitch_runtime_disposition": "classification-required",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
-      "positive_test_refs": [],
+      "positive_test_refs": [
+        "tests/verification/test_requirement_traceability_1516_2_v013.py"
+      ],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",
       "requirement_id": "REQ-OMT-5-lexicon",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a75",
       "service_group": "OMT/FOM",
       "source": "lexicon",
-      "status": "planned",
+      "status": "pass",
       "title": "FOM/SOM lexicon",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -824,11 +944,16 @@
       "vendor_source": ""
     },
     {
-      "artifact_refs": [],
+      "artifact_refs": [
+        "requirements/2010/hla1516_2_priority_omt.csv"
+      ],
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516.2-2010 (2010 edition)",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "docs/verification/requirements_hierarchy.md",
+        "requirements/2010/hla1516_2_priority_omt.csv"
+      ],
       "kind": "omt-area",
       "matrix_id": "REQ-OMT-6-conformance",
       "negative_test_refs": [],
@@ -837,14 +962,16 @@
       "pitch_runtime_disposition": "not-applicable",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
-      "positive_test_refs": [],
+      "positive_test_refs": [
+        "tests/verification/test_requirement_traceability_1516_2_v013.py"
+      ],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",
       "requirement_id": "REQ-OMT-6-conformance",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a76",
       "service_group": "OMT/FOM",
       "source": "conformance",
-      "status": "planned",
+      "status": "pass",
       "title": "Conformance",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -855,11 +982,15 @@
       "vendor_source": ""
     },
     {
-      "artifact_refs": [],
+      "artifact_refs": [
+        "requirements/2010/hla1516_2_omt.csv",
+        "requirements/2010/hla1516_2_priority_omt.csv"
+      ],
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516.2-2010 (2010 edition)",
       "implementation_refs": [
+        "hla2010/fom.py",
         "hla2010/fom.py::merge_fom_modules"
       ],
       "kind": "omt-area",
@@ -871,9 +1002,12 @@
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
       "positive_test_refs": [
-        "tests/scenarios/test_startup_sync_fom_java_translation_v09.py::test_conflicting_time_implementations_are_rejected",
+        "test_join_fom_time_conflict_is_transactional",
+        "test_merge_with_standard_mim_preserves_standard_mom_definitions_and_catalog_metadata",
         "tests/backends/test_python_backend_federation_extended.py::test_create_federation_execution_with_explicit_mim_overrides_default_mim",
-        "tests/backends/test_python_backend_federation_extended.py::test_join_federation_execution_with_additional_modules_updates_catalog"
+        "tests/backends/test_python_backend_federation_extended.py::test_join_federation_execution_with_additional_modules_updates_catalog",
+        "tests/factories/test_fom_omt_parsing.py",
+        "tests/scenarios/test_startup_sync_fom_java_translation_v09.py::test_conflicting_time_implementations_are_rejected"
       ],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",
@@ -881,7 +1015,7 @@
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a77",
       "service_group": "OMT/FOM",
       "source": "merging_rules",
-      "status": "pass",
+      "status": "partial",
       "title": "FOM module/SOM module merging rules",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -892,11 +1026,15 @@
       "vendor_source": ""
     },
     {
-      "artifact_refs": [],
+      "artifact_refs": [
+        "requirements/2010/hla1516_2_priority_omt.csv"
+      ],
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516.2-2010 (2010 edition)",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "hla2010/fom.py"
+      ],
       "kind": "omt-area",
       "matrix_id": "REQ-OMT-Annex_D-dif",
       "negative_test_refs": [],
@@ -905,14 +1043,16 @@
       "pitch_runtime_disposition": "classification-required",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
-      "positive_test_refs": [],
+      "positive_test_refs": [
+        "tests/factories/test_fom_omt_parsing.py"
+      ],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",
       "requirement_id": "REQ-OMT-Annex_D-dif",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a7Annex D",
       "service_group": "OMT/FOM",
       "source": "dif",
-      "status": "planned",
+      "status": "pass",
       "title": "OMT data interchange format",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -923,11 +1063,17 @@
       "vendor_source": ""
     },
     {
-      "artifact_refs": [],
+      "artifact_refs": [
+        "requirements/2010/hla1516_2_omt.csv",
+        "requirements/2010/hla1516_2_priority_omt.csv"
+      ],
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516.2-2010 (2010 edition)",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "hla2010/fom.py",
+        "hla2010/fom.py::validate_fom_xml_schema"
+      ],
       "kind": "omt-area",
       "matrix_id": "REQ-OMT-Annex_E-schema",
       "negative_test_refs": [],
@@ -936,14 +1082,21 @@
       "pitch_runtime_disposition": "classification-required",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
-      "positive_test_refs": [],
+      "positive_test_refs": [
+        "test_parse_fom_xml_with_omt_schema_validation_accepts_restaurant_reference_module_and_rejects_invalid_document",
+        "tests/factories/test_fom_omt_parsing.py",
+        "tests/factories/test_fom_omt_parsing.py::test_parse_fom_xml_rejects_unknown_object_model_namespace",
+        "tests/factories/test_fom_omt_parsing.py::test_parse_fom_xml_with_omt_schema_validation_accepts_restaurant_reference_module_and_rejects_invalid_document",
+        "tests/factories/test_fom_omt_parsing.py::test_serialize_fom_module_emits_schema_valid_xml_and_preserves_identification",
+        "tests/factories/test_fom_omt_parsing.py::test_serialize_fom_module_preserves_metadata_subset_across_round_trip"
+      ],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",
       "requirement_id": "REQ-OMT-Annex_E-schema",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a7Annex E",
       "service_group": "OMT/FOM",
       "source": "schema",
-      "status": "planned",
+      "status": "partial",
       "title": "OMT conformance XML Schema",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -1986,30 +2139,28 @@
       "certi_runtime_status": "",
       "document": "IEEE 1516-2010",
       "implementation_refs": [
-        "Time concepts should map to 1516.1 time services and grant/order semantics"
+        "hla2010/time_management.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
       "linked_methods": [],
       "matrix_id": "HLA1516-TIME-001",
       "negative_test_refs": [],
-      "notes": "verification_method=hla2010/time_management.py; partial",
+      "notes": "verification_method=requirements skeleton; Cross-links to the 1516.1 TM requirements are now explicit.",
       "pitch_jpype_runtime_disposition": "not-applicable",
       "pitch_py4j_runtime_disposition": "not-applicable",
       "pitch_runtime_disposition": "not-applicable",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
-      "positive_test_refs": [
-        "requirements skeleton"
-      ],
+      "positive_test_refs": [],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",
       "requirement_id": "HLA1516-TIME-001",
       "section_ref": "IEEE 1516-2010 Time concept rules",
       "service_group": "Time concepts",
       "source": "requirements/2010/hla1516_framework_rules.csv",
-      "status": "planned",
-      "title": "The repo shall map time concepts to 1516.1 time services and grant/order semantics",
+      "status": "partial",
+      "title": "The repo shall map time concepts to 1516.1 time services and grant/order semantics, including logical time and ordering relationships",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
       "vendor_profile_bucket": "",
@@ -2038,7 +2189,7 @@
       "linked_methods": [],
       "matrix_id": "HLA1516.1-DDM-001",
       "negative_test_refs": [],
-      "notes": "verification_method=Maps to region creation and filtered routing behavior; DDM family seed now linked to the focused Clause 9 extraction tranche",
+      "notes": "verification_method=generated ledger + focused tests; Connect to the DDM compliance slices for the narrow rows.; Clause 9 family summary now remains intentionally partial because the bounded DDM owner surface and detailed reconciliation rows are explicit.",
       "pitch_jpype_runtime_disposition": "not-applicable",
       "pitch_py4j_runtime_disposition": "not-applicable",
       "pitch_runtime_disposition": "not-applicable",
@@ -2053,8 +2204,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79",
       "service_group": "Data Distribution Management",
       "source": "requirements/2010/hla1516_1_federate_interface.csv",
-      "status": "planned",
-      "title": "The RTI shall implement DDM services for region creation",
+      "status": "partial",
+      "title": "The RTI shall implement DDM services for region creation, routing, and filtered delivery behavior",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
       "vendor_profile_bucket": "",
@@ -2318,7 +2469,7 @@
       "linked_methods": [],
       "matrix_id": "HLA1516.1-DDM-9.12-001",
       "negative_test_refs": [],
-      "notes": "verification_method=integration test; The focused DDM lifecycle test uses the same overlap-filter path that gates reflected attribute delivery",
+      "notes": "verification_method=integration test; Interaction delivery with matching regions is asserted directly",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -2334,7 +2485,7 @@
       "service_group": "DDM",
       "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
-      "title": "RTI shall route attribute updates based on region overlap",
+      "title": "RTI shall route interactions based on region overlap where dimensions apply",
       "vendor_evidence_refs": [
         "../tests/verification/test_compliance_slice_v011.py"
       ],
@@ -2363,7 +2514,7 @@
       "linked_methods": [],
       "matrix_id": "HLA1516.1-DDM-9.13-001",
       "negative_test_refs": [],
-      "notes": "verification_method=integration test; Interaction delivery with matching regions is asserted directly",
+      "notes": "verification_method=integration test; The focused DDM lifecycle test proves region-scoped attribute-value-update requests reach only the overlap-matching provider callback path",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -2379,7 +2530,7 @@
       "service_group": "DDM",
       "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
-      "title": "RTI shall route interactions based on region overlap where dimensions apply",
+      "title": "RTI shall route attribute-value update requests based on region overlap",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -2782,29 +2933,29 @@
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516.1-2010 (2010 edition)",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "hla2010/backends/python/backend.py"
+      ],
       "kind": "extracted-requirement",
       "linked_assets": [],
       "linked_methods": [],
       "matrix_id": "HLA1516.1-DM-001",
       "negative_test_refs": [],
-      "notes": "verification_method=shall; generated ledger + focused tests",
+      "notes": "verification_method=generated ledger + focused tests; Current generated declaration rows provide the fine-grained breakdown and should remain the implementation-driving source.",
       "pitch_jpype_runtime_disposition": "not-applicable",
       "pitch_py4j_runtime_disposition": "not-applicable",
       "pitch_runtime_disposition": "not-applicable",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
-      "positive_test_refs": [
-        "Maps to publish/subscribe and registration control behavior"
-      ],
+      "positive_test_refs": [],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75",
       "service_group": "Declaration Management",
       "source": "requirements/2010/hla1516_1_federate_interface.csv",
-      "status": "planned",
-      "title": "The RTI shall implement declaration-management services for publication",
+      "status": "partial",
+      "title": "The RTI shall implement declaration-management services for publication, subscription, registration control, and the associated error and precondition behavior",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
       "vendor_profile_bucket": "",
@@ -2832,7 +2983,7 @@
       "linked_methods": [],
       "matrix_id": "HLA1516.1-FM-001",
       "negative_test_refs": [],
-      "notes": "verification_method=generated ledger + focused tests; Section family seed linked to current generated federation-management service rows; Section family seed linked to current generated federation-management service rows",
+      "notes": "verification_method=generated ledger + focused tests; Section family seed linked to current generated federation-management service rows; Clause 4 family summary now remains intentionally partial because the bounded federation-management owner surface and detailed reconciliation rows are explicit.",
       "pitch_jpype_runtime_disposition": "not-applicable",
       "pitch_py4j_runtime_disposition": "not-applicable",
       "pitch_runtime_disposition": "not-applicable",
@@ -2847,7 +2998,7 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74",
       "service_group": "Federation Management",
       "source": "requirements/2010/hla1516_1_federate_interface.csv",
-      "status": "planned",
+      "status": "partial",
       "title": "The RTI shall implement federation-management services for create, join, resign, destroy, save, restore, synchronization, and related lifecycle behavior",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -3787,7 +3938,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.10-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native lifecycle tests now have explicit hosted gRPC and REST lifecycle smoke coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST lifecycle replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -3804,7 +3955,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Resign Federation Execution shall be covered by direct service tests and transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Resign Federation Execution shall be covered by direct service tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
       "vendor_profile_bucket": "",
@@ -4188,7 +4339,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.11-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native synchronization tests now sit alongside explicit hosted gRPC and REST synchronization coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST synchronization replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -4205,7 +4356,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Register Federation Synchronization Point shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Register Federation Synchronization Point shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -4605,7 +4756,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.12-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native synchronization tests now sit alongside explicit hosted gRPC and REST synchronization coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST synchronization replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -4622,7 +4773,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Synchronization Point Registration callbacks shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Synchronization Point Registration callbacks shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -5015,7 +5166,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.13-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native synchronization tests now sit alongside explicit hosted gRPC and REST synchronization coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST synchronization replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -5032,7 +5183,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Announce Synchronization Point shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Announce Synchronization Point shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -5425,7 +5576,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.14-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native synchronization tests now sit alongside explicit hosted gRPC and REST synchronization coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST synchronization replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -5442,7 +5593,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Synchronization Point Achieved shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Synchronization Point Achieved shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -5887,7 +6038,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.15-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native synchronization tests now sit alongside explicit hosted gRPC and REST synchronization coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST synchronization replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -5904,7 +6055,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Federation Synchronized shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Federation Synchronized shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -6290,7 +6441,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.16-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native save/restore evidence is now backed by explicit hosted gRPC and REST save/restore lifecycle coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST save/restore replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -6308,7 +6459,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Request Federation Save shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Request Federation Save shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [
         "../tests/verification/test_compliance_slice_v011.py",
         "../tests/verification/test_spec_traceability_and_extended_python_rti.py",
@@ -6668,7 +6819,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.17-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native save/restore evidence is now backed by explicit hosted gRPC and REST save/restore lifecycle coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST save/restore replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -6686,7 +6837,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Initiate Federate Save shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Initiate Federate Save shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [
         "../tests/verification/test_compliance_slice_v011.py",
         "../tests/verification/test_spec_traceability_and_extended_python_rti.py",
@@ -7039,7 +7190,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.18-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native save/restore evidence is now backed by explicit hosted gRPC and REST save/restore lifecycle coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST save/restore replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -7057,7 +7208,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Federate Save Begun shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Federate Save Begun shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [
         "../tests/verification/test_compliance_slice_v011.py",
         "../tests/verification/test_spec_traceability_and_extended_python_rti.py",
@@ -7417,7 +7568,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.19-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native save/restore evidence is now backed by explicit hosted gRPC and REST save/restore lifecycle coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST save/restore replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -7435,7 +7586,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Federate Save Complete and Federate Save Not Complete shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Federate Save Complete and Federate Save Not Complete shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [
         "../tests/verification/test_compliance_slice_v011.py",
         "../tests/verification/test_spec_traceability_and_extended_python_rti.py",
@@ -7761,7 +7912,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.2-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native lifecycle tests now have explicit hosted gRPC and REST lifecycle smoke coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST lifecycle replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -7778,7 +7929,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Connect shall be covered by direct service tests and transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Connect shall be covered by direct service tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
       "vendor_profile_bucket": "",
@@ -8164,7 +8315,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.20-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native save/restore evidence is now backed by explicit hosted gRPC and REST save/restore lifecycle coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST save/restore replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -8182,7 +8333,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Federation Saved and Federation Not Saved shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Federation Saved and Federation Not Saved shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [
         "../tests/verification/test_compliance_slice_v011.py",
         "../tests/verification/test_spec_traceability_and_extended_python_rti.py",
@@ -8553,7 +8704,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.21-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native save/restore evidence is now backed by explicit hosted gRPC and REST save/restore lifecycle coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST save/restore replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -8571,7 +8722,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Abort Federation Save shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Abort Federation Save shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -8942,7 +9093,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.22-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native save/restore evidence is now backed by explicit hosted gRPC and REST save/restore lifecycle coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST save/restore replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -8960,7 +9111,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Query Federation Save Status shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Query Federation Save Status shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -9335,7 +9486,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.23-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native save/restore evidence is now backed by explicit hosted gRPC and REST save/restore lifecycle coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST save/restore replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -9353,7 +9504,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Federation Save Status Response shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Federation Save Status Response shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -9712,7 +9863,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.24-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native save/restore evidence is now backed by explicit hosted gRPC and REST save/restore lifecycle coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST save/restore replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -9730,7 +9881,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Request Federation Restore shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Request Federation Restore shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [
         "../tests/verification/test_compliance_slice_v011.py",
         "../tests/verification/test_spec_traceability_and_extended_python_rti.py",
@@ -10113,7 +10264,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.25-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native save/restore evidence is now backed by explicit hosted gRPC and REST save/restore lifecycle coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST save/restore replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -10131,7 +10282,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Request Federation Restore confirmation shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Request Federation Restore confirmation shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -10480,7 +10631,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.26-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native save/restore evidence is now backed by explicit hosted gRPC and REST save/restore lifecycle coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST save/restore replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -10498,7 +10649,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Federation Restore Begun shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Federation Restore Begun shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [
         "../tests/verification/test_spec_traceability_and_extended_python_rti.py",
         "../tests/vendors/test_pitch_real_backend_matrix.py"
@@ -10851,7 +11002,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.27-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native save/restore evidence is now backed by explicit hosted gRPC and REST save/restore lifecycle coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST save/restore replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -10869,7 +11020,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Initiate Federate Restore shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Initiate Federate Restore shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [
         "../tests/verification/test_compliance_slice_v011.py",
         "../tests/verification/test_spec_traceability_and_extended_python_rti.py",
@@ -11234,7 +11385,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.28-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native save/restore evidence is now backed by explicit hosted gRPC and REST save/restore lifecycle coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST save/restore replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -11252,7 +11403,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Federate Restore Complete and Federate Restore Not Complete shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Federate Restore Complete and Federate Restore Not Complete shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [
         "../tests/verification/test_compliance_slice_v011.py",
         "../tests/verification/test_spec_traceability_and_extended_python_rti.py",
@@ -11644,7 +11795,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.29-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native save/restore evidence is now backed by explicit hosted gRPC and REST save/restore lifecycle coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST save/restore replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -11662,7 +11813,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Federation Restored and Federation Not Restored shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Federation Restored and Federation Not Restored shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [
         "../tests/verification/test_spec_traceability_and_extended_python_rti.py",
         "../tests/verification/test_compliance_slice_v011.py",
@@ -11991,7 +12142,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.3-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native lifecycle tests now have explicit hosted gRPC and REST lifecycle smoke coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST lifecycle replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -12008,7 +12159,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Disconnect shall be covered by direct service tests and transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Disconnect shall be covered by direct service tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
       "vendor_profile_bucket": "",
@@ -12357,7 +12508,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.30-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native save/restore evidence is now backed by explicit hosted gRPC and REST save/restore lifecycle coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST save/restore replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -12375,7 +12526,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Abort Federation Restore shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Abort Federation Restore shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [
         "../tests/verification/test_compliance_slice_v011.py",
         "../tests/verification/test_spec_traceability_and_extended_python_rti.py",
@@ -12750,7 +12901,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.31-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native save/restore evidence is now backed by explicit hosted gRPC and REST save/restore lifecycle coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST save/restore replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -12768,7 +12919,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Query Federation Restore Status shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Query Federation Restore Status shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -13143,7 +13294,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.32-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native save/restore evidence is now backed by explicit hosted gRPC and REST save/restore lifecycle coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST save/restore replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -13161,7 +13312,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Federation Restore Status Response shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Federation Restore Status Response shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -13496,7 +13647,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.5-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native lifecycle tests now have explicit hosted gRPC and REST lifecycle smoke coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST lifecycle replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -13513,7 +13664,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Create Federation Execution shall be covered by direct service tests plus transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Create Federation Execution shall be covered by direct service tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
       "vendor_profile_bucket": "",
@@ -13835,7 +13986,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.6-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native lifecycle tests now have explicit hosted gRPC and REST lifecycle smoke coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST lifecycle replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -13852,7 +14003,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Destroy Federation Execution shall be covered by direct service tests plus transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Destroy Federation Execution shall be covered by direct service tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
       "vendor_profile_bucket": "",
@@ -14173,7 +14324,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.9-TEST-001",
       "negative_test_refs": [],
-      "notes": "verification_method=test plan + backend matrix placeholder; Native lifecycle tests now have explicit hosted gRPC and REST lifecycle smoke coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST lifecycle replay is recorded separately in backend-resolution evidence.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -14190,7 +14341,7 @@
       "service_group": "FM/TEST",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
       "status": "pass",
-      "title": "Join Federation Execution shall be covered by direct service tests and transport-equivalence checks across native, gRPC, and REST entry points.",
+      "title": "Join Federation Execution shall be covered by direct service tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available.",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
       "vendor_profile_bucket": "",
@@ -14220,7 +14371,7 @@
       "linked_methods": [],
       "matrix_id": "HLA1516.1-MOM-001",
       "negative_test_refs": [],
-      "notes": "verification_method= and service-reporting state; hla2010/backends/python/mom_actions.py; Connects the standards-family row to the focused MOM observer slice",
+      "notes": "verification_method=verification slices + focused tests; Connect to the REQ-MOM-* slices and service-reporting evidence for the detailed Clause 11 rows.; Clause 11 family summary now remains intentionally partial because the bounded MOM owner surface and focused observer/service-reporting evidence are explicit.",
       "pitch_jpype_runtime_disposition": "not-applicable",
       "pitch_py4j_runtime_disposition": "not-applicable",
       "pitch_runtime_disposition": "not-applicable",
@@ -14235,8 +14386,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a711",
       "service_group": "Management Object Model behavior",
       "source": "requirements/2010/hla1516_1_federate_interface.csv",
-      "status": "planned",
-      "title": "The RTI shall implement MOM behavior for tables",
+      "status": "partial",
+      "title": "The RTI shall implement MOM behavior for tables, reports, service actions, observer reconstruction, and service-reporting state",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
       "vendor_profile_bucket": "",
@@ -15679,29 +15830,29 @@
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516.1-2010 (2010 edition)",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "hla2010/backends/python/backend.py"
+      ],
       "kind": "extracted-requirement",
       "linked_assets": [],
       "linked_methods": [],
       "matrix_id": "HLA1516.1-OM-001",
       "negative_test_refs": [],
-      "notes": "verification_method= and interaction delivery behavior; hla2010/backends/python/backend.py",
+      "notes": "verification_method=generated ledger + focused tests; Backed today by target/radar and compliance slices and refined by the detailed object-management rows.",
       "pitch_jpype_runtime_disposition": "not-applicable",
       "pitch_py4j_runtime_disposition": "not-applicable",
       "pitch_runtime_disposition": "not-applicable",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
-      "positive_test_refs": [
-        "shall"
-      ],
+      "positive_test_refs": [],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-OM-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76",
       "service_group": "Object Management",
       "source": "requirements/2010/hla1516_1_federate_interface.csv",
-      "status": "planned",
-      "title": "The RTI shall implement object-management services for registration",
+      "status": "partial",
+      "title": "The RTI shall implement object-management services for registration, update, delete, discovery, and interaction delivery behavior",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
       "vendor_profile_bucket": "Exchange",
@@ -15731,7 +15882,7 @@
       "linked_methods": [],
       "matrix_id": "HLA1516.1-OWN-001",
       "negative_test_refs": [],
-      "notes": "verification_method= and release-request flows; hla2010/backends/python/backend.py; Ownership family seed now linked to the focused Clause 7 extraction tranche",
+      "notes": "verification_method=generated ledger + focused tests; Connect to the ownership and negotiated-ownership backend matrices for the finer-grained rows.; Clause 7 family summary now remains intentionally partial because the bounded ownership-management owner surface and detailed reconciliation rows are explicit.",
       "pitch_jpype_runtime_disposition": "not-applicable",
       "pitch_py4j_runtime_disposition": "not-applicable",
       "pitch_runtime_disposition": "not-applicable",
@@ -15746,12 +15897,12 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77",
       "service_group": "Ownership Management",
       "source": "requirements/2010/hla1516_1_federate_interface.csv",
-      "status": "planned",
-      "title": "The RTI shall implement ownership-management services for unconditional",
+      "status": "partial",
+      "title": "The RTI shall implement ownership-management services for unconditional, negotiated, acquisition, divestiture, and release-request flows",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
-      "vendor_profile_bucket": "Ownership",
-      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): not yet explicit; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Pitch native HLA4 (JPype, direct or FedPro): not yet explicit; Pitch native HLA4 (Py4J, direct or FedPro): not yet explicit; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_bucket": "Negotiated Ownership",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Pitch native HLA4 (JPype, direct or FedPro): no; Pitch native HLA4 (Py4J, direct or FedPro): no; Portico (JPype, none): no; Portico (Py4J, none): no",
       "vendor_profile_refs": [
         "docs/rti_options_and_test_matrix.md"
       ],
@@ -16613,7 +16764,7 @@
       "linked_methods": [],
       "matrix_id": "HLA1516.1-SUP-001",
       "negative_test_refs": [],
-      "notes": "verification_method= and related support operations; hla2010/backends/python/support.py; Support-services family seed now linked to the focused Clause 10 extraction tranche",
+      "notes": "verification_method=generated ledger + focused tests; Connect to the Section 10 backend matrix for the detailed support rows.; Clause 10 family summary now remains intentionally partial because the bounded support-services owner surface and detailed reconciliation rows are explicit.",
       "pitch_jpype_runtime_disposition": "not-applicable",
       "pitch_py4j_runtime_disposition": "not-applicable",
       "pitch_runtime_disposition": "not-applicable",
@@ -16629,8 +16780,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710",
       "service_group": "Support Services",
       "source": "requirements/2010/hla1516_1_federate_interface.csv",
-      "status": "planned",
-      "title": "The RTI shall implement support services for lookups",
+      "status": "partial",
+      "title": "The RTI shall implement support services for lookups, factories, callback control, advisory behavior, and related support operations",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
       "vendor_profile_bucket": "",
@@ -17502,7 +17653,7 @@
       "linked_methods": [],
       "matrix_id": "HLA1516.1-TM-001",
       "negative_test_refs": [],
-      "notes": "verification_method= order control; Maps to regulation/constrained/query/lookahead/order behavior; Section family seed linked to current generated time-management service rows",
+      "notes": "verification_method=generated ledger + focused tests; Connect to the Section 8 matrix and time suites for the detailed clauses.; Clause 8 family summary now remains intentionally partial because the bounded time-management owner surface and detailed reconciliation rows are explicit.",
       "pitch_jpype_runtime_disposition": "not-applicable",
       "pitch_py4j_runtime_disposition": "not-applicable",
       "pitch_runtime_disposition": "not-applicable",
@@ -17517,8 +17668,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78",
       "service_group": "Time Management",
       "source": "requirements/2010/hla1516_1_federate_interface.csv",
-      "status": "planned",
-      "title": "The RTI shall implement time-management services for regulation",
+      "status": "partial",
+      "title": "The RTI shall implement time-management services for regulation, constrained behavior, query services, lookahead, order control, and grant delivery",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
       "vendor_profile_bucket": "Timed",
@@ -33399,15 +33550,19 @@
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/scenarios/test_support_services_backend_matrix.py"
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/backends/test_python_backend_support_services.py::test_support_handle_factory_rows_have_direct_runtime_witnesses",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_support_factory_and_decode_scenario_over_fedpro_route"
       ],
-      "python_runtime_disposition": "vendor-divergent",
+      "python_runtime_disposition": "verified",
       "python_runtime_status": "",
       "requirement_id": "REQ-RTI-SS-10_44-getMessageRetractionHandleFactory",
       "section_ref": "1516.1-2010 (2010 edition) \u00a710.44",
       "service_group": "Support Services",
       "source": "getMessageRetractionHandleFactory",
-      "status": "partial",
+      "status": "pass",
       "title": "Disable Callbacks service",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -33621,15 +33776,19 @@
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/scenarios/test_support_services_backend_matrix.py"
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/backends/test_python_backend_support_services.py::test_support_handle_factory_rows_have_direct_runtime_witnesses",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_support_factory_and_decode_scenario_over_fedpro_route"
       ],
-      "python_runtime_disposition": "vendor-divergent",
+      "python_runtime_disposition": "verified",
       "python_runtime_status": "",
       "requirement_id": "REQ-RTI-SS-10_44-getRegionHandleFactory",
       "section_ref": "1516.1-2010 (2010 edition) \u00a710.44",
       "service_group": "Support Services",
       "source": "getRegionHandleFactory",
-      "status": "partial",
+      "status": "pass",
       "title": "Disable Callbacks service",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -35852,8 +36011,63 @@
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "partial",
-      "supported_subset_for": "",
+      "supported_subset_for": [
+        "HLA1516.1-DM-5.1.6-002"
+      ],
       "title": "RTI shall support subscribing with update rate reduction where applicable.",
+      "vendor_evidence_refs": [],
+      "vendor_notes": "",
+      "vendor_profile_bucket": "",
+      "vendor_profile_notes": "",
+      "vendor_profile_refs": [],
+      "vendor_profile_source": "",
+      "vendor_source": ""
+    },
+    {
+      "artifact_refs": [
+        "analysis/compliance/service_conformance.json"
+      ],
+      "certi_runtime_disposition": "classification-required",
+      "certi_runtime_status": "",
+      "claim_scope": "supported-subset",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "implementation_refs": [
+        "packages/hla-backend-python1516e/src/hla/backends/python1516e/subscriptions.py",
+        "packages/hla-backend-python1516e/src/hla/backends/python1516e/backend.py",
+        "hla2010/ambassadors.py"
+      ],
+      "kind": "extracted-requirement",
+      "linked_assets": [
+        "REQ-OM-UPDATE-RATE-001"
+      ],
+      "linked_methods": [
+        "subscribeObjectClassAttributes",
+        "subscribeObjectClassAttributesPassively",
+        "subscribeObjectClassAttributesWithRegions",
+        "subscribeObjectClassAttributesPassivelyWithRegions"
+      ],
+      "matrix_id": "HLA1516.1-DM-5.1.6-002",
+      "negative_test_refs": [],
+      "notes": "This supported-subset row captures the repo-owned subscription-side update-rate behavior: explicit and FOM-declared designators propagate across direct, inherited, and regioned subscriptions within the logical-time model.",
+      "pitch_jpype_runtime_disposition": "classification-required",
+      "pitch_py4j_runtime_disposition": "classification-required",
+      "pitch_runtime_disposition": "classification-required",
+      "pitch_runtime_status": "",
+      "policy_basis": "logical-time-update-rate-only",
+      "portico_runtime_disposition": "classification-required",
+      "positive_test_refs": [
+        "tests/backends/test_python_backend_support_services.py::test_fom_declared_update_rate_defaults_apply_to_inherited_and_regioned_subscriptions",
+        "tests/backends/test_python_backend_support_services.py::test_update_rate_designator_throttles_timed_reflects"
+      ],
+      "python_runtime_disposition": "verified",
+      "python_runtime_status": "",
+      "requirement_id": "HLA1516.1-DM-5.1.6-002",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1.6",
+      "service_group": "Declaration management",
+      "source": "curated-clause5-6",
+      "status": "pass",
+      "supported_subset_for": "HLA1516.1-DM-5.1.6-001",
+      "title": "RTI shall apply explicit and FOM-declared update-rate designators across direct, inherited, and region-based object-class subscriptions within the currently implemented logical-time subset.",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
       "vendor_profile_bucket": "",
@@ -38042,7 +38256,7 @@
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
       ],
-      "notes": "This broad standards row remains partial. The backend now proves distinct reliable versus best-effort callback transport behavior for both FOM-defined defaults and explicit service-selected overrides, plus restore persistence for the supported subset, but it still does not model the full custom transportation semantic space described by the standard.",
+      "notes": "This broad standards row remains partial. The backend now proves FOM-defined reliable and best-effort defaults, explicit service-selected overrides, distinct best-effort callback transport behavior, and restore persistence for the supported subset, but it still does not model the full custom transportation semantic space described by the standard.",
       "pitch_jpype_runtime_disposition": "vendor-divergent",
       "pitch_py4j_runtime_disposition": "vendor-divergent",
       "pitch_runtime_disposition": "vendor-divergent",
@@ -38080,7 +38294,11 @@
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "partial",
-      "supported_subset_for": "",
+      "supported_subset_for": [
+        "HLA1516.1-OM-6.1.10-002",
+        "HLA1516.1-OM-6.1.10-003",
+        "HLA1516.1-OM-6.1.10-004"
+      ],
       "title": "RTI shall use transportation types for object updates and interactions as defined by the FDD and service arguments.",
       "vendor_evidence_refs": [
         "../tests/scenarios/test_object_management_backend_matrix.py",
@@ -38259,6 +38477,64 @@
       "artifact_refs": [
         "analysis/compliance/service_conformance.json"
       ],
+      "certi_runtime_disposition": "not-yet-tested",
+      "certi_runtime_status": "no",
+      "claim_scope": "supported-subset",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "implementation_refs": [
+        "packages/hla-backend-python1516e/src/hla/backends/python1516e/object_delivery_transport.py",
+        "packages/hla-backend-python1516e/src/hla/backends/python1516e/object_delivery.py",
+        "packages/hla-backend-python1516e/src/hla/backends/python1516e/support_lookup.py"
+      ],
+      "kind": "extracted-requirement",
+      "linked_assets": [
+        "REQ-OM-TRANSPORT-BEST-EFFORT-001",
+        "REQ-OM-TRANSPORT-REPORT-001"
+      ],
+      "linked_methods": [
+        "updateAttributeValues",
+        "sendInteraction",
+        "queryAttributeTransportationType",
+        "queryInteractionTransportationType"
+      ],
+      "matrix_id": "HLA1516.1-OM-6.1.10-004",
+      "negative_test_refs": [],
+      "notes": "This supported-subset row captures FOM-declared transport defaults for the standard reliable and best-effort pair: reflected attributes, received interactions, and transportation-type query callbacks all report the declared transport without requiring an explicit per-service override.",
+      "pitch_jpype_runtime_disposition": "not-yet-tested",
+      "pitch_py4j_runtime_disposition": "not-yet-tested",
+      "pitch_runtime_disposition": "not-yet-tested",
+      "pitch_runtime_status": "yes",
+      "policy_basis": "reliable-best-effort-transport-only",
+      "portico_runtime_disposition": "classification-required",
+      "positive_test_refs": [
+        "tests/backends/test_python_backend_support_services.py::test_fom_declared_transport_defaults_apply_to_attributes_and_interactions"
+      ],
+      "python_runtime_disposition": "verified",
+      "python_runtime_status": "yes",
+      "requirement_id": "HLA1516.1-OM-6.1.10-004",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.10",
+      "service_group": "Object management",
+      "source": "curated-clause5-6",
+      "status": "pass",
+      "supported_subset_for": "HLA1516.1-OM-6.1.10-001",
+      "title": "RTI shall honor FOM-declared reliable and best-effort transportation defaults for object updates and interactions in the currently supported transport subset.",
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_object_management_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared transportation-type and restore-persistence scenarios verify the supported Pitch transport subset and restore persistence",
+      "vendor_profile_bucket": "Exchange",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Pitch native HLA4 (JPype, direct or FedPro): smoke; Pitch native HLA4 (Py4J, direct or FedPro): smoke; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
+    },
+    {
+      "artifact_refs": [
+        "analysis/compliance/service_conformance.json"
+      ],
       "certi_runtime_disposition": "classification-required",
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
@@ -38306,8 +38582,66 @@
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "partial",
-      "supported_subset_for": "",
+      "supported_subset_for": [
+        "HLA1516.1-OM-6.1.11-002"
+      ],
       "title": "RTI may combine, package, or passelize messages without changing externally visible semantics.",
+      "vendor_evidence_refs": [],
+      "vendor_notes": "",
+      "vendor_profile_bucket": "Exchange",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Pitch native HLA4 (JPype, direct or FedPro): smoke; Pitch native HLA4 (Py4J, direct or FedPro): smoke; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": ""
+    },
+    {
+      "artifact_refs": [
+        "analysis/compliance/service_conformance.json"
+      ],
+      "certi_runtime_disposition": "classification-required",
+      "certi_runtime_status": "",
+      "claim_scope": "supported-subset",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "implementation_refs": [
+        "packages/hla-backend-python1516e/src/hla/backends/python1516e/object_delivery.py",
+        "packages/hla-backend-python1516e/src/hla/backends/python1516e/time_queue_delivery.py",
+        "packages/hla-rti1516e/src/hla/rti1516e/ambassadors.py"
+      ],
+      "kind": "extracted-requirement",
+      "linked_assets": [
+        "REQ-DM-SUBSCRIPTION-DELIVERY-001"
+      ],
+      "linked_methods": [
+        "reflectAttributeValues",
+        "receiveInteraction",
+        "provideAttributeValueUpdate"
+      ],
+      "matrix_id": "HLA1516.1-OM-6.1.11-002",
+      "negative_test_refs": [],
+      "notes": "This supported-subset row captures the behavior the repo actually proves today: direct unbatched callback delivery preserves the externally visible reflect, interaction, request-update, and time-managed ordering semantics consumed by the current Python and hosted route-parity scenarios.",
+      "pitch_jpype_runtime_disposition": "verified",
+      "pitch_py4j_runtime_disposition": "verified",
+      "pitch_runtime_disposition": "verified",
+      "pitch_runtime_status": "",
+      "policy_basis": "unbatched-callback-delivery-only",
+      "portico_runtime_disposition": "classification-required",
+      "positive_test_refs": [
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_request_attribute_value_update_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order"
+      ],
+      "python_runtime_disposition": "verified",
+      "python_runtime_status": "",
+      "requirement_id": "HLA1516.1-OM-6.1.11-002",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.11",
+      "service_group": "Object management",
+      "source": "curated-clause5-6",
+      "status": "pass",
+      "supported_subset_for": "HLA1516.1-OM-6.1.11-001",
+      "title": "RTI shall preserve externally visible reflect and interaction callback semantics for the currently implemented direct unbatched delivery subset.",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
       "vendor_profile_bucket": "Exchange",
@@ -38382,8 +38716,69 @@
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "partial",
-      "supported_subset_for": "",
+      "supported_subset_for": [
+        "HLA1516.1-OM-6.1.12-002"
+      ],
       "title": "RTI shall honor update-rate reduction when reflecting attribute updates.",
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_object_management_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared update-rate scenario verifies Pitch reduces reflected update cadence to the negotiated rate",
+      "vendor_profile_bucket": "Exchange",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Pitch native HLA4 (JPype, direct or FedPro): smoke; Pitch native HLA4 (Py4J, direct or FedPro): smoke; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
+    },
+    {
+      "artifact_refs": [
+        "analysis/compliance/service_conformance.json"
+      ],
+      "certi_runtime_disposition": "not-yet-tested",
+      "certi_runtime_status": "no",
+      "claim_scope": "supported-subset",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "implementation_refs": [
+        "packages/hla-backend-python1516e/src/hla/backends/python1516e/object_delivery.py",
+        "packages/hla-backend-python1516e/src/hla/backends/python1516e/time_queue_delivery.py",
+        "packages/hla-backend-python1516e/src/hla/backends/python1516e/subscriptions.py",
+        "hla2010/ambassadors.py"
+      ],
+      "kind": "extracted-requirement",
+      "linked_assets": [
+        "REQ-OM-UPDATE-RATE-001"
+      ],
+      "linked_methods": [
+        "reflectAttributeValues",
+        "subscribeObjectClassAttributes",
+        "subscribeObjectClassAttributesWithRegions"
+      ],
+      "matrix_id": "HLA1516.1-OM-6.1.12-002",
+      "negative_test_refs": [],
+      "notes": "This supported-subset row captures the repo-owned reflection-side update-rate behavior: timed reflects are throttled by explicit and FOM-declared designators, but receive-order delivery is not artificially suppressed outside the logical-time model.",
+      "pitch_jpype_runtime_disposition": "verified",
+      "pitch_py4j_runtime_disposition": "verified",
+      "pitch_runtime_disposition": "verified",
+      "pitch_runtime_status": "yes",
+      "policy_basis": "logical-time-update-rate-only",
+      "portico_runtime_disposition": "classification-required",
+      "positive_test_refs": [
+        "tests/backends/test_python_backend_support_services.py::test_update_rate_designator_throttles_timed_reflects",
+        "tests/backends/test_python_backend_support_services.py::test_update_rate_designator_does_not_suppress_receive_order_updates",
+        "tests/backends/test_python_backend_support_services.py::test_fom_declared_update_rate_defaults_apply_to_inherited_and_regioned_subscriptions"
+      ],
+      "python_runtime_disposition": "verified",
+      "python_runtime_status": "yes",
+      "requirement_id": "HLA1516.1-OM-6.1.12-002",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.12",
+      "service_group": "Object management",
+      "source": "curated-clause5-6",
+      "status": "pass",
+      "supported_subset_for": "HLA1516.1-OM-6.1.12-001",
+      "title": "RTI shall throttle timed reflected attribute delivery according to explicit and FOM-declared update-rate designators while preserving receive-order delivery that has no logical-time basis.",
       "vendor_evidence_refs": [
         "../tests/scenarios/test_object_management_backend_matrix.py",
         "../tests/vendors/test_pitch_real_backend_matrix.py"
@@ -40837,7 +41232,10 @@
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "partial",
-      "supported_subset_for": "",
+      "supported_subset_for": [
+        "HLA1516.1-OM-6.23-002",
+        "HLA1516.1-OM-6.23-003"
+      ],
       "title": "RTI shall provide Request Attribute Transportation Type Change across the full transportation semantic space defined by the standard.",
       "vendor_evidence_refs": [
         "../tests/scenarios/test_object_management_backend_matrix.py",
@@ -40862,14 +41260,12 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
-        "packages/hla-backend-python1516e/src/hla.backends.python1516e/save_restore.py",
         "packages/hla-backend-python1516e/src/hla.backends.python1516e/state.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
         "REQ-OM-TRANSPORT-REPORT-001",
-        "REQ-OM-TRANSPORT-BEST-EFFORT-001",
-        "REQ-SAVE-RESTORE-FEDERATE-LOCAL-STATE-001"
+        "REQ-OM-TRANSPORT-BEST-EFFORT-001"
       ],
       "linked_methods": [
         "requestAttributeTransportationTypeChange",
@@ -40879,7 +41275,7 @@
       "negative_test_refs": [
         "tests/backends/test_python_backend_object_ownership_extended.py::test_request_attribute_transportation_type_change_rejects_not_connected_not_joined_and_unknown_object"
       ],
-      "notes": "",
+      "notes": "This supported-subset row covers the live request/change behavior for attribute transportation state in the reliable and best-effort subset, including confirm/query-visible outcomes and invalid-request rejection boundaries.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -40888,8 +41284,7 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks",
-        "tests/backends/test_python_backend_object_ownership_extended.py::test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates",
-        "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides"
+        "tests/backends/test_python_backend_object_ownership_extended.py::test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -40899,7 +41294,62 @@
       "source": "curated-clause5-6",
       "status": "pass",
       "supported_subset_for": "HLA1516.1-OM-6.23-001",
-      "title": "RTI shall support Request Attribute Transportation Type Change for the currently implemented reliable and best-effort transport subset and persist that selected attribute transport state across restore.",
+      "title": "RTI shall support Request Attribute Transportation Type Change for the currently implemented reliable and best-effort transport subset.",
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_object_management_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared transportation-type restore scenario verifies Pitch attribute transport persistence for the supported subset",
+      "vendor_profile_bucket": "Exchange",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Pitch native HLA4 (JPype, direct or FedPro): smoke; Pitch native HLA4 (Py4J, direct or FedPro): smoke; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
+    },
+    {
+      "artifact_refs": [
+        "analysis/compliance/service_conformance.json"
+      ],
+      "certi_runtime_disposition": "not-yet-tested",
+      "certi_runtime_status": "no",
+      "claim_scope": "supported-subset",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "implementation_refs": [
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/save_restore.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/state.py"
+      ],
+      "kind": "extracted-requirement",
+      "linked_assets": [
+        "REQ-SAVE-RESTORE-FEDERATE-LOCAL-STATE-001",
+        "REQ-OM-TRANSPORT-BEST-EFFORT-001"
+      ],
+      "linked_methods": [
+        "requestAttributeTransportationTypeChange",
+        "queryAttributeTransportationType"
+      ],
+      "matrix_id": "HLA1516.1-OM-6.23-003",
+      "negative_test_refs": [],
+      "notes": "This supported-subset row isolates restore persistence for attribute transportation overrides after a request/change has already established non-default transport state.",
+      "pitch_jpype_runtime_disposition": "verified",
+      "pitch_py4j_runtime_disposition": "verified",
+      "pitch_runtime_disposition": "verified",
+      "pitch_runtime_status": "yes",
+      "policy_basis": "reliable-best-effort-transport-only",
+      "portico_runtime_disposition": "classification-required",
+      "positive_test_refs": [
+        "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides"
+      ],
+      "python_runtime_disposition": "verified",
+      "python_runtime_status": "yes",
+      "requirement_id": "HLA1516.1-OM-6.23-003",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.23",
+      "service_group": "Object management",
+      "source": "curated-clause5-6",
+      "status": "pass",
+      "supported_subset_for": "HLA1516.1-OM-6.23-001",
+      "title": "RTI shall persist selected attribute transportation overrides across restore in the currently implemented reliable and best-effort transport subset.",
       "vendor_evidence_refs": [
         "../tests/scenarios/test_object_management_backend_matrix.py",
         "../tests/vendors/test_pitch_real_backend_matrix.py"
@@ -40957,7 +41407,11 @@
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "partial",
-      "supported_subset_for": "",
+      "supported_subset_for": [
+        "HLA1516.1-OM-6.24-002",
+        "HLA1516.1-OM-6.24-003",
+        "HLA1516.1-OM-6.24-004"
+      ],
       "title": "RTI shall invoke Confirm Attribute Transportation Type Change across the full transportation semantic space.",
       "vendor_evidence_refs": [
         "../tests/scenarios/test_object_management_backend_matrix.py",
@@ -41085,6 +41539,60 @@
       ],
       "certi_runtime_disposition": "not-yet-tested",
       "certi_runtime_status": "no",
+      "claim_scope": "supported-subset",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "implementation_refs": [
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
+        "hla2010/ambassadors.py"
+      ],
+      "kind": "extracted-requirement",
+      "linked_assets": [
+        "REQ-OM-TRANSPORT-REPORT-001"
+      ],
+      "linked_methods": [
+        "confirmAttributeTransportationTypeChange",
+        "requestAttributeTransportationTypeChange"
+      ],
+      "matrix_id": "HLA1516.1-OM-6.24-004",
+      "negative_test_refs": [],
+      "notes": "This supported-subset row isolates requester-only callback routing for attribute transport-change confirmations in the native Python lane.",
+      "pitch_jpype_runtime_disposition": "verified",
+      "pitch_py4j_runtime_disposition": "verified",
+      "pitch_runtime_disposition": "verified",
+      "pitch_runtime_status": "yes",
+      "policy_basis": "reliable-best-effort-transport-only",
+      "portico_runtime_disposition": "classification-required",
+      "positive_test_refs": [
+        "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks"
+      ],
+      "python_runtime_disposition": "verified",
+      "python_runtime_status": "yes",
+      "requirement_id": "HLA1516.1-OM-6.24-004",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.24",
+      "service_group": "Object management",
+      "source": "curated-clause5-6",
+      "status": "pass",
+      "supported_subset_for": "HLA1516.1-OM-6.24-001",
+      "title": "RTI shall route Confirm Attribute Transportation Type Change only to the federate that requested the change in the currently implemented reliable and best-effort transport subset.",
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_object_management_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared transportation-type scenario verifies Pitch attribute transport-change confirmation in the supported subset",
+      "vendor_profile_bucket": "Exchange",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Pitch native HLA4 (JPype, direct or FedPro): smoke; Pitch native HLA4 (Py4J, direct or FedPro): smoke; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
+    },
+    {
+      "artifact_refs": [
+        "analysis/compliance/service_conformance.json"
+      ],
+      "certi_runtime_disposition": "not-yet-tested",
+      "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
@@ -41123,7 +41631,10 @@
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "partial",
-      "supported_subset_for": "",
+      "supported_subset_for": [
+        "HLA1516.1-OM-6.25-002",
+        "HLA1516.1-OM-6.25-003"
+      ],
       "title": "RTI shall provide Query Attribute Transportation Type across the full transportation semantic space defined by the standard.",
       "vendor_evidence_refs": [
         "../tests/scenarios/test_object_management_backend_matrix.py",
@@ -41200,6 +41711,60 @@
       ],
       "certi_runtime_disposition": "not-yet-tested",
       "certi_runtime_status": "no",
+      "claim_scope": "supported-subset",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "implementation_refs": [
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
+        "hla2010/ambassadors.py"
+      ],
+      "kind": "extracted-requirement",
+      "linked_assets": [
+        "REQ-OM-TRANSPORT-REPORT-001"
+      ],
+      "linked_methods": [
+        "queryAttributeTransportationType",
+        "reportAttributeTransportationType"
+      ],
+      "matrix_id": "HLA1516.1-OM-6.25-003",
+      "negative_test_refs": [],
+      "notes": "This supported-subset row isolates the default-state query behavior: absent any explicit attribute override, the backend reports the effective reliable transportation type.",
+      "pitch_jpype_runtime_disposition": "not-yet-tested",
+      "pitch_py4j_runtime_disposition": "not-yet-tested",
+      "pitch_runtime_disposition": "not-yet-tested",
+      "pitch_runtime_status": "yes",
+      "policy_basis": "reliable-best-effort-transport-only",
+      "portico_runtime_disposition": "classification-required",
+      "positive_test_refs": [
+        "tests/backends/test_python_backend_object_ownership_extended.py::test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore"
+      ],
+      "python_runtime_disposition": "verified",
+      "python_runtime_status": "yes",
+      "requirement_id": "HLA1516.1-OM-6.25-003",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.25",
+      "service_group": "Object management",
+      "source": "curated-clause5-6",
+      "status": "pass",
+      "supported_subset_for": "HLA1516.1-OM-6.25-001",
+      "title": "RTI shall report the default reliable attribute transportation type when no explicit override exists in the currently implemented transport subset.",
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_object_management_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared transportation-type scenario verifies Pitch attribute transport queries in the supported subset",
+      "vendor_profile_bucket": "Exchange",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Pitch native HLA4 (JPype, direct or FedPro): smoke; Pitch native HLA4 (Py4J, direct or FedPro): smoke; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
+    },
+    {
+      "artifact_refs": [
+        "analysis/compliance/service_conformance.json"
+      ],
+      "certi_runtime_disposition": "not-yet-tested",
+      "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
@@ -41236,7 +41801,11 @@
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "partial",
-      "supported_subset_for": "",
+      "supported_subset_for": [
+        "HLA1516.1-OM-6.26-002",
+        "HLA1516.1-OM-6.26-003",
+        "HLA1516.1-OM-6.26-004"
+      ],
       "title": "RTI shall invoke Report Attribute Transportation Type across the full transportation semantic space.",
       "vendor_evidence_refs": [
         "../tests/scenarios/test_object_management_backend_matrix.py",
@@ -41364,6 +41933,60 @@
       ],
       "certi_runtime_disposition": "not-yet-tested",
       "certi_runtime_status": "no",
+      "claim_scope": "supported-subset",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "implementation_refs": [
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
+        "hla2010/ambassadors.py"
+      ],
+      "kind": "extracted-requirement",
+      "linked_assets": [
+        "REQ-OM-TRANSPORT-REPORT-001"
+      ],
+      "linked_methods": [
+        "reportAttributeTransportationType",
+        "queryAttributeTransportationType"
+      ],
+      "matrix_id": "HLA1516.1-OM-6.26-004",
+      "negative_test_refs": [],
+      "notes": "This supported-subset row isolates requester-only callback routing for attribute transportation reports in the native Python lane.",
+      "pitch_jpype_runtime_disposition": "verified",
+      "pitch_py4j_runtime_disposition": "verified",
+      "pitch_runtime_disposition": "verified",
+      "pitch_runtime_status": "yes",
+      "policy_basis": "reliable-best-effort-transport-only",
+      "portico_runtime_disposition": "classification-required",
+      "positive_test_refs": [
+        "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks"
+      ],
+      "python_runtime_disposition": "verified",
+      "python_runtime_status": "yes",
+      "requirement_id": "HLA1516.1-OM-6.26-004",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.26",
+      "service_group": "Object management",
+      "source": "curated-clause5-6",
+      "status": "pass",
+      "supported_subset_for": "HLA1516.1-OM-6.26-001",
+      "title": "RTI shall route Report Attribute Transportation Type only to the federate that issued the corresponding query in the currently implemented reliable and best-effort transport subset.",
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_object_management_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared transportation-type scenario verifies Pitch attribute transport report callbacks in the supported subset",
+      "vendor_profile_bucket": "Exchange",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Pitch native HLA4 (JPype, direct or FedPro): smoke; Pitch native HLA4 (Py4J, direct or FedPro): smoke; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
+    },
+    {
+      "artifact_refs": [
+        "analysis/compliance/service_conformance.json"
+      ],
+      "certi_runtime_disposition": "not-yet-tested",
+      "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
@@ -41408,7 +42031,10 @@
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "partial",
-      "supported_subset_for": "",
+      "supported_subset_for": [
+        "HLA1516.1-OM-6.27-002",
+        "HLA1516.1-OM-6.27-003"
+      ],
       "title": "RTI shall provide Request Interaction Transportation Type Change across the full transportation semantic space defined by the standard.",
       "vendor_evidence_refs": [
         "../tests/scenarios/test_object_management_backend_matrix.py",
@@ -41434,14 +42060,12 @@
       "implementation_refs": [
         "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
         "packages/hla-backend-python1516e/src/hla.backends.python1516e/ddm.py",
-        "packages/hla-backend-python1516e/src/hla.backends.python1516e/save_restore.py",
         "packages/hla-backend-python1516e/src/hla.backends.python1516e/state.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
         "REQ-OM-TRANSPORT-REPORT-001",
-        "REQ-OM-TRANSPORT-BEST-EFFORT-001",
-        "REQ-SAVE-RESTORE-FEDERATE-LOCAL-STATE-001"
+        "REQ-OM-TRANSPORT-BEST-EFFORT-001"
       ],
       "linked_methods": [
         "requestInteractionTransportationTypeChange",
@@ -41451,7 +42075,7 @@
       "negative_test_refs": [
         "tests/backends/test_python_backend_object_ownership_extended.py::test_request_interaction_transportation_type_change_rejects_not_connected_not_joined_and_save_restore"
       ],
-      "notes": "",
+      "notes": "This supported-subset row covers the live request/change behavior for interaction transportation state in the reliable and best-effort subset, including confirm/query-visible outcomes and invalid-request rejection boundaries.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -41460,8 +42084,7 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks",
-        "tests/backends/test_python_backend_object_ownership_extended.py::test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates",
-        "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides"
+        "tests/backends/test_python_backend_object_ownership_extended.py::test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -41471,7 +42094,62 @@
       "source": "curated-clause5-6",
       "status": "pass",
       "supported_subset_for": "HLA1516.1-OM-6.27-001",
-      "title": "RTI shall support Request Interaction Transportation Type Change for the currently implemented reliable and best-effort transport subset and persist that selected interaction transport state across restore.",
+      "title": "RTI shall support Request Interaction Transportation Type Change for the currently implemented reliable and best-effort transport subset.",
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_object_management_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared transportation-type restore scenario verifies Pitch interaction transport persistence for the supported subset",
+      "vendor_profile_bucket": "Exchange",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Pitch native HLA4 (JPype, direct or FedPro): smoke; Pitch native HLA4 (Py4J, direct or FedPro): smoke; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
+    },
+    {
+      "artifact_refs": [
+        "analysis/compliance/service_conformance.json"
+      ],
+      "certi_runtime_disposition": "not-yet-tested",
+      "certi_runtime_status": "no",
+      "claim_scope": "supported-subset",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "implementation_refs": [
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/save_restore.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/state.py"
+      ],
+      "kind": "extracted-requirement",
+      "linked_assets": [
+        "REQ-SAVE-RESTORE-FEDERATE-LOCAL-STATE-001",
+        "REQ-OM-TRANSPORT-BEST-EFFORT-001"
+      ],
+      "linked_methods": [
+        "requestInteractionTransportationTypeChange",
+        "queryInteractionTransportationType"
+      ],
+      "matrix_id": "HLA1516.1-OM-6.27-003",
+      "negative_test_refs": [],
+      "notes": "This supported-subset row isolates restore persistence for interaction transportation overrides after a request/change has already established non-default transport state.",
+      "pitch_jpype_runtime_disposition": "verified",
+      "pitch_py4j_runtime_disposition": "verified",
+      "pitch_runtime_disposition": "verified",
+      "pitch_runtime_status": "yes",
+      "policy_basis": "reliable-best-effort-transport-only",
+      "portico_runtime_disposition": "classification-required",
+      "positive_test_refs": [
+        "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides"
+      ],
+      "python_runtime_disposition": "verified",
+      "python_runtime_status": "yes",
+      "requirement_id": "HLA1516.1-OM-6.27-003",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.27",
+      "service_group": "Object management",
+      "source": "curated-clause5-6",
+      "status": "pass",
+      "supported_subset_for": "HLA1516.1-OM-6.27-001",
+      "title": "RTI shall persist selected interaction transportation overrides across restore in the currently implemented reliable and best-effort transport subset.",
       "vendor_evidence_refs": [
         "../tests/scenarios/test_object_management_backend_matrix.py",
         "../tests/vendors/test_pitch_real_backend_matrix.py"
@@ -41529,7 +42207,11 @@
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "partial",
-      "supported_subset_for": "",
+      "supported_subset_for": [
+        "HLA1516.1-OM-6.28-002",
+        "HLA1516.1-OM-6.28-003",
+        "HLA1516.1-OM-6.28-004"
+      ],
       "title": "RTI shall invoke Confirm Interaction Transportation Type Change across the full transportation semantic space.",
       "vendor_evidence_refs": [
         "../tests/scenarios/test_object_management_backend_matrix.py",
@@ -41657,6 +42339,60 @@
       ],
       "certi_runtime_disposition": "not-yet-tested",
       "certi_runtime_status": "no",
+      "claim_scope": "supported-subset",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "implementation_refs": [
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
+        "hla2010/ambassadors.py"
+      ],
+      "kind": "extracted-requirement",
+      "linked_assets": [
+        "REQ-OM-TRANSPORT-REPORT-001"
+      ],
+      "linked_methods": [
+        "confirmInteractionTransportationTypeChange",
+        "requestInteractionTransportationTypeChange"
+      ],
+      "matrix_id": "HLA1516.1-OM-6.28-004",
+      "negative_test_refs": [],
+      "notes": "This supported-subset row isolates requester-only callback routing for interaction transport-change confirmations in the native Python lane.",
+      "pitch_jpype_runtime_disposition": "verified",
+      "pitch_py4j_runtime_disposition": "verified",
+      "pitch_runtime_disposition": "verified",
+      "pitch_runtime_status": "yes",
+      "policy_basis": "reliable-best-effort-transport-only",
+      "portico_runtime_disposition": "classification-required",
+      "positive_test_refs": [
+        "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks"
+      ],
+      "python_runtime_disposition": "verified",
+      "python_runtime_status": "yes",
+      "requirement_id": "HLA1516.1-OM-6.28-004",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.28",
+      "service_group": "Object management",
+      "source": "curated-clause5-6",
+      "status": "pass",
+      "supported_subset_for": "HLA1516.1-OM-6.28-001",
+      "title": "RTI shall route Confirm Interaction Transportation Type Change only to the federate that requested the change in the currently implemented reliable and best-effort transport subset.",
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_object_management_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared transportation-type scenario verifies Pitch interaction transport-change confirmation in the supported subset",
+      "vendor_profile_bucket": "Exchange",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Pitch native HLA4 (JPype, direct or FedPro): smoke; Pitch native HLA4 (Py4J, direct or FedPro): smoke; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
+    },
+    {
+      "artifact_refs": [
+        "analysis/compliance/service_conformance.json"
+      ],
+      "certi_runtime_disposition": "not-yet-tested",
+      "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
@@ -41701,7 +42437,10 @@
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "partial",
-      "supported_subset_for": "",
+      "supported_subset_for": [
+        "HLA1516.1-OM-6.29-002",
+        "HLA1516.1-OM-6.29-003"
+      ],
       "title": "RTI shall provide Query Interaction Transportation Type across the full transportation semantic space defined by the standard.",
       "vendor_evidence_refs": [
         "../tests/scenarios/test_object_management_backend_matrix.py",
@@ -41778,6 +42517,60 @@
       ],
       "certi_runtime_disposition": "not-yet-tested",
       "certi_runtime_status": "no",
+      "claim_scope": "supported-subset",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "implementation_refs": [
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
+        "hla2010/ambassadors.py"
+      ],
+      "kind": "extracted-requirement",
+      "linked_assets": [
+        "REQ-OM-TRANSPORT-REPORT-001"
+      ],
+      "linked_methods": [
+        "queryInteractionTransportationType",
+        "reportInteractionTransportationType"
+      ],
+      "matrix_id": "HLA1516.1-OM-6.29-003",
+      "negative_test_refs": [],
+      "notes": "This supported-subset row isolates the default-state query behavior: absent any explicit interaction override, the backend reports the effective reliable transportation type.",
+      "pitch_jpype_runtime_disposition": "not-yet-tested",
+      "pitch_py4j_runtime_disposition": "not-yet-tested",
+      "pitch_runtime_disposition": "not-yet-tested",
+      "pitch_runtime_status": "yes",
+      "policy_basis": "reliable-best-effort-transport-only",
+      "portico_runtime_disposition": "classification-required",
+      "positive_test_refs": [
+        "tests/backends/test_python_backend_object_ownership_extended.py::test_query_interaction_transportation_type_rejects_not_connected_not_joined_invalid_handle_and_save_restore"
+      ],
+      "python_runtime_disposition": "verified",
+      "python_runtime_status": "yes",
+      "requirement_id": "HLA1516.1-OM-6.29-003",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.29",
+      "service_group": "Object management",
+      "source": "curated-clause5-6",
+      "status": "pass",
+      "supported_subset_for": "HLA1516.1-OM-6.29-001",
+      "title": "RTI shall report the default reliable interaction transportation type when no explicit override exists in the currently implemented transport subset.",
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_object_management_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared transportation-type scenario verifies Pitch interaction transport queries in the supported subset",
+      "vendor_profile_bucket": "Exchange",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Pitch native HLA4 (JPype, direct or FedPro): smoke; Pitch native HLA4 (Py4J, direct or FedPro): smoke; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
+    },
+    {
+      "artifact_refs": [
+        "analysis/compliance/service_conformance.json"
+      ],
+      "certi_runtime_disposition": "not-yet-tested",
+      "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
@@ -41814,7 +42607,11 @@
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "partial",
-      "supported_subset_for": "",
+      "supported_subset_for": [
+        "HLA1516.1-OM-6.30-002",
+        "HLA1516.1-OM-6.30-003",
+        "HLA1516.1-OM-6.30-004"
+      ],
       "title": "RTI shall invoke Report Interaction Transportation Type across the full transportation semantic space.",
       "vendor_evidence_refs": [
         "../tests/scenarios/test_object_management_backend_matrix.py",
@@ -41923,6 +42720,60 @@
       "status": "pass",
       "supported_subset_for": "HLA1516.1-OM-6.30-001",
       "title": "RTI shall not emit Report Interaction Transportation Type when the corresponding query is rejected for invalid state or invalid interaction inputs.",
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_object_management_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared transportation-type scenario verifies Pitch interaction transport report callbacks in the supported subset",
+      "vendor_profile_bucket": "Exchange",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Pitch native HLA4 (JPype, direct or FedPro): smoke; Pitch native HLA4 (Py4J, direct or FedPro): smoke; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
+    },
+    {
+      "artifact_refs": [
+        "analysis/compliance/service_conformance.json"
+      ],
+      "certi_runtime_disposition": "not-yet-tested",
+      "certi_runtime_status": "no",
+      "claim_scope": "supported-subset",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "implementation_refs": [
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
+        "hla2010/ambassadors.py"
+      ],
+      "kind": "extracted-requirement",
+      "linked_assets": [
+        "REQ-OM-TRANSPORT-REPORT-001"
+      ],
+      "linked_methods": [
+        "reportInteractionTransportationType",
+        "queryInteractionTransportationType"
+      ],
+      "matrix_id": "HLA1516.1-OM-6.30-004",
+      "negative_test_refs": [],
+      "notes": "This supported-subset row isolates requester-only callback routing for interaction transportation reports in the native Python lane.",
+      "pitch_jpype_runtime_disposition": "verified",
+      "pitch_py4j_runtime_disposition": "verified",
+      "pitch_runtime_disposition": "verified",
+      "pitch_runtime_status": "yes",
+      "policy_basis": "reliable-best-effort-transport-only",
+      "portico_runtime_disposition": "classification-required",
+      "positive_test_refs": [
+        "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks"
+      ],
+      "python_runtime_disposition": "verified",
+      "python_runtime_status": "yes",
+      "requirement_id": "HLA1516.1-OM-6.30-004",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.30",
+      "service_group": "Object management",
+      "source": "curated-clause5-6",
+      "status": "pass",
+      "supported_subset_for": "HLA1516.1-OM-6.30-001",
+      "title": "RTI shall route Report Interaction Transportation Type only to the federate that issued the corresponding query in the currently implemented reliable and best-effort transport subset.",
       "vendor_evidence_refs": [
         "../tests/scenarios/test_object_management_backend_matrix.py",
         "../tests/vendors/test_pitch_real_backend_matrix.py"
@@ -42199,7 +43050,7 @@
       "certi_runtime_status": "",
       "document": "multi-section",
       "implementation_refs": [
-        "hla2010/fom.py"
+        "hla2010/fom.py::validate_fom_xml_schema"
       ],
       "kind": "verification-slice",
       "matrix_id": "REQ-OMT-SCHEMA-001",
@@ -42209,15 +43060,20 @@
       "pitch_runtime_disposition": "classification-required",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
-      "positive_test_refs": [],
+      "positive_test_refs": [
+        "tests/factories/test_fom_omt_parsing.py::test_parse_fom_xml_with_omt_schema_validation_accepts_restaurant_reference_module_and_rejects_invalid_document",
+        "tests/factories/test_fom_omt_parsing.py::test_parse_fom_xml_rejects_unknown_object_model_namespace",
+        "tests/factories/test_fom_omt_parsing.py::test_serialize_fom_module_emits_schema_valid_xml_and_preserves_identification",
+        "tests/factories/test_fom_omt_parsing.py::test_serialize_fom_module_preserves_metadata_subset_across_round_trip"
+      ],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",
       "requirement_id": "REQ-OMT-SCHEMA-001",
-      "section_ref": "1516.2-2010 Annex E",
+      "section_ref": "1516.2-2010 \u00a7Annex E",
       "service_group": "requirement",
       "source": "REQ-OMT-SCHEMA-001",
-      "status": "planned",
-      "title": "Annex E schema-level conformance checking is identified explicitly and remains planned",
+      "status": "implemented-slice",
+      "title": "Annex E schema-family conformance validation is executable for the carried standard schemas and round-trip witnesses",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
       "vendor_profile_bucket": "",
@@ -43367,9 +44223,9 @@
   ],
   "summary": {
     "certi_runtime_disposition_counts": {
-      "classification-required": 272,
+      "classification-required": 274,
       "not-applicable": 232,
-      "not-yet-tested": 274,
+      "not-yet-tested": 284,
       "vendor-divergent": 13,
       "verified": 131
     },
@@ -43381,7 +44237,7 @@
     ],
     "kind_counts": {
       "curated-seed": 1,
-      "extracted-requirement": 632,
+      "extracted-requirement": 644,
       "omt-area": 20,
       "section-area": 9,
       "service-requirement": 219,
@@ -43389,44 +44245,43 @@
     },
     "pitch_jpype_runtime_disposition_counts": {
       "blocked": 4,
-      "classification-required": 211,
+      "classification-required": 212,
       "not-applicable": 26,
-      "not-yet-tested": 93,
+      "not-yet-tested": 96,
       "vendor-divergent": 43,
-      "verified": 545
+      "verified": 553
     },
     "pitch_py4j_runtime_disposition_counts": {
       "blocked": 4,
-      "classification-required": 211,
+      "classification-required": 212,
       "not-applicable": 26,
-      "not-yet-tested": 93,
+      "not-yet-tested": 96,
       "vendor-divergent": 43,
-      "verified": 545
+      "verified": 553
     },
     "pitch_runtime_disposition_counts": {
       "blocked": 4,
-      "classification-required": 211,
+      "classification-required": 212,
       "not-applicable": 26,
-      "not-yet-tested": 93,
+      "not-yet-tested": 96,
       "vendor-divergent": 43,
-      "verified": 545
+      "verified": 553
     },
     "portico_runtime_disposition_counts": {
-      "classification-required": 819,
+      "classification-required": 831,
       "not-applicable": 103
     },
     "python_runtime_disposition_counts": {
       "not-applicable": 79,
-      "vendor-divergent": 25,
-      "verified": 818
+      "vendor-divergent": 23,
+      "verified": 832
     },
-    "row_count": 922,
+    "row_count": 934,
     "status_counts": {
-      "implemented-slice": 39,
+      "implemented-slice": 40,
       "implemented-smoke": 1,
-      "partial": 70,
-      "pass": 790,
-      "planned": 22
+      "partial": 91,
+      "pass": 802
     },
     "version": "0.13.0"
   }

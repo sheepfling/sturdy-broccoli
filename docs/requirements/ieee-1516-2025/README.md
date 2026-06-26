@@ -59,6 +59,114 @@ Use this order:
 2. pick one requirement packet, bounded proof note, or closure ledger
 3. open `verification/README.md` when you need the proof packet or executable evidence side
 
+## Basic Execution Rules
+
+Use this section when the question is whether the 2025 requirement surface
+already covers the basic federation-execution state rules:
+
+- this is the canonical 2025 "have we joined yet?" rule family for
+  execution-affecting calls
+
+- connect before RTI interaction
+- create and destroy federation execution preconditions
+- joined versus not-joined execution-member guards
+- plain object registration rejected until the caller has joined
+- delete, local-delete, update, interaction, query, and region-gated DDM
+  services rejected until the caller has joined
+- concretely, `Update Attribute Values`, `Send Interaction`,
+  `Request Attribute Value Update`, `Query Attribute Transportation Type`,
+  `Send Interaction With Regions`, and
+  `Request Attribute Value Update With Regions` all stay inside that
+  joined-state guard family
+- after resign, those execution-affecting services continue to reject the
+  caller as no longer joined, including delete/local-delete plus the
+  region-gated DDM send and request-update variants
+- destroy rejected while federates are still joined
+- after destroy succeeds, later destroy or join attempts against that missing
+  federation reject with `FederationExecutionDoesNotExist`
+- federation membership listing and reporting
+- resign and disconnect cleanup after membership changes
+
+Primary owner surfaces:
+
+- `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
+  for the grouped 2025 service disposition rows
+- [`../execution_membership_rules.md`](../execution_membership_rules.md) for
+  one cross-edition index covering join, destroy, update, delete, query, and
+  region-gated not-joined rules
+- [`federation_management_bounded_proof.md`](federation_management_bounded_proof.md)
+  for the bounded proof note covering connect, create, destroy, join,
+  membership, resign, disconnect, synchronization, and save/restore families
+- [`object_management_bounded_proof.md`](object_management_bounded_proof.md)
+  for the bounded proof note covering not-joined rejection on update,
+  interaction, transportation-query, and attribute-value-update services
+- [`ddm_bounded_proof.md`](ddm_bounded_proof.md) for the bounded proof note
+  covering not-joined rejection on region-gated send and request-update paths
+- `executable_tests/hla_2025_executable_test_requirements_v3.csv` for the
+  executable requirement rows such as
+  `HLA2025-FI-004-XT-REQ-CONNECT_BEFORE_RTI_INTERACTION`,
+  `HLA2025-FI-SVC-005`, `HLA2025-FI-SVC-008`, `HLA2025-FI-SVC-010`, and
+  `HLA2025-FI-SVC-011`
+
+Representative 2025 requirement rows for this rule set:
+
+- `HLA2025-FI-004-XT-REQ-CONNECT_BEFORE_RTI_INTERACTION` for the direct
+  connect-before-service guard
+- `HLA2025-FI-SVC-005` for destroy preconditions and joined-federate
+  rejection
+- `HLA2025-FI-SVC-008` for federation membership listing and reporting
+- `HLA2025-FI-SVC-010` for join preconditions and membership entry
+- `HLA2025-FI-SVC-011` for resign preconditions and membership exit cleanup
+- `HLA2025-FI-SVC-051` for `Reserve Object Instance Name` joined-state gating
+  on the shared backend proof path
+- `HLA2025-FI-SVC-057` for `Register Object Instance` joined-state gating on
+  the shared backend proof path
+- `HLA2025-FI-SVC-065` for `Delete Object Instance` execution-member gating
+- `HLA2025-FI-SVC-067` for `Local Delete Object Instance`
+  execution-member gating
+- `HLA2025-FI-SVC-059` for `Update Attribute Values` execution-member gating
+- `HLA2025-FI-SVC-061` for `Send Interaction` execution-member gating
+- `HLA2025-FI-SVC-070` for `Request Attribute Value Update`
+  execution-member gating
+- `HLA2025-FI-SVC-077` for `Query Attribute Transportation Type`
+  execution-member gating
+- `HLA2025-FI-SVC-136` for `Send Interaction With Regions`
+  execution-member gating on the DDM surface
+- `HLA2025-FI-SVC-137` for `Request Attribute Value Update With Regions`
+  execution-member gating on the DDM surface
+
+The main execution-state guard exceptions are already part of that ownership
+surface:
+
+- `NotConnected`
+- `FederateNotExecutionMember`
+- `FederatesCurrentlyJoined`
+- `FederationExecutionDoesNotExist`
+
+Primary executable anchors:
+
+- `tests/test_rti1516_2025_python1516_2025_runtime.py`
+- `tests/transport/test_grpc_transport_2025.py`
+- `tests/backends/test_python_backend_object_ownership_extended.py`
+- `tests/backends/test_python_backend_time_ddm_extended.py`
+- `tests/scenarios/test_federation_management_backend_matrix.py`
+- `tests/scenarios/test_federation_lifecycle_backend_matrix.py`
+- `./tools/test-focus run execution-membership`
+
+Use these anchors first when the question is "have we proved the basic
+execution lifecycle rules on the direct lane, hosted 2025 gRPC/FedPro route,
+and REST-hosted Python route?" rather than
+"which broader grouped or bounded bucket owns the remaining closeout story?".
+
+The intended 2025 state-machine reading is:
+
+- `NotConnected` before connect or after disconnect
+- `FederateNotExecutionMember` before join and again after resign
+- `FederatesCurrentlyJoined` when destroy is attempted while members are still
+  joined
+- `FederationExecutionDoesNotExist` after the federation has already been
+  destroyed
+
 ## Shards And Views
 
 Use the shared matrix model from
@@ -111,6 +219,39 @@ Use that grouped result carefully:
 - it means the grouped 2025 worklist is fully dispositioned
 - it does not mean every 2025 row is an unconditional all-covered conformance claim
 - the remaining blockers are boundary-doc and supported-scope questions such as umbrella rows, retired rows, hosted/binding bounded claims, and other intentionally narrow claim surfaces
+
+## Honest 100 Percent Reading
+
+Use this section when the question is not just "what does the main 2025 lane
+prove?" but "what exactly counts as an honest `100%` outcome?"
+
+Current closeout reading:
+
+- all tracked `2025` rows are dispositioned
+- the active normative non-retired non-umbrella denominator is currently
+  `645` rows
+- direct coverage on that active denominator is currently `645 / 645 = 100%`
+- the remaining `22` `duplicate/umbrella` rows and `24`
+  `retired/legacy-only` rows stay explicit outside that direct-support
+  denominator unless the repo deliberately funds broader row-by-row proof or
+  compatibility work
+
+Use these owner companions for the current honest `100%` program:
+
+- [`../../plans/PLN-004_python_rti_100_percent_compliance_plan.md`](../../plans/PLN-004_python_rti_100_percent_compliance_plan.md)
+- [`../../plans/2025_python_rti_100_percent_worklist.md`](../../plans/2025_python_rti_100_percent_worklist.md)
+- [`../../plans/2025_python_rti_umbrella_decomposition_worklist.md`](../../plans/2025_python_rti_umbrella_decomposition_worklist.md)
+- [`../../plans/requirements_completion_audit.md`](../../plans/requirements_completion_audit.md)
+
+Reading rule:
+
+1. use this README for the canonical 2025 requirement owner map
+2. use `2025_python_rti_100_percent_worklist.md` for the exact non-covered row
+   inventory and denominator rule
+3. use `2025_python_rti_umbrella_decomposition_worklist.md` only if leadership
+   wants literal `691 / 691 covered`
+4. use `requirements_completion_audit.md` for the current honest answer to
+   whether the broader closeout program is actually finished
 
 ## Boundary Bucket Owners
 
@@ -243,6 +384,10 @@ rather than the next missing implementation frontier by itself.
 - [`../../../requirements/2025/README.md`](../../../requirements/2025/README.md)
 - [`../../verification/README.md`](../../verification/README.md)
 - [`../../verification/requirement_compliance_exports.md`](../../verification/requirement_compliance_exports.md)
+- [`../../plans/PLN-004_python_rti_100_percent_compliance_plan.md`](../../plans/PLN-004_python_rti_100_percent_compliance_plan.md)
+- [`../../plans/2025_python_rti_100_percent_worklist.md`](../../plans/2025_python_rti_100_percent_worklist.md)
+- [`../../plans/2025_python_rti_umbrella_decomposition_worklist.md`](../../plans/2025_python_rti_umbrella_decomposition_worklist.md)
+- [`../../plans/requirements_completion_audit.md`](../../plans/requirements_completion_audit.md)
 - [`../../plans/requirements_remaining_closure.md`](../../plans/requirements_remaining_closure.md)
 - [`../../test_surface.md`](../../test_surface.md)
 - [`../../spec_reading_map.md`](../../spec_reading_map.md)

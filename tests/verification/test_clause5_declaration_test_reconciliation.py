@@ -6,8 +6,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DM_PATH = ROOT / "requirements" / "hla1516_1_dm_detailed_reconciliation.csv"
-CLAUSE_5_PATH = ROOT / "requirements" / "hla1516_1_clause_5_dm_detailed_reconciliation.csv"
+DM_PATH = ROOT / "requirements" / "2010" / "hla1516_1_dm_detailed_reconciliation.csv"
+CLAUSE_5_PATH = ROOT / "requirements" / "2010" / "hla1516_1_clause_5_dm_detailed_reconciliation.csv"
 
 
 def _load_rows() -> list[dict[str, str]]:

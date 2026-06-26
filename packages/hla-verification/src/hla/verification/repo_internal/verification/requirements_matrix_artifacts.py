@@ -24,6 +24,14 @@ def require_project_root(project_root: str | Path | None) -> Path:
     return Path(project_root).resolve()
 
 
+def _normalize_supported_subset_refs(value: Any) -> list[str] | str:
+    if isinstance(value, (list, tuple)):
+        return [str(item) for item in value if str(item)]
+    if value in (None, ""):
+        return ""
+    return str(value)
+
+
 def build_requirements_matrix_2010(project_root: str | Path | None = None, *, version: str = "0.13.0") -> dict[str, Any]:
     """Return a whole-spec requirements matrix spanning section areas, service rows, and verification slices."""
     repo_root = require_project_root(project_root)
@@ -161,6 +169,9 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
             )
         )
         curated_requirement_ids.add(str(normalized["requirement_id"]))
+        if str(normalized.get("document", "")) == "IEEE 1516.2-2010" and str(normalized.get("section_ref", "")).startswith("IEEE 1516.2-2010 §"):
+            section = str(normalized["section_ref"]).split("§", 1)[1].strip()
+            omt_area_inputs.setdefault(section, []).append(normalized["status"])
 
     for row in ledger["rows"]:
         rows.append(
@@ -278,7 +289,7 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
                     "linked_methods": list(spec.get("linked_methods", ())),
                     "linked_assets": list(spec.get("linked_assets", ())),
                     "claim_scope": spec.get("claim_scope", "broad-spec"),
-                    "supported_subset_for": spec.get("supported_subset_for", ""),
+                    "supported_subset_for": _normalize_supported_subset_refs(spec.get("supported_subset_for", "")),
                     "policy_basis": spec.get("policy_basis", ""),
                     "notes": spec.get("notes", ""),
                     "source": "curated-clause5-6",
@@ -327,21 +338,76 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
     for row in rows:
         row["document"] = _edition_qualified_document(str(row.get("document", "")))
         row["section_ref"] = _edition_qualified_section_ref(str(row.get("section_ref", "")))
+
+    for row in rows:
         if row["kind"] == "section-area":
             section = row["section_ref"].split("§", 1)[1].strip()
             row["status"] = _aggregate_status(section_area_inputs.get(section, []))
         elif row["kind"] == "omt-area":
             section = row["section_ref"].split("§", 1)[1].strip()
             source_key = row["source"]
+            supporting_rows = [
+                item for item in rows
+                if item["matrix_id"] != row["matrix_id"]
+                and item.get("document") == row["document"]
+                and (
+                    item.get("section_ref") == row["section_ref"]
+                    or str(item.get("section_ref", "")).startswith(f"{row['section_ref']}.")
+                )
+            ]
             matching_assets = [
                 item for item in verification_slice_rows
                 if f"1516.2-2010 §{section}" in item["section_ref"].split("; ")
             ]
-            row["status"] = _aggregate_status(omt_area_inputs.get(section, []))
-            row["implementation_refs"] = [item for asset in matching_assets for item in asset["implementation_refs"]]
-            row["positive_test_refs"] = [item for asset in matching_assets for item in asset["positive_test_refs"]]
-            row["negative_test_refs"] = [item for asset in matching_assets for item in asset["negative_test_refs"]]
-            row["artifact_refs"] = [item for asset in matching_assets for item in asset["artifact_refs"]]
+            row["status"] = _aggregate_status(omt_area_inputs.get(section, []) or [item["status"] for item in supporting_rows])
+            row["implementation_refs"] = sorted(
+                {
+                    ref
+                    for item in supporting_rows
+                    for ref in item.get("implementation_refs", ())
+                }
+                | {
+                    ref
+                    for asset in matching_assets
+                    for ref in asset["implementation_refs"]
+                }
+            )
+            row["positive_test_refs"] = sorted(
+                {
+                    ref
+                    for item in supporting_rows
+                    for ref in item.get("positive_test_refs", ())
+                }
+                | {
+                    ref
+                    for asset in matching_assets
+                    for ref in asset["positive_test_refs"]
+                }
+            )
+            row["negative_test_refs"] = sorted(
+                {
+                    ref
+                    for item in supporting_rows
+                    for ref in item.get("negative_test_refs", ())
+                }
+                | {
+                    ref
+                    for asset in matching_assets
+                    for ref in asset["negative_test_refs"]
+                }
+            )
+            row["artifact_refs"] = sorted(
+                {
+                    ref
+                    for item in supporting_rows
+                    for ref in item.get("artifact_refs", ())
+                }
+                | {
+                    ref
+                    for asset in matching_assets
+                    for ref in asset["artifact_refs"]
+                }
+            )
             row["source"] = source_key
 
     kind_counts: dict[str, int] = {}
@@ -404,8 +470,15 @@ def write_requirements_matrix_2010_csv(
         "supported_subset_for",
         "policy_basis",
         "python_runtime_status",
+        "python_runtime_disposition",
         "certi_runtime_status",
+        "certi_runtime_disposition",
+        "portico_runtime_status",
+        "portico_runtime_disposition",
         "pitch_runtime_status",
+        "pitch_runtime_disposition",
+        "pitch_jpype_runtime_disposition",
+        "pitch_py4j_runtime_disposition",
         "vendor_evidence_refs",
         "vendor_notes",
         "vendor_source",
@@ -422,7 +495,7 @@ def write_requirements_matrix_2010_csv(
         for row in matrix["rows"]:
             record = dict(row)
             for key, value in list(record.items()):
-                if isinstance(value, list):
+                if isinstance(value, (list, tuple)):
                     record[key] = "; ".join(str(item) for item in value)
             writer.writerow(record)
     return target

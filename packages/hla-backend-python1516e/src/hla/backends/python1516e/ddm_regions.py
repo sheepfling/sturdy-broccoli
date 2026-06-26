@@ -5,7 +5,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Iterable, Mapping, Protocol, cast
 
 import hla.fom.mom as hla_mom
-from hla.rti1516e.exceptions import InvalidRegion, InvalidRegionContext
+from hla.rti1516e.exceptions import (
+    InvalidRegion,
+    InvalidRegionContext,
+    RegionNotCreatedByThisFederate,
+)
 from hla.rti1516e.handles import AttributeHandle, DimensionHandle, InteractionClassHandle, RegionHandle
 from hla.rti1516e.datatypes import RangeBounds
 
@@ -137,7 +141,7 @@ class PythonRTIDdmRegionMixin(_DdmRegionMixinBase):
         self,
         attributesAndRegions: Iterable[Any],
     ) -> list[tuple[set[AttributeHandle], set[RegionHandle]]]:
-        self._require_joined()
+        federation = self._require_joined()
         pairs: list[tuple[set[AttributeHandle], set[RegionHandle]]] = []
         for pair in attributesAndRegions or []:
             if hasattr(pair, "attributes") and hasattr(pair, "regions"):
@@ -168,6 +172,8 @@ class PythonRTIDdmRegionMixin(_DdmRegionMixinBase):
             )
             for region in region_set:
                 if region not in self.state.regions:
+                    if region in federation.region_owners:
+                        raise RegionNotCreatedByThisFederate(repr(region))
                     raise InvalidRegion(repr(region))
             pairs.append((attr_set, region_set))
         return pairs

@@ -34,3 +34,5 @@ def test_declaration_management_boundary_doc_records_current_family_shape() -> N
     assert "`14 EXC_API`" in text
     assert "`12 EXC`" in text
     assert "`12 PRE`" in text
+    assert "`./tools/test-focus run backends`" in text
+    assert "`./tools/test-surface run unit-scenarios-light`" in text

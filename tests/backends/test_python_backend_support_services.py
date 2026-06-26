@@ -49,10 +49,12 @@ from hla.rti1516e.handles import (
     FederateHandleSetFactory,
     InteractionClassHandle,
     InteractionClassHandleFactory,
+    MessageRetractionHandleFactory,
     ObjectClassHandleFactory,
     ObjectInstanceHandleFactory,
     ParameterHandleFactory,
     ParameterHandleValueMapFactory,
+    RegionHandleFactory,
     RegionHandle,
     RegionHandleSetFactory,
     TransportationTypeHandleFactory,
@@ -330,6 +332,28 @@ def test_support_normalizers_and_factories():
     owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     acquirer.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("support-normalize-fed")
+
+
+@pytest.mark.requirements(
+    "REQ-RTI-SS-10_44-getRegionHandleFactory",
+    "REQ-RTI-SS-10_44-getMessageRetractionHandleFactory",
+)
+def test_support_handle_factory_rows_have_direct_runtime_witnesses():
+    rti = rti_ambassador(engine=InMemoryRTIEngine())
+
+    with pytest.raises(NotConnected):
+        rti.get_region_handle_factory()
+    with pytest.raises(NotConnected):
+        rti.get_message_retraction_handle_factory()
+
+    _, owner, acquirer, _owner_fed, _acquirer_fed, _h1, _h2 = joined_pair("support-handle-factory-fed")
+
+    assert isinstance(owner.get_region_handle_factory(), RegionHandleFactory)
+    assert isinstance(owner.get_message_retraction_handle_factory(), MessageRetractionHandleFactory)
+
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("support-handle-factory-fed")
 
 
 def test_support_invalid_inputs_raise_expected_errors():

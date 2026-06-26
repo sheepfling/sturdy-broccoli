@@ -1295,6 +1295,81 @@ _PYTHON_REQUIREMENT_EVIDENCE: dict[str, tuple[tuple[str, ...], str]] = {
     ),
 }
 
+_PYTHON_REQUIREMENT_EVIDENCE.update(
+    {
+        "HLA1516.1-OM-6.1.10-004": (
+            (
+                "tests/backends/test_python_backend_support_services.py::test_fom_declared_transport_defaults_apply_to_attributes_and_interactions",
+            ),
+            "Python direct runtime tests verify FOM-declared reliable and best-effort transportation defaults for object updates, interactions, and the resulting transportation-type query callbacks.",
+        ),
+        "HLA1516.1-OM-6.1.11-002": (
+            (
+                "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
+                "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+                "tests/scenarios/test_object_management_backend_matrix.py::test_python_request_attribute_value_update_matrix",
+            ),
+            "Python shared object-management scenarios verify the currently implemented direct unbatched delivery subset by preserving the externally visible reflect, interaction, and request-update callback semantics consumed by the repo's exchange paths.",
+        ),
+        "HLA1516.1-OM-6.1.12-002": (
+            (
+                "tests/backends/test_python_backend_support_services.py::test_update_rate_designator_throttles_timed_reflects",
+                "tests/backends/test_python_backend_support_services.py::test_update_rate_designator_does_not_suppress_receive_order_updates",
+                "tests/backends/test_python_backend_support_services.py::test_fom_declared_update_rate_defaults_apply_to_inherited_and_regioned_subscriptions",
+            ),
+            "Python direct runtime tests verify explicit and FOM-declared update-rate designators on the exercised subset, including throttled timed reflects, preserved receive-order delivery, and inherited or region-based subscription defaults.",
+        ),
+        "HLA1516.1-OM-6.23-003": (
+            (
+                "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides",
+            ),
+            "Python restore compliance tests verify that selected attribute transportation overrides persist across save/restore on the supported reliable and best-effort subset.",
+        ),
+        "HLA1516.1-OM-6.24-004": (
+            (
+                "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks",
+            ),
+            "Python direct runtime tests verify requester-only routing for Confirm Attribute Transportation Type Change callbacks on the supported transport subset.",
+        ),
+        "HLA1516.1-OM-6.25-003": (
+            (
+                "tests/backends/test_python_backend_support_services.py::test_fom_declared_transport_defaults_apply_to_attributes_and_interactions",
+            ),
+            "Python direct runtime tests verify that queryAttributeTransportationType reports the declared default reliable or best-effort subset transport when no explicit override exists on the exercised path.",
+        ),
+        "HLA1516.1-OM-6.26-004": (
+            (
+                "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks",
+            ),
+            "Python direct runtime tests verify requester-only routing for Report Attribute Transportation Type callbacks on the supported transport subset.",
+        ),
+        "HLA1516.1-OM-6.27-003": (
+            (
+                "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides",
+            ),
+            "Python restore compliance tests verify that selected interaction transportation overrides persist across save/restore on the supported reliable and best-effort subset.",
+        ),
+        "HLA1516.1-OM-6.28-004": (
+            (
+                "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks",
+            ),
+            "Python direct runtime tests verify requester-only routing for Confirm Interaction Transportation Type Change callbacks on the supported transport subset.",
+        ),
+        "HLA1516.1-OM-6.29-003": (
+            (
+                "tests/backends/test_python_backend_support_services.py::test_fom_declared_transport_defaults_apply_to_attributes_and_interactions",
+            ),
+            "Python direct runtime tests verify that queryInteractionTransportationType reports the declared default reliable or best-effort subset transport when no explicit override exists on the exercised path.",
+        ),
+        "HLA1516.1-OM-6.30-004": (
+            (
+                "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks",
+            ),
+            "Python direct runtime tests verify requester-only routing for Report Interaction Transportation Type callbacks on the supported transport subset.",
+        ),
+    }
+)
+
 
 _PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_REF = (
     "packages/hla-vendor-pitch/docs/evidence/"
@@ -3429,6 +3504,7 @@ _add_pitch_evidence_rows(
 _add_pitch_evidence_rows(
     (
         "HLA1516.1-OM-6.1.11-001",
+        "HLA1516.1-OM-6.1.11-002",
     ),
     status="verified",
     scenario_id="two-federate-exchange",
@@ -3437,10 +3513,21 @@ _add_pitch_evidence_rows(
 
 _add_pitch_evidence_rows(
     (
+        "HLA1516.1-OM-6.1.12-002",
+    ),
+    status="verified",
+    scenario_id="update-rate",
+    note="Pitch real-runtime shared update-rate scenario verifies the exercised update-rate subset: timed reflections are throttled according to the designator in force and receive-order delivery remains unsuppressed outside the logical-time path.",
+)
+
+_add_pitch_evidence_rows(
+    (
         "HLA1516.1-OM-6.1.10-002",
         "HLA1516.1-OM-6.1.10-003",
         "HLA1516.1-OM-6.23-002",
+        "HLA1516.1-OM-6.23-003",
         "HLA1516.1-OM-6.27-002",
+        "HLA1516.1-OM-6.27-003",
     ),
     status="verified",
     scenario_id="transportation-type-restore-persistence",
@@ -3450,11 +3537,15 @@ _add_pitch_evidence_rows(
 _add_pitch_evidence_rows(
     (
         "HLA1516.1-OM-6.24-002",
+        "HLA1516.1-OM-6.24-004",
         "HLA1516.1-OM-6.25-002",
         "HLA1516.1-OM-6.26-002",
+        "HLA1516.1-OM-6.26-004",
         "HLA1516.1-OM-6.28-002",
+        "HLA1516.1-OM-6.28-004",
         "HLA1516.1-OM-6.29-002",
         "HLA1516.1-OM-6.30-002",
+        "HLA1516.1-OM-6.30-004",
     ),
     status="verified",
     scenario_id="transportation-type",
@@ -3590,7 +3681,27 @@ for requirement_id in (
     _PITCH_REQUIREMENT_EVIDENCE[requirement_id] = (
         "verified",
         _SCENARIO_EVIDENCE_REGISTRY["transportation-type-restore-persistence"],
-        "Pitch real-runtime shared transportation restore scenario verifies distinct reliable versus best-effort callback transport behavior, explicit override persistence, and restore persistence for the backend's supported transport subset.",
+    "Pitch real-runtime shared transportation restore scenario verifies distinct reliable versus best-effort callback transport behavior, explicit override persistence, and restore persistence for the backend's supported transport subset.",
+)
+
+for requirement_id, note in (
+    (
+        "HLA1516.1-OM-6.1.10-004",
+        "Pitch currently proves explicit transport-change and restore-persistence behavior for the reliable and best-effort subset, but does not yet carry a dedicated Pitch runtime witness for FOM-declared default transport behavior on this row.",
+    ),
+    (
+        "HLA1516.1-OM-6.25-003",
+        "Pitch currently proves transportation-type queries after explicit supported-subset transport changes, but does not yet carry a dedicated Pitch runtime witness for the no-override default attribute query path on this row.",
+    ),
+    (
+        "HLA1516.1-OM-6.29-003",
+        "Pitch currently proves transportation-type queries after explicit supported-subset transport changes, but does not yet carry a dedicated Pitch runtime witness for the no-override default interaction query path on this row.",
+    ),
+):
+    _PITCH_REQUIREMENT_EVIDENCE[requirement_id] = (
+        "not-yet-tested",
+        (),
+        note,
     )
 
 _PITCH_REQUIREMENT_EVIDENCE["REQ-OM-DISCOVERY-LIFECYCLE-001"] = (

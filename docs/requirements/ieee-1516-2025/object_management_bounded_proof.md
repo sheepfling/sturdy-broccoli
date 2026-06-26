@@ -6,8 +6,8 @@ object-exchange, routing, and advisory proof families.
 This note records the repo's current requirement-facing object-management claim
 as a bounded proof statement for the main `hla-backend-python1516-2025` runtime
 lane. It covers service-by-service runtime traceability for the 32
-object-management service rows together with the direct and hosted proof
-families for object exchange, deletion and local-known-state cleanup,
+object-management service rows together with the direct-lane and hosted FedPro
+replay proof families for object exchange, deletion and local-known-state cleanup,
 attribute-value-update routing, advisory/update-rate behavior, transportation
 policy state, and directed interaction routing. It does not claim final
 clause-by-clause 2025 conformance or exhaustive cross-binding behavior
@@ -21,7 +21,7 @@ disposition.
 
 | Family | Rows | Evidence anchors | Bounded claim reading |
 | --- | --- | --- | --- |
-| Name reservation and basic object exchange | `HLA2025-FI-SVC-051`, `HLA2025-FI-SVC-052`, `HLA2025-FI-SVC-053`, `HLA2025-FI-SVC-054`, `HLA2025-FI-SVC-055`, `HLA2025-FI-SVC-056`, `HLA2025-FI-SVC-057`, `HLA2025-FI-SVC-058`, `HLA2025-FI-SVC-059`, `HLA2025-FI-SVC-060`, `HLA2025-FI-SVC-061`, `HLA2025-FI-SVC-062` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/scenarios/test_object_management_backend_matrix.py`, `tests/transport/test_grpc_transport_2025.py` | Closed as bounded runtime proof for single and multi-name reservation or release, plain object registration and discovery, attribute update/reflect flows, and basic interaction send/receive behavior on the direct and hosted `python1516_2025` routes. |
+| Name reservation and basic object exchange | `HLA2025-FI-SVC-051`, `HLA2025-FI-SVC-052`, `HLA2025-FI-SVC-053`, `HLA2025-FI-SVC-054`, `HLA2025-FI-SVC-055`, `HLA2025-FI-SVC-056`, `HLA2025-FI-SVC-057`, `HLA2025-FI-SVC-058`, `HLA2025-FI-SVC-059`, `HLA2025-FI-SVC-060`, `HLA2025-FI-SVC-061`, `HLA2025-FI-SVC-062` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/scenarios/test_object_management_backend_matrix.py`, `tests/transport/test_grpc_transport_2025.py` | Closed as bounded runtime proof for single and multi-name reservation or release, plain object registration and discovery, attribute update/reflect flows, and basic interaction send/receive behavior on the direct `python1516_2025` lane plus hosted FedPro replay. |
 | Directed interaction routing | `HLA2025-FI-SVC-063`, `HLA2025-FI-SVC-064` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `packages/hla-rti1516-2025/src/hla/rti1516_2025/federate_ambassador.py` | Closed as bounded runtime proof for directed interaction send/receive, selective directed routing, timestamped directed delivery, and hosted FedPro callback decode of directed-interaction semantics. |
 | Deletion and local-known-state lifecycle | `HLA2025-FI-SVC-065`, `HLA2025-FI-SVC-066`, `HLA2025-FI-SVC-067` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/scenarios/test_object_management_backend_matrix.py`, `tests/transport/test_grpc_transport_2025.py` | Closed as bounded runtime proof for delete/remove/local-delete control, orphan/timed remove flows, subscriber known-state rollback, and stale remove cleanup after restore or disconnect. |
 | Scope and attribute-value-update routing | `HLA2025-FI-SVC-068`, `HLA2025-FI-SVC-069`, `HLA2025-FI-SVC-070`, `HLA2025-FI-SVC-071` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/scenarios/test_object_management_backend_matrix.py`, `tests/transport/test_grpc_transport_2025.py` | Closed as bounded runtime proof for attributesInScope/attributesOutOfScope advisories, class-wide and instance requestAttributeValueUpdate routing, provideAttributeValueUpdate callbacks, owner-only routing, and disconnected-owner suppression. |
@@ -30,10 +30,34 @@ disposition.
 
 ## Object-Management Closure Notes
 
-- The direct and hosted proof families cover executable runtime routing rather
-  than only parser or API-surface evidence: later discoveries, reflections,
-  interactions, advisories, removes, and transportation callbacks change based
-  on the object-management state established at runtime.
+- Execution-membership guard coverage is part of this bounded claim, not a
+  separate unstated assumption. Before join, after resign, or after disconnect,
+  object-management operations are expected to reject the caller with
+  `NotConnected` or `FederateNotExecutionMember`.
+- The high-signal executable anchors for that guard family are
+  `tests/backends/test_python_backend_object_ownership_extended.py` and
+  `tests/backends/test_python_backend_time_ddm_extended.py`, including
+  `test_register_object_instance_rejects_not_connected_not_joined_name_in_use_and_save_restore`,
+  `test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore`,
+  `test_update_attribute_values_rejects_not_connected_not_joined_unknown_object_invalid_time_not_owned_and_save_restore`,
+  `test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore`,
+  `test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore`,
+  `test_ddm_send_interaction_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore`,
+  and
+  `test_request_attribute_value_update_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore`.
+- The main owner rows behind that joined-state reading are
+  `HLA2025-FI-SVC-057`, `HLA2025-FI-SVC-065`, `HLA2025-FI-SVC-067`,
+  `HLA2025-FI-SVC-059`, `HLA2025-FI-SVC-061`, `HLA2025-FI-SVC-070`, and
+  `HLA2025-FI-SVC-077`.
+- The REST-hosted Python route is part of the narrower
+  `execution-membership` proof slice for lifecycle-negative, join-precondition,
+  and resign-precondition control, but it is not currently promoted as a full
+  object-management family replay owner here.
+- The direct-lane and hosted FedPro replay proof families cover executable
+  runtime routing rather than only parser or API-surface evidence: later
+  discoveries, reflections, interactions, advisories, removes, and
+  transportation callbacks change based on the object-management state
+  established at runtime.
 - Directed-interaction and directed-DDM proof remains part of the current
   object-management working surface because those paths are already routed
   through the main `hla-backend-python1516-2025` runtime and replayed over hosted

@@ -44,3 +44,11 @@ def test_2025_requirement_coverage_closure_report_matches_current_disposition_le
     assert "historical intermediate evidence rather than the current closeout state" in text
     assert "docs/requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md" in text
     assert "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md" in text
+    assert "the direct `python1516_2025` lane is the primary runtime owner behind the" in text
+    assert "Java/C++ standard-shim surfaces remain wrapper or capability layers over" in text
+    assert "hosted FedPro evidence remains a bounded hosted-route surface over" in text
+    assert "Pitch proto HLA 4 / `202X` overlap remains explicit vendor-resolution" in text
+    assert "Delta hints are not standalone proof" in text
+    assert "tied to concrete child FI/binding evidence and its canonical owner doc" in text
+    assert "Framework rules are not standalone proof" in text
+    assert "tied to concrete child FI/OMT/runtime evidence and its canonical owner doc" in text

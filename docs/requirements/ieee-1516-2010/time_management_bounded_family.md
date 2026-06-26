@@ -29,7 +29,8 @@ Short answer:
 - primary shard:
   - `unit-python-core`
 - wider time-family view only when needed:
-  - `./tools/test-focus run python-2025-time`
+  - `./tools/test-focus run time`
+  - `./tools/test-focus run backends`
 - separate mixed-backend bounded row note:
   `docs/requirements/ieee-1516-2010/mixed_backend_priority_boundaries.md`
 
@@ -154,6 +155,13 @@ Primary evidence anchors:
 - `tests/time/test_lookahead_backend_matrix.py`
 - `tests/backends/test_python_backend_object_ownership_extended.py`
 - `requirements/2010/traceability_matrix.csv`
+
+Use these rerun commands before dropping to raw file paths:
+
+- `./tools/test-focus run time` for the main 2010 time-management and backend
+  matrix slice
+- `./tools/test-focus run backends` when the time issue crosses into shared
+  backend negative-path or ownership-adjacent behavior
 
 ## Good Reading
 

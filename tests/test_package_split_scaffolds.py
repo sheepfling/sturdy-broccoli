@@ -987,6 +987,8 @@ def test_networked_python_guide_keeps_2025_backend_and_wrapper_roles_explicit() 
     assert "`hla-backend-shim` retained only as compatibility-wrapper/import-compatibility code" in normalized_guide
     assert "`packages/hla-backend-python1516-2025` for the main executable 2025 Python RTI lane" in guide
     assert "`packages/hla-backend-shim` for the temporary import-compatibility scaffolding package" in guide
+    assert "main full direct `python1516_2025` Python RTI lane" in normalized_guide
+    assert "same bounded hosted FedPro route over `hla-backend-python1516-2025`" in normalized_guide
 
 
 def test_non_spec_split_packages_build_from_their_own_src_roots() -> None:

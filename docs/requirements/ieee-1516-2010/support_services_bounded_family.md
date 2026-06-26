@@ -26,6 +26,8 @@ Short answer:
 - primary shards:
   - `unit-python-core`
   - `unit-scenarios-light` only where callback-control or matrix replay matters
+- maintained focused rerun views:
+  - `./tools/test-focus run backends`
 
 ## Final Claim Rule
 
@@ -81,6 +83,30 @@ The remaining `129 partial` rows are structurally narrow and uniform:
 - `43 EXC`
 - `43 EXC_API`
 
+Two still-visible `vendor-divergent` packet rows inside the broader support
+surface are worth naming explicitly because they are easy to confuse with
+missing Clause 10 support:
+
+- `REQ-RTI-SS-10_44-getMessageRetractionHandleFactory`
+- `REQ-RTI-SS-10_44-getRegionHandleFactory`
+
+Current reading for those two rows:
+
+- the Python lane has implementation hooks and group-level support-service
+  evidence
+- the canonical row status still stays `partial`
+- the Python backend-compliance packet still records them as
+  `python_runtime_disposition=vendor-divergent`
+- the honest reason is not "service absent"; it is that the current evidence
+  remains a grouped support-service slice instead of a narrower per-row witness
+  with its own direct positive or negative factory-helper proof
+
+Primary current artifacts for those two rows:
+
+- `analysis/compliance/requirements_matrix_2010.csv`
+- `analysis/compliance/requirements_ledger.csv`
+- `analysis/compliance/service_conformance.json`
+
 There are no remaining partial support rows for:
 
 - service presence
@@ -114,6 +140,13 @@ Primary evidence anchors:
 - `tests/backends/test_python_backend_time_ddm_extended.py::test_support_service_roundtrips_and_callback_controls_have_exact_behavior`
 - `tests/backends/test_python_backend_object_ownership_extended.py::test_clause_10_services_are_observable_through_mom_service_invocation_reporting`
 - `tests/backends/test_python_backend_object_ownership_extended.py::test_clause_10_service_signature_metadata_matches_source_bindings`
+
+Use these rerun commands before dropping to raw file paths:
+
+- `./tools/test-focus run backends` for the main 2010 support-services backend
+  slice
+- `./tools/test-surface run unit-scenarios-light` when callback-control or
+  matrix replay is the narrowest owning shard
 
 ## Why The Partial Rows Stay Partial
 

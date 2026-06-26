@@ -6,10 +6,10 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-CLAUSE8_PATH = ROOT / "requirements" / "hla1516_1_clause_8_tm_detailed_reconciliation.csv"
-CLAUSE9_PATH = ROOT / "requirements" / "hla1516_1_clause_9_ddm_detailed_reconciliation.csv"
-TM_PATH = ROOT / "requirements" / "hla1516_1_tm_detailed_reconciliation.csv"
-DDM_PATH = ROOT / "requirements" / "hla1516_1_ddm_detailed_reconciliation.csv"
+CLAUSE8_PATH = ROOT / "requirements" / "2010" / "hla1516_1_clause_8_tm_detailed_reconciliation.csv"
+CLAUSE9_PATH = ROOT / "requirements" / "2010" / "hla1516_1_clause_9_ddm_detailed_reconciliation.csv"
+TM_PATH = ROOT / "requirements" / "2010" / "hla1516_1_tm_detailed_reconciliation.csv"
+DDM_PATH = ROOT / "requirements" / "2010" / "hla1516_1_ddm_detailed_reconciliation.csv"
 
 
 def _load_rows(path: Path) -> list[dict[str, str]]:
@@ -114,3 +114,45 @@ def test_ddm_family_test_rows_have_direct_evidence_and_mapped_companion_slices()
         test_ids = [item.strip() for item in row["current_test_id"].split(";") if item.strip()]
         assert len(test_ids) >= 2
         assert all(_node_exists(test_id) for test_id in test_ids)
+
+
+def test_clause9_ddm_subscription_pre_rows_are_synchronized_with_direct_owner_closeout() -> None:
+    rows = _load_rows(CLAUSE9_PATH)
+    by_requirement = {row["packet_requirement_id"]: row for row in rows}
+
+    expected = {
+        "HLA1516.1-DDM-9_2-CREATEREGION-PRE-001": "invalid-dimension or empty-dimension-set",
+        "HLA1516.1-DDM-9_3-COMMITREGIONMODIFICATIONS-PRE-001": "foreign-region ownership",
+        "HLA1516.1-DDM-9_5-REGISTEROBJECTINSTANCEWITHREGIONS-PRE-001": "publication-state",
+        "HLA1516.1-DDM-9_6-ASSOCIATEREGIONSFORUPDATES-PRE-001": "object-knownness",
+        "HLA1516.1-DDM-9_7-UNASSOCIATEREGIONSFORUPDATES-PRE-001": "object-knownness",
+        "HLA1516.1-DDM-9_8-SUBSCRIBEOBJECTCLASSATTRIBUTESPASSIVELYWITHREGIONS-PRE-001": "invalid-update-rate",
+        "HLA1516.1-DDM-9_8-SUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-PRE-001": "invalid-update-rate",
+        "HLA1516.1-DDM-9_9-UNSUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-PRE-001": "attribute-definition validation",
+        "HLA1516.1-DDM-9_10-SUBSCRIBEINTERACTIONCLASSWITHREGIONS-PRE-001": "interaction-class validation",
+        "HLA1516.1-DDM-9_11-UNSUBSCRIBEINTERACTIONCLASSWITHREGIONS-PRE-001": "interaction-class validation",
+        "HLA1516.1-DDM-9_10-SUBSCRIBEINTERACTIONCLASSPASSIVELYWITHREGIONS-PRE-001": "interaction-class validation",
+        "HLA1516.1-DDM-9_12-SENDINTERACTIONWITHREGIONS-PRE-001": "publication-state",
+        "HLA1516.1-DDM-9_13-REQUESTATTRIBUTEVALUEUPDATEWITHREGIONS-PRE-001": "attribute-definition validation",
+    }
+
+    for requirement_id, phrase in expected.items():
+        row = by_requirement[requirement_id]
+        assert row["current_status"] == "mapped"
+        assert "applicable precondition surface" in row["notes"]
+        assert phrase in row["notes"]
+
+
+def test_clause9_ddm_subscription_exception_rows_are_synchronized_with_direct_owner_closeout() -> None:
+    rows = _load_rows(CLAUSE9_PATH)
+    by_requirement = {row["packet_requirement_id"]: row for row in rows}
+
+    expected = {
+        "HLA1516.1-DDM-9_10-SUBSCRIBEINTERACTIONCLASSPASSIVELYWITHREGIONS-EXC-001": "service-reporting-via-MOM",
+        "HLA1516.1-DDM-9_10-SUBSCRIBEINTERACTIONCLASSWITHREGIONS-EXC-001": "service-reporting-via-MOM",
+    }
+
+    for requirement_id, phrase in expected.items():
+        row = by_requirement[requirement_id]
+        assert row["current_status"] == "mapped"
+        assert phrase in row["notes"]

@@ -32,7 +32,8 @@ Short answer:
   - `unit-scenarios-light` when object or interaction routing behavior is the
     narrowest practical proof
 - wider time/scenario view only when needed:
-  - `./tools/test-focus run python-2025-time`
+  - `./tools/test-focus run backends`
+  - `./tools/test-focus run time`
 
 ## Final Claim Rule
 
@@ -79,14 +80,13 @@ keep describing `CAP-DDM` as vague or structurally unfinished.
 
 The current owner ledger has `223` DDM packet rows:
 
-- `177 mapped`
-- `46 partial`
+- `207 mapped`
+- `16 partial`
 
-The remaining `46 partial` rows cluster into stable categories:
+The remaining `16 partial` rows cluster into stable categories:
 
-- `18 EXC_API`
-- `14 EXC`
-- `14 PRE`
+- `10 EXC_API`
+- `6 EXC`
 
 There are no remaining partial DDM rows for:
 
@@ -98,25 +98,40 @@ There are no remaining partial DDM rows for:
 - broad DDM overview routing rows
 
 That means the family is no longer broad proof debt across all of Clause 9.
-The remaining bounded area is the negative-path and precondition envelope.
+The remaining bounded area is the negative-path exception envelope.
 
 ## What The Categories Mean
 
 ### Precondition-envelope tail
 
-The `14 PRE` rows mostly state a broader service-precondition universe than the
-current isolated witnesses prove directly for one row at a time.
+There is no remaining `PRE` tail in the current DDM owner ledger.
 
-Typical pattern:
+Recent tightening examples:
 
-- key not-connected, not-joined, save/restore, invalid-region, invalid-region
-  context, and ownership-of-region guards are already proven
-- the packet row still claims a larger clause-level precondition envelope than
-  the direct witness currently isolates
+- the `deleteRegion` PRE row no longer lives in this tail because direct
+  negative-path witnesses now isolate the exercised connection-state,
+  execution-membership, invalid-region, foreign-region ownership,
+  region-in-use, and save/restore guard surfaces it claimed
+- the subscription and region-association PRE rows no longer live in this tail
+  because direct negative-path witnesses now isolate the exercised
+  connection-state, execution-membership, handle-validation, invalid-region,
+  invalid-update-rate, object-knownness, and save/restore guard surfaces they
+  claimed
+- the `registerObjectInstanceWithRegions` PRE row no longer lives in this tail
+  because direct negative-path witnesses now isolate the exercised
+  connection-state, execution-membership, class-handle and attribute-definition
+  validation, publication-state, duplicate-name, invalid-region, and
+  save/restore guard surfaces it claimed
+- the `createRegion`, `commitRegionModifications`, and
+  `unsubscribeInteractionClassWithRegions` PRE rows no longer live in this tail
+  because direct negative-path witnesses now isolate the exercised
+  connection-state, execution-membership, invalid-dimension or
+  empty-dimension-set, interaction-class validation, invalid-region, and
+  save/restore guard surfaces they claimed
 
 ### Exception-envelope tail
 
-The `14 EXC` and `18 EXC_API` rows usually keep a broader failure envelope than
+The `6 EXC` and `10 EXC_API` rows usually keep a broader failure envelope than
 the current tests isolate directly.
 
 Typical pattern:
@@ -147,6 +162,85 @@ Primary evidence anchors:
 - `tests/verification/test_compliance_slice_v011.py`
 - `tests/backends/test_python_backend_object_ownership_extended.py`
 - `requirements/2010/traceability_matrix.csv`
+
+Execution-membership reading for this family:
+
+- before a federate joins, after it resigns, or after it disconnects,
+  region-gated interaction and request-update services are expected to reject
+  the caller as not connected or not joined rather than silently accept the
+  operation
+- the direct guard witnesses now fully close the PRE owner rows
+  `HLA1516.1-DDM-9_12-SENDINTERACTIONWITHREGIONS-PRE-001` and
+  `HLA1516.1-DDM-9_13-REQUESTATTRIBUTEVALUEUPDATEWITHREGIONS-PRE-001`
+- the direct guard witnesses now also fully close the region-lifecycle
+  exception rows `HLA1516.1-DDM-9_2-CREATEREGION-EXC-001`,
+  `HLA1516.1-DDM-9_2-RTIAPI-001-EXC`,
+  `HLA1516.1-DDM-9_3-COMMITREGIONMODIFICATIONS-EXC-001`,
+  `HLA1516.1-DDM-9_3-RTIAPI-001-EXC`,
+  `HLA1516.1-DDM-9_4-DELETEREGION-EXC-001`, and
+  `HLA1516.1-DDM-9_4-RTIAPI-001-EXC` because the current negative-path suite
+  now isolates the exercised invalid-dimension, foreign-region ownership,
+  invalid-region, region-in-use, execution-membership, connection, and
+  save/restore guard surfaces they claimed
+- the direct guard witnesses now also fully close the
+  `unassociateRegionsForUpdates` exception rows
+  `HLA1516.1-DDM-9_7-UNASSOCIATEREGIONSFORUPDATES-EXC-001` and
+  `HLA1516.1-DDM-9_7-RTIAPI-001-EXC` because the current negative-path suite
+  now isolates the exercised foreign-region ownership, invalid-region,
+  attribute-definition, object-knownness, execution-membership, connection,
+  and save/restore guard surfaces they claimed
+- the direct guard witnesses now also fully close the
+  `associateRegionsForUpdates` exception rows
+  `HLA1516.1-DDM-9_6-ASSOCIATEREGIONSFORUPDATES-EXC-001` and
+  `HLA1516.1-DDM-9_6-RTIAPI-001-EXC` because the current negative-path suite
+  now isolates the exercised invalid-region-context, foreign-region ownership,
+  invalid-region, attribute-definition, object-knownness,
+  execution-membership, connection, and save/restore guard surfaces they
+  claimed
+- the direct guard witnesses now also fully close the
+  `subscribeInteractionClassWithRegions` and
+  `subscribeInteractionClassPassivelyWithRegions` exception rows
+  `HLA1516.1-DDM-9_10-SUBSCRIBEINTERACTIONCLASSWITHREGIONS-EXC-001`,
+  `HLA1516.1-DDM-9_10-RTIAPI-001-EXC`,
+  `HLA1516.1-DDM-9_10-SUBSCRIBEINTERACTIONCLASSPASSIVELYWITHREGIONS-EXC-001`,
+  and `HLA1516.1-DDM-9_10-RTIAPI-001-EXC-DUP02` because the current
+  negative-path suite now isolates the exercised service-reporting-via-MOM,
+  invalid-region-context, foreign-region ownership, invalid-region,
+  interaction-class-not-defined, execution-membership, connection, and
+  save/restore guard surfaces they claimed
+- the direct guard witnesses now also fully close the
+  `unsubscribeInteractionClassWithRegions` exception rows
+  `HLA1516.1-DDM-9_11-UNSUBSCRIBEINTERACTIONCLASSWITHREGIONS-EXC-001` and
+  `HLA1516.1-DDM-9_11-RTIAPI-001-EXC` because the current negative-path suite
+  now isolates the exercised foreign-region ownership, invalid-region,
+  interaction-class-not-defined, execution-membership, connection, and
+  save/restore guard surfaces they claimed
+- the direct guard witnesses also fully close the PRE owner rows
+  `HLA1516.1-DDM-9_6-ASSOCIATEREGIONSFORUPDATES-PRE-001`,
+  `HLA1516.1-DDM-9_7-UNASSOCIATEREGIONSFORUPDATES-PRE-001`,
+  `HLA1516.1-DDM-9_8-SUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-PRE-001`,
+  `HLA1516.1-DDM-9_8-SUBSCRIBEOBJECTCLASSATTRIBUTESPASSIVELYWITHREGIONS-PRE-001`,
+  `HLA1516.1-DDM-9_9-UNSUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-PRE-001`,
+  `HLA1516.1-DDM-9_10-SUBSCRIBEINTERACTIONCLASSWITHREGIONS-PRE-001`, and
+  `HLA1516.1-DDM-9_10-SUBSCRIBEINTERACTIONCLASSPASSIVELYWITHREGIONS-PRE-001`
+- the broader exception-envelope owner rows
+  `HLA1516.1-DDM-9_12-SENDINTERACTIONWITHREGIONS-EXC-001` and
+  `HLA1516.1-DDM-9_13-REQUESTATTRIBUTEVALUEUPDATEWITHREGIONS-EXC-001` remain
+  partial because their full exception universes still exceed the currently
+  isolated direct evidence
+- this specifically includes
+  `test_ddm_send_interaction_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore`
+  and
+  `test_request_attribute_value_update_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore`
+- use `./tools/test-focus run execution-membership` when the question is about
+  joined-versus-not-joined execution-state guards rather than the broader DDM
+  capability surface
+
+Use these rerun commands before dropping to raw file paths:
+
+- `./tools/test-focus run backends` for the main 2010 DDM backend slice
+- `./tools/test-focus run time` when the DDM issue is coupled to shared
+  time/DDM behavior or backend matrices
 
 ## Good Reading
 

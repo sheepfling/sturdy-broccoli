@@ -189,11 +189,20 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
         VerificationAsset(
             "REQ-OMT-SCHEMA-001",
             "requirement",
-            "Annex E schema-level conformance checking is identified explicitly and remains planned",
-            ("1516.2-2010 Annex E",),
-            "planned",
-            ("hla2010/fom.py",),
-            gaps=("The parser is intentionally not a full XML Schema validator, so Annex E conformance is not yet executable.",),
+            "Annex E schema-family conformance validation is executable for the carried standard schemas and round-trip witnesses",
+            ("1516.2-2010 §Annex E",),
+            "implemented-slice",
+            (
+                "hla2010/fom.py::validate_fom_xml_schema",
+                "tests/factories/test_fom_omt_parsing.py::test_parse_fom_xml_with_omt_schema_validation_accepts_restaurant_reference_module_and_rejects_invalid_document",
+                "tests/factories/test_fom_omt_parsing.py::test_parse_fom_xml_rejects_unknown_object_model_namespace",
+                "tests/factories/test_fom_omt_parsing.py::test_serialize_fom_module_emits_schema_valid_xml_and_preserves_identification",
+                "tests/factories/test_fom_omt_parsing.py::test_serialize_fom_module_preserves_metadata_subset_across_round_trip",
+            ),
+            gaps=(
+                "The repo proves Annex E schema-family validation and round-trip behavior, but it does not yet maintain one curated executable witness per imported schema element or schema type.",
+            ),
+            notes="This slice captures the repo's executable Annex E family proof without overstating it as per-element or full generic-schema closure.",
         ),
         VerificationAsset(
             "REQ-SERVICE-FILE-001",

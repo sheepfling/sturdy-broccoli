@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-OWN_PATH = ROOT / "requirements" / "hla1516_1_own_detailed_reconciliation.csv"
+OWN_PATH = ROOT / "requirements" / "2010" / "hla1516_1_own_detailed_reconciliation.csv"
 
 
 def _load_rows(path: Path) -> list[dict[str, str]]:

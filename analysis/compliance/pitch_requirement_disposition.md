@@ -6,8 +6,8 @@ This audit projects the shared HLA 2010 requirements matrix onto Pitch so every 
 
 | Pitch backend | Verified | Blocked | Vendor divergent | Not yet tested | Not applicable | Classification required |
 |---|---:|---:|---:|---:|---:|---:|
-| pitch-jpype | 545 | 4 | 43 | 93 | 26 | 211 |
-| pitch-py4j | 545 | 4 | 43 | 93 | 26 | 211 |
+| pitch-jpype | 553 | 4 | 43 | 96 | 26 | 212 |
+| pitch-py4j | 553 | 4 | 43 | 96 | 26 | 212 |
 
 ## Clause Summary
 
@@ -19,8 +19,8 @@ This audit projects the shared HLA 2010 requirements matrix onto Pitch so every 
 | IEEE 1516.1-2010 (2010 edition) §11 | 37 | 0 | 0 | 0 | 0 | 2 | 35 |
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 0 | 0 | 0 | 9 | 1 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §4 | 281 | 274 | 2 | 3 | 0 | 2 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §5 | 52 | 45 | 2 | 0 | 0 | 5 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §6 | 110 | 99 | 0 | 9 | 0 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §5 | 53 | 45 | 2 | 0 | 0 | 5 | 1 |
+| IEEE 1516.1-2010 (2010 edition) §6 | 121 | 107 | 0 | 9 | 3 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §7 | 39 | 27 | 0 | 10 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §8 | 61 | 41 | 0 | 18 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §9 | 31 | 29 | 0 | 0 | 0 | 2 | 0 |
@@ -50,8 +50,8 @@ This audit projects the shared HLA 2010 requirements matrix onto Pitch so every 
 | IEEE 1516.1-2010 (2010 edition) §11 | 37 | 0 | 0 | 0 | 0 | 2 | 35 |
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 0 | 0 | 0 | 9 | 1 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §4 | 281 | 274 | 2 | 3 | 0 | 2 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §5 | 52 | 45 | 2 | 0 | 0 | 5 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §6 | 110 | 99 | 0 | 9 | 0 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §5 | 53 | 45 | 2 | 0 | 0 | 5 | 1 |
+| IEEE 1516.1-2010 (2010 edition) §6 | 121 | 107 | 0 | 9 | 3 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §7 | 39 | 27 | 0 | 10 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §8 | 61 | 41 | 0 | 18 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §9 | 31 | 29 | 0 | 0 | 0 | 2 | 0 |
@@ -79,8 +79,8 @@ This audit projects the shared HLA 2010 requirements matrix onto Pitch so every 
 | IEEE 1516.1-2010 (2010 edition) §11 | 37 | 0 | 0 | 0 | 0 | 2 | 35 |
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 0 | 0 | 0 | 9 | 1 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §4 | 281 | 274 | 2 | 3 | 0 | 2 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §5 | 52 | 45 | 2 | 0 | 0 | 5 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §6 | 110 | 99 | 0 | 9 | 0 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §5 | 53 | 45 | 2 | 0 | 0 | 5 | 1 |
+| IEEE 1516.1-2010 (2010 edition) §6 | 121 | 107 | 0 | 9 | 3 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §7 | 39 | 27 | 0 | 10 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §8 | 61 | 41 | 0 | 18 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §9 | 31 | 29 | 0 | 0 | 0 | 2 | 0 |
@@ -109,6 +109,9 @@ Rows where `pitch-jpype` and `pitch-py4j` currently have different generated dis
 
 | Document | Clause | Requirement | Kind | Applicability | Title |
 |---|---|---|---|---|
+| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.1.10-004 | extracted-requirement | runtime-or-service-probe | RTI shall honor FOM-declared reliable and best-effort transportation defaults for object updates and interactions in the currently supported transport subset. |
+| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.25-003 | extracted-requirement | runtime-or-service-probe | RTI shall report the default reliable attribute transportation type when no explicit override exists in the currently implemented transport subset. |
+| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.29-003 | extracted-requirement | runtime-or-service-probe | RTI shall report the default reliable interaction transportation type when no explicit override exists in the currently implemented transport subset. |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_10-getObjectInstanceName | service-requirement | runtime-or-service-probe | Get Object Instance Name service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_11-getAttributeHandle | service-requirement | runtime-or-service-probe | Get Attribute Handle service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_12-getAttributeName | service-requirement | runtime-or-service-probe | Get Attribute Name service |
@@ -231,6 +234,7 @@ Rows where `pitch-jpype` and `pitch-py4j` currently have different generated dis
 | IEEE 1516-2010 | unknown | HLA1516-RULE-001 | extracted-requirement | classification-required | The repo shall map federation-level architectural rules to RTI lifecycle behavior and federation-state transitions |
 | IEEE 1516-2010 | unknown | HLA1516-FW-001 | extracted-requirement | classification-required | The repo shall treat IEEE 1516-2010 as the top-level framework and keep federate behavior |
 | IEEE 1516-2010 | unknown | HLA1516-OBJ-001 | extracted-requirement | classification-required | The repo shall distinguish object-model concepts from programming-language objects and map them to the 1516.1 object services and 1516.2 OMT structure |
+| IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.1.6-002 | extracted-requirement | runtime-or-service-probe | RTI shall apply explicit and FOM-declared update-rate designators across direct, inherited, and region-based object-class subscriptions within the currently implemented logical-time subset. |
 | IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-11.1-001 | extracted-requirement | artifact-or-model-verification | RTI shall expose management information through standard MOM objects and interactions |
 | IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-11.1-002 | extracted-requirement | artifact-or-model-verification | MOM shall use the OMT format |
 | IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-11.1-003 | extracted-requirement | artifact-or-model-verification | FDD for a federation execution shall include all MOM elements |
@@ -417,4 +421,4 @@ Rows where `pitch-jpype` and `pitch-py4j` currently have different generated dis
 | multi-section | 11 | REQ-MOM-NEG-001 | verification-slice | artifact-or-model-verification | Strict MOM decoding reports and raises through generated parameterized negative-path tests |
 | multi-section | 11 | REQ-SERVICE-FILE-001 | verification-slice | artifact-or-model-verification | Service-report file output contains initial and per-service records with section anchors |
 | multi-section | 12 | REQ-SAVE-RESTORE-ROUTING-STATE-001 | verification-slice | artifact-or-model-verification | Save/restore reinstates saved object and interaction subscription-routing state rather than preserving dirty post-save declaration mutations |
-| multi-section | unknown | REQ-OMT-SCHEMA-001 | verification-slice | classification-required | Annex E schema-level conformance checking is identified explicitly and remains planned |
+| multi-section | unknown | REQ-OMT-SCHEMA-001 | verification-slice | classification-required | Annex E schema-family conformance validation is executable for the carried standard schemas and round-trip witnesses |

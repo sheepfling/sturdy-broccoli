@@ -256,7 +256,7 @@ It now demonstrates the orchestration pattern as a matrix:
 Representative rows:
 
 - `link16-rpr2-integrated-2010-micro-2`
-  - one sender, one observer, shared local orchestration
+  - one sender, one observer/listener, shared local orchestration
 - `rpr-runtime-2025-squad-5`
   - one bridge owner, multiple shooters, multiple observers
 - `space-fom-core-2025-constellation-10`
@@ -264,6 +264,11 @@ Representative rows:
 
 That file is useful because it shows the orchestration in a copyable form
 without hiding it behind too much framework code.
+
+The runtime showcase now also promotes the final observer into an explicit
+listener federate artifact lane. That listener still uses the same startup
+sync-point and explicit callback-pumping model described here; it is not a
+hidden background monitor.
 
 ## Where Parallelism Exists Today
 

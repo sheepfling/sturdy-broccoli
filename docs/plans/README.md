@@ -17,6 +17,11 @@ Current plans:
 - [PLN-001_hla_2010_foundation.md](PLN-001_hla_2010_foundation.md)
 - [PLN-002_certi_parity_and_runtime_plan.md](PLN-002_certi_parity_and_runtime_plan.md)
 - [PLN-003_requirements_authoring_plan.md](PLN-003_requirements_authoring_plan.md)
+- [PLN-004_python_rti_100_percent_compliance_plan.md](PLN-004_python_rti_100_percent_compliance_plan.md)
+- [PLN-005_requirements_shards_views_and_verification_plan.md](PLN-005_requirements_shards_views_and_verification_plan.md): canonical shard-versus-view model, backend-resolution separation, and verification-flow plan for both editions
+- [2025_python_rti_100_percent_worklist.md](2025_python_rti_100_percent_worklist.md): concrete 2025 denominator rule plus the exact 46 non-covered rows that block literal `691 / 691 covered`
+- [2025_python_rti_umbrella_decomposition_worklist.md](2025_python_rti_umbrella_decomposition_worklist.md): exact child-row, shard-owner, and promotion criteria for the 22 remaining 2025 umbrella rows
+- [2010_python_rti_bounded_family_execution_worklist.md](2010_python_rti_bounded_family_execution_worklist.md): exact owner-doc, companion-ledger, shard-owner, and tightening criteria for the remaining bounded 2010 families
 - [imported_requirements_backlog_v1_0.md](imported_requirements_backlog_v1_0.md): generated repo-native work queues from the harmonized requirements ledgers
 - [requirements_finish_line.md](requirements_finish_line.md): the handoff note for finishing remaining requirement rows without overclaiming
 - [requirements_remaining_closure.md](requirements_remaining_closure.md): concrete remaining 2010/2025 proof debt, the canonical shard-versus-view matrix model, and the preferred closeout-table column shape
@@ -34,5 +39,6 @@ Reading rule for closeout work:
 
 1. use `requirements_completion_audit.md` for the truthful "are we done?" answer
 2. use `requirements_remaining_closure.md` for the exact bucket shape and shard/view ownership model
-3. use `requirements_gap_register.md` and `requirements_execution_queue.md` for the next runnable closeout slices
-4. use `requirement_compliance_exports.md` only when you need presentation packets, not canonical requirement ownership
+3. use `PLN-005_requirements_shards_views_and_verification_plan.md` when you need the canonical shard-versus-view execution model
+4. use `requirements_gap_register.md` and `requirements_execution_queue.md` for the next runnable closeout slices
+5. use `requirement_compliance_exports.md` only when you need presentation packets, not canonical requirement ownership

@@ -99,6 +99,92 @@ def test_ieee_1516_2025_requirements_readme_indexes_bounded_proof_notes() -> Non
     assert "explicit exclusion map for legacy aliases, Java/C++ bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows, and out-of-scope OMT extension semantics" in normalized
 
 
+@pytest.mark.requirements(
+    "HLA2025-FI-004",
+    "HLA2025-FI-SVC-005",
+    "HLA2025-FI-SVC-010",
+    "HLA2025-FI-SVC-011",
+)
+def test_ieee_1516_2025_requirements_readme_calls_out_basic_execution_rules() -> None:
+    text = (REGISTRY_DIR / "README.md").read_text(encoding="utf-8")
+    normalized = " ".join(text.split())
+
+    assert "## Basic Execution Rules" in text
+    assert 'canonical 2025 "have we joined yet?" rule family' in text
+    assert "connect before RTI interaction" in normalized
+    assert "joined versus not-joined execution-member guards" in normalized
+    assert "plain object registration rejected until the caller has joined" in normalized
+    assert "delete, local-delete, update, interaction, query, and region-gated DDM services rejected until the caller has joined" in normalized
+    assert "Update Attribute Values" in text
+    assert "Request Attribute Value Update" in text
+    assert "Query Attribute Transportation Type" in text
+    assert "Send Interaction With Regions" in text
+    assert "Request Attribute Value Update With Regions" in text
+    assert "after resign, those execution-affecting services continue to reject the caller as no longer joined, including delete/local-delete plus the region-gated DDM send and request-update variants" in normalized
+    assert "destroy rejected while federates are still joined" in normalized
+    assert "after destroy succeeds, later destroy or join attempts against that missing federation reject with `FederationExecutionDoesNotExist`" in normalized
+    assert "federation membership listing and reporting" in normalized
+    assert "resign and disconnect cleanup after membership changes" in normalized
+    assert "hla_2025_requirement_disposition_ledger.csv" in text
+    assert "../execution_membership_rules.md" in text
+    assert "`federation_management_bounded_proof.md`" in text
+    assert "`object_management_bounded_proof.md`" in text
+    assert "`ddm_bounded_proof.md`" in text
+    assert "hla_2025_executable_test_requirements_v3.csv" in text
+    assert "`HLA2025-FI-004-XT-REQ-CONNECT_BEFORE_RTI_INTERACTION`" in text
+    assert "`HLA2025-FI-SVC-005`, `HLA2025-FI-SVC-008`, `HLA2025-FI-SVC-010`, and" in text
+    assert "`HLA2025-FI-SVC-011`" in text
+    assert "`HLA2025-FI-SVC-057`" in text
+    assert "`HLA2025-FI-SVC-065`" in text
+    assert "`HLA2025-FI-SVC-067`" in text
+    assert "`HLA2025-FI-SVC-059`" in text
+    assert "`HLA2025-FI-SVC-061`" in text
+    assert "`HLA2025-FI-SVC-070`" in text
+    assert "`HLA2025-FI-SVC-077`" in text
+    assert "`HLA2025-FI-SVC-136`" in text
+    assert "`HLA2025-FI-SVC-137`" in text
+    assert "`NotConnected`" in text
+    assert "`FederateNotExecutionMember`" in text
+    assert "`FederatesCurrentlyJoined`" in text
+    assert "`FederationExecutionDoesNotExist`" in text
+    assert "The intended 2025 state-machine reading is:" in text
+    assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in text
+    assert "tests/transport/test_grpc_transport_2025.py" in text
+    assert "tests/backends/test_python_backend_object_ownership_extended.py" in text
+    assert "tests/backends/test_python_backend_time_ddm_extended.py" in text
+    assert "tests/scenarios/test_federation_management_backend_matrix.py" in text
+    assert "tests/scenarios/test_federation_lifecycle_backend_matrix.py" in text
+    assert "./tools/test-focus run execution-membership" in text
+    assert "direct lane, hosted 2025 gRPC/FedPro route, and REST-hosted Python route" in normalized
+
+
+@pytest.mark.requirements("HLA2025-FI-SVC-060", "HLA2025-FI-SVC-070", "HLA2025-FI-SVC-074")
+def test_2025_object_management_bounded_proof_calls_out_execution_member_guards() -> None:
+    text = (REGISTRY_DIR / "object_management_bounded_proof.md").read_text(encoding="utf-8")
+    normalized = " ".join(text.split())
+
+    assert "Execution-membership guard coverage is part of this bounded claim" in normalized
+    assert "Before join, after resign, or after disconnect" in text
+    assert "`NotConnected` or `FederateNotExecutionMember`" in text
+    assert "`HLA2025-FI-SVC-057`" in text
+    assert "`HLA2025-FI-SVC-065`" in text
+    assert "`HLA2025-FI-SVC-067`" in text
+    assert "`HLA2025-FI-SVC-059`" in text
+    assert "`HLA2025-FI-SVC-061`" in text
+    assert "`HLA2025-FI-SVC-070`" in text
+    assert "`HLA2025-FI-SVC-077`" in text
+    assert "tests/backends/test_python_backend_object_ownership_extended.py" in text
+    assert "tests/backends/test_python_backend_time_ddm_extended.py" in text
+    assert "test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore" in text
+    assert "test_update_attribute_values_rejects_not_connected_not_joined_unknown_object_invalid_time_not_owned_and_save_restore" in text
+    assert "test_register_object_instance_rejects_not_connected_not_joined_name_in_use_and_save_restore" in text
+    assert "test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore" in text
+    assert "test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore" in text
+    assert "test_ddm_send_interaction_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore" in text
+    assert "REST-hosted Python route is part of the narrower" in text
+    assert "it is not currently promoted as a full object-management family replay owner here" in normalized
+
+
 @pytest.mark.requirements("HLA2025-BND-003", "HLA2025-MIL-001", "HLA2025-MIL-002")
 def test_hosted_fedpro_bounded_proof_markdown_keeps_main_runtime_identity_and_boundary_explicit() -> None:
     text = (REGISTRY_DIR / "hosted_fedpro_bounded_proof.md").read_text(encoding="utf-8")
@@ -143,6 +229,22 @@ def test_ieee_1516_2025_requirements_readme_tracks_current_runtime_proof_lane() 
     assert "one proof family inside the broader 2025 runtime-evidence closeout" in normalized
 
 
+@pytest.mark.requirements("HLA2025-REQ-001")
+def test_ieee_1516_2025_requirements_readme_links_honest_100_percent_program() -> None:
+    text = (REGISTRY_DIR / "README.md").read_text(encoding="utf-8")
+    normalized = " ".join(text.split())
+
+    assert "## Honest 100 Percent Reading" in text
+    assert "active normative non-retired non-umbrella denominator is currently `645` rows" in normalized
+    assert "direct coverage on that active denominator is currently `645 / 645 = 100%`" in normalized
+    assert "`22` `duplicate/umbrella` rows and `24` `retired/legacy-only` rows stay explicit outside that direct-support denominator" in normalized
+    assert "PLN-004_python_rti_100_percent_compliance_plan.md" in text
+    assert "2025_python_rti_100_percent_worklist.md" in text
+    assert "2025_python_rti_umbrella_decomposition_worklist.md" in text
+    assert "requirements_completion_audit.md" in text
+    assert "leadership wants literal `691 / 691 covered`" in normalized
+
+
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-BND-001", "HLA2025-BND-002", "HLA2025-BND-003")
 def test_python2025_exclusion_boundaries_markdown_gathers_non_claim_areas() -> None:
     text = (REGISTRY_DIR / "python1516_2025_exclusion_boundaries.md").read_text(encoding="utf-8")
@@ -162,6 +264,7 @@ def test_python2025_exclusion_boundaries_markdown_gathers_non_claim_areas() -> N
     assert "bounded hosted transport/runtime slice over `hla-backend-python1516-2025`" in normalized
     assert "normalization aids and mapping notes rather than standalone one-row conformance assertions" in normalized
     assert "explicit exclusions from active 2025 support obligations" in normalized
+    assert "direct `python1516_2025` lane plus hosted FedPro replay" in text
     assert "Arbitrary third-party extension execution semantics remain out of scope" in text
     assert "`../../python_rti_backend.md`" in text
     assert "`hosted_fedpro_bounded_proof.md`" in text
@@ -234,10 +337,20 @@ def test_save_restore_bounded_proof_markdown_keeps_rollback_family_boundary_expl
     assert "`HLA2025-FI-001`" in text
     assert "`tests/test_rti1516_2025_python1516_2025_runtime.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
+    assert "`tests/transport/test_rest_transport.py`" in text
     assert "`tests/scenarios/test_save_restore_backend_matrix.py`" in text
     assert "`tests/scenarios/test_python_route_parity.py`" in text
+    assert "`./tools/test-focus run python-2025-save-restore`" in text
+    assert "`./tools/python verify-main-2025`" in text
+    assert "`./tools/python verify-routes-2025`" in text
     assert "`hla-backend-python1516-2025`. `hla-backend-shim` is not an implementation owner" in normalized
     assert "Hosted FedPro remains transport-seam evidence over `hla-backend-python1516-2025`" in text
+    assert "REST-hosted Python route" in text
+    assert "the only current save/restore family promoted to the REST-hosted Python route" in normalized
+    assert "`HLA2025-FI-SVC-018`, `HLA2025-FI-SVC-019`, `HLA2025-FI-SVC-020`" in text
+    assert "`HLA2025-FI-SVC-030`, `HLA2025-FI-SVC-031`, and" in text
+    assert "`HLA2025-FI-SVC-032`" in text
+    assert "broader rollback families remain direct-lane plus hosted FedPro proof" in normalized
     assert "does not claim that every save/restore requirement now has its own standalone clause-by-clause conformance proof" in normalized
 
 
@@ -261,9 +374,19 @@ def test_callback_bounded_proof_markdown_keeps_callback_family_boundary_explicit
     assert "`tests/scenarios/test_save_restore_backend_matrix.py`" in text
     assert "`tests/scenarios/test_ownership_management_backend_matrix.py`" in text
     assert "`tests/scenarios/test_python_route_parity.py`" in text
+    assert "`./tools/test-focus run python-2025-mom-callbacks`" in text
+    assert "`./tools/python verify-main-2025`" in text
+    assert "`./tools/python verify-routes-2025`" in text
+    assert "This note is intentionally a cross-family bounded callback evidence surface over linked child rows" in normalized
+    assert "`HLA2025-FI-SVC-193`, `HLA2025-FI-SVC-194`, `HLA2025-FI-SVC-195`, and `HLA2025-FI-SVC-196`" in normalized
+    assert "not as a license to relabel every touched child service row as callback closure" in normalized
+    assert "direct-lane plus hosted FedPro callback evidence" in normalized
+    assert "direct `python1516_2025` lane plus hosted FedPro replay" in text
     assert "`hla-backend-python1516-2025`. `hla-backend-shim` is not an implementation owner" in normalized
     assert "does not claim exhaustive callback-by-callback signature equivalence" in normalized
     assert "Hosted FedPro remains transport-seam evidence over `hla-backend-python1516-2025`" in text
+    assert "REST-hosted Python route is not currently promoted as an owner for these 2025 callback proof families" in normalized
+    assert "the hosted transport seam, 2025 execution-membership control, and selected lifecycle/control-flow witnesses" in normalized
 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-FR-003", "HLA2025-FR-004")
@@ -334,6 +457,8 @@ def test_lookahead_window_bounded_proof_markdown_keeps_proof_ladder_and_boundary
     assert "`tests/scenarios/test_python_route_parity.py`" in text
     assert "`./tools/pitch time-window-probe`" in text
     assert "`./tools/pitch time-window-restore-state-probe`" in text
+    assert "hosted FedPro replay" in normalized
+    assert "direct `python1516_2025` plus hosted FedPro replay evidence" in normalized
     assert "must fail if the RTI allows a future-message exclusion bug or a closed-window causality leak" in normalized
     assert "`hla-backend-python1516-2025`. `hla-backend-shim` is not an implementation owner" in normalized
 
@@ -352,11 +477,25 @@ def test_callback_binding_delta_markdown_maps_umbrella_rows_to_runtime_and_bindi
     assert "`tests/test_rti1516_2025_python1516_2025_runtime.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
     assert "| HLA2025-FI-CB-008 |" in text
+    assert "| HLA2025-FI-CFG-001 |" in text
+    assert "| HLA2025-FI-AUTH-001 |" in text
     assert "| HLA2025-BIND-JAVA-CPP-001 |" in text
     assert "The primary runtime owner behind the executable anchors above is `hla-backend-python1516-2025`." in normalized
     assert "`hla-backend-shim`, `hla-backend-cpp-shim`, and the Java bridge packages are wrapper/binding surfaces over that runtime lane;" in normalized
     assert "Each row closes only through the linked child FI/binding rows" in normalized
     assert "this bucket is already in its intended final repo-owned state as a non-standalone delta or normalization surface" in normalized
+    assert "The configuration and authorization umbrella slice was re-audited on `2026-06-26`" in normalized
+    assert "The callback-control umbrella slice was also re-audited on `2026-06-26`" in normalized
+    assert "The directed-interaction callback umbrella slice was also re-audited on `2026-06-26`" in normalized
+    assert "The FedPro protocol umbrella slice was also re-audited on `2026-06-26`" in normalized
+    assert "The Java/C++ binding umbrella slice was also re-audited on `2026-06-26`" in normalized
+    assert "explicit hosted FedPro transport calls for enable/disable semantics" in text
+    assert "direct `python1516_2025` lane plus hosted FedPro replay" in text
+    assert "no narrower standalone callback-control claim was identified" in normalized
+    assert "no narrower standalone directed-interaction callback-parameterization claim was identified" in normalized
+    assert "no narrower standalone FedPro protocol-capability claim was identified" in normalized
+    assert "no narrower standalone Java/C++ binding-capability claim was identified" in normalized
+    assert "no narrower standalone configuration-result or authorization-credentials claim was identified" in normalized
     assert "Treat this bucket as closed for current closeout purposes" in text
 
 
@@ -443,11 +582,26 @@ def test_support_services_bounded_proof_markdown_keeps_python_lane_and_bounded_r
     assert "This note records the repo's current support-services claim as a bounded, requirement-facing proof statement." in normalized
     assert "per-service runtime traceability across the Python 2025 lanes" in normalized
     assert "hosted FedPro remains a bounded runtime slice rather than a full support-service conformance route" in normalized
+    assert "REST-hosted Python route is not yet promoted to these support-service proof families" in normalized
+    assert "The canonical support-service owner rows carried by this note are the true Clause 10 support-service rows" in normalized
+    assert "`HLA2025-FI-SVC-138` through `HLA2025-FI-SVC-156`" in text
+    assert "`HLA2025-FI-SVC-158`, `HLA2025-FI-SVC-162` through `HLA2025-FI-SVC-196`" in normalized
+    assert "`name-reservation-and-release-flows` is backed by linked object-management rows" in normalized
+    assert "`HLA2025-FI-SVC-157`, `HLA2025-FI-SVC-159`, `HLA2025-FI-SVC-160`, `HLA2025-FI-SVC-161`, or `HLA2025-FI-SVC-164` stay owned by the DDM note" in normalized
     assert "`name-reservation-and-release-flows`" in text
     assert "`identity-catalog-and-handle-normalization-lookups`" in text
     assert "`factory-decode-and-hosted-support-seam`" in text
+    assert "| Family | Focus | Direct-backed | FedPro-hosted-backed | REST-hosted-backed |" in text
+    assert "| `name-reservation-and-release-flows`" in text
+    assert "| Yes | Yes | No |" in text
     assert "`tests/test_rti1516_2025_python1516_2025_runtime.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
+    assert "`./tools/test-focus run python-2025-mom-callbacks`" in text
+    assert "`./tools/python verify-main-2025`" in text
+    assert "`./tools/python verify-routes-2025`" in text
+    assert "does not currently maintain matching REST-hosted family replay" in normalized
+    assert "does not promote the REST-hosted Python route to the named support-service proof families above" in normalized
+    assert "not as a license to relabel OM or DDM rows as support-service closure" in normalized
 
 
 @pytest.mark.requirements("HLA2025-FI-SVC-101", "HLA2025-FI-SVC-107", "HLA2025-FI-SVC-116", "HLA2025-FI-SVC-121")
@@ -463,6 +617,14 @@ def test_time_management_bounded_proof_markdown_keeps_service_family_traceabilit
     assert "`tests/test_rti1516_2025_python1516_2025_runtime.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
     assert "`tests/backends/test_shim_route_trace_evidence.py`" in text
+    assert "`./tools/test-focus run python-2025-time`" in text
+    assert "`./tools/python verify-main-2025`" in text
+    assert "`./tools/python verify-routes-2025`" in text
+    assert "The canonical time-management owner rows carried by this note are the Clause 8 service rows `HLA2025-FI-SVC-101` through `HLA2025-FI-SVC-125`." in normalized
+    assert "`HLA2025-FI-009` and `HLA2025-MOD-006` are intentionally linked helper rows" in normalized
+    assert "not as a license to relabel broader interface-model rows as time-service closure" in normalized
+    assert "direct-lane and hosted FedPro replay proof families" in normalized
+    assert "direct `python1516_2025` lane and hosted FedPro replay both exercise the repo's time-window core" in normalized
     assert "`hla-backend-python1516-2025`. `hla-backend-shim` is not a runtime owner" in normalized
     assert "`./tools/pitch time-window-probe`" in text
     assert "`./tools/pitch time-window-restore-state-probe`" in text
@@ -483,6 +645,29 @@ def test_federation_management_bounded_proof_markdown_keeps_service_family_trace
     assert "`tests/test_rti1516_2025_python1516_2025_runtime.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
     assert "`tests/scenarios/test_federation_management_backend_matrix.py`" in text
+    assert "Execution-membership guard coverage is part of this bounded claim" in text
+    assert "Before join, after resign, or after disconnect" in text
+    assert "`NotConnected` or `FederateNotExecutionMember`" in text
+    assert "REST-hosted Python route" in text
+    assert "`destroyFederationExecution` rejects with `FederatesCurrentlyJoined`" in text
+    assert "`FederationExecutionDoesNotExist`" in text
+    assert "Current exact execution-membership evidence anchors for this 2025 reading" in text
+    assert "test_2025_provider_runs_federation_lifecycle_negative_scenario_end_to_end" in text
+    assert "test_2025_provider_runs_resign_precondition_scenario_end_to_end" in text
+    assert "test_2025_provider_reports_federation_executions_and_members" in text
+    assert "test_python_backend_join_precondition_matrix" in text
+    assert "test_python_backend_resign_precondition_matrix" in text
+    assert "test_2025_transport_server_runs_shared_federation_lifecycle_negative_scenario_over_fedpro_route" in text
+    assert "test_2025_transport_server_runs_shared_join_precondition_scenario_over_fedpro_route" in text
+    assert "test_2025_transport_server_runs_shared_resign_precondition_scenario_over_fedpro_route" in text
+    assert "test_2025_rest_transport_server_runs_shared_federation_lifecycle_negative_scenario" in text
+    assert "test_2025_rest_transport_server_runs_shared_join_precondition_scenario" in text
+    assert "test_2025_rest_transport_server_runs_shared_resign_precondition_scenario" in text
+    assert "`./tools/test-focus run execution-membership`" in text
+    assert "`./tools/python verify-main-2025`" in text
+    assert "`./tools/python verify-routes-2025`" in text
+    assert "direct-lane and hosted FedPro replay proof families" in normalized
+    assert "direct `python1516_2025` lane plus hosted FedPro replay" in normalized
     assert "`hla-backend-python1516-2025`. `hla-backend-shim` is not a runtime owner" in normalized
 
 
@@ -498,6 +683,11 @@ def test_declaration_management_bounded_proof_markdown_keeps_service_family_trac
     assert "`tests/test_rti1516_2025_python1516_2025_runtime.py`" in text
     assert "`tests/scenarios/test_object_management_backend_matrix.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
+    assert "The canonical declaration-management owner rows carried by this note are the Clause 5 service rows `HLA2025-FI-SVC-035` through `HLA2025-FI-SVC-050`." in normalized
+    assert "`HLA2025-FI-SVC-039`, `HLA2025-FI-SVC-040`, `HLA2025-FI-SVC-045`, and `HLA2025-FI-SVC-046` remain declaration owner rows here" in normalized
+    assert "not as a license to relabel later object-exchange routing or callback-only helper evidence as declaration closure" in normalized
+    assert "direct-lane and hosted FedPro replay proof families" in normalized
+    assert "direct `python1516_2025` lane plus hosted FedPro replay" in normalized
     assert "`hla-backend-python1516-2025`. `hla-backend-shim` is not a runtime owner" in normalized
 
 
@@ -514,6 +704,8 @@ def test_object_management_bounded_proof_markdown_keeps_service_family_traceabil
     assert "`tests/test_rti1516_2025_python1516_2025_runtime.py`" in text
     assert "`tests/scenarios/test_object_management_backend_matrix.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
+    assert "direct-lane and hosted FedPro replay proof families" in normalized
+    assert "direct `python1516_2025` lane plus hosted FedPro replay" in normalized
     assert "`hla-backend-python1516-2025`. `hla-backend-shim` is not a runtime owner" in normalized
 
 
@@ -526,11 +718,24 @@ def test_ownership_management_bounded_proof_markdown_keeps_service_family_tracea
     assert "`HLA2025-FI-SVC-083`, `HLA2025-FI-SVC-084`, `HLA2025-FI-SVC-086`" in text
     assert "`HLA2025-FI-SVC-092`, `HLA2025-FI-SVC-093`, `HLA2025-FI-SVC-094`" in text
     assert "`HLA2025-FI-SVC-085`, `HLA2025-FI-SVC-088`, `HLA2025-FI-SVC-089`" in text
-    assert "`HLA2025-FI-SVC-098`, `HLA2025-FI-SVC-099`, `HLA2025-FI-SVC-100`" in text
+    assert "`HLA2025-FI-SVC-090`, `HLA2025-FI-SVC-091`, `HLA2025-FI-SVC-096`, `HLA2025-FI-SVC-097`" in text
+    assert "| Query visibility | `HLA2025-FI-SVC-098`, `HLA2025-FI-SVC-099` |" in text
+    assert "| Resign policies | `HLA2025-FI-SVC-100` |" in text
     assert "`tests/test_rti1516_2025_python1516_2025_runtime.py`" in text
     assert "`tests/scenarios/test_ownership_management_backend_matrix.py`" in text
     assert "`tests/backends/test_python_backend_object_ownership_extended.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
+    assert "`tests/transport/test_rest_transport.py`" in text
+    assert "`./tools/test-focus run python-2025-ownership`" in text
+    assert "`./tools/python verify-main-2025`" in text
+    assert "`./tools/python verify-routes-2025`" in text
+    assert "The canonical ownership-management owner rows carried by this note are the Clause 7 service rows `HLA2025-FI-SVC-083` through `HLA2025-FI-SVC-100`." in normalized
+    assert "`HLA2025-FI-005` remains a linked helper row rather than a canonical ownership-service owner row" in normalized
+    assert "not as a license to relabel broader save/restore owner rows as ownership closure" in normalized
+    assert "direct-lane and hosted FedPro replay proof families" in normalized
+    assert "direct `python1516_2025` lane plus hosted FedPro replay" in normalized
+    assert "REST-hosted Python route now extends the transfer, release, acquisition, cancellation, and query-visibility families" in normalized
+    assert "REST-hosted Python route is not yet promoted to this narrower resign-policy claim" in normalized
     assert "`hla-backend-python1516-2025`. `hla-backend-shim` is not a runtime owner" in normalized
 
 
@@ -548,4 +753,19 @@ def test_ddm_bounded_proof_markdown_keeps_service_family_traceability_explicit()
     assert "`tests/backends/test_python_backend_time_ddm_extended.py`" in text
     assert "`tests/scenarios/test_ddm_backend_matrix.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
+    assert "`./tools/test-focus run python-2025-ddm`" in text
+    assert "`./tools/python verify-main-2025`" in text
+    assert "`./tools/python verify-routes-2025`" in text
+    assert "Execution-membership guard coverage is also part of this bounded claim" in text
+    assert "`sendInteractionWithRegions` and" in text
+    assert "`requestAttributeValueUpdateWithRegions` are expected to reject the caller" in text
+    assert "`NotConnected` or `FederateNotExecutionMember`" in text
+    assert "`HLA2025-FI-SVC-136`" in text
+    assert "`HLA2025-FI-SVC-137`" in text
+    assert "test_ddm_send_interaction_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore" in text
+    assert "test_request_attribute_value_update_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore" in text
+    assert "REST-hosted Python route is part of the narrower" in text
+    assert "it is not currently promoted as a full DDM family replay owner here" in normalized
+    assert "direct-lane and hosted FedPro replay proof families" in normalized
+    assert "direct `python1516_2025` lane plus hosted FedPro replay" in normalized
     assert "`hla-backend-python1516-2025`. `hla-backend-shim` is not a runtime owner" in normalized

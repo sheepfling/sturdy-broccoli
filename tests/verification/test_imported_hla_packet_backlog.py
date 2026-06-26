@@ -44,6 +44,9 @@ def test_imported_hla_backlog_is_generated_with_expected_families(tmp_path: Path
     ]
     assert payload["total_open_rows"] >= 1
     assert any(family["family"] == "Transports" and family["open_row_count"] >= 1 for family in payload["families"])
+    federation_management = next(family for family in payload["families"] if family["family"] == "Federation Management")
+    connect_item = next(item for item in federation_management["queue_items"] if item["queue_item"] == "Connect")
+    assert connect_item["suggested_next_action"].startswith("Optional: tighten this bounded FM state-vector tail")
 
 
 def test_imported_hla_backlog_script_bootstraps_source_checkout(tmp_path: Path):

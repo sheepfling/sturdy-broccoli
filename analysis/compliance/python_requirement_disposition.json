@@ -323,7 +323,7 @@
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
       "section_ref": "IEEE 1516-2010 Time concept rules",
-      "title": "The repo shall map time concepts to 1516.1 time services and grant/order semantics"
+      "title": "The repo shall map time concepts to 1516.1 time services and grant/order semantics, including logical time and ordering relationships"
     },
     {
       "clause_root": "4",
@@ -952,7 +952,7 @@
       "evidence_refs": [],
       "kind": "curated-seed",
       "matrix_id": "HLA1516.1-FM-001",
-      "notes": "verification_method=generated ledger + focused tests; Section family seed linked to current generated federation-management service rows; Section family seed linked to current generated federation-management service rows",
+      "notes": "verification_method=generated ledger + focused tests; Section family seed linked to current generated federation-management service rows; Clause 4 family summary now remains intentionally partial because the bounded federation-management owner surface and detailed reconciliation rows are explicit.",
       "requirement_id": "HLA1516.1-FM-001",
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
@@ -1344,12 +1344,12 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-FM-4.10-TEST-001",
-      "notes": "verification_method=test plan + backend matrix placeholder; Native lifecycle tests now have explicit hosted gRPC and REST lifecycle smoke coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST lifecycle replay is recorded separately in backend-resolution evidence.",
       "requirement_id": "HLA1516.1-FM-4.10-TEST-001",
       "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.10",
-      "title": "Resign Federation Execution shall be covered by direct service tests and transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Resign Federation Execution shall be covered by direct service tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -1493,7 +1493,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.11",
-      "title": "Register Federation Synchronization Point shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Register Federation Synchronization Point shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -1635,7 +1635,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.12",
-      "title": "Synchronization Point Registration callbacks shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Synchronization Point Registration callbacks shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -1779,7 +1779,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.13",
-      "title": "Announce Synchronization Point shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Announce Synchronization Point shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -1921,7 +1921,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.14",
-      "title": "Synchronization Point Achieved shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Synchronization Point Achieved shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -2083,7 +2083,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.15",
-      "title": "Federation Synchronized shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Federation Synchronized shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -2227,7 +2227,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.16",
-      "title": "Request Federation Save shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Request Federation Save shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -2359,7 +2359,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.17",
-      "title": "Initiate Federate Save shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Initiate Federate Save shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -2499,7 +2499,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.18",
-      "title": "Federate Save Begun shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Federate Save Begun shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -2641,7 +2641,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.19",
-      "title": "Federate Save Complete and Federate Save Not Complete shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Federate Save Complete and Federate Save Not Complete shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -2764,12 +2764,12 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-FM-4.2-TEST-001",
-      "notes": "verification_method=test plan + backend matrix placeholder; Native lifecycle tests now have explicit hosted gRPC and REST lifecycle smoke coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST lifecycle replay is recorded separately in backend-resolution evidence.",
       "requirement_id": "HLA1516.1-FM-4.2-TEST-001",
       "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.2",
-      "title": "Connect shall be covered by direct service tests and transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Connect shall be covered by direct service tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -2917,7 +2917,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.20",
-      "title": "Federation Saved and Federation Not Saved shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Federation Saved and Federation Not Saved shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -3045,7 +3045,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.21",
-      "title": "Abort Federation Save shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Abort Federation Save shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -3177,7 +3177,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.22",
-      "title": "Query Federation Save Status shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Query Federation Save Status shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -3325,7 +3325,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.23",
-      "title": "Federation Save Status Response shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Federation Save Status Response shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -3467,7 +3467,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.24",
-      "title": "Request Federation Restore shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Request Federation Restore shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -3611,7 +3611,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.25",
-      "title": "Request Federation Restore confirmation shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Request Federation Restore confirmation shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -3751,7 +3751,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.26",
-      "title": "Federation Restore Begun shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Federation Restore Begun shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -3883,7 +3883,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.27",
-      "title": "Initiate Federate Restore shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Initiate Federate Restore shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -4027,7 +4027,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.28",
-      "title": "Federate Restore Complete and Federate Restore Not Complete shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Federate Restore Complete and Federate Restore Not Complete shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -4171,7 +4171,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.29",
-      "title": "Federation Restored and Federation Not Restored shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Federation Restored and Federation Not Restored shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -4294,12 +4294,12 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-FM-4.3-TEST-001",
-      "notes": "verification_method=test plan + backend matrix placeholder; Native lifecycle tests now have explicit hosted gRPC and REST lifecycle smoke coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST lifecycle replay is recorded separately in backend-resolution evidence.",
       "requirement_id": "HLA1516.1-FM-4.3-TEST-001",
       "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.3",
-      "title": "Disconnect shall be covered by direct service tests and transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Disconnect shall be covered by direct service tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -4427,7 +4427,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.30",
-      "title": "Abort Federation Restore shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Abort Federation Restore shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -4573,7 +4573,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.31",
-      "title": "Query Federation Restore Status shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Query Federation Restore Status shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -4723,7 +4723,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.32",
-      "title": "Federation Restore Status Response shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Federation Restore Status Response shall be covered by direct service or callback tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -4850,12 +4850,12 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-FM-4.5-TEST-001",
-      "notes": "verification_method=test plan + backend matrix placeholder; Native lifecycle tests now have explicit hosted gRPC and REST lifecycle smoke coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST lifecycle replay is recorded separately in backend-resolution evidence.",
       "requirement_id": "HLA1516.1-FM-4.5-TEST-001",
       "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.5",
-      "title": "Create Federation Execution shall be covered by direct service tests plus transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Create Federation Execution shall be covered by direct service tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -4978,12 +4978,12 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-FM-4.6-TEST-001",
-      "notes": "verification_method=test plan + backend matrix placeholder; Native lifecycle tests now have explicit hosted gRPC and REST lifecycle smoke coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST lifecycle replay is recorded separately in backend-resolution evidence.",
       "requirement_id": "HLA1516.1-FM-4.6-TEST-001",
       "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.6",
-      "title": "Destroy Federation Execution shall be covered by direct service tests plus transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Destroy Federation Execution shall be covered by direct service tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "4",
@@ -5108,12 +5108,12 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-FM-4.9-TEST-001",
-      "notes": "verification_method=test plan + backend matrix placeholder; Native lifecycle tests now have explicit hosted gRPC and REST lifecycle smoke coverage.",
+      "notes": "verification_method=test plan + backend matrix placeholder; The direct Python 2010 lane is proven directly; hosted gRPC and REST lifecycle replay is recorded separately in backend-resolution evidence.",
       "requirement_id": "HLA1516.1-FM-4.9-TEST-001",
       "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.9",
-      "title": "Join Federation Execution shall be covered by direct service tests and transport-equivalence checks across native, gRPC, and REST entry points."
+      "title": "Join Federation Execution shall be covered by direct service tests, with hosted gRPC and REST replay recorded separately as backend-resolution evidence where available."
     },
     {
       "clause_root": "5",
@@ -5347,7 +5347,7 @@
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75",
-      "title": "The RTI shall implement declaration-management services for publication"
+      "title": "The RTI shall implement declaration-management services for publication, subscription, registration control, and the associated error and precondition behavior"
     },
     {
       "clause_root": "5",
@@ -5517,6 +5517,19 @@
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1.6",
       "title": "RTI shall support subscribing with update rate reduction where applicable."
+    },
+    {
+      "clause_root": "5",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [],
+      "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-DM-5.1.6-002",
+      "notes": "This supported-subset row captures the repo-owned subscription-side update-rate behavior: explicit and FOM-declared designators propagate across direct, inherited, and regioned subscriptions within the logical-time model.",
+      "requirement_id": "HLA1516.1-DM-5.1.6-002",
+      "runtime_disposition": "verified",
+      "runtime_status": "",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1.6",
+      "title": "RTI shall apply explicit and FOM-declared update-rate designators across direct, inherited, and region-based object-class subscriptions within the currently implemented logical-time subset."
     },
     {
       "clause_root": "5",
@@ -6379,7 +6392,7 @@
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76",
-      "title": "The RTI shall implement object-management services for registration"
+      "title": "The RTI shall implement object-management services for registration, update, delete, discovery, and interaction delivery behavior"
     },
     {
       "clause_root": "6",
@@ -6531,6 +6544,21 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence_refs": [
+        "tests/backends/test_python_backend_support_services.py::test_fom_declared_transport_defaults_apply_to_attributes_and_interactions"
+      ],
+      "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-OM-6.1.10-004",
+      "notes": "Python direct runtime tests verify FOM-declared reliable and best-effort transportation defaults for object updates, interactions, and the resulting transportation-type query callbacks.",
+      "requirement_id": "HLA1516.1-OM-6.1.10-004",
+      "runtime_disposition": "verified",
+      "runtime_status": "yes",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.10",
+      "title": "RTI shall honor FOM-declared reliable and best-effort transportation defaults for object updates and interactions in the currently supported transport subset."
+    },
+    {
+      "clause_root": "6",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [
         "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix"
       ],
@@ -6547,6 +6575,23 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence_refs": [
+        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_request_attribute_value_update_matrix"
+      ],
+      "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-OM-6.1.11-002",
+      "notes": "Python shared object-management scenarios verify the currently implemented direct unbatched delivery subset by preserving the externally visible reflect, interaction, and request-update callback semantics consumed by the repo's exchange paths.",
+      "requirement_id": "HLA1516.1-OM-6.1.11-002",
+      "runtime_disposition": "verified",
+      "runtime_status": "",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.11",
+      "title": "RTI shall preserve externally visible reflect and interaction callback semantics for the currently implemented direct unbatched delivery subset."
+    },
+    {
+      "clause_root": "6",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [
         "packages/hla-verification/src/hla.verification/scenario_update_rate.py::run_update_rate_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_update_rate_matrix"
       ],
@@ -6558,6 +6603,23 @@
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.12",
       "title": "RTI shall honor update-rate reduction when reflecting attribute updates."
+    },
+    {
+      "clause_root": "6",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [
+        "tests/backends/test_python_backend_support_services.py::test_update_rate_designator_throttles_timed_reflects",
+        "tests/backends/test_python_backend_support_services.py::test_update_rate_designator_does_not_suppress_receive_order_updates",
+        "tests/backends/test_python_backend_support_services.py::test_fom_declared_update_rate_defaults_apply_to_inherited_and_regioned_subscriptions"
+      ],
+      "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-OM-6.1.12-002",
+      "notes": "Python direct runtime tests verify explicit and FOM-declared update-rate designators on the exercised subset, including throttled timed reflects, preserved receive-order delivery, and inherited or region-based subscription defaults.",
+      "requirement_id": "HLA1516.1-OM-6.1.12-002",
+      "runtime_disposition": "verified",
+      "runtime_status": "yes",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.12",
+      "title": "RTI shall throttle timed reflected attribute delivery according to explicit and FOM-declared update-rate designators while preserving receive-order delivery that has no logical-time basis."
     },
     {
       "clause_root": "6",
@@ -7107,7 +7169,22 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.23",
-      "title": "RTI shall support Request Attribute Transportation Type Change for the currently implemented reliable and best-effort transport subset and persist that selected attribute transport state across restore."
+      "title": "RTI shall support Request Attribute Transportation Type Change for the currently implemented reliable and best-effort transport subset."
+    },
+    {
+      "clause_root": "6",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [
+        "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides"
+      ],
+      "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-OM-6.23-003",
+      "notes": "Python restore compliance tests verify that selected attribute transportation overrides persist across save/restore on the supported reliable and best-effort subset.",
+      "requirement_id": "HLA1516.1-OM-6.23-003",
+      "runtime_disposition": "verified",
+      "runtime_status": "yes",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.23",
+      "title": "RTI shall persist selected attribute transportation overrides across restore in the currently implemented reliable and best-effort transport subset."
     },
     {
       "clause_root": "6",
@@ -7161,6 +7238,21 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence_refs": [
+        "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks"
+      ],
+      "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-OM-6.24-004",
+      "notes": "Python direct runtime tests verify requester-only routing for Confirm Attribute Transportation Type Change callbacks on the supported transport subset.",
+      "requirement_id": "HLA1516.1-OM-6.24-004",
+      "runtime_disposition": "verified",
+      "runtime_status": "yes",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.24",
+      "title": "RTI shall route Confirm Attribute Transportation Type Change only to the federate that requested the change in the currently implemented reliable and best-effort transport subset."
+    },
+    {
+      "clause_root": "6",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [
         "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix"
       ],
@@ -7188,6 +7280,21 @@
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.25",
       "title": "RTI shall report stored attribute transportation overrides for the currently implemented reliable and best-effort transport subset."
+    },
+    {
+      "clause_root": "6",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [
+        "tests/backends/test_python_backend_support_services.py::test_fom_declared_transport_defaults_apply_to_attributes_and_interactions"
+      ],
+      "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-OM-6.25-003",
+      "notes": "Python direct runtime tests verify that queryAttributeTransportationType reports the declared default reliable or best-effort subset transport when no explicit override exists on the exercised path.",
+      "requirement_id": "HLA1516.1-OM-6.25-003",
+      "runtime_disposition": "verified",
+      "runtime_status": "yes",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.25",
+      "title": "RTI shall report the default reliable attribute transportation type when no explicit override exists in the currently implemented transport subset."
     },
     {
       "clause_root": "6",
@@ -7241,6 +7348,21 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence_refs": [
+        "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks"
+      ],
+      "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-OM-6.26-004",
+      "notes": "Python direct runtime tests verify requester-only routing for Report Attribute Transportation Type callbacks on the supported transport subset.",
+      "requirement_id": "HLA1516.1-OM-6.26-004",
+      "runtime_disposition": "verified",
+      "runtime_status": "yes",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.26",
+      "title": "RTI shall route Report Attribute Transportation Type only to the federate that issued the corresponding query in the currently implemented reliable and best-effort transport subset."
+    },
+    {
+      "clause_root": "6",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [
         "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
@@ -7269,7 +7391,22 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.27",
-      "title": "RTI shall support Request Interaction Transportation Type Change for the currently implemented reliable and best-effort transport subset and persist that selected interaction transport state across restore."
+      "title": "RTI shall support Request Interaction Transportation Type Change for the currently implemented reliable and best-effort transport subset."
+    },
+    {
+      "clause_root": "6",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [
+        "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides"
+      ],
+      "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-OM-6.27-003",
+      "notes": "Python restore compliance tests verify that selected interaction transportation overrides persist across save/restore on the supported reliable and best-effort subset.",
+      "requirement_id": "HLA1516.1-OM-6.27-003",
+      "runtime_disposition": "verified",
+      "runtime_status": "yes",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.27",
+      "title": "RTI shall persist selected interaction transportation overrides across restore in the currently implemented reliable and best-effort transport subset."
     },
     {
       "clause_root": "6",
@@ -7323,6 +7460,21 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence_refs": [
+        "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks"
+      ],
+      "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-OM-6.28-004",
+      "notes": "Python direct runtime tests verify requester-only routing for Confirm Interaction Transportation Type Change callbacks on the supported transport subset.",
+      "requirement_id": "HLA1516.1-OM-6.28-004",
+      "runtime_disposition": "verified",
+      "runtime_status": "yes",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.28",
+      "title": "RTI shall route Confirm Interaction Transportation Type Change only to the federate that requested the change in the currently implemented reliable and best-effort transport subset."
+    },
+    {
+      "clause_root": "6",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [
         "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix"
       ],
@@ -7350,6 +7502,21 @@
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.29",
       "title": "RTI shall report stored interaction transportation overrides for the currently implemented reliable and best-effort transport subset."
+    },
+    {
+      "clause_root": "6",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [
+        "tests/backends/test_python_backend_support_services.py::test_fom_declared_transport_defaults_apply_to_attributes_and_interactions"
+      ],
+      "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-OM-6.29-003",
+      "notes": "Python direct runtime tests verify that queryInteractionTransportationType reports the declared default reliable or best-effort subset transport when no explicit override exists on the exercised path.",
+      "requirement_id": "HLA1516.1-OM-6.29-003",
+      "runtime_disposition": "verified",
+      "runtime_status": "yes",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.29",
+      "title": "RTI shall report the default reliable interaction transportation type when no explicit override exists in the currently implemented transport subset."
     },
     {
       "clause_root": "6",
@@ -7414,6 +7581,21 @@
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.30",
       "title": "RTI shall not emit Report Interaction Transportation Type when the corresponding query is rejected for invalid state or invalid interaction inputs."
+    },
+    {
+      "clause_root": "6",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [
+        "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks"
+      ],
+      "kind": "extracted-requirement",
+      "matrix_id": "HLA1516.1-OM-6.30-004",
+      "notes": "Python direct runtime tests verify requester-only routing for Report Interaction Transportation Type callbacks on the supported transport subset.",
+      "requirement_id": "HLA1516.1-OM-6.30-004",
+      "runtime_disposition": "verified",
+      "runtime_status": "yes",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.30",
+      "title": "RTI shall route Report Interaction Transportation Type only to the federate that issued the corresponding query in the currently implemented reliable and best-effort transport subset."
     },
     {
       "clause_root": "6",
@@ -7903,7 +8085,7 @@
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77",
-      "title": "The RTI shall implement ownership-management services for unconditional"
+      "title": "The RTI shall implement ownership-management services for unconditional, negotiated, acquisition, divestiture, and release-request flows"
     },
     {
       "clause_root": "7",
@@ -8571,7 +8753,7 @@
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78",
-      "title": "The RTI shall implement time-management services for regulation"
+      "title": "The RTI shall implement time-management services for regulation, constrained behavior, query services, lookahead, order control, and grant delivery"
     },
     {
       "clause_root": "8",
@@ -9400,7 +9582,7 @@
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79",
-      "title": "The RTI shall implement DDM services for region creation"
+      "title": "The RTI shall implement DDM services for region creation, routing, and filtered delivery behavior"
     },
     {
       "clause_root": "9",
@@ -9496,7 +9678,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.12",
-      "title": "RTI shall route attribute updates based on region overlap"
+      "title": "RTI shall route interactions based on region overlap where dimensions apply"
     },
     {
       "clause_root": "9",
@@ -9512,7 +9694,7 @@
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.13",
-      "title": "RTI shall route interactions based on region overlap where dimensions apply"
+      "title": "RTI shall route attribute-value update requests based on region overlap"
     },
     {
       "clause_root": "9",
@@ -10300,7 +10482,7 @@
       "matrix_id": "REQ-RTI-SS-10_44-getMessageRetractionHandleFactory",
       "notes": "",
       "requirement_id": "REQ-RTI-SS-10_44-getMessageRetractionHandleFactory",
-      "runtime_disposition": "vendor-divergent",
+      "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "1516.1-2010 (2010 edition) \u00a710.44",
       "title": "Disable Callbacks service"
@@ -10365,7 +10547,7 @@
       "matrix_id": "REQ-RTI-SS-10_44-getRegionHandleFactory",
       "notes": "",
       "requirement_id": "REQ-RTI-SS-10_44-getRegionHandleFactory",
-      "runtime_disposition": "vendor-divergent",
+      "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "1516.1-2010 (2010 edition) \u00a710.44",
       "title": "Disable Callbacks service"
@@ -10498,7 +10680,7 @@
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710",
-      "title": "The RTI shall implement support services for lookups"
+      "title": "The RTI shall implement support services for lookups, factories, callback control, advisory behavior, and related support operations"
     },
     {
       "clause_root": "10",
@@ -10784,7 +10966,7 @@
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a711",
-      "title": "The RTI shall implement MOM behavior for tables"
+      "title": "The RTI shall implement MOM behavior for tables, reports, service actions, observer reconstruction, and service-reporting state"
     },
     {
       "clause_root": "11",
@@ -13950,8 +14132,8 @@
       "requirement_id": "REQ-OMT-SCHEMA-001",
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
-      "section_ref": "1516.2-2010 Annex E",
-      "title": "Annex E schema-level conformance checking is identified explicitly and remains planned"
+      "section_ref": "1516.2-2010 \u00a7Annex E",
+      "title": "Annex E schema-family conformance validation is executable for the carried standard schemas and round-trip witnesses"
     }
   ],
   "summary": {
@@ -13969,8 +14151,7 @@
       "IEEE 1516.1-2010 (2010 edition) \u00a710": {
         "not-applicable": 2,
         "total": 86,
-        "vendor-divergent": 2,
-        "verified": 82
+        "verified": 84
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a711": {
         "not-applicable": 2,
@@ -13990,15 +14171,15 @@
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a75": {
         "not-applicable": 2,
-        "total": 52,
+        "total": 53,
         "vendor-divergent": 1,
-        "verified": 49
+        "verified": 50
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a76": {
         "not-applicable": 2,
-        "total": 110,
+        "total": 121,
         "vendor-divergent": 1,
-        "verified": 107
+        "verified": 118
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a77": {
         "not-applicable": 2,
@@ -14078,10 +14259,10 @@
     },
     "disposition_counts": {
       "not-applicable": 79,
-      "vendor-divergent": 25,
-      "verified": 818
+      "vendor-divergent": 23,
+      "verified": 832
     },
-    "row_count": 922,
+    "row_count": 934,
     "source_artifact": "analysis/compliance/requirements_matrix_2010.json"
   }
 }

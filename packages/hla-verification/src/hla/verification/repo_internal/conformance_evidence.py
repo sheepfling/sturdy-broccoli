@@ -1442,7 +1442,19 @@ _FOCUSED_EVIDENCE_BY_METHOD: dict[str, tuple[str, ...]] = {
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix",
     ),
+    "getRegionHandleFactory": (
+        "tests/backends/test_python_backend_support_services.py::test_support_handle_factory_rows_have_direct_runtime_witnesses",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix",
+    ),
     "getRegionHandleSetFactory": (
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix",
+    ),
+    "getMessageRetractionHandleFactory": (
+        "tests/backends/test_python_backend_support_services.py::test_support_handle_factory_rows_have_direct_runtime_witnesses",
         "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix",

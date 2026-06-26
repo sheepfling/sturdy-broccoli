@@ -1,40 +1,139 @@
 # Python RTI Final Requirements Report
 
-This report records the current proof that `hla-backend-inmemory` is fully classified against the committed HLA 2010 requirements matrix and that the Python backend has no remaining open requirement rows.
+This report records the current proof shape for the repo-owned `2010 / 1516e`
+Python RTI lane.
+
+Use it with one rule:
+
+- the Python runtime projection has no open runtime-classification states
+- the canonical `2010` backend-compliance packet still contains bounded
+  `partial` rows
+
+Those statements are both true, and they are not interchangeable.
+
+Reading rule:
+
+- this report is a generated summary surface over the canonical matrix and
+  disposition ledgers
+- use it for program-level status readouts, not as the canonical owner ledger
+- when a requirement status changes, update the owner docs and source ledgers
+  first, then regenerate this report and any spreadsheet handoff packets
 
 ## Verdict
 
-`hla-backend-inmemory` currently meets the repo's Python compliance end state:
+The current `2010` proof shape is:
 
-- `analysis/compliance/python_requirement_disposition.json` contains `919` total rows.
-- `818` rows are `verified`.
-- `78` rows are `not-applicable`.
-- `23` rows are `vendor-divergent`.
-- `0` rows are `blocked`.
-- `0` rows are `not-yet-tested`.
-- `0` rows are `classification-required`.
+- canonical backend-compliance packet:
+  - `934` matrix rows
+  - `799` `pass`
+  - `40` `implemented-slice`
+  - `1` `implemented-smoke`
+  - `94` `partial`
+- Python runtime projection inside that packet:
+  - `830` `verified`
+  - `79` `not-applicable`
+  - `25` `vendor-divergent`
+  - `0` `blocked`
+  - `0` `not-yet-tested`
+  - `0` `classification-required`
 
-The proof basis is the committed generated packet at [python_requirement_disposition.json](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/analysis/compliance/python_requirement_disposition.json), its rendered companion [python_requirement_disposition.md](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/analysis/compliance/python_requirement_disposition.md), and the underlying matrix row ledger at [requirements_matrix_2010.csv](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/analysis/compliance/requirements_matrix_2010.csv).
+The proof basis is the canonical matrix row ledger at
+[requirements_matrix_2010.csv](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/analysis/compliance/requirements_matrix_2010.csv),
+the generated Python projection packet at
+[python_requirement_disposition.json](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/analysis/compliance/python_requirement_disposition.json),
+its rendered companion
+[python_requirement_disposition.md](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/analysis/compliance/python_requirement_disposition.md),
+and the closeout audit documents:
+
+- [requirements_completion_audit.md](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/docs/plans/requirements_completion_audit.md)
+- [2010_python_rti_bounded_family_execution_worklist.md](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/docs/plans/2010_python_rti_bounded_family_execution_worklist.md)
+- [requirement_compliance_exports.md](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/docs/verification/requirement_compliance_exports.md)
+
+## Reading Rule
+
+Interpret the current state this way:
+
+1. the Python runtime lane no longer has unresolved runtime classifications
+2. the broader `2010` packet still carries bounded `partial` rows because some
+   rows remain mixed-backend, defended-parent, or family-breadth claims rather
+   than narrow one-row executable witnesses
+3. do not restate the Python runtime result as "all `2010` requirements are
+   fully passed"
 
 ## Completion Criteria
 
-The Python-specific completion criteria are satisfied:
+The Python-lane runtime-classification criteria are satisfied:
 
 | Goal item | Current evidence | Result |
-|---|---|---|
-| `HLA1516.1-SUP-10.18-001` is verified or reclassified with documented rationale | [requirements_matrix_2010.csv](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/analysis/compliance/requirements_matrix_2010.csv) marks `python_runtime_disposition=verified` with implementation refs `packages/hla-backend-inmemory/src/hla/backends/inmemory/support_control.py; packages/hla-backend-inmemory/src/hla/backends/inmemory/mom.py`, positive tests `tests/backends/test_python_backend_support_services.py::test_support_advisory_switches_toggle_and_reject_duplicates; tests/backends/test_python_backend_object_ownership_extended.py::test_clause_10_services_are_observable_through_mom_service_invocation_reporting`, and notes `verification_method=integration test; Switch toggles and MOM-observer reporting now have direct repo-native evidence` | Satisfied |
-| `HLA1516.1-MOM-11.1-005` is verified or reclassified with documented rationale | [requirements_matrix_2010.csv](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/analysis/compliance/requirements_matrix_2010.csv) marks `python_runtime_disposition=verified` with implementation refs `packages/hla-backend-inmemory/src/hla/backends/inmemory/mom_catalog.py; src/hla2010/mom.py`, positive tests `tests/factories/test_fom_omt_parsing.py::test_merge_with_standard_mim_preserves_standard_mom_definitions_and_catalog_metadata; tests/factories/test_fom_omt_parsing.py::test_merge_with_standard_mim_preserves_mom_table_definitions_without_alteration`, and notes `verification_method=catalog extension test` | Satisfied |
-| Remaining Python non-verified rows are intentionally retained with evidence and notes | The Python packet contains only `vendor-divergent` and `not-applicable` residuals. There are no unresolved runtime states left in the Python projection. | Satisfied |
-| Python disposition JSON and markdown stay in sync | The generated packet and markdown render the same clause totals and non-verified rows, guarded by `tests/test_generated_requirement_dispositions.py` | Satisfied |
-| Python policy and package-boundary checks stay green | Verified by `python3 -m pytest tests/test_python_matrix_policy.py tests/test_generated_requirement_dispositions.py tests/test_package_boundary.py -q` | Satisfied |
-| `./tools/python verify` stays green | Verified by the current full gate run documented below | Satisfied |
+| --- | --- | --- |
+| No Python runtime rows remain in `blocked`, `not-yet-tested`, or `classification-required` | [requirements_matrix_2010.csv](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/analysis/compliance/requirements_matrix_2010.csv) currently counts `830 verified`, `79 not-applicable`, `25 vendor-divergent`, and `0` rows in the unresolved runtime states | Satisfied |
+| Remaining Python non-verified runtime rows are intentional with explicit evidence and notes | The Python projection now contains only `vendor-divergent` and `not-applicable` residuals | Satisfied |
+| The canonical 2010 packet keeps bounded partials explicit instead of hiding them as Python failures | The same matrix currently keeps `94 partial` packet rows, with the bounded reading owned by [2010_python_rti_bounded_family_execution_worklist.md](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/docs/plans/2010_python_rti_bounded_family_execution_worklist.md) and [requirements_completion_audit.md](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/docs/plans/requirements_completion_audit.md) | Satisfied |
+| Python disposition JSON and markdown stay in sync | The generated packet and markdown are guarded by repo tests for generated disposition consistency | Satisfied |
+| The canonical repo verification lane remains part of the proof basis | `./tools/python verify` remains part of the documented proof basis for the Python lane | Satisfied |
 
-## Clause-Level Result
+## What The Residuals Mean
 
-For the Python backend, the committed packet shows no open rows in the core 1516.1 execution clauses:
+The remaining Python non-verified runtime rows are all intentional
+classifications, not missing tests.
 
-| Clause | Total | Verified | Vendor divergent | Not applicable | Open states |
-|---|---:|---:|---:|---:|---:|
+The current `25` `vendor-divergent` rows break down as:
+
+- `14` OMT or 1516.2 family breadth rows
+- `4` federation-management effect-vector rows
+- `3` framework or architecture rows
+- `2` supported-subset policy-parent rows
+- `2` support-service factory-helper rows
+
+These are not hidden backlog states.
+They are explicit bounded or divergent readings in the current packet.
+
+There is a second residual surface that must stay separate from the runtime
+projection:
+
+- the canonical `2010` packet still keeps `94` rows at `partial`
+- those `94` rows currently split as:
+  - `40` rows where Python is already `verified`
+  - `25` rows where Python is `vendor-divergent`
+  - `29` rows where Python is `not-applicable`
+
+That packet-level `partial` surface is why the repo still uses bounded-family,
+mixed-backend, and defended-parent owner docs for `2010` closeout.
+
+## Defended Parent Rows
+
+The canonical cross-backend matrix intentionally keeps `12` broad-spec parent
+rows at `partial` status.
+
+Those rows are not unresolved Python execution gaps.
+They are defended policy parents whose narrower implemented claims are
+enumerated in:
+
+- [supported_subset_policy.md](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/analysis/compliance/supported_subset_policy.md)
+- [defended_partials_index.md](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/analysis/compliance/defended_partials_index.md)
+
+The current defended broad-spec parent set is:
+
+- `HLA1516.1-DM-5.1.6-001`
+- `HLA1516.1-OM-6.1.10-001`
+- `HLA1516.1-OM-6.1.11-001`
+- `HLA1516.1-OM-6.1.12-001`
+- `HLA1516.1-OM-6.23-001`
+- `HLA1516.1-OM-6.24-001`
+- `HLA1516.1-OM-6.25-001`
+- `HLA1516.1-OM-6.26-001`
+- `HLA1516.1-OM-6.27-001`
+- `HLA1516.1-OM-6.28-001`
+- `HLA1516.1-OM-6.29-001`
+- `HLA1516.1-OM-6.30-001`
+
+## Clause-Level Runtime Reading
+
+For the Python runtime projection, the core IEEE 1516.1-2010 execution clauses
+still have no open runtime states:
+
+| Clause | Total | Verified | Vendor divergent | Not applicable | Open runtime states |
+| --- | ---: | ---: | ---: | ---: | ---: |
 | IEEE 1516.1-2010 §4 | 281 | 275 | 4 | 2 | 0 |
 | IEEE 1516.1-2010 §5 | 52 | 49 | 1 | 2 | 0 |
 | IEEE 1516.1-2010 §6 | 110 | 107 | 1 | 2 | 0 |
@@ -44,28 +143,9 @@ For the Python backend, the committed packet shows no open rows in the core 1516
 | IEEE 1516.1-2010 §10 | 84 | 82 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 §11 | 37 | 35 | 0 | 2 | 0 |
 
-Those totals come directly from the `summary.clause_summary` section of [python_requirement_disposition.json](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/analysis/compliance/python_requirement_disposition.json).
-
-## Intentional Residuals
-
-The remaining Python non-verified rows are all intentional classifications, not missing tests.
-
-The `23` `vendor-divergent` rows break down as:
-
-- `3` IEEE 1516-2010 framework/object-model architecture rows
-- `6` IEEE 1516.1 service-semantics rows
-- `14` IEEE 1516.2 OMT/parser/model-shape rows
-
-The IEEE 1516.1 vendor-divergent rows are:
-
-- `HLA1516.1-FM-4.2-EFF-001`
-- `HLA1516.1-FM-4.5-EFF-001`
-- `HLA1516.1-FM-4.9-EFF-001`
-- `HLA1516.1-FM-4.10-EFF-001`
-- `HLA1516.1-DM-5.1.6-001`
-- `HLA1516.1-OM-6.1.11-001`
-
-These remain explicitly classified as `vendor-divergent` in the committed matrix and packet. They are not open work items in the Python lane because each already has an explicit disposition, supporting notes, and policy coverage in the generated packet.
+That runtime reading is strong evidence for the Python lane.
+It is not, by itself, a claim that every broader packet row is already a
+standalone one-row witness.
 
 ## Verification Evidence
 
@@ -73,31 +153,30 @@ Focused Python policy gates:
 
 ```text
 python3 -m pytest tests/test_python_matrix_policy.py tests/test_generated_requirement_dispositions.py tests/test_package_boundary.py -q
-28 passed
 ```
 
 End-to-end Python repo gate:
 
 ```text
 ./tools/python verify
-1641 passed, 383 skipped
 ```
 
-This run is required to prove more than the matrix packet:
+These gates prove more than the matrix packet alone:
 
 - root/operator/tooling surfaces still work
 - split-package editable installs still succeed
-- the generated compliance artifacts are internally consistent
-- the Python backend remains green under the canonical repo verification route
-
-The current `./tools/python verify` run completed successfully on `2026-06-12`. Its vendor-runtime smoke tail skipped real CERTI and Pitch runtime probes only because this sandbox blocks loopback binds and Docker daemon access; those preflight skips did not invalidate the Python backend result.
+- generated compliance artifacts remain internally consistent
+- the Python runtime lane remains green under the canonical repo verification route
 
 ## Conclusion
 
-The Python backend no longer has any unresolved compliance state in the committed HLA 2010 matrix projection. Every row is now either:
+The honest current conclusion is:
 
-- `verified`
-- `vendor-divergent`
-- `not-applicable`
+- the `2010` Python runtime projection has no unresolved runtime-classification states
+- the broader `2010` backend-compliance packet still contains explicit bounded
+  `partial` rows
+- those remaining packet partials are not hidden Python failures; they are
+  maintained mixed-backend, defended-parent, or family-breadth surfaces
 
-There are no remaining Python rows in `blocked`, `not-yet-tested`, or `classification-required`, and the canonical `./tools/python verify` gate is part of the proof basis for this conclusion.
+That means the Python runtime lane is in strong shape, but the canonical
+closeout story must still preserve the packet-level bounded-family reading.

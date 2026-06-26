@@ -34,3 +34,5 @@ def test_ownership_management_boundary_doc_records_current_family_shape() -> Non
     assert "`11 EXC`" in text
     assert "`11 EXC_API`" in text
     assert "`8 PRE`" in text
+    assert "`./tools/test-focus run backends`" in text
+    assert "`./tools/test-surface run unit-scenarios-light`" in text

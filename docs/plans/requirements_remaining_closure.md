@@ -135,6 +135,26 @@ The remaining `2010` truth shape is now:
 3. the maintained bounded `CAP-XML` plus narrow `CAP-OMT` owner note in
    `omt_xml_bounded_family.md`
 
+Exact current reading from the backend-compliance packet:
+
+- `94` `partial` rows total
+- `40` `partial` rows where Python is already `verified`
+- `25` `partial` rows where Python is still `vendor-divergent`
+- `29` `partial` rows where Python is `not-applicable`
+- only `3` requirement rows remain as direct mixed-backend clause tails:
+  - `HLA1516.1-FM-4.1.5-001`
+  - `HLA1516.1-FM-4.1.5-002`
+  - `HLA1516.1-TM-8.1.2-003`
+- the defended subset packet now also exposes:
+  - `12` bounded broad partial parents
+  - `26` passing supported-subset child proofs
+- current `vendor-divergent` composition:
+  - `14` OMT or 1516.2 breadth rows from `requirements/2010/hla1516_2_omt.csv`
+  - `4` federation-management effect-vector rows from `requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv`
+  - `3` framework or architecture rows owned by `requirements/2010/hla1516_framework_detailed_reconciliation.csv`
+  - `2` supported-subset policy parents from `curated-clause5-6`
+  - `2` support-service factory helper rows
+
 ### 2010 Largest Partial Families
 
 These families still carry `partial` rows in the canonical ledgers, but they
@@ -142,7 +162,7 @@ are no longer active navigation or ownership gaps:
 
 - `CAP-XML`: `364 partial`
 - `CAP-SUP`: `129 partial`
-- `CAP-OM`: `117 partial`
+- `CAP-OM`: `103 partial`
 - `CAP-FM`: `109 partial`
 - `CAP-TM`: `58 partial`
 - `CAP-FW`: `41 partial`
@@ -155,6 +175,12 @@ Practical reading:
   overstates what the current proof can honestly defend
 - these `2010` partials now live behind explicit bounded owner notes rather
   than in an active open-bucket queue
+- use the `policy_parents` export surface when the question is whether a `2010`
+  partial row is a defended supported-subset boundary versus an unresolved
+  Python execution gap
+- use the family owner notes and framework reconciliation companion when the
+  question is which `vendor-divergent` rows are still true closeout blockers
+  versus already-settled bounded owner surfaces
 
 ### 2010 Finish Reading
 
@@ -198,6 +224,8 @@ Current grouped closure state from
 - `57 covered`
 - `5 duplicate/umbrella`
 - `2 retired/legacy-only`
+- `0 planned`
+- `0 partial`
 
 ### 2025 Grouped Result
 
@@ -229,6 +257,16 @@ classes:
   - Pitch proto HLA 4 / `202X` comparison lane
 - explicit row-level supported-scope limits that remain intentionally narrower
   than a blanket all-covered IEEE 1516.1-2025 claim
+
+Exact current reading:
+
+- row-level non-`covered` denominator outside the active direct-support set:
+  - `22` `duplicate/umbrella`
+  - `24` `retired/legacy-only`
+- grouped non-`covered` buckets:
+  - `5` `duplicate/umbrella`
+  - `2` `retired/legacy-only`
+- these are maintained owner classifications, not missing grouped proof buckets
 
 ### 2025 Non-Standalone Groups
 

@@ -29,16 +29,308 @@ Use this prioritization logic:
 
 ## Phase 1: Cheapest Truthful Wins
 
-There are no active queue entries at this phase.
-The prior 2025 umbrella and retired-row final-claim normalization work is now
-settled into maintained owner notes.
-
-## Phase 2: Large Partial Family Tightening
-
-These are where the remaining truthful-closeout gap is largest on the 2010 side.
+These are the smallest deliberate scope-expansion slices that could move real
+rows without pretending the current bounded-owner notes are ambiguous.
 
 | Priority | Bucket | Why now | First command | Owner pair |
 | --- | --- | --- | --- | --- |
+| `P1` | 2010 mixed-backend priority rows | this is now the only remaining revisit surface on the 2010 lane, and it should be touched only if backend-resolution truth materially changes or leadership explicitly wants a narrower Python-only claim | `python3 -m pytest tests/scenarios/test_federation_management_backend_matrix.py -q -k 'test_python_connection_lost_callback_matrix or test_python_backend_lost_federate_mom_matrix'` or `python3 -m pytest tests/time/test_section8_backend_matrix.py -q -k test_section8_backend_matrix_order_override_services` | `mixed_backend_priority_boundaries.md` plus `hla1516_1_priority_backend_resolution.csv` |
+
+## Phase 2: Large Partial Family Tightening
+
+There are no active queue entries at this phase.
+The current 2010 family-level partial surfaces are already in their intended
+closeout state.
+## Latest Investigated No-Convert Result
+
+The `2025 framework umbrella slice` (`HLA2025-FR-001` through
+`HLA2025-FR-010`) was re-audited on `2026-06-26`.
+
+Result:
+
+- keep it as an umbrella boundary
+- do not spend the next closeout slice trying to relabel it as direct
+  `covered`
+
+Why:
+
+1. the linked FI, OMT, traceability, scenario, ownership, and time rows
+   already own the real child proof
+2. current framework owner docs already express the narrow honest reading for
+   these rules without creating a second proof bucket
+3. no narrower direct claim was identified that would avoid double-counting
+   the child proof
+
+Use the framework owner doc as maintained boundary documentation and advance to
+`P1` / `P2` above for the next actual closeout move.
+
+The `2025 callback-control umbrella slice` (`HLA2025-FI-CB-002` through
+`HLA2025-FI-CB-004`) was re-audited on `2026-06-26`.
+
+Result:
+
+- keep it as an umbrella boundary
+- do not spend the next closeout slice trying to relabel it as direct `covered`
+
+Why:
+
+1. `HLA2025-FI-SVC-193` through `HLA2025-FI-SVC-196` already own the direct FI
+   service semantics
+2. current runtime, backend, scenario, and transport tests already exercise
+   the same callback-control behavior as child-row evidence
+3. no narrower direct claim was identified that would avoid double-counting the
+   child proof
+
+Use the callback-control owner doc as maintained boundary documentation and
+advance to `P1` / `P2` above for the next actual closeout move.
+
+The `2010 mixed-backend priority rows` bucket was also re-audited on
+`2026-06-26`.
+
+Result:
+
+- keep the canonical rows `partial`
+- keep the backend split in
+  `requirements/2010/hla1516_1_priority_backend_resolution.csv`
+- do not spend the next closeout slice trying to relabel those cross-backend
+  rows as direct canonical claims
+
+Why:
+
+1. the current row text is intentionally cross-backend
+2. Python proof is strong, but the mixed-backend dispositions remain real and
+   material
+3. a narrower canonical claim would change the row meaning rather than simply
+   tighten evidence wording
+4. the owner doc already expresses the honest final reading for the current
+   evidence
+
+The owning shard commands were rerun on `2026-06-26` and are green again after
+fixing a hosted transport connect-overload bug in
+`packages/hla-transport-common/src/hla/transports/common/hosted_server.py`.
+
+The `2025 FedPro protocol umbrella slice` (`HLA2025-BIND-FEDPRO-001`) was also
+re-audited on `2026-06-26`.
+
+Result:
+
+- keep it as an umbrella boundary
+- do not spend the next closeout slice trying to relabel it as direct
+  `covered`
+
+Why:
+
+1. `HLA2025-BND-003` already owns the bounded hosted FedPro/protobuf child
+   surface
+2. the current owner docs already express the real claim as bounded hosted
+   request/response/callback parity over `hla-backend-python1516-2025`
+3. current transport and route-parity evidence already prove the real wire
+   surface without creating a second RTI implementation claim
+4. no narrower direct claim was identified that would avoid restating the
+   bounded hosted-route child proof
+
+Use the hosted-route owner docs as maintained boundary documentation and
+advance to `P1` / `P2` above for the next actual closeout move.
+
+The `2025 directed-interaction callback umbrella slice`
+(`HLA2025-FI-CB-007`) was also re-audited on `2026-06-26`.
+
+Result:
+
+- keep it as an umbrella boundary
+- do not spend the next closeout slice trying to relabel it as direct
+  `covered`
+
+Why:
+
+1. `HLA2025-FI-SVC-063`, `HLA2025-FI-SVC-064`, and `HLA2025-BND-003` already
+   own the directed send/receive and bounded hosted-route child proof
+2. current runtime, transport, and route-parity evidence already exercise the
+   same directed callback semantics as child-row evidence
+3. no narrower direct claim was identified that would avoid restating the
+   child proof
+
+Use the callback/configuration/binding owner doc as maintained boundary
+documentation and advance to `P1` / `P2` above for the next actual closeout
+move.
+
+The `2025 configuration/auth umbrella slice` (`HLA2025-FI-CFG-001`,
+`HLA2025-FI-AUTH-001`) was also re-audited on `2026-06-26`.
+
+Result:
+
+- keep it as an umbrella boundary
+- do not spend the next closeout slice trying to relabel it as direct
+  `covered`
+
+Why:
+
+1. `HLA2025-FI-005`, `HLA2025-MOD-001`, and `HLA2025-BND-003` already own the
+   connect/auth/configuration child semantics
+2. current runtime, factory-composition, and transport evidence already
+   exercise the same callback-model, credentials, and connect-shape behavior
+   as child-row evidence
+3. no narrower direct claim was identified that would avoid restating the
+   child proof
+
+Use the callback/configuration/binding owner doc as maintained boundary
+documentation and advance to `P1` / `P2` above for the next actual closeout
+move.
+
+The `2025 Java/C++ binding umbrella slice` (`HLA2025-BIND-JAVA-CPP-001`) was
+also re-audited on `2026-06-26`.
+
+Result:
+
+- keep it as an umbrella boundary
+- do not spend the next closeout slice trying to relabel it as direct
+  `covered`
+
+Why:
+
+1. `HLA2025-BND-001`, `HLA2025-BND-002`, `HLA2025-FI-003`, and
+   `HLA2025-FI-004` already own the binding-capability and wrapper-surface
+   child proof
+2. current standard-shim artifact tests, route-parity checks, and shim-route
+   evidence already exercise the same bounded Java/C++ adapter/runtime story
+   as child-row evidence
+3. no narrower direct claim was identified that would avoid restating the
+   child proof
+
+Use the callback/configuration/binding owner doc as maintained boundary
+documentation and advance to `P1` / `P2` above for the next actual closeout
+move.
+
+The `2010 CAP-SUP bounded family` was also re-audited on `2026-06-26`.
+
+Result:
+
+- keep it as a bounded family surface
+- do not spend the next closeout slice trying to relabel it as direct support
+
+Why:
+
+1. the current owner doc and reconciliation companion already express the
+   intended bounded Clause 10 reading
+2. the owning support-service shard is green
+3. the remaining tail is still a uniform bounded `43 PRE`, `43 EXC`, and
+   `43 EXC_API` envelope rather than a set of isolated direct per-service
+   witnesses
+4. no narrower direct claim was identified that would preserve the current row
+   meanings without adding new exhaustive per-service negative-matrix proof
+
+Use the support-services owner docs as maintained bounded documentation and
+advance to `P1` / `P2` above for the next actual closeout move.
+
+The `2010 CAP-TM bounded family` was also re-audited on `2026-06-26`.
+
+Result:
+
+- keep it as a bounded family surface
+- do not spend the next closeout slice trying to relabel it as direct support
+
+Why:
+
+1. the current owner doc and reconciliation companion already express the
+   intended bounded Clause 8 reading
+2. the owning time-management shard is green
+3. the remaining tail is still a stable bounded `19 PRE`, `19 EXC`,
+   `19 EXC_API`, and `1 OVW` envelope rather than a set of isolated direct
+   per-row witnesses
+4. no narrower direct claim was identified that would preserve the current row
+   meanings without adding new isolated negative or overview-decomposition
+   proof
+
+Use the time-management owner docs as maintained bounded documentation and
+advance to `P1` / `P2` above for the next actual closeout move.
+
+The `2010 CAP-FM bounded family` was also re-audited on `2026-06-26`.
+
+Result:
+
+- keep it as a bounded family surface
+- do not spend the next closeout slice trying to relabel it as direct support
+
+Why:
+
+1. the current owner doc and reconciliation companion already express the
+   intended bounded Clause 4 reading
+2. the owning federation-management shards are green
+3. the remaining tail is still a stable bounded `43 ARG`, `23 EFF`,
+   `17 CB_ORD`, `15 EXC`, and `11` residual envelope rather than a set of
+   isolated direct per-row witnesses
+4. no narrower direct claim was identified that would preserve the current row
+   meanings without adding new row-level decomposition or direct runtime
+   connection-loss callback proof
+
+Use the federation-management owner docs as maintained bounded documentation
+and advance to `P1` / `P2` above for the next actual closeout move.
+
+The `2010 CAP-OWN bounded family` was also re-audited on `2026-06-26`.
+
+Result:
+
+- keep it as a bounded family surface
+- do not spend the next closeout slice trying to relabel it as direct support
+
+Why:
+
+1. the current owner doc and reconciliation companion already express the
+   intended bounded Clause 7 reading
+2. the owning ownership shards are green
+3. the remaining tail is still a stable bounded `8 PRE`, `11 EXC`, and
+   `11 EXC_API` envelope rather than a set of isolated direct per-row
+   witnesses
+4. no narrower direct claim was identified that would preserve the current row
+   meanings without adding new isolated negative-path proof
+
+Use the ownership-management owner docs as maintained bounded documentation
+and advance to `P1` / `P2` above for the next actual closeout move.
+
+The `2010 CAP-DDM bounded family` was also re-audited on `2026-06-26`.
+
+Result:
+
+- keep it as a bounded family surface
+- do not spend the next closeout slice trying to relabel it as direct support
+
+Why:
+
+1. the current owner doc and reconciliation companion already express the
+   intended bounded Clause 9 reading
+2. the owning DDM shards are green
+3. the remaining tail is now a stable bounded `6 EXC` and `10 EXC_API`
+   envelope rather than a set of isolated direct per-row witnesses
+4. no narrower direct claim was identified that would preserve the current row
+   meanings without adding new isolated negative-path proof
+
+Use the data-distribution owner docs as maintained bounded documentation and
+advance to `P1` / `P2` above for the next actual closeout move.
+
+The `2010 CAP-XML / CAP-OMT bounded family` was also re-audited on
+`2026-06-26`.
+
+Result:
+
+- keep it as a bounded family surface
+- do not spend the next closeout slice trying to relabel it as direct support
+
+Why:
+
+1. the current owner doc and reconciliation companions already express the
+   intended bounded XML schema-family and Annex B normalization reading
+2. the owning parser, validator, MOM-catalog, and round-trip shards are green
+3. the remaining XML tail is still a stable bounded `274 XML_ELEM`,
+   `89 XML_TYPE`, and `1 CLAUSE12_13_DETAIL` envelope
+4. the remaining OMT tail is still a stable bounded `2` normalization-row
+   envelope
+5. no narrower direct claim was identified that would preserve the current row
+   meanings without adding one-row-per-element, one-row-per-type, or stronger
+   executable normalization proof
+
+Use the OMT/XML owner docs as maintained bounded documentation. After this
+decision, there are no remaining 2010 family-level tightening buckets; only
+revisit-only mixed-backend priority rows remain if backend truth changes.
 
 ## Phase 3: Broad Bounded-Claim Decisions
 
@@ -56,7 +348,8 @@ revisited only if later proof work materially changes child claims.
 
 If the goal is immediate visible progress with minimal scope risk, start by
 checking whether any generated report, owner doc, or row-level ledger has gone
-stale relative to the maintained boundary surfaces below.
+stale relative to the maintained boundary surfaces below, then run `P1`
+only if backend truth has actually changed.
 
 ## Dependency Notes
 

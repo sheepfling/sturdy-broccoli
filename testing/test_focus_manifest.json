@@ -179,6 +179,58 @@
       ]
     },
     {
+      "id": "execution-membership",
+      "aliases": ["membership-guards", "not-joined", "lifecycle-guards"],
+      "title": "Execution membership and lifecycle guard tests",
+      "description": "Cross-edition execution-state guard slice for connect/join/resign/destroy membership rules plus not-connected and not-joined rejection on registration, name-release, delete, update, interaction, query, and DDM operations, with hosted 2025 route proof now covering both the gRPC/FedPro lane and the REST-hosted Python route.",
+      "owner_packages": [
+        "hla-backend-python1516e",
+        "hla-backend-python1516-2025",
+        "hla-transport-grpc",
+        "hla-transport-rest",
+        "hla-verification"
+      ],
+      "estimated_cost": "medium",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/backends/test_python_backend_federation_extended.py::test_destroy_federation_execution_requires_no_joined_federates",
+          "tests/backends/test_python_backend_federation_extended.py::test_resign_federation_execution_rejects_not_connected_and_not_joined",
+          "tests/backends/test_python_backend_federation_extended.py::test_disconnect_requires_resign_and_marks_backend_not_connected",
+          "tests/backends/test_python_backend_object_ownership_extended.py::test_reserve_object_instance_name_rejects_not_connected_not_joined_and_save_restore",
+          "tests/backends/test_python_backend_object_ownership_extended.py::test_register_object_instance_rejects_not_connected_not_joined_name_in_use_and_save_restore",
+          "tests/backends/test_python_backend_object_ownership_extended.py::test_name_release_and_query_interaction_transport_tail_reject_not_connected_not_joined_and_save_restore",
+          "tests/backends/test_python_backend_object_ownership_extended.py::test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore",
+          "tests/backends/test_python_backend_object_ownership_extended.py::test_update_attribute_values_rejects_not_connected_not_joined_unknown_object_invalid_time_not_owned_and_save_restore",
+          "tests/backends/test_python_backend_object_ownership_extended.py::test_send_interaction_rejects_not_connected_not_joined_invalid_inputs_and_invalid_time",
+          "tests/backends/test_python_backend_object_ownership_extended.py::test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore",
+          "tests/backends/test_python_backend_object_ownership_extended.py::test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore",
+          "tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_send_interaction_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore",
+          "tests/backends/test_python_backend_time_ddm_extended.py::test_request_attribute_value_update_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore"
+        ],
+        [
+          "./tools/test",
+          "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_join_precondition_matrix",
+          "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_resign_precondition_matrix",
+          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_federation_lifecycle_negative_scenario_end_to_end",
+          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_resign_precondition_scenario_end_to_end",
+          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_reports_federation_executions_and_members"
+        ],
+        [
+          "./tools/test",
+          "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_federation_lifecycle_negative_scenario_over_fedpro_route",
+          "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_join_precondition_scenario_over_fedpro_route",
+          "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_resign_precondition_scenario_over_fedpro_route"
+        ],
+        [
+          "./tools/test",
+          "tests/transport/test_rest_transport.py::test_2025_rest_transport_server_runs_shared_federation_lifecycle_negative_scenario",
+          "tests/transport/test_rest_transport.py::test_2025_rest_transport_server_runs_shared_join_precondition_scenario",
+          "tests/transport/test_rest_transport.py::test_2025_rest_transport_server_runs_shared_resign_precondition_scenario"
+        ]
+      ]
+    },
+    {
       "id": "python-2025-time",
       "aliases": ["time-2025", "window-2025"],
       "title": "Python 2025 time-window tests",
@@ -205,7 +257,7 @@
       "id": "python-2025-save-restore",
       "aliases": ["save-restore-2025", "restore-2025"],
       "title": "Python 2025 save/restore tests",
-      "description": "Focused 2025 direct-runtime and hosted save/restore, rollback, and queued-callback proofs.",
+      "description": "Focused 2025 direct-runtime plus hosted gRPC/FedPro save/restore, rollback, and queued-callback proofs.",
       "owner_packages": [
         "hla-backend-python1516-2025"
       ],
@@ -229,7 +281,7 @@
       "id": "python-2025-ownership",
       "aliases": ["ownership-2025"],
       "title": "Python 2025 ownership tests",
-      "description": "Focused 2025 ownership, negotiation, and ownership-query proofs across direct and hosted routes.",
+      "description": "Focused 2025 ownership, negotiation, and ownership-query proofs across the direct runtime lane and hosted gRPC/FedPro route.",
       "owner_packages": [
         "hla-backend-python1516-2025"
       ],
@@ -250,10 +302,44 @@
       ]
     },
     {
+      "id": "python-2025-ddm",
+      "aliases": ["ddm-2025", "regions-2025"],
+      "title": "Python 2025 DDM tests",
+      "description": "Focused 2025 data-distribution-management, region-routing, passive-alias, and DDM restore-cleanup proofs across the direct runtime lane and hosted gRPC/FedPro route.",
+      "owner_packages": [
+        "hla-backend-python1516-2025"
+      ],
+      "estimated_cost": "medium",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/backends/test_python_backend_time_ddm_extended.py",
+          "-k",
+          "ddm or region"
+        ],
+        [
+          "./tools/test",
+          "tests/scenarios/test_ddm_backend_matrix.py"
+        ],
+        [
+          "./tools/test",
+          "tests/test_rti1516_2025_python1516_2025_runtime.py",
+          "-k",
+          "ddm and python1516_2025 or region and python1516_2025"
+        ],
+        [
+          "./tools/test",
+          "tests/transport/test_grpc_transport_2025.py",
+          "-k",
+          "ddm or region"
+        ]
+      ]
+    },
+    {
       "id": "python-2025-mom-callbacks",
       "aliases": ["mom-2025", "callbacks-2025", "support-2025"],
       "title": "Python 2025 MOM and callback tests",
-      "description": "Focused 2025 MOM, callback-control, and support-service proofs across direct and hosted routes.",
+      "description": "Focused 2025 MOM, callback-control, and support-service proofs across the direct runtime lane and hosted gRPC/FedPro route.",
       "owner_packages": [
         "hla-backend-python1516-2025"
       ],

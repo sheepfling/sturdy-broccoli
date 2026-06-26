@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 CLAUSE_7_PATH = (
-    ROOT / "requirements" / "hla1516_1_clause_7_own_detailed_reconciliation.csv"
+    ROOT / "requirements" / "2010" / "hla1516_1_clause_7_own_detailed_reconciliation.csv"
 )
 
 

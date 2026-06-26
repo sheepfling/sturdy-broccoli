@@ -52,7 +52,15 @@ def test_2025_requirement_by_requirement_audit_stays_aligned_with_finish_line_sn
     assert "the repo no longer lacks a row-level 2025 audit" in audit_text
     assert "strengthens the bounded main-implementation claim for `hla-backend-python1516-2025`" in audit_text
     assert "`hla-backend-shim` stays in a compatibility-wrapper role" in audit_text
+    assert "hosted fedpro evidence remains a bounded route surface over the same runtime lane" in audit_text
+    assert "pitch proto hla 4 / `202x` overlap remains explicit vendor-resolution context" in audit_text
     assert "still not a full unconditional 2025 conformance pass" in audit_text
+    assert "2025_python_rti_umbrella_decomposition_worklist.md" in audit_markdown
+    assert "../requirements/ieee-1516-2025/framework_rules.md" in audit_markdown
+    assert "../requirements/ieee-1516-2025/callback_binding_deltas.md" in audit_markdown
+    assert "../verification/shard_registry.md" in audit_markdown
+    assert "the `22` umbrella rows are not missing proof-owner rows" in audit_text
+    assert "replace them with narrower direct executable claims" in audit_text
     assert "hla2025-omt-comp-041" in audit_text
     assert "hla2025-omt-comp-192" in audit_text
     assert "2025-omt-dimension-metadata-roundtrip" in audit_text
@@ -88,6 +96,14 @@ def test_2025_requirement_by_requirement_audit_stays_aligned_with_finish_line_sn
     ]
     for line in expected_summary_lines:
         assert line in audit_markdown
+
+    assert "100% dispositioned" in audit_markdown
+    assert "100% covered" in audit_markdown
+    assert "645 / 645 = 100% covered" in audit_markdown
+    assert "active normative non-retired non-umbrella rows" in audit_markdown
+    assert "Do not restate that as `691 / 691 covered`" in audit_markdown
+    assert "- `hla-backend-python1516-2025` remains the primary direct 2025 runtime owner" in audit_markdown
+    assert "- Java and C++ standard-shim routes remain wrapper-only capability surfaces" in audit_markdown
 
 
 @pytest.mark.requirements("HLA2025-TRACE-001", "HLA2025-TRACE-002")

@@ -8,12 +8,16 @@ import hla.fom.mom as hla_mom
 from hla.rti1516e.enums import OrderType
 from hla.rti1516e.exceptions import (
     AttributeNotPublished,
+    FederateServiceInvocationsAreBeingReportedViaMOM,
+    InteractionClassNotDefined,
     InteractionClassNotPublished,
+    InvalidInteractionClassHandle,
     InvalidRangeBound,
     InvalidRegion,
     InvalidRegionContext,
     InvalidUpdateRateDesignator,
     RegionDoesNotContainSpecifiedDimension,
+    RegionInUseForUpdateOrSubscription,
     RegionNotCreatedByThisFederate,
 )
 from hla.rti1516e.handles import (
@@ -39,6 +43,8 @@ class PythonRTIDdmServicesMixin(PythonRTIDdmRegionMixin):
         assert self.state.handle is not None
         handle = self.engine._alloc(RegionHandle)
         dims = set(dimensions)
+        if not dims:
+            raise InvalidRegionContext("createRegion requires at least one dimension")
         for dimension in dims:
             self.engine.dimension_name(dimension)
         self.state.regions[handle] = dims
@@ -54,6 +60,8 @@ class PythonRTIDdmServicesMixin(PythonRTIDdmRegionMixin):
         changed_regions = set(regions)
         for region in changed_regions:
             if region not in self.state.regions:
+                if region in federation.region_owners:
+                    raise RegionNotCreatedByThisFederate(repr(region))
                 raise InvalidRegion(repr(region))
         if any(
             region in regions_for_attr
@@ -75,7 +83,22 @@ class PythonRTIDdmServicesMixin(PythonRTIDdmRegionMixin):
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
         if theRegion not in self.state.regions:
+            if theRegion in federation.region_owners:
+                raise RegionNotCreatedByThisFederate(repr(theRegion))
             raise InvalidRegion(repr(theRegion))
+        if any(
+            theRegion in regions
+            for attr_regions in self.state.object_region_subscriptions.values()
+            for regions in attr_regions.values()
+        ) or any(
+            theRegion in regions
+            for regions in self.state.interaction_region_subscriptions.values()
+        ) or any(
+            theRegion in regions
+            for object_regions in self.state.update_regions.values()
+            for regions in object_regions.values()
+        ):
+            raise RegionInUseForUpdateOrSubscription(repr(theRegion))
         self.state.regions.pop(theRegion, None)
         self.state.region_bounds.pop(theRegion, None)
         federation.region_owners.pop(theRegion, None)
@@ -147,11 +170,20 @@ class PythonRTIDdmServicesMixin(PythonRTIDdmRegionMixin):
         regions: Iterable[RegionHandle],
         *unused: Any,
     ) -> None:
-        self._require_joined()
-        self._reject_mom_interaction_class_for_ddm(theClass)
+        federation = self._require_joined()
+        if self.state.service_reporting and self._is_service_invocation_report_handle(theClass):
+            raise FederateServiceInvocationsAreBeingReportedViaMOM(
+                "Disable MOM service reporting before subscribing to HLAreportServiceInvocation"
+            )
+        try:
+            self._reject_mom_interaction_class_for_ddm(theClass)
+        except InvalidInteractionClassHandle as exc:
+            raise InteractionClassNotDefined(repr(theClass)) from exc
         region_set = set(regions)
         for region in region_set:
             if region not in self.state.regions:
+                if region in federation.region_owners:
+                    raise RegionNotCreatedByThisFederate(repr(region))
                 raise InvalidRegion(repr(region))
         self.state.interaction_region_subscriptions.setdefault(theClass, set()).update(region_set)
         self._svc_subscribeInteractionClass(theClass, *unused)
@@ -171,10 +203,15 @@ class PythonRTIDdmServicesMixin(PythonRTIDdmRegionMixin):
     ) -> None:
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
-        self._reject_mom_interaction_class_for_ddm(theClass)
+        try:
+            self._reject_mom_interaction_class_for_ddm(theClass)
+        except InvalidInteractionClassHandle as exc:
+            raise InteractionClassNotDefined(repr(theClass)) from exc
         region_set = set(regions)
         for region in region_set:
             if region not in self.state.regions:
+                if region in federation.region_owners:
+                    raise RegionNotCreatedByThisFederate(repr(region))
                 raise InvalidRegion(repr(region))
         if theClass in self.state.interaction_region_subscriptions:
             self.state.interaction_region_subscriptions[theClass].difference_update(region_set)

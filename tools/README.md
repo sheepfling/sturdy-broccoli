@@ -25,6 +25,7 @@ Core operator entrypoints:
 - `./tools/vendor-probe-review`
 - `./tools/vendor-edge`
 - `./tools/rti-options`
+- `./tools/contracts`
 - `./tools/compliance`
 - `./tools/fom-overview`
 - `./tools/fom-validate`
@@ -35,6 +36,7 @@ Core operator entrypoints:
 - `./tools/fom-siso-pitch-micro-parity`
 - `./tools/fom-siso-runtime-launcher`
 - `./tools/fom-siso-runtime-showcase`
+- `./tools/fom-siso-runtime-observer`
 - `./tools/fom-siso-showcase`
 - `./tools/fom-corpus-classification`
 - `./tools/fom-workbench`
@@ -93,8 +95,8 @@ Shortest common paths:
 - list named focused test targets: `./tools/test-focus inventory`
 - rerun one named focused target: `./tools/test-focus run foundation`
 - rerun one package-aligned target: `./tools/test-focus run jpype`, `./tools/test-focus run py4j`, `./tools/test-focus run target-radar`, or `./tools/test-focus run rti-core`
-- rerun one expensive 2025 concern directly: `./tools/test-focus run python-2025-time`, `./tools/test-focus run python-2025-save-restore`, `./tools/test-focus run python-2025-ownership`, `./tools/test-focus run python-2025-mom-callbacks`, or `./tools/test-focus run routes-2025`
-- use submodule-style aliases when that is easier to remember: `./tools/test-focus run fom-target-radar`, `./tools/test-focus run rti-factory`, `./tools/test-focus run bridge-jpype`, `./tools/test-focus run save-restore-2025`
+- rerun one expensive 2025 concern directly: `./tools/test-focus run execution-membership`, `./tools/test-focus run python-2025-time`, `./tools/test-focus run python-2025-ddm`, `./tools/test-focus run python-2025-save-restore`, `./tools/test-focus run python-2025-ownership`, `./tools/test-focus run python-2025-mom-callbacks`, or `./tools/test-focus run routes-2025`
+- use submodule-style aliases when that is easier to remember: `./tools/test-focus run fom-target-radar`, `./tools/test-focus run rti-factory`, `./tools/test-focus run bridge-jpype`, `./tools/test-focus run save-restore-2025`, `./tools/test-focus run membership-guards`
 - resume only prior failures inside one focused target: `./tools/test-focus resume python-2025-runtime`
 - discover the canonical verification lanes: `./tools/test-surface recommend`
 - validate the named test-surface manifest without running tests: `./tools/test-surface validate`
@@ -113,6 +115,10 @@ Shortest common paths:
 - run the full local 2010/2025 x JPype/Py4J isolated smoke matrix: `./tools/java smoke --all`
 - build the tiny shim jar and run a real bridge route in isolation: `./tools/java smoke --bridge py4j --edition 2025 --real-shim`
 - run the focused bridge example tests: `./tools/java test-bridges`
+- inspect the active Java invocation router and explicit deterministic route coverage: `./tools/java invocation-router-audit`
+- emit the same Java invocation router audit as JSON for docs or CI evidence: `./tools/java invocation-router-audit --router deterministic --json`
+- regenerate or check the generated Java interface mapping doc when Python-side spec metadata changes: `./tools/java spec-map`, `./tools/java spec-map --regen`, `./tools/java spec-map --check`
+- regenerate or check the generated HLA interface contracts reference: `./tools/contracts generate`, `./tools/contracts check`
 - read the shortest Java bridge wrapping recipe: `docs/java_bridge_minimal_protocol_recipe.md`
 - read the Java bridge quick guide: `docs/java_bridge_wrapping_guide.md`
 - read the Java bridge architecture guide: `docs/java_rti_adaptation_architecture.md`
@@ -121,7 +127,12 @@ Shortest common paths:
 - run the schema-positive top-to-bottom audit: `./tools/fom-schema-audit` and inspect its `Edition Scope` column across validator, JSON cycle, and workbench outputs
 - run the high-value SISO top-to-bottom audit: `./tools/fom-siso-audit` and inspect its `Edition Scope` column across validator, JSON cycle, and workbench outputs
 - generate the runtime-backed SISO showcase packet: `./tools/fom-siso-runtime-showcase`
+- inspect the listener-federate index for that showcase: `artifacts/siso_runtime_showcase/siso_runtime_showcase_listener_index.html`
 - generate the runtime-backed SISO launcher packet: `./tools/fom-siso-runtime-launcher`
+- stand up the live runtime observer control plane and use the page to start/stop SISO, two-federate, or target-radar runs: `./tools/fom-siso-runtime-observer`
+- auto-start one exact row on boot when needed: `./tools/fom-siso-runtime-observer --provider siso-runtime --scenario link16-rpr2-integrated-2010-micro-2`
+  - the page now also exposes `backend override` and `target_radar_steps` controls for supported lanes
+  - the default UI is now a generic federation subscriber with object/interaction inspectors plus optional Target/Radar, RPR, and Link 16 panels
 - generate the Pitch-eligible SISO micro parity packet: `./tools/fom-siso-pitch-micro-parity`
 - generate the strict 2010 Pitch-only SISO micro packet: `./tools/fom-siso-pitch-2010-micro-strict`
 - generate the bounded Pitch 202X micro comparison packet: `./tools/pitch 202x-micro-certify`

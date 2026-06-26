@@ -1384,7 +1384,7 @@ def test_unpublishing_interaction_class_prevents_strict_sends():
 
 
 def test_transportation_type_services_emit_confirm_and_report_callbacks():
-    _, owner, observer, owner_fed, _observer_fed, owner_handle, _observer_handle = joined_pair("transport-positive-fed")
+    _, owner, observer, owner_fed, observer_fed, owner_handle, _observer_handle = joined_pair("transport-positive-fed")
     cls = owner.get_object_class_handle("HLAobjectRoot.Target")
     attr = owner.get_attribute_handle(cls, "Position")
     interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
@@ -1417,6 +1417,10 @@ def test_transportation_type_services_emit_confirm_and_report_callbacks():
     assert confirm_interaction.args == (interaction, best_effort)
     assert report_interaction is not None
     assert report_interaction.args == (owner_handle, interaction, best_effort)
+    assert observer_fed.callbacks_named("confirmAttributeTransportationTypeChange") == []
+    assert observer_fed.callbacks_named("reportAttributeTransportationType") == []
+    assert observer_fed.callbacks_named("confirmInteractionTransportationTypeChange") == []
+    assert observer_fed.callbacks_named("reportInteractionTransportationType") == []
 
     owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
@@ -2605,6 +2609,41 @@ def test_delete_and_local_delete_object_instance_reject_not_connected_not_joined
     owner.destroy_federation_execution("delete-negative-fed")
 
 
+def test_reserve_object_instance_name_rejects_not_connected_not_joined_and_save_restore():
+    rti = rti_ambassador(engine=InMemoryRTIEngine())
+    with pytest.raises(NotConnected):
+        rti.reserve_object_instance_name("name")
+
+    rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    with pytest.raises(FederateNotExecutionMember):
+        rti.reserve_object_instance_name("name")
+    rti.disconnect()
+
+    _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("reserve-name-negative-fed")
+
+    owner.request_federation_save("RESERVE-NAME-SAVE")
+    drain(owner, observer)
+    with pytest.raises(SaveInProgress):
+        owner.reserve_object_instance_name("name")
+
+    owner.federate_save_begun()
+    observer.federate_save_begun()
+    owner.federate_save_complete()
+    observer.federate_save_complete()
+    drain(owner, observer)
+
+    owner.request_federation_restore("RESERVE-NAME-SAVE")
+    drain(owner, observer)
+    with pytest.raises(RestoreInProgress):
+        owner.reserve_object_instance_name("name")
+
+    owner.abort_federation_restore()
+    drain(owner, observer)
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("reserve-name-negative-fed")
+
+
 def test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
@@ -2640,6 +2679,96 @@ def test_request_attribute_value_update_rejects_not_connected_not_joined_and_sav
     owner.resign_federation_execution(ResignAction.NO_ACTION)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("ravu-negative-fed")
+
+
+def test_send_interaction_rejects_not_connected_not_joined_invalid_inputs_and_invalid_time():
+    rti = rti_ambassador(engine=InMemoryRTIEngine())
+    with pytest.raises(NotConnected):
+        rti.send_interaction(object(), {}, b"tag")
+
+    rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    with pytest.raises(FederateNotExecutionMember):
+        rti.send_interaction(object(), {}, b"tag")
+    rti.disconnect()
+
+    _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("send-negative-fed")
+    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    track_id = owner.get_parameter_handle(interaction, "TrackId")
+    bad_interaction = type(interaction)(interaction.value + 1000)
+    bad_param = type(track_id)(track_id.value + 1000)
+
+    owner.backend.config.strict_interaction_publication = True
+    with pytest.raises(InteractionClassNotPublished):
+        owner.send_interaction(interaction, {track_id: b"x"}, b"tag")
+    with pytest.raises(InvalidInteractionClassHandle):
+        owner.send_interaction(bad_interaction, {track_id: b"x"}, b"tag")
+    owner.backend.config.strict_interaction_publication = False
+    owner.publish_interaction_class(interaction)
+    with pytest.raises(InteractionParameterNotDefined):
+        owner.send_interaction(interaction, {bad_param: b"x"}, b"tag")
+
+    factory = owner.get_time_factory()
+    owner.enable_time_regulation(factory.make_interval(1.0))
+    observer.enable_time_constrained()
+    drain(owner, observer)
+    owner.time_advance_request(factory.make_time(2.0))
+    drain(owner, observer)
+    with pytest.raises(InvalidLogicalTime):
+        owner.send_interaction(interaction, {track_id: b"timed"}, b"tag", factory.make_time(1.0))
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("send-negative-fed")
+
+
+def test_name_reservation_and_release_effects_manage_state_without_creating_objects():
+    _, owner, observer, owner_fed, observer_fed, _h1, _h2 = joined_pair("name-effect-fed")
+
+    assert owner_fed.callbacks_named("discoverObjectInstance") == []
+    assert observer_fed.callbacks_named("discoverObjectInstance") == []
+
+    owner.reserve_object_instance_name("Reusable-One")
+    drain(owner, observer)
+    assert owner_fed.last_callback("objectInstanceNameReservationSucceeded").args == ("Reusable-One",)
+    assert observer_fed.callbacks_named("discoverObjectInstance") == []
+
+    observer.reserve_object_instance_name("Reusable-One")
+    drain(owner, observer)
+    assert observer_fed.last_callback("objectInstanceNameReservationFailed").args == ("Reusable-One",)
+
+    owner.release_object_instance_name("Reusable-One")
+    observer.reserve_object_instance_name("Reusable-One")
+    drain(owner, observer)
+    single_successes = [
+        record.args[0]
+        for record in observer_fed.callbacks_named("objectInstanceNameReservationSucceeded")
+    ]
+    assert "Reusable-One" in single_successes
+
+    names = {"Reusable-A", "Reusable-B"}
+    owner.reserve_multiple_object_instance_name(names)
+    drain(owner, observer)
+    assert set(owner_fed.last_callback("multipleObjectInstanceNameReservationSucceeded").args[0]) == names
+
+    observer.reserve_multiple_object_instance_name(names)
+    drain(owner, observer)
+    assert set(observer_fed.last_callback("multipleObjectInstanceNameReservationFailed").args[0]) == names
+
+    owner.release_multiple_object_instance_name(names)
+    observer.reserve_multiple_object_instance_name(names)
+    drain(owner, observer)
+    multi_successes = [
+        set(record.args[0])
+        for record in observer_fed.callbacks_named("multipleObjectInstanceNameReservationSucceeded")
+    ]
+    assert names in multi_successes
+
+    assert owner_fed.callbacks_named("discoverObjectInstance") == []
+    assert observer_fed.callbacks_named("discoverObjectInstance") == []
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("name-effect-fed")
 
 
 def test_request_interaction_transportation_type_change_rejects_not_connected_not_joined_and_save_restore():
@@ -2715,6 +2844,12 @@ def test_query_attribute_transportation_type_and_reserve_multiple_names_reject_n
     with pytest.raises(AttributeNotDefined):
         owner.query_attribute_transportation_type(obj, type(attr)(attr.value + 1000))
     assert owner_fed.callbacks_named("reportAttributeTransportationType") == []
+    owner.query_attribute_transportation_type(obj, attr)
+    drain(owner, observer)
+    report = owner_fed.last_callback("reportAttributeTransportationType")
+    assert report is not None
+    assert report.args == (obj, attr, owner.backend.engine.transportation_reliable)
+    owner_fed.clear()
 
     owner.request_federation_save("QUERY-TRANSPORT-SAVE")
     drain(owner, observer)
