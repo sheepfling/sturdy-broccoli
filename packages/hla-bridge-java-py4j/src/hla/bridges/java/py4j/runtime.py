@@ -20,6 +20,7 @@ class Py4JConfig:
     connect_local_settings_designator: str | None = None
     shutdown_gateway_on_close: bool = False
     java_api_profile: str | JavaApiProfile = "2010"
+    invocation_router: str = "weighted"
 
 
 class Py4JFederateAmbassadorProxy:

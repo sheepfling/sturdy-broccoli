@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "tools/contracts"
+
+usage() {
+  cat <<'EOF'
+usage: ./tools/contracts [generate|check|help]
+
+Canonical HLA interface contracts reference maintenance flow:
+  ./tools/contracts generate   # rewrite docs/reference/hla_interface_contracts.md
+  ./tools/contracts check      # fail if the generated contracts doc is stale
+
+This is the human-facing wrapper over
+`scripts/generate_hla_interface_contracts.py generate-docs`
+and `scripts/generate_hla_interface_contracts.py check-docs`.
+EOF
+}
+
+python_bin="$(hla2010_shell_python_bin)"
+
+case "${1:-generate}" in
+  help|-h|--help)
+    usage
+    ;;
+  generate)
+    shift
+    "$python_bin" "$ROOT_DIR/scripts/generate_hla_interface_contracts.py" generate-docs "$@"
+    ;;
+  check)
+    shift
+    "$python_bin" "$ROOT_DIR/scripts/generate_hla_interface_contracts.py" check-docs "$@"
+    ;;
+  *)
+    echo "error: unknown subcommand: $1" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

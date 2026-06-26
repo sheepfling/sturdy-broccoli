@@ -4,16 +4,19 @@ import argparse
 import json
 import keyword
 import re
+import sys
 from pathlib import Path
 from typing import Any
 
+import tomllib
+
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE_PATH = ROOT / "specs" / "hla2010_api.json"
+API_METADATA_SOURCE = "packages/hla-rti1516e/src/hla/rti1516e/api_metadata.json"
 BASE_PATH = ROOT / "packages" / "hla-backend-common" / "src" / "hla.backends.common" / "base.py"
 DOC_PATH = ROOT / "docs" / "reference" / "hla_interface_contracts.md"
 
-GENERATED_HEADER = """# Generated from specs/hla2010_api.json.
+GENERATED_HEADER = """# Generated from packages/hla-rti1516e/src/hla/rti1516e/api_metadata.json.
 # Do not edit by hand. Run python3 scripts/generate_hla_interface_contracts.py generate.
 """
 
@@ -117,6 +120,15 @@ PYTHON_ALIAS_PARAM_OVERRIDES = {
 }
 
 
+def _bootstrap_source_checkout() -> None:
+    pyproject = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    source_roots = pyproject["tool"]["pytest"]["ini_options"]["pythonpath"]
+    for root in reversed(source_roots):
+        source_path = str(ROOT / root)
+        if source_path not in sys.path:
+            sys.path.insert(0, source_path)
+
+
 def lower_camel_to_snake(name: str) -> str:
     name = name.replace("HLAversion", "HLAVersion")
     s1 = re.sub(r"(.)([A-Z][a-z]+)", r"\1_\2", name)
@@ -170,18 +182,26 @@ def python_type(java_type: str | None) -> str:
 
 
 def load_interfaces() -> dict[str, dict[str, dict[str, Any]]]:
-    payload = json.loads(SOURCE_PATH.read_text(encoding="utf-8"))
-    return payload["interfaces"]
+    _bootstrap_source_checkout()
+    from hla.rti1516e.raw_api import API_METADATA
+
+    return API_METADATA
 
 
-def java_overloads(method_meta: dict[str, Any]) -> list[dict[str, Any]]:
-    return [item for item in method_meta.get("overloads", []) if item.get("language") == "java"]
+def _overload_items(method_meta: dict[str, Any] | list[dict[str, Any]]) -> list[dict[str, Any]]:
+    if isinstance(method_meta, list):
+        return method_meta
+    return list(method_meta.get("overloads", []))
 
 
-def canonical_overload(method_meta: dict[str, Any]) -> tuple[list[str], list[str], int, str]:
+def java_overloads(method_meta: dict[str, Any] | list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [item for item in _overload_items(method_meta) if item.get("language") == "java"]
+
+
+def canonical_overload(method_meta: dict[str, Any] | list[dict[str, Any]]) -> tuple[list[str], list[str], int, str]:
     overloads = java_overloads(method_meta)
     if not overloads:
-        source_overloads = list(method_meta.get("overloads", []))
+        source_overloads = _overload_items(method_meta)
         parsed = [split_java_params(str(item.get("params") or "")) for item in source_overloads]
         longest = max(parsed, key=len, default=[])
         min_arity = min((required_param_count(params) for params in parsed), default=0)
@@ -541,9 +561,11 @@ def render_docs() -> str:
     lines = [
         "# HLA Interface Contracts",
         "",
-        "Generated from `specs/hla2010_api.json`.",
+        f"Generated from `{API_METADATA_SOURCE}`.",
+        "Regenerate with `./tools/contracts generate`.",
+        "Double-check with `./tools/contracts check` or `bash scripts/ci/check_generated_docs.sh`.",
         "",
-        "Java lowerCamelCase method names are preserved as canonical HLA service and callback names. Python aliases mirror those names in snake_case.",
+        "Java lowerCamelCase method names are preserved as canonical HLA service and callback names. Python aliases mirror those names in underscore form.",
         "",
     ]
     for interface_name in ("RTIambassador", "FederateAmbassador"):
@@ -594,8 +616,20 @@ def expected_outputs() -> dict[Path, str]:
     }
 
 
+def expected_doc_outputs() -> dict[Path, str]:
+    return {
+        DOC_PATH: render_docs(),
+    }
+
+
 def generate() -> None:
     for path, content in expected_outputs().items():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content, encoding="utf-8")
+
+
+def generate_docs() -> None:
+    for path, content in expected_doc_outputs().items():
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8")
 
@@ -608,14 +642,36 @@ def check() -> list[str]:
     return stale
 
 
+def check_docs() -> list[str]:
+    stale: list[str] = []
+    for path, content in expected_doc_outputs().items():
+        if not path.exists() or path.read_text(encoding="utf-8") != content:
+            stale.append(path.relative_to(ROOT).as_posix())
+    return stale
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Generate typed HLA interface contracts.")
-    parser.add_argument("command", choices=("generate", "check"))
+    parser.add_argument("command", choices=("generate", "check", "generate-docs", "check-docs"))
     args = parser.parse_args()
     if args.command == "generate":
         generate()
         for path in expected_outputs():
             print(path.relative_to(ROOT).as_posix())
+        return 0
+    if args.command == "generate-docs":
+        generate_docs()
+        for path in expected_doc_outputs():
+            print(path.relative_to(ROOT).as_posix())
+        return 0
+    if args.command == "check-docs":
+        stale = check_docs()
+        if stale:
+            print("Stale HLA interface contract docs:")
+            for path in stale:
+                print(f"  {path}")
+            return 1
+        print("HLA interface contract docs are current")
         return 0
     stale = check()
     if stale:

@@ -102,6 +102,11 @@ Java overload intent in Python first, then hands the chosen call shape to
 JPype or Py4J. That policy is described in
 [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md).
 
+The current implementation boundary is deliberate:
+
+- unique-shape overload matches route directly
+- only true same-shape ambiguity goes through weighted scoring
+
 Binary payload handling is also shared policy. JPype and Py4J have different
 mechanics for Java `byte[]`, but both are required to preserve the same Python
 `bytes` contract. That policy is described in

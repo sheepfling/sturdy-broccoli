@@ -22,6 +22,7 @@ class JPypeConfig:
     shutdown_jvm_on_close: bool = False
     convert_strings: bool = False
     java_api_profile: str | JavaApiProfile = "2010"
+    invocation_router: str = "weighted"
 
 
 class JPypeBridge(JavaBridge):

@@ -39,9 +39,10 @@ Outbound Java calls work like this:
 1. the Python-facing RTI surface records an `Invocation`
 2. the shared bridge layer loads Java overload metadata for that method
 3. Python matches candidate overloads by arity and keyword names
-4. Python scores ambiguous overloads by expected Java parameter types
-5. Python converts arguments to the chosen Java shapes
-6. JPype or Py4J executes the already-resolved Java call
+4. if that shape pass leaves one overload, Python routes it directly
+5. only true same-shape ambiguity is scored by expected Java parameter types
+6. Python converts arguments to the chosen Java shapes
+7. JPype or Py4J executes the already-resolved Java call
 
 Inbound callbacks work similarly:
 
@@ -52,6 +53,27 @@ Inbound callbacks work similarly:
 
 The important point is that overload selection is a shared Python policy, not
 an incidental side effect of one bridge route.
+
+## Two Routes
+
+The document is about two different execution routes over one shared Java
+adaptation policy:
+
+- `JPype`: Python starts or attaches to a JVM in-process and calls Java
+  objects directly.
+- `Py4J`: Python talks to a separate Java process through a gateway and exposes
+  callback proxies back to Java.
+
+Both routes use the same Python-side invocation metadata, argument ordering
+rules, overload policy, and callback-signature policy.
+
+The practical split is:
+
+- shared layer decides what Java call shape is intended
+- route layer decides how that chosen call is materialized and executed
+
+That means the repo has one overload-resolution model, not one JPype model and
+another Py4J model.
 
 ## The Core Files
 
@@ -78,18 +100,24 @@ The human-readable audit packet is:
 - [`../artifacts/java_overload_audit/java_overload_audit.json`](../artifacts/java_overload_audit/java_overload_audit.json)
 - [`../artifacts/java_overload_audit/java_overload_audit.md`](../artifacts/java_overload_audit/java_overload_audit.md)
 
+The full method-by-method interface mapping reference is:
+
+- [`reference/java_interface_spec_mapping.md`](reference/java_interface_spec_mapping.md)
+
 ## Outbound Call Resolution
 
 The shared resolver lives in
 [`invocation.py`](../packages/hla-backend-common/src/hla/backends/common/invocation.py).
 
 Important implementation detail: the repo now routes overload choice through a
-swappable resolver hook rather than baking the current weighted scorer directly
-into every caller.
+swappable resolver hook rather than baking the current scorer directly into
+every caller.
 
-The current default resolver is still the weighted fail-closed implementation,
-but the hook exists so the repo can replace it later without rewriting the
-bridge call sites.
+There are now two resolver variants:
+
+- weighted resolver: flexible, metadata-driven, still the default
+- deterministic router: explicit method-by-method routing for the ambiguous HLA
+  Java families, intended for teams that want auditable overload policy
 
 The current default implementation is the internal weighted resolver in
 [`invocation.py`](../packages/hla-backend-common/src/hla/backends/common/invocation.py):
@@ -102,19 +130,111 @@ The public hook surface is:
 - `get_java_invocation_resolver()`
 - `set_java_invocation_resolver(...)`
 - `reset_java_invocation_resolver()`
+- `resolve_java_invocation_deterministic(...)`
+- `install_deterministic_java_invocation_router()`
+- `get_deterministic_java_invocation_router()`
+- `java_invocation_resolver("weighted" | "deterministic")`
+- `java_invocation_resolver_name(...)`
 
 The regression proof that the hook is actually swappable lives in:
 
 - [`../tests/factories/test_java_overload_negative_inputs.py`](../tests/factories/test_java_overload_negative_inputs.py)
+
+## Deterministic Router Variant
+
+For boss-review or adapter-review work, the deterministic router is the clearer
+surface.
+
+Instead of scoring candidate overloads generically, it contains explicit route
+entries for the real same-arity HLA Java collision families:
+
+- `createFederationExecution`
+- `joinFederationExecution`
+- `requestAttributeValueUpdate`
+
+The implementation lives in:
+
+- [`../packages/hla-backend-common/src/hla/backends/common/invocation.py`](../packages/hla-backend-common/src/hla/backends/common/invocation.py)
+
+The route table documents each decision with:
+
+- method name
+- arity
+- exact Java parameter-name tuple
+- rationale text
+- predicate over the normalized Python argument tuple
+
+Current examples:
+
+- `createFederationExecution(name, [fom], "HLAfloat64Time")` -> route to
+  `URL[] + String`
+- `createFederationExecution(name, [fom], mim_path)` -> route to
+  `URL[] + URL`
+- `joinFederationExecution(type, federation, [fom])` -> route to
+  `additionalFomModules`
+- `joinFederationExecution(name, type, federation)` -> route to
+  `federateName + federateType + federationExecutionName`
+- `requestAttributeValueUpdate(object_handle, attrs, tag)` -> route to
+  `theObject`
+- `requestAttributeValueUpdate(class_handle, attrs, tag)` -> route to
+  `theClass`
+
+The route table now also documents neighboring non-ambiguous high-traffic
+shapes so the adapter surface is easier to review end to end:
+
+- `connect`
+- `createFederationExecution` arity 4
+- `joinFederationExecution` arity 2 and 4
+- `subscribeObjectClassAttributes`
+- `subscribeObjectClassAttributesPassively`
+- `subscribeObjectClassAttributesWithRegions`
+- `subscribeObjectClassAttributesPassivelyWithRegions`
+- `requestAttributeValueUpdateWithRegions`
+
+If an ambiguous family does not have one explicit matching route, the
+deterministic router fails closed. It does not silently score and guess.
+
+That behavior is deliberate. It gives the wrapping layer a documented
+adaptation boundary that is easier to review and safer to extend when:
+
+- adding 2025-specific bridge coverage
+- onboarding a new vendor Java RTI
+- adapting a slightly different Java surface or transport dialect
+
+The focused tests for this path are:
+
+- [`../tests/factories/test_java_overload_negative_inputs.py`](../tests/factories/test_java_overload_negative_inputs.py)
+- [`../tests/factories/test_fom_time_factories.py`](../tests/factories/test_fom_time_factories.py)
+
+## Per-Route Config Selection
+
+The deterministic router is no longer only a global test hook.
+
+JPype and Py4J configs now accept:
+
+- `invocation_router="weighted"`
+- `invocation_router="deterministic"`
+
+That means one Java route can remain weighted while another route in the same
+process opts into deterministic routing.
+
+Operator audit:
+
+- `./tools/java invocation-router-audit`
+- `./tools/java invocation-router-audit --router deterministic --json`
 
 The main steps are:
 
 1. filter the method's overload metadata to Java overloads
 2. map Python kwargs onto Java parameter names
 3. reject candidates whose total parameter count does not match
-4. score remaining candidates using expected Java parameter types
-5. reject the call if multiple candidates tie for top score
-6. return one resolved overload plus an ordered argument tuple
+4. if exactly one Java overload exists, route it directly
+5. if multiple overloads exist but only one survives the arity and keyword
+   shape pass, route that one directly
+6. only when multiple same-shape candidates remain, score them using expected
+   Java parameter types
+7. reject the call if multiple candidates tie for top score
+8. return one resolved overload plus an ordered argument tuple
 
 This means the bridge can accept Python-facing calls such as:
 
@@ -123,6 +243,92 @@ This means the bridge can accept Python-facing calls such as:
 - snake-case keyword names that correspond to lowerCamel Java names
 
 without leaving the final choice to route-local reflection behavior.
+
+## Outbound Route Comparison
+
+The outbound path is the easiest place to separate what is shared from what is
+route-local.
+
+### Shared Outbound Steps
+
+For both JPype and Py4J:
+
+1. Python-facing RTI call records an `Invocation`
+2. shared resolver chooses Java overload shape
+3. shared converter materializes Java-oriented argument values
+4. route-local bridge executes the chosen Java call
+
+### JPype Outbound Route
+
+JPype outbound execution is:
+
+1. `JavaRTIBackend.invoke(...)` resolves the overload
+2. `JavaValueConverter.to_backend_args(...)` converts values
+3. `JPypeBridge.call(...)` runs `getattr(java_obj, method_name)(*args)`
+4. JPype itself dispatches the already-chosen Java signature
+
+Important characteristics:
+
+- direct in-process Java object access
+- easier class-identity inspection
+- easier debugging of exact Java implementation classes
+- less gateway indirection once the overload is chosen
+
+### Py4J Outbound Route
+
+Py4J outbound execution is:
+
+1. `JavaRTIBackend.invoke(...)` resolves the overload
+2. `JavaValueConverter.to_backend_args(...)` converts values
+3. `Py4JBridge.call(...)` runs the gateway-backed Java method call
+4. Py4J marshals the chosen call across the gateway boundary
+
+Important characteristics:
+
+- separate Java process shape
+- gateway marshalling between Python and Java
+- more indirection when debugging returned implementation classes
+- same chosen overload policy, different transport mechanics
+
+### Compare And Contrast
+
+| Concern | Shared Policy | JPype Route | Py4J Route |
+| --- | --- | --- | --- |
+| overload selection | Python resolver chooses the Java shape first | direct JVM object call after resolution | gateway call after resolution |
+| keyword / snake-case mapping | shared | same | same |
+| handle-set / map conversion | shared converter policy | materialize direct Java collections or RTI factories | materialize gateway-backed Java collections or RTI factories |
+| logical time conversion | shared expected type names | direct class construction or RTI time factory use | gateway-backed class construction or RTI time factory use |
+| failure mode if shape is ambiguous | fail closed in shared resolver | same | same |
+
+## Current Resolver Boundary
+
+The current implementation is intentionally stronger before it is smarter.
+
+That means:
+
+- `one Java overload total` -> route it
+- `multiple overloads, one surviving shape` -> route it
+- `multiple overloads, multiple surviving same-shape candidates` -> score them
+- `multiple top-score candidates` -> fail closed with
+  `BackendConversionError`
+- `no surviving shape` -> fail closed with `BackendConversionError`
+
+The repo does this on purpose because many negative-path tests intentionally
+pass placeholder values such as `None`, `object()`, or empty handle sets while
+expecting the backend to raise state-driven exceptions like:
+
+- `NotConnected`
+- `FederateNotExecutionMember`
+- later semantic exceptions after connection or join state is established
+
+If the resolver rejected those unique-shape calls early, the bridge would hide
+the real backend behavior behind a conversion error. The current rule avoids
+that for unique-shape calls while staying strict on true ambiguity.
+
+Regression coverage for this rule lives in:
+
+- [`../tests/factories/test_java_overload_negative_inputs.py`](../tests/factories/test_java_overload_negative_inputs.py)
+- [`../tests/backends/test_python_backend_object_ownership_extended.py`](../tests/backends/test_python_backend_object_ownership_extended.py)
 
 ## What Gets Scored
 
@@ -169,6 +375,56 @@ types for the callback method and arity, then converts the values accordingly.
 That matters because vendor RTIs frequently return implementation classes
 instead of the public Java interface names used in the standard metadata.
 
+## Inbound Route Comparison
+
+Inbound callback handling is also one shared policy executed through two
+different mechanics.
+
+### Shared Inbound Steps
+
+For both JPype and Py4J:
+
+1. Java calls a standard `FederateAmbassador` method
+2. route-local callback proxy reaches the shared dispatcher
+3. dispatcher looks up the callback signature metadata
+4. converter normalizes arguments into Python-side values
+5. Python callback method is invoked on the federate ambassador
+
+### JPype Inbound Route
+
+JPype uses:
+
+- `JProxy(...)` for the callback object
+- direct callback entry from the JVM into Python
+- shared dispatcher for signature-aware conversion
+
+This is the lighter callback path mechanically because the proxy lives in the
+same process as the JVM.
+
+### Py4J Inbound Route
+
+Py4J uses:
+
+- a Python callback object that advertises Java interfaces to the gateway
+- callback-server mechanics inside Py4J
+- shared dispatcher for signature-aware conversion once the callback arrives
+
+This is heavier mechanically because Java reaches Python through the gateway
+callback channel, not a same-process proxy.
+
+### Why The Wrapping Still Matters
+
+Even inbound, the repo does not rely on "whatever JPype returned" or
+"whatever Py4J returned" as the public surface.
+
+The shared wrapper still owns:
+
+- handle-family normalization
+- byte normalization
+- logical-time normalization
+- collection normalization
+- callback-name compatibility
+
 ## JPype Vs Py4J
 
 The repo tries to keep their semantics aligned, but they are not identical
@@ -188,7 +444,109 @@ These are intentionally shared:
 That shared policy is why the project can talk about one Java adaptation model
 instead of two unrelated wrappers.
 
-### What JPype Is Better At
+### JPype Characteristics
+
+JPype is stronger when the goal is direct wrapping clarity.
+
+Useful properties:
+
+- same-process execution shape
+- direct Java class access through `JClass`
+- `JProxy` callback wrapping
+- easier inspection of Java class identity and overload-adjacent behavior
+- easier debugging when the question is "what exact Java object did I get?"
+
+Tradeoffs:
+
+- JVM lifecycle is inside the Python process
+- signed-byte handling in `byte[]` creation must be explicit
+- classpath and JVM options are process-local concerns
+
+### Py4J Characteristics
+
+Py4J is stronger when the goal is process separation or an already-running
+Java side.
+
+Useful properties:
+
+- separate Java process shape
+- attachable gateway model
+- clearer fit for hosted or externally-managed Java runtime layouts
+- callback path matches a real cross-process deployment shape more closely
+
+Tradeoffs:
+
+- more indirection in returned objects
+- callback server setup matters
+- byte-array and collection materialization happen through gateway machinery
+- debugging class identity is usually less direct than in JPype
+
+## Byte Quirks Between JPype And Py4J
+
+The shared policy says `byte[]` is part of overload resolution and callback
+normalization. The route mechanics are different enough that this deserves an
+explicit compare/contrast summary here.
+
+### Shared Byte Rules
+
+For both routes:
+
+- Python-facing binary payloads are normalized as `bytes`
+- `byte[]` overloads are selected by the shared resolver
+- outbound `byte[]` values are materialized deliberately, not left to implicit
+  bridge guessing
+- inbound Java `byte[]` values are normalized back to immutable Python
+  `bytes`
+
+### JPype Byte Quirks
+
+JPype materializes a real Java `byte[]` through `JArray(JByte)`.
+
+Important quirk:
+
+- Java bytes are signed, Python bytes are unsigned
+
+So the JPype route explicitly remaps octets above `127` into signed Java byte
+values during array creation.
+
+Why that matters for invocation resolution:
+
+- when the selected overload expects `byte[]`, JPype gets an already-typed Java
+  array rather than a route-implicit conversion guess
+- this reduces ambiguity between payload-bearing overloads and nearby non-byte
+  shapes
+
+### Py4J Byte Quirks
+
+Py4J materializes `byte[]` through gateway array allocation with
+`gateway.jvm.Byte.TYPE`.
+
+Important quirks:
+
+- array creation is indirect through the gateway
+- fallback behavior is riskier if conversion is not explicit
+- callback-returned byte arrays must be normalized after gateway transport
+
+Why that matters for invocation resolution:
+
+- the shared resolver still chooses the `byte[]` overload first
+- Py4J then has to marshal that chosen `byte[]` shape correctly over the
+  gateway boundary
+- when debugging mismatches, the bug may be post-resolution marshalling rather
+  than overload choice itself
+
+### Practical Byte Difference Summary
+
+| Concern | JPype | Py4J |
+| --- | --- | --- |
+| outbound `byte[]` creation | `JArray(JByte)` | gateway `new_array(Byte.TYPE, ...)` |
+| signed-byte quirk | explicit and visible in-process | explicit but mediated through gateway arrays |
+| callback byte path | direct proxy callback back into Python | callback-server path back into Python |
+| easiest byte debugging path | usually JPype | usually slower to inspect because of gateway indirection |
+
+For the full byte contract and live proof story, keep
+[`java_bridge_encoding_and_bytes.md`](java_bridge_encoding_and_bytes.md) next
+to this document.
 
 JPype is the stronger direct-Java route when the question is raw API fidelity.
 
@@ -241,6 +599,14 @@ When a Java bridge call goes wrong, the problem is usually one of these:
 5. a callback arrived through a vendor implementation class that needs the expected signature hint
 
 Those are bridge-policy problems first, not just "JPype broke" or "Py4J broke".
+
+Another current failure mode is worth naming explicitly:
+
+6. a negative-path test or boundary probe can look like a "bad type" call even
+   though the real intent is to reach backend state checks first
+
+The implementation rule above is why unique-shape calls still route through the
+backend, while ambiguous same-shape calls still fail at the resolver.
 
 ## Concrete Example Categories
 

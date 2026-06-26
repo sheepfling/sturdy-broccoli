@@ -25,6 +25,7 @@ from hla.backends.common import (
 )
 from hla.backends.common import (
     NativeHandleRegistry,
+    JavaInvocationResolver,
     ResolvedJavaInvocation,
     ValueConverter,
     clean_java_type_name,
@@ -1341,6 +1342,7 @@ class JavaRTIBackend(RTIBackend):
         converter: JavaValueConverter | None = None,
         info: BackendInfo | None = None,
         connect_local_settings_designator: str | None = None,
+        invocation_resolver: JavaInvocationResolver | None = None,
     ) -> None:
         self.java_rti_ambassador = java_rti_ambassador
         self.bridge = bridge
@@ -1356,6 +1358,7 @@ class JavaRTIBackend(RTIBackend):
         self.converter.java_encoder_oracle = self.java_encoder_oracle
         self.info = info or BackendInfo(name=bridge.name, kind="java")
         self.connect_local_settings_designator = connect_local_settings_designator
+        self.invocation_resolver = invocation_resolver or resolve_java_invocation
         self._connected_ambassador_proxies: list[tuple[NullFederateAmbassador, PythonFederateAmbassadorDispatcher, Any]] = []
 
     def invoke(self, invocation: Invocation) -> Any:
@@ -1371,7 +1374,7 @@ class JavaRTIBackend(RTIBackend):
                 kwargs=invocation.kwargs,
                 overloads=invocation.overloads,
             )
-        resolved = resolve_java_invocation(invocation)
+        resolved = self.invocation_resolver(invocation)
         backend_args = self.converter.to_backend_args(resolved.args, expected_type_names=resolved.param_types)
         result = self.bridge.call(self.java_rti_ambassador, invocation.method_name, *backend_args)
         return self.converter.from_backend(result, expected_type_name=expected_java_return_type(invocation))

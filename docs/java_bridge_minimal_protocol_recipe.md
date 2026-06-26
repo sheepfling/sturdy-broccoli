@@ -33,7 +33,12 @@ Everything else is detail.
 
 One of those details matters a lot for this project: the repo does not rely on
 JPype or Py4J alone to guess which Java overload to call. It resolves that
-policy in Python first.
+policy in Python first, and you now have two policy choices:
+
+- weighted resolver: if one overload matches by shape, route it; if multiple
+  same-shape overloads remain, score and disambiguate them
+- deterministic router: use documented method-specific routing for the known
+  ambiguous HLA Java overload families and fail closed outside that table
 
 ## The Minimum JPype Shape
 
@@ -52,6 +57,7 @@ class MyFederate(NullFederateAmbassador):
 
 config = JPypeConfig(
     classpath=["/path/to/vendor-rti.jar"],
+    invocation_router="deterministic",
 )
 
 rti = rti_ambassador(config)
@@ -81,6 +87,7 @@ class MyFederate(NullFederateAmbassador):
 
 config = Py4JConfig(
     gateway_parameters={"address": "127.0.0.1", "port": 25333},
+    invocation_router="deterministic",
 )
 
 rti = rti_ambassador(config)
@@ -106,6 +113,8 @@ Only three things change:
 1. the package root changes from `hla.rti1516e` to `hla.rti1516_2025`
 2. the callback base import changes
 3. the config sets `java_api_profile="2025"`
+4. optional: the config sets `invocation_router="deterministic"` when you
+   want explicit overload routing instead of weighted resolution
 
 Minimal JPype 2025:
 
@@ -123,6 +132,7 @@ class MyFederate(NullFederateAmbassador):
 config = JPypeConfig(
     classpath=["/path/to/vendor-rti-2025.jar"],
     java_api_profile="2025",
+    invocation_router="deterministic",
 )
 
 rti = rti_ambassador(config)
@@ -145,6 +155,7 @@ class MyFederate(NullFederateAmbassador):
 config = Py4JConfig(
     gateway_parameters={"address": "127.0.0.1", "port": 25333},
     java_api_profile="2025",
+    invocation_router="deterministic",
 )
 
 rti = rti_ambassador(config)
@@ -169,6 +180,13 @@ These stay the same across both routes and both editions:
 - use lowerCamelCase callback names
 - create `rti = rti_ambassador(config)`
 - call `rti.connect(...)`
+
+One optional difference now matters for teams that want reviewable overload
+policy:
+
+- `invocation_router="weighted"` keeps the metadata-driven default
+- `invocation_router="deterministic"` opts that JPype or Py4J backend into the
+  explicit method-route table
 
 That is the whole minimal protocol story.
 

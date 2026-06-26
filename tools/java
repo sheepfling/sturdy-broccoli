@@ -7,7 +7,7 @@ hla2010_shell_init "tools/java"
 
 usage() {
   cat <<'EOF'
-usage: ./tools/java [doctor|smoke|test-bridges|help]
+usage: ./tools/java [doctor|smoke|test-bridges|invocation-router-audit|spec-map|help]
 
 Short front door for Java toolchain inventory and isolated bridge examples.
 
@@ -19,6 +19,11 @@ Commands:
   ./tools/java smoke --all                       # run all 2010/2025 x jpype/py4j in-process shim smokes
   ./tools/java smoke --bridge jpype --real-shim # build the tiny shim jar and run the real JPype route
   ./tools/java test-bridges                      # run focused bridge example tests
+  ./tools/java invocation-router-audit          # print the weighted vs deterministic resolver inventory
+  ./tools/java invocation-router-audit --router deterministic --json
+  ./tools/java spec-map                         # print spec mapping regeneration/check commands
+  ./tools/java spec-map --check                 # fail if the generated interface map doc is stale
+  ./tools/java spec-map --regen                 # rewrite the generated interface map doc
 
 Options for smoke:
   --bridge {jpype,py4j}
@@ -150,6 +155,60 @@ test_bridges_cmd() {
   fi
 }
 
+invocation_router_audit_cmd() {
+  run_workspace_python scripts/report_java_invocation_router.py "$@"
+}
+
+spec_map_cmd() {
+  local mode="help"
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --check)
+        mode="check"
+        shift
+        ;;
+      --regen)
+        mode="regen"
+        shift
+        ;;
+      *)
+        hla2010_shell_die "unknown spec-map option: $1"
+        ;;
+    esac
+  done
+
+  case "$mode" in
+    help)
+      cat <<'EOF'
+Java interface spec mapping:
+  regenerate: python3 scripts/generate_java_interface_spec_mapping.py
+  verify:     bash scripts/ci/check_generated_docs.sh
+
+This keeps docs/reference/java_interface_spec_mapping.md aligned with the Python-side spec metadata and deterministic router inventory.
+EOF
+      ;;
+    check)
+      local doc_path="$ROOT_DIR/docs/reference/java_interface_spec_mapping.md"
+      local tmp_doc
+      tmp_doc="$(mktemp)"
+      cp "$doc_path" "$tmp_doc"
+      run_workspace_python scripts/generate_java_interface_spec_mapping.py
+      if ! cmp -s "$doc_path" "$tmp_doc"; then
+        cp "$tmp_doc" "$doc_path"
+        rm -f "$tmp_doc"
+        printf '%s\n' "error: generated Java interface spec mapping is stale." >&2
+        printf '%s\n' "run: ./tools/java spec-map --regen" >&2
+        exit 1
+      fi
+      cp "$tmp_doc" "$doc_path"
+      rm -f "$tmp_doc"
+      ;;
+    regen)
+      run_workspace_python scripts/generate_java_interface_spec_mapping.py
+      ;;
+  esac
+}
+
 case "${1:-doctor}" in
   help|-h|--help)
     usage
@@ -165,6 +224,14 @@ case "${1:-doctor}" in
   test-bridges)
     shift
     test_bridges_cmd "$@"
+    ;;
+  invocation-router-audit)
+    shift
+    invocation_router_audit_cmd "$@"
+    ;;
+  spec-map)
+    shift
+    spec_map_cmd "$@"
     ;;
   *)
     echo "error: unknown subcommand: $1" >&2

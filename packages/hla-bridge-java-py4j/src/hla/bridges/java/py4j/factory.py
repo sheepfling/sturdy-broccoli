@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from hla.bridges.java.common import BackendInfo, make_rti_ambassador
+from hla.backends.common import java_invocation_resolver
 from .adapter import Py4JRTIBackend
 from .runtime import Py4JBridge, Py4JConfig
 
@@ -35,7 +36,7 @@ def create_py4j_backend(config: Py4JConfig = Py4JConfig()) -> Py4JRTIBackend:
         name=name,
         kind="java/py4j",
         version=version,
-        details={"rti_factory_name": config.rti_factory_name},
+        details={"rti_factory_name": config.rti_factory_name, "invocation_router": config.invocation_router},
     )
     return Py4JRTIBackend(
         java_rti_ambassador=java_rti,
@@ -43,6 +44,7 @@ def create_py4j_backend(config: Py4JConfig = Py4JConfig()) -> Py4JRTIBackend:
         java_factory=factory,
         info=info,
         connect_local_settings_designator=config.connect_local_settings_designator,
+        invocation_resolver=java_invocation_resolver(config.invocation_router),
     )
 
 

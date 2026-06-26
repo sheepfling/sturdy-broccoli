@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from hla.bridges.java.common import BackendInfo, make_rti_ambassador
+from hla.backends.common import java_invocation_resolver
 from .adapter import JPypeRTIBackend
 from .runtime import JPypeBridge, JPypeConfig
 
@@ -33,7 +34,11 @@ def create_jpype_backend(config: JPypeConfig = JPypeConfig()) -> JPypeRTIBackend
         name=name,
         kind="java/jpype",
         version=version,
-        details={"rti_factory_name": config.rti_factory_name, "classpath": list(config.classpath)},
+        details={
+            "rti_factory_name": config.rti_factory_name,
+            "classpath": list(config.classpath),
+            "invocation_router": config.invocation_router,
+        },
     )
     return JPypeRTIBackend(
         java_rti_ambassador=java_rti,
@@ -41,6 +46,7 @@ def create_jpype_backend(config: JPypeConfig = JPypeConfig()) -> JPypeRTIBackend
         java_factory=factory,
         info=info,
         connect_local_settings_designator=config.connect_local_settings_designator,
+        invocation_resolver=java_invocation_resolver(config.invocation_router),
     )
 
 

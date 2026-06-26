@@ -7,7 +7,7 @@ import pytest
 
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e import NullFederateAmbassador
-from hla.backends.common import BackendInfo, RTIBackend
+from hla.backends.common import BackendInfo, RTIBackend, java_invocation_resolver_name
 from hla.bridges.java.common import create_java_backend, create_java_rti_ambassador, discover_java_rti
 from hla.bridges.java.common.java_shim_kernel import SharedJavaShimKernel
 from hla.bridges.java.jpype import JavaRTI2010Implementation, JavaRTIImplementation, debug_java_rti_implementation, java_2010_rti_ambassador
@@ -87,6 +87,46 @@ def test_create_java_backend_forwards_selected_edition_profile(monkeypatch: pyte
     )
 
     assert captured["config"].java_api_profile == "202X"
+
+
+def test_create_java_backend_forwards_invocation_router(monkeypatch: pytest.MonkeyPatch) -> None:
+    import hla.bridges.java.jpype.factory as jpype_factory
+
+    captured: dict[str, Any] = {}
+
+    def fake_create_backend(config: Any) -> _FakeBackend:
+        captured["config"] = config
+        return _FakeBackend(BackendInfo(name="fake", kind="java/jpype"))
+
+    monkeypatch.setattr(jpype_factory, "create_jpype_backend", fake_create_backend)
+
+    create_java_backend(
+        bridge="jpype",
+        implementation="vendor.rti.Factory",
+        invocation_router="deterministic",
+    )
+
+    assert captured["config"].invocation_router == "deterministic"
+
+
+def test_create_java_backend_forwards_invocation_router_for_py4j(monkeypatch: pytest.MonkeyPatch) -> None:
+    import hla.bridges.java.py4j.factory as py4j_factory
+
+    captured: dict[str, Any] = {}
+
+    def fake_create_backend(config: Any) -> _FakeBackend:
+        captured["config"] = config
+        return _FakeBackend(BackendInfo(name="fake", kind="java/py4j"))
+
+    monkeypatch.setattr(py4j_factory, "create_py4j_backend", fake_create_backend)
+
+    create_java_backend(
+        bridge="py4j",
+        implementation="vendor.rti.Factory",
+        invocation_router="weighted",
+    )
+
+    assert captured["config"].invocation_router == "weighted"
 
 
 def test_java_implementation_facade_forwards_2025_edition_profile(monkeypatch: pytest.MonkeyPatch) -> None:

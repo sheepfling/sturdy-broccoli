@@ -9,8 +9,10 @@ from hla.backends.common import (
     BackendConversionError,
     Invocation,
     ResolvedJavaInvocation,
+    install_deterministic_java_invocation_router,
     get_java_invocation_resolver,
     reset_java_invocation_resolver,
+    resolve_java_invocation_deterministic,
     set_java_invocation_resolver,
 )
 from hla.bridges.java.common import JavaBridge, JavaValueConverter, resolve_java_invocation
@@ -115,6 +117,125 @@ def test_java_overload_resolution_rejects_wrong_handle_family_with_clear_error()
     text = str(exc_info.value)
     assert "Java overload parameters" in text
     assert "theObject" in text or "theClass" in text
+
+
+def test_java_overload_resolution_keeps_single_overload_calls_strict_for_bad_shape_inputs():
+    invocation = Invocation(
+        method_name="getFederateName",
+        args=(None,),
+        overloads=(
+            {"language": "java", "params": "FederateHandle theHandle"},
+        ),
+    )
+
+    with pytest.raises(BackendConversionError, match="Could not map arguments for getFederateName"):
+        resolve_java_invocation(invocation)
+
+
+def test_java_overload_resolution_allows_single_overload_concrete_bad_handle_to_reach_backend_validation():
+    invocation = Invocation(
+        method_name="getFederateName",
+        args=(object(),),
+        overloads=(
+            {"language": "java", "params": "FederateHandle theHandle"},
+        ),
+    )
+
+    resolved = resolve_java_invocation(invocation)
+
+    assert resolved.args == invocation.args
+    assert resolved.param_types == ("FederateHandle",)
+
+
+def test_deterministic_java_router_can_be_installed_and_restored():
+    original = get_java_invocation_resolver()
+
+    previous = install_deterministic_java_invocation_router()
+    assert previous is original
+    try:
+        assert get_java_invocation_resolver() is resolve_java_invocation_deterministic
+    finally:
+        set_java_invocation_resolver(previous)
+        reset_java_invocation_resolver()
+
+
+def test_deterministic_java_router_routes_request_attribute_value_update_by_handle_family():
+    invocation = Invocation(
+        method_name="requestAttributeValueUpdate",
+        args=(ObjectInstanceHandle(99), {AttributeHandle(51)}, b"radar-rcs-query"),
+        overloads=(
+            {"language": "java", "params": "ObjectInstanceHandle theObject, AttributeHandleSet theAttributes, byte[] userSuppliedTag"},
+            {"language": "java", "params": "ObjectClassHandle theClass, AttributeHandleSet theAttributes, byte[] userSuppliedTag"},
+        ),
+    )
+
+    resolved = resolve_java_invocation_deterministic(invocation)
+
+    assert resolved.param_types == ("ObjectInstanceHandle", "AttributeHandleSet", "byte[]")
+
+
+def test_deterministic_java_router_routes_join_federation_execution_by_third_argument_shape():
+    invocation = Invocation(
+        method_name="joinFederationExecution",
+        args=("observer", "demo-fed", [Path("TargetRadarFOMmodule.xml")]),
+        overloads=(
+            {"language": "java", "params": "String federateType, String federationExecutionName, URL[] additionalFomModules"},
+            {"language": "java", "params": "String federateName, String federateType, String federationExecutionName"},
+        ),
+    )
+
+    resolved = resolve_java_invocation_deterministic(invocation)
+
+    assert resolved.param_types == ("String", "String", "URL[]")
+
+
+def test_deterministic_java_router_fails_closed_without_explicit_method_route():
+    invocation = Invocation(
+        method_name="ambiguousCall",
+        args=("alpha",),
+        overloads=(
+            {"language": "java", "params": "String federationExecutionName"},
+            {"language": "java", "params": "String federateType"},
+        ),
+    )
+
+    with pytest.raises(BackendConversionError, match="Deterministic Java router has no explicit route for ambiguousCall") as exc_info:
+        resolve_java_invocation_deterministic(invocation)
+
+    assert "matching overload parameters" in str(exc_info.value)
+
+
+def test_java_overload_resolution_keeps_unique_arity_match_strict_for_bad_shape_inputs():
+    invocation = Invocation(
+        method_name="subscribeObjectClassAttributes",
+        args=(object(), set()),
+        overloads=(
+            {"language": "java", "params": "ObjectClassHandle theClass, AttributeHandleSet attributeList"},
+            {
+                "language": "java",
+                "params": "ObjectClassHandle theClass, AttributeHandleSet attributeList, String updateRateDesignator",
+            },
+        ),
+    )
+
+    with pytest.raises(BackendConversionError, match="Could not map arguments for subscribeObjectClassAttributes"):
+        resolve_java_invocation(invocation)
+
+
+def test_java_overload_resolution_treats_trailing_none_as_omitted_optional_suffix():
+    invocation = Invocation(
+        method_name="createFederationExecution",
+        args=("fed", ["TargetRadarFOMmodule.xml"], None),
+        overloads=(
+            {"language": "java", "params": "String federationExecutionName, URL[] fomModules, String logicalTimeImplementationName"},
+            {"language": "java", "params": "String federationExecutionName, URL[] fomModules"},
+        ),
+    )
+
+    resolved = resolve_java_invocation(invocation)
+
+    assert resolved.args == ("fed", ["TargetRadarFOMmodule.xml"])
+    assert resolved.param_types == ("String", "URL[]")
 
 
 def test_java_converter_rejects_string_like_impostor_with_clear_error():
