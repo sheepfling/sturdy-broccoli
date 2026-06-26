@@ -300,6 +300,197 @@ Important characteristics:
 | logical time conversion | shared expected type names | direct class construction or RTI time factory use | gateway-backed class construction or RTI time factory use |
 | failure mode if shape is ambiguous | fail closed in shared resolver | same | same |
 
+## Helper: How Python Values Are Wrapped To Java
+
+Overload resolution and value wrapping are connected, but they are not the same
+step.
+
+The resolver answers:
+
+- which Java overload row is intended
+- what Java parameter types that overload expects
+
+The converter then answers:
+
+- how each Python value must be materialized for that expected Java type
+
+That split is important. The deterministic router does not itself build Java
+`HashSet`, `HashMap`, RTI-owned handle sets, or Java `byte[]`. It only chooses
+the overload shape that gives the converter the right target types.
+
+The shared conversion logic lives in
+[`../packages/hla-bridge-java-common/src/hla/bridges/java/common/java_common.py`](../packages/hla-bridge-java-common/src/hla/bridges/java/common/java_common.py),
+mainly in `JavaValueConverter.to_backend(...)`.
+
+### Strong Typed Wrapping Families
+
+When the chosen Java overload provides an exact expected type, the converter
+wraps Python values deliberately rather than relying on JPype or Py4J to guess.
+
+The main typed families are:
+
+- `byte[]`
+- `URL`
+- `URL[]`
+- `AttributeHandleSet`
+- `DimensionHandleSet`
+- `FederateHandleSet`
+- `RegionHandleSet`
+- `AttributeHandleValueMap`
+- `ParameterHandleValueMap`
+- `AttributeSetRegionSetPairList`
+- `LogicalTime`
+- `LogicalTimeInterval`
+- `RangeBounds`
+- `RtiConfiguration`
+- `Credentials`
+- Java enum constants
+
+Typical examples:
+
+- Python `bytes` -> Java `byte[]`
+- Python iterable of handles -> RTI-owned handle set when the RTI factory is
+  available, otherwise a generic Java set
+- Python mapping of handle -> `bytes` -> RTI-owned handle-value map when the
+  RTI factory is available, otherwise a generic Java map
+- Python logical-time wrapper -> RTI time-factory object when possible,
+  otherwise the standard Java logical-time class
+
+### Generic Collection Fallbacks
+
+If the chosen overload does not provide one of the explicit typed HLA
+collection families, generic Python containers fall back to generic Java
+collections:
+
+- Python `list` -> Java `ArrayList`
+- Python `set` -> Java `HashSet`
+- Python `frozenset` -> Java `HashSet`
+- Python `dict` / `Mapping` -> Java `HashMap`
+
+That fallback is structurally useful, but it is weaker semantically than the
+typed HLA families.
+
+Important current boundary:
+
+- `set` and `frozenset` are treated the same on the Java boundary
+- generic mappings do not preserve a stronger Java map interface than
+  `HashMap`
+- generic collections are less self-describing than typed handle sets/maps
+
+So "deterministic overload routing" is not automatically the same thing as
+"fully explicit Java container typing." The typing is strongest when the
+selected overload row carries an exact target type and the converter has an
+explicit rule for that type family.
+
+## Helper: How Java Values Are Unwrapped Back To Python
+
+The reverse conversion path is also shared policy rather than route-local
+guesswork.
+
+Inbound conversion lives in the same file, mainly in
+`JavaValueConverter.from_backend(...)`.
+
+### Strong Typed Unwrapping Families
+
+The repo explicitly normalizes these Java-side values back into Python-side
+types:
+
+- Java `byte[]` -> Python `bytes`
+- Java handle implementation objects -> Python handle wrappers through the
+  shared native-handle registry
+- Java handle sets -> Python handle-set classes
+- Java handle-value maps -> Python handle-value-map classes
+- Java enum constants -> Python enums
+- Java logical time / interval objects -> Python logical-time wrappers
+- Java composite return types such as:
+  - `TimeQueryReturn`
+  - `MessageRetractionReturn`
+  - `FederateHandleSaveStatusPair`
+  - `FederateRestoreStatus`
+  - `SupplementalReflectInfo`
+  - `SupplementalReceiveInfo`
+  - `SupplementalRemoveInfo`
+
+### Generic Collection Reverse Fallbacks
+
+Generic Java collections are normalized conservatively:
+
+- Java map-like objects -> Python `dict`
+- Java collection-like objects -> Python collection values, usually normalized
+  as plain Python sets in the generic fallback path
+
+That means the current bridge is strongest for explicit HLA container families
+and weaker for generic vendor-private or metadata-light collection shapes.
+
+The shared wrapper still owns the public Python contract, though. The repo does
+not treat "whatever JPype returned" or "whatever Py4J returned" as the
+intended public surface.
+
+## One-Page Container Conversion Matrix
+
+This is the practical matrix for the container families that matter most at the
+bridge boundary.
+
+| Python input shape | Expected Java type | JPype materialization | Py4J materialization | Python return normalization | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `bytes` | `byte[]` | real Java `byte[]` via `JArray(JByte)` | real Java `byte[]` via gateway array creation | Python `bytes` | signed Java byte handling is explicit on both routes |
+| URL-like scalar | `URL` | Java `URL` | Java `URL` | URL-like Java values usually stay scalar unless a stronger Python model is expected | used for single FOM/MIM module paths |
+| iterable of URL-like values | `URL[]` | Java `URL[]` | Java `URL[]` | list/array-like values normalize through the converter path that consumes them | strong typed array family, not generic list fallback |
+| `set[Handle]` or `frozenset[Handle]` | standard handle-set family such as `AttributeHandleSet` | RTI-owned handle set when factory is available, else Java `HashSet` | RTI-owned handle set when factory is available, else Java `HashSet` | typed Python handle-set class when the expected family is known | `set` and `frozenset` are not distinguished on the Java side |
+| `dict[Handle, bytes]` | standard handle-value-map family such as `AttributeHandleValueMap` | RTI-owned handle-value map when factory is available, else Java `HashMap` | RTI-owned handle-value map when factory is available, else Java `HashMap` | typed Python handle-value-map class when the expected family is known | bytes payloads are normalized entry-by-entry |
+| iterable of `AttributeRegionAssociation` | `AttributeSetRegionSetPairList` | RTI-owned pair-list when factory is available, else Java `ArrayList` | RTI-owned pair-list when factory is available, else Java `ArrayList` | normalized through the explicit pair-list conversion path | this is a standard HLA container family |
+| `list[...]` | no explicit standard family | Java `ArrayList` | Java `ArrayList` | generic Java collections usually normalize conservatively, often as plain Python collections | listed fallback case |
+| `set[...]` | no explicit standard family | Java `HashSet` | Java `HashSet` | generic Java collections usually normalize conservatively, often as plain Python sets | listed fallback case |
+| `frozenset[...]` | no explicit standard family | Java `HashSet` | Java `HashSet` | generic Java collections usually normalize conservatively, often as plain Python sets | immutability is not preserved |
+| `dict[...]` / `Mapping[...]` | no explicit standard family | Java `HashMap` | Java `HashMap` | Python `dict` | listed fallback case |
+
+### Standard Explicit Families
+
+The current shared bridge treats these as explicit standard Java container
+families rather than generic collection guesses:
+
+- `URL[]`
+- `AttributeHandleSet`
+- `DimensionHandleSet`
+- `FederateHandleSet`
+- `InteractionClassHandleSet`
+- `RegionHandleSet`
+- `AttributeHandleValueMap`
+- `ParameterHandleValueMap`
+- `AttributeSetRegionSetPairList`
+
+### Generic Fallback Cases
+
+The current generic fallback cases are intentionally narrow and easy to name:
+
+- Python `list` -> Java `ArrayList`
+- Python `set` -> Java `HashSet`
+- Python `frozenset` -> Java `HashSet`
+- Python `dict` / `Mapping` -> Java `HashMap`
+
+### Deterministic-Route Strictness
+
+When the deterministic router resolves a Java call through metadata-backed
+parameter types, the bridge now marks that call as strict for container
+shapes.
+
+That means:
+
+- explicit standard container families continue to work
+- generic container fallback is rejected for that deterministic route
+
+Examples of fail-closed strict-route behavior:
+
+- Python `list` with only a generic `java.util.List` expectation
+- Python `set` or `frozenset` with only a generic `java.util.Set` expectation
+- Python `dict` with only a generic `java.util.Map` expectation
+
+This is deliberate. On deterministic routes, the repo now prefers one of two
+outcomes:
+
+- use an explicit standard HLA container family
+- fail closed and require a documented conversion rule
+
 ## Current Resolver Boundary
 
 The current implementation is intentionally stronger before it is smarter.
@@ -424,6 +615,84 @@ The shared wrapper still owns:
 - logical-time normalization
 - collection normalization
 - callback-name compatibility
+
+## Helper: What We Did To Keep The Type Checker Happy
+
+The Java bridge boundary is intentionally split between:
+
+- a typed Python-facing HLA surface
+- a dynamic Java-object boundary
+
+That split is what keeps Pyright manageable without pretending JPype or Py4J
+objects are statically knowable Python classes.
+
+### Where Typing Is Strong
+
+The repo keeps typing explicit in these places:
+
+- the Python-facing RTI contract and callback names
+- the generated interface-contract docs and method inventories
+- binding-profile lookups for known Python-side enum, handle, and helper types
+- converter inputs that are standard Python abstractions such as:
+  - `Mapping`
+  - `Sequence`
+  - `Iterable`
+- explicit helper protocols for small Java concepts such as map entries and
+  iterators
+
+Examples in the shared bridge layer include:
+
+- `Mapping[str, Any]` for overload metadata rows
+- `Sequence[Any]` for Java collection builders
+- narrow `Protocol` types for Java iterator and map-entry access
+
+### Where Typing Is Intentionally Soft
+
+The repo deliberately uses `Any` at the actual bridge edge for:
+
+- JPype proxy objects
+- Py4J gateway objects
+- Java implementation-class instances returned by vendor RTIs
+- dynamically selected overload argument tuples
+
+That is not an accident. It is the honest type boundary.
+
+Trying to model all JPype and Py4J runtime objects as precise Python generic
+types would create fake certainty and a much noisier type-checking story.
+
+### Practical Typing Rules
+
+The current typing strategy is:
+
+1. keep the Python-facing API names and helper models typed
+2. keep overload metadata rows and conversion helpers typed enough to be
+   auditable
+3. use `Any` exactly at the live Java object boundary
+4. immediately normalize returned Java values back into typed Python-side
+   handles, enums, bytes, logical-time wrappers, and known composite models
+5. avoid pretending generic Java collections carry stronger static guarantees
+   than the runtime can actually prove
+
+This is why the bridge layer uses typed helper abstractions such as
+`Mapping`, `Sequence`, `Protocol`, and explicit converter classes, while still
+allowing route-local Java objects themselves to remain `Any`.
+
+### What "Pyright Happy" Means Here
+
+In this repo, Pyright happiness does not mean:
+
+- every JPype object has a perfect Python generic type
+- every Py4J return value is statically proven before normalization
+
+It does mean:
+
+- the public Python API surface remains typed and reviewable
+- conversion policy is centralized instead of scattered through ad hoc casts
+- Java runtime opacity is contained at one boundary
+- route-local bridge code does not leak arbitrary dynamic objects through the
+  public API without normalization where the repo has a standard model
+
+That is a pragmatic static-typing strategy, not a fantasy one.
 
 ## JPype Vs Py4J
 

@@ -207,6 +207,7 @@ class ResolvedJavaInvocation:
     args: tuple[Any, ...]
     param_types: tuple[str | None, ...]
     overload: Mapping[str, Any] | None = None
+    strict_container_shapes: bool = False
 
 
 JavaInvocationResolver = Callable[[Invocation], ResolvedJavaInvocation]
@@ -261,11 +262,21 @@ class DeterministicJavaInvocationRouter:
 
         if not candidates and single_overload_fallback is not None:
             ordered, types, overload = single_overload_fallback
-            return ResolvedJavaInvocation(args=ordered, param_types=tuple(types), overload=overload)
+            return ResolvedJavaInvocation(
+                args=ordered,
+                param_types=tuple(types),
+                overload=overload,
+                strict_container_shapes=True,
+            )
 
         if len(candidates) == 1:
             ordered, types, overload = candidates[0]
-            return ResolvedJavaInvocation(args=ordered, param_types=tuple(types), overload=overload)
+            return ResolvedJavaInvocation(
+                args=ordered,
+                param_types=tuple(types),
+                overload=overload,
+                strict_container_shapes=True,
+            )
 
         if len(candidates) > 1:
             routed = self._resolve_explicit_route(invocation, candidates)
@@ -309,7 +320,12 @@ class DeterministicJavaInvocationRouter:
 
         if len(matching_routes) == 1:
             _route, ordered, types, overload = matching_routes[0]
-            return ResolvedJavaInvocation(args=ordered, param_types=tuple(types), overload=overload)
+            return ResolvedJavaInvocation(
+                args=ordered,
+                param_types=tuple(types),
+                overload=overload,
+                strict_container_shapes=True,
+            )
 
         if len(matching_routes) > 1:
             raise BackendConversionError(

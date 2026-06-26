@@ -295,6 +295,35 @@ def _is_url_like(value: Any) -> bool:
     return isinstance(value, (str, os.PathLike)) or hasattr(value, "uri")
 
 
+_EXPLICIT_STANDARD_JAVA_CONTAINER_TYPES = frozenset(
+    {
+        "URL[]",
+        "AttributeHandleSet",
+        "DimensionHandleSet",
+        "FederateHandleSet",
+        "InteractionClassHandleSet",
+        "RegionHandleSet",
+        "AttributeHandleValueMap",
+        "ParameterHandleValueMap",
+        "AttributeSetRegionSetPairList",
+    }
+)
+
+
+def _container_kind(value: Any) -> str | None:
+    if isinstance(value, list):
+        return "list"
+    if isinstance(value, tuple):
+        return "tuple"
+    if isinstance(value, set):
+        return "set"
+    if isinstance(value, frozenset):
+        return "frozenset"
+    if isinstance(value, Mapping):
+        return "mapping"
+    return None
+
+
 class JavaValueConverter(ValueConverter):
     """Value converter for Java bridge backends.
 
@@ -352,7 +381,22 @@ class JavaValueConverter(ValueConverter):
             f"Expected Java {expected_type_name} for bridge conversion; got {type(value).__name__}: {detail}"
         )
 
-    def to_backend(self, value: Any, *, expected_type_name: str | None = None) -> Any:  # noqa: D401 - inherited contract
+    def _strict_generic_container_error(self, value: Any, *, expected_type_name: str | None) -> BackendConversionError:
+        container_kind = _container_kind(value) or type(value).__name__
+        expected = _clean_java_type(expected_type_name)
+        return BackendConversionError(
+            "Deterministic Java route forbids generic container fallback for "
+            f"{container_kind} when expected Java type is {expected or 'unspecified'}. "
+            "Add an explicit standard container family mapping or route-specific conversion rule."
+        )
+
+    def to_backend(
+        self,
+        value: Any,
+        *,
+        expected_type_name: str | None = None,
+        strict_container_shapes: bool = False,
+    ) -> Any:  # noqa: D401 - inherited contract
         handle_type = self.python_binding.python_type_or_none("Handle")
         range_bounds_type = self.python_binding.python_type("RangeBounds")
         attribute_region_association_type = self.python_binding.python_type("AttributeRegionAssociation")
@@ -439,17 +483,43 @@ class JavaValueConverter(ValueConverter):
             return self.bridge.range_bounds(value)
         if isinstance(value, attribute_region_association_type):
             return (
-                self.to_backend(value.ahset, expected_type_name="AttributeHandleSet"),
-                self.to_backend(value.rhset, expected_type_name="RegionHandleSet"),
+                self.to_backend(
+                    value.ahset,
+                    expected_type_name="AttributeHandleSet",
+                    strict_container_shapes=strict_container_shapes,
+                ),
+                self.to_backend(
+                    value.rhset,
+                    expected_type_name="RegionHandleSet",
+                    strict_container_shapes=strict_container_shapes,
+                ),
             )
         if isinstance(value, tuple):
-            return tuple(self.to_backend(item) for item in value)
+            return tuple(self.to_backend(item, strict_container_shapes=strict_container_shapes) for item in value)
         if isinstance(value, list):
-            return self.bridge.new_list([self.to_backend(item) for item in value])
+            if strict_container_shapes and expected not in _EXPLICIT_STANDARD_JAVA_CONTAINER_TYPES:
+                raise self._strict_generic_container_error(value, expected_type_name=expected)
+            return self.bridge.new_list(
+                [self.to_backend(item, strict_container_shapes=strict_container_shapes) for item in value]
+            )
         if isinstance(value, (set, frozenset)):
-            return self.bridge.new_set([self.to_backend(item) for item in value])
+            if strict_container_shapes and expected not in _EXPLICIT_STANDARD_JAVA_CONTAINER_TYPES:
+                raise self._strict_generic_container_error(value, expected_type_name=expected)
+            return self.bridge.new_set(
+                [self.to_backend(item, strict_container_shapes=strict_container_shapes) for item in value]
+            )
         if isinstance(value, Mapping):
-            return self.bridge.new_map([(self.to_backend(k), self.to_backend(v)) for k, v in value.items()])
+            if strict_container_shapes and expected not in _EXPLICIT_STANDARD_JAVA_CONTAINER_TYPES:
+                raise self._strict_generic_container_error(value, expected_type_name=expected)
+            return self.bridge.new_map(
+                [
+                    (
+                        self.to_backend(k, strict_container_shapes=strict_container_shapes),
+                        self.to_backend(v, strict_container_shapes=strict_container_shapes),
+                    )
+                    for k, v in value.items()
+                ]
+            )
         if isinstance(value, logical_time_types):
             return self.bridge.logical_time(value, rti_ambassador=self.rti_ambassador)
         return super().to_backend(value)
@@ -461,10 +531,20 @@ class JavaValueConverter(ValueConverter):
     def to_backend_bytes(self, value: bytes) -> Any:
         return self.bridge.byte_array(value)
 
-    def to_backend_args(self, args: Iterable[Any], expected_type_names: Iterable[str | None] | None = None) -> tuple[Any, ...]:
+    def to_backend_args(
+        self,
+        args: Iterable[Any],
+        expected_type_names: Iterable[str | None] | None = None,
+        *,
+        strict_container_shapes: bool = False,
+    ) -> tuple[Any, ...]:
         expected = tuple(expected_type_names or ())
         return tuple(
-            self.to_backend(arg, expected_type_name=expected[idx] if idx < len(expected) else None)
+            self.to_backend(
+                arg,
+                expected_type_name=expected[idx] if idx < len(expected) else None,
+                strict_container_shapes=strict_container_shapes,
+            )
             for idx, arg in enumerate(args)
         )
 
@@ -1375,7 +1455,11 @@ class JavaRTIBackend(RTIBackend):
                 overloads=invocation.overloads,
             )
         resolved = self.invocation_resolver(invocation)
-        backend_args = self.converter.to_backend_args(resolved.args, expected_type_names=resolved.param_types)
+        backend_args = self.converter.to_backend_args(
+            resolved.args,
+            expected_type_names=resolved.param_types,
+            strict_container_shapes=resolved.strict_container_shapes,
+        )
         result = self.bridge.call(self.java_rti_ambassador, invocation.method_name, *backend_args)
         return self.converter.from_backend(result, expected_type_name=expected_java_return_type(invocation))
 

@@ -459,6 +459,19 @@ def test_java_backend_can_run_through_deterministic_invocation_router():
     assert args[2] == b"tag"
 
 
+def test_deterministic_java_router_marks_explicit_routes_as_strict_for_container_shapes():
+    invocation = Invocation(
+        method_name="createFederationExecution",
+        args=("fed", [TARGET_RADAR_FOM], TARGET_RADAR_FOM),
+        overloads=tuple(API_METADATA["RTIambassador"]["createFederationExecution"]),
+    )
+
+    resolved = resolve_java_invocation_deterministic(invocation)
+
+    assert resolved.param_types == ("String", "URL[]", "String")
+    assert resolved.strict_container_shapes is True
+
+
 def test_java_backend_prefers_backend_local_resolver_over_global_swap():
     java_rti = _RecordingJavaRTI()
     backend = JavaRTIBackend(
@@ -510,6 +523,29 @@ def test_java_backend_invoke_uses_swapped_java_resolver_result():
     method_name, args = java_rti.calls[-1]
     assert method_name == "createFederationExecution"
     assert args == ("forced-fed", (f"url:{TARGET_RADAR_FOM}",), "HLAfloat64Time")
+
+
+def test_java_backend_fails_closed_on_strict_generic_container_fallback():
+    java_rti = _RecordingJavaRTI()
+    backend = JavaRTIBackend(java_rti_ambassador=java_rti, bridge=RecordingBridge())
+    rti = make_rti_ambassador(backend)
+
+    def _strict_generic_container_resolver(invocation: Invocation) -> ResolvedJavaInvocation:
+        assert invocation.method_name == "createFederationExecution"
+        return ResolvedJavaInvocation(
+            args=("forced-fed", [TARGET_RADAR_FOM]),
+            param_types=("String", "java.util.List"),
+            overload={"language": "java", "params": "String federationExecutionName, java.util.List fomModules"},
+            strict_container_shapes=True,
+        )
+
+    previous = set_java_invocation_resolver(_strict_generic_container_resolver)
+    try:
+        with pytest.raises(BackendConversionError, match="forbids generic container fallback"):
+            rti.createFederationExecution("ignored-fed", [TARGET_RADAR_FOM])
+    finally:
+        set_java_invocation_resolver(previous)
+        reset_java_invocation_resolver()
 
 
 def test_java_converter_uses_encoder_oracle_for_data_element_payload_slots():
