@@ -5,7 +5,7 @@ import re
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from types import TracebackType
-from typing import Any, Mapping, MutableMapping
+from typing import Any, Mapping, MutableMapping, cast
 
 from hla.rti1516e.exceptions import CallNotAllowedFromWithinCallback, RTIexception, RTIinternalError
 from hla.rti1516e.raw_api import API_METADATA
@@ -125,7 +125,7 @@ class _SplitRuntimeRTIAmbassador(RTIambassador):
         return lambda *args, **kwargs: getattr(self, method_name)(*args, **kwargs)
 
 
-_SplitRuntimeRTIAmbassador.__abstractmethods__ = frozenset()
+cast(Any, _SplitRuntimeRTIAmbassador).__abstractmethods__ = frozenset()
 
 
 class DelegatingRTIAmbassador(_SplitRuntimeRTIAmbassador):
