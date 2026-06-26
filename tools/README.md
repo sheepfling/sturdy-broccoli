@@ -35,6 +35,8 @@ Core operator entrypoints:
 - `./tools/fom-siso-pitch-2010-micro-strict`
 - `./tools/fom-siso-pitch-micro-parity`
 - `./tools/fom-siso-runtime-launcher`
+- `./tools/federation-subscriber-api`
+- `./tools/federate-service-api`
 - `./tools/fom-siso-runtime-showcase`
 - `./tools/fom-siso-runtime-observer`
 - `./tools/fom-siso-showcase`
@@ -133,6 +135,13 @@ Shortest common paths:
 - auto-start one exact row on boot when needed: `./tools/fom-siso-runtime-observer --provider siso-runtime --scenario link16-rpr2-integrated-2010-micro-2`
   - the page now also exposes `backend override` and `target_radar_steps` controls for supported lanes
   - the default UI is now a generic federation subscriber with object/interaction inspectors plus optional Target/Radar, RPR, and Link 16 panels
+- stand up the bounded FastAPI federation subscriber service with typed control/state routes plus a richer browser surface: `./tools/federation-subscriber-api`
+- auto-start one exact row through the FastAPI surface when needed: `./tools/federation-subscriber-api --provider siso-runtime --scenario link16-rpr2-integrated-2010-micro-2`
+  - exposes `/api/health`, `/api/catalog`, `/api/schema`, `/api/state`, `/api/events`, `/api/inspectors/*`, `/api/control/*`, and `/ws/events`
+  - intended as the first real external integration surface for downstream dashboards and tools over the normalized observer contract
+- stand up the separate FastAPI federate-service contract with canonical `RTIambassador` method names and bounded invoke support: `./tools/federate-service-api`
+  - exposes `/api/contract`, `/api/contract/RTIambassador/{method}`, `/api/sessions`, and `/api/sessions/{id}/invoke/{method}`
+  - keeps the external federate-service contract separate from the Federation Studio subscriber/observer surface
 - generate the Pitch-eligible SISO micro parity packet: `./tools/fom-siso-pitch-micro-parity`
 - generate the strict 2010 Pitch-only SISO micro packet: `./tools/fom-siso-pitch-2010-micro-strict`
 - generate the bounded Pitch 202X micro comparison packet: `./tools/pitch 202x-micro-certify`

@@ -50,6 +50,8 @@ Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
 - `./tools/fom-siso-audit` canonical top-to-bottom high-value SISO corpus validation, JSON cycle, and workbench flow with `Edition Scope`
 - `./tools/fom-siso-pitch-2010-micro-strict` canonical six-row real-2010 Pitch-only SISO micro parity flow
 - `./tools/fom-siso-pitch-micro-parity` canonical Pitch-eligible SISO micro parity flow across the bounded 2010 and 2025 micro rows
+- `./tools/federation-subscriber-api` canonical bounded FastAPI federation subscriber service over the normalized runtime observer contract
+- `./tools/federate-service-api` canonical separate FastAPI federate-service contract over canonical `RTIambassador` method names with bounded invoke support
 - `./tools/fom-siso-runtime-launcher` canonical larger-federation launcher-oriented runtime SISO packet flow
 - `./tools/fom-siso-runtime-observer` canonical live federation-subscriber control plane for SISO, two-federate, and target-radar runtime lanes
 - `./tools/fom-siso-runtime-showcase` canonical runtime-backed SISO showcase packet flow
@@ -66,6 +68,7 @@ Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
 - `scripts/generate_fom_schema_audit.py`: end-to-end schema-positive validator/round-trip/workbench audit generator with `Edition Scope`
 - `scripts/generate_fom_siso_audit.py`: end-to-end high-value SISO validator/round-trip/workbench audit generator with `Edition Scope`
 - `scripts/generate_fom_siso_showcase.py`: end-to-end standards-backed showcase packet generator for Link 16, RPR 3.0, and Space FOM
+- `scripts/generate_federate_service_contract.py`: metadata-derived federate-service contract JSON generator
 - `./tools/package-deps` canonical split-package dependency tree flow
 - `./tools/section8-gate` canonical Section 8 backend-matrix gate
 - `./tools/target-radar` canonical target/radar proof and backend-matrix artifact flow

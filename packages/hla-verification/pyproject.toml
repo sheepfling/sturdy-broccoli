@@ -9,6 +9,7 @@ description = "Supported public verification harness helpers for hla2010"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+  "fastapi",
   "hla-rti1516e==0.13.0",
   "hla-rti1516-2025==0.13.0",
   "hla-backend-common==0.13.0",
@@ -21,6 +22,7 @@ dependencies = [
   "hla-backend-cpp-shim==0.13.0",
   "hla-bridge-java-common==0.13.0",
   "PyYAML",
+  "uvicorn",
 ]
 
 [project.optional-dependencies]

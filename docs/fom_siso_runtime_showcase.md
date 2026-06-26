@@ -126,7 +126,9 @@ and where is the per-scenario live-view packet?".
 If you need a watchable live session instead of a post-run packet, use:
 
 - `./tools/fom-siso-runtime-observer`
+- `./tools/federation-subscriber-api`
 - optional auto-start: `./tools/fom-siso-runtime-observer --provider siso-runtime --scenario link16-rpr2-integrated-2010-micro-2`
+- optional FastAPI auto-start: `./tools/federation-subscriber-api --provider siso-runtime --scenario link16-rpr2-integrated-2010-micro-2`
 
 That tool:
 
@@ -146,6 +148,17 @@ That tool:
 This is the first concrete route toward a manager-facing "watch the federation"
 surface without forcing the RTI-facing federates themselves to become a web
 stack.
+
+The newer FastAPI surface is the bounded external-integration variant of that
+same observer contract:
+
+- exposes `/api/health`, `/api/catalog`, `/api/schema`, `/api/state`,
+  `/api/events`, `/api/inspectors/objects`, `/api/inspectors/interactions`,
+  `/api/plugin-panels`, `/api/control/start`, `/api/control/stop`
+- exposes WebSocket event fanout at `/ws/events`
+- keeps the same normalized event schema and generic subscriber model
+- still does not claim to be a full HLA API over HTTP; it is an observer and
+  bounded scenario-control surface
 
 Current telemetry boundary:
 
