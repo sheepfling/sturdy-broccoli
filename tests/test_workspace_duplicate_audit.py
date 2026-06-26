@@ -40,6 +40,9 @@ def test_build_duplicate_audit_classifies_same_diff_and_orphan(tmp_path: Path) -
     assert by_path["lonely 2.txt"].status == "orphaned-copy"
     assert by_path["notes 2.md"].area == "<root>"
     assert by_path["notes 2.md"].scope == "support"
+    assert by_path["notes 2.md"].canonical_tracked is False
+    assert by_path["notes 2.md"].duplicate_tracked is False
+    assert by_path["notes 2.md"].delete_confidence == "likely-delete"
 
 
 def test_write_duplicate_audit_emits_json_and_markdown(tmp_path: Path) -> None:
@@ -82,6 +85,21 @@ def test_build_duplicate_worklist_groups_source_and_generated_findings(tmp_path:
     assert worklist.uncategorized_duplicates == ()
 
 
+def test_build_duplicate_audit_uses_git_tracking_to_raise_delete_confidence(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    (tmp_path / "docs").mkdir()
+    (tmp_path / "docs" / "guide.md").write_text("left\n", encoding="utf-8")
+    (tmp_path / "docs" / "guide 2.md").write_text("right\n", encoding="utf-8")
+
+    monkeypatch.setattr("detect_workspace_duplicates._tracked_relpaths", lambda root: {"docs/guide.md"})
+
+    report = build_duplicate_audit(tmp_path)
+    row = next(item for item in report.duplicates if item.path == "docs/guide 2.md")
+
+    assert row.canonical_tracked is True
+    assert row.duplicate_tracked is False
+    assert row.delete_confidence == "delete"
+
+
 def test_build_duplicate_worklist_marks_artifacts_duplicates_as_safe_generated_deletes(tmp_path: Path) -> None:
     (tmp_path / "artifacts").mkdir()
     (tmp_path / "artifacts" / "report.json").write_text("{\"ok\":1}\n", encoding="utf-8")
@@ -99,6 +117,8 @@ def test_build_duplicate_worklist_marks_artifacts_duplicates_as_safe_generated_d
         "artifacts/report 2.json",
     ]
     assert strict_duplicate_candidates(report) == ()
+    generated_row = next(item for item in report.duplicates if item.path == "artifacts/report 2.json")
+    assert generated_row.delete_confidence == "delete"
 
 
 def test_write_duplicate_worklist_emits_json_and_markdown(tmp_path: Path) -> None:

@@ -12,6 +12,32 @@ The supported front door is [`../tools/test-surface`](../tools/test-surface).
 For named focused reruns and restartable submodule work, use
 [`../tools/test-focus`](../tools/test-focus).
 
+## Shards Vs Views
+
+Use these terms precisely:
+
+- `shard`: an independently runnable execution lane with a stable command,
+  bounded runtime/cost, and clear failure meaning
+- `view` or `slice`: a thematic cut across the repo that may overlap multiple
+  shards and is mainly used for audits, requirement closeout, or focused reruns
+
+Practical rule:
+
+- the `testing/test_surface_manifest.json` manifest is a shard registry, not a
+  view registry
+- `./tools/test-surface run <lane>` should always execute one shard or one
+  composed lane made from shards
+- `./tools/test-focus run <target>` may represent a view that overlaps other
+  shards or views
+
+That means:
+
+1. every test should belong to at least one canonical shard
+2. shards should be independently runnable and have stable pass/fail meaning
+3. views are allowed to overlap multiple shards
+4. views should not redefine shard ownership or CI meaning
+5. repo-green should be composed from shards, not from fuzzy overlapping views
+
 ## Canonical Lanes
 
 Use these repo lanes and treat lower-level scripts as implementation detail:
@@ -65,11 +91,14 @@ intent aliases:
 | `unit-python-2025-core` | `./tools/test-surface run unit-python-2025-core` | primary `python1516_2025` unit shard for direct runtime semantics and validation |
 | `unit-transport-local` | `./tools/test-surface run unit-transport-local` | hosted transport shard for gRPC and REST tests without vendor-runtime lanes |
 | `unit-scenarios-light` | `./tools/test-surface run unit-scenarios-light` | repo-owned backend and Target/Radar scenario-light shard |
-| `python1516_2025-main` | `./tools/python verify-main-2025` | primary `python1516_2025` main-surface proof lane for package-boundary guards, raw support/decode plus callback-control proofs on the direct runtime surface, explicit federation/object/DDM runtime proofs, explicit support/ownership/MOM runtime proofs, the explicit Target/Radar time-window gauntlet and restore-window ladder, the explicit save/restore gauntlet and rollback ladder, broader direct runtime slices, and OMT evidence |
+| `python1516_2025-main` | `./tools/python verify-main-2025` | primary `python1516_2025` main-surface proof lane for package-boundary guards, raw support/decode plus callback-control proofs on the direct runtime surface, explicit federation/object/DDM runtime proofs, explicit support/ownership/MOM runtime proofs, the explicit Target/Radar time-window gauntlet and restore-window ladder, the explicit save/restore gauntlet and rollback ladder, broader direct runtime views, and OMT evidence |
 | `python-routes` | `./tools/python verify-routes` | hosted 2010 Python RTI parity, transport-route semantics, and hosted example checks |
 | `python1516_2025-routes` | `./tools/python verify-routes-2025` | bounded `python1516_2025` plus hosted FedPro 2025 route checks, explicit hosted federation/object/DDM runtime proofs, explicit hosted support/ownership/MOM runtime proofs, explicit hosted Target/Radar time-window ladder replay, explicit hosted save/restore gauntlet and rollback replay, direct time-window, save/restore, ownership, callback, support-service, and MOM proofs, the checked-in 2025 finish-line bundle, and the README-advertised `python1516_2025` Target/Radar example path |
 | `vendor` | `./tools/vendor-green matrix` | strict real-runtime lane after vendor preflight |
 | `matrix` | `./tools/test-surface run matrix` | regenerate compliance artifacts, refresh the checked-in 2025 finish-line bundle, and rerun matrix gates |
+
+Read that table as a shard/lane catalog.
+Those entries are the runnable units the manifest owns.
 
 ## Which Shard To Run
 
@@ -83,7 +112,7 @@ Use this table when you want one small rerun instead of `repo-green-units`.
 | Pitch/CERTI first-run docs, vendor preflight contracts, or onboarding guidance | `./tools/test-surface run unit-vendor-onboarding` | `./tools/test-surface run onboarding` | newcomer vendor setup front door | onboarding docs or preflight contract drift | standard shim or core Python runtime |
 | Java/C++ shim route setup, doctors, or standard-shim wrapper surface | `./tools/test-surface run unit-shim-tooling` | `./tools/test-surface run shim-tooling` | language-binding setup and artifact readiness | Java/C++ preflight, toolchain, or shim route drift | vendor runtime provisioning |
 | FOM parsing, validation, packaged factories, or workbench surface | `./tools/test-surface run unit-fom-tooling` | `./tools/test-surface run fom` | FOM tooling isolation | parser, validation, or workbench regression | transport or vendor setup |
-| direct `python1516_2025` runtime semantics or validation helpers | `./tools/test-surface run unit-python-2025-core` | `./tools/test-surface run python-2025` | main 2025 runtime unit slice | direct 2025 runtime regression | onboarding/docs-only changes |
+| direct `python1516_2025` runtime semantics or validation helpers | `./tools/test-surface run unit-python-2025-core` | `./tools/test-surface run python-2025` | main 2025 runtime unit view | direct 2025 runtime regression | onboarding/docs-only changes |
 | hosted gRPC/REST route plumbing without vendor runtime | `./tools/test-surface run unit-transport-local` | `./tools/test-surface run transport` | hosted route boundary checks | transport adapter or hosted route regression | direct runtime-only behavior |
 | Target/Radar or higher-level backend scenario behavior | `./tools/test-surface run unit-scenarios-light` | `./tools/test-surface run scenarios` | scenario-level signal before vendor lanes | scenario composition or backend integration regression | simple policy/docs failures |
 
@@ -92,6 +121,22 @@ Current shape guidance:
 - keep `unit-foundation`, `unit-vendor-onboarding`, and `unit-shim-tooling` separate because they serve different newcomer/debug stories
 - keep `unit-python-core` and `unit-python-2025-core` separate because they protect different runtime ownership lanes
 - review `unit-federate-examples` and `unit-scenarios-light` together when future shard simplification comes up, because they are the closest overlap point today
+
+## View Examples
+
+These are valid view concepts, not separate shard definitions:
+
+- `python-2025-ownership`
+- `python-2025-time`
+- `routes-2025`
+- `save-restore-2025`
+- `fom-target-radar`
+- `finish-line-2025`
+
+Those focused targets may overlap the same underlying shard-owned tests.
+That overlap is acceptable because their purpose is analysis and focused reruns,
+not independent CI ownership. `Slice` remains an acceptable synonym when older
+notes or scripts already use it.
 
 ## Python 2025 Main Surface
 
@@ -107,7 +152,7 @@ when you change:
 
 This lane is intentionally broader than hosted-route hygiene and intentionally
 separate from it. It is the shortest operator path that combines the direct
-`python1516_2025` runtime slices, the package/runtime boundary guardrails that keep
+`python1516_2025` runtime views, the package/runtime boundary guardrails that keep
 `shim` wrapper-only, the requirement-facing bounded proof-note registry, and
 the dedicated OMT evidence surface.
 
@@ -172,6 +217,10 @@ Then run the recommended lane.
 inventory, recommend, preflight, or run, so broken shard composition fails at
 the front door instead of inside later orchestration.
 
+Treat that validation step as proof that the shard graph is coherent.
+Do not use it as proof that views are exclusive; views are intentionally
+allowed to overlap.
+
 If you want the fastest structural failure signal before broader reruns, start with:
 
 ```bash
@@ -218,7 +267,7 @@ The junior rule is simple:
 
 - change shard membership or order in `repo-green-units`
 - change shard contents inside the individual `unit-*` lane
-- do not edit `full_sequence.py` just to reshuffle unit slices
+- do not edit `full_sequence.py` just to reshuffle unit views
 
 If the lane is too large, switch to a named focused target instead of guessing
 raw pytest selectors:

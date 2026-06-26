@@ -30,6 +30,8 @@ problem is mostly backend, transport, or FOM, start at
   - `./tools/fom-siso-showcase`
 - runtime-backed SISO showcase:
   - [`fom_siso_runtime_showcase.md`](fom_siso_runtime_showcase.md)
+- SISO family relationship map:
+  - [`fom_siso_family_map.md`](fom_siso_family_map.md)
 - SISO load-shape and family-quirk explainer:
   - [`fom_siso_quirks.md`](fom_siso_quirks.md)
 - Pitch-backed FOM smoke comparison:
@@ -63,6 +65,19 @@ problem is mostly backend, transport, or FOM, start at
   - automatically folded into `inventory_records()`, validation families, workbench snapshots, and parser stress runs
   - generated inventory files live next to the downloads when you run `python3 scripts/generate_siso_inventory.py`
   - default stress/workbench scope is trimmed to the high-value families: RPR 2.0, RPR 3.0, Space FOM, standard MIM, and U-FOM
+
+## SISO Family Shortcut
+
+Read [`fom_siso_family_map.md`](fom_siso_family_map.md) first when the question is:
+
+- how Link 16, RPR 2.0, RPR 3.0, and Space FOM relate
+- which packets are roots versus extensions versus ordered families
+- which sources are 2010-oriented, 2025-oriented, or cross-edition exercised
+- which family quirks were normalized by the parser
+- which scenario lanes are Pitch-eligible versus Python-only
+
+Use this page after that when you need the concrete file inventory, commands, and
+validation/workbench entrypoints.
 
 ## Edition Classes
 
@@ -154,6 +169,7 @@ Scope labels used across reports:
 
 ## Read Next
 
-1. [`fom_validate.md`](fom_validate.md) for validate-first operator flow
-2. [`fom_workbench.md`](fom_workbench.md) for the inspection and UI lane
-3. [`fom_tooling_front_door.md`](fom_tooling_front_door.md) if you need to branch back out
+1. [`fom_siso_family_map.md`](fom_siso_family_map.md) for the SISO relationship and edition map
+2. [`fom_validate.md`](fom_validate.md) for validate-first operator flow
+3. [`fom_workbench.md`](fom_workbench.md) for the inspection and UI lane
+4. [`fom_tooling_front_door.md`](fom_tooling_front_door.md) if you need to branch back out

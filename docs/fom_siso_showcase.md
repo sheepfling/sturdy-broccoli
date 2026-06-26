@@ -3,6 +3,9 @@
 Use this when you need a standards-backed narrative packet for the high-value
 SISO families rather than just a validation table.
 
+If the first question is "how do these families hook into each other?", read
+[`fom_siso_family_map.md`](fom_siso_family_map.md) before this page.
+
 ## Front Door
 
 - `./tools/fom-siso-showcase`
@@ -74,6 +77,7 @@ The showcase surface is the shortest honest answer to:
 
 Use it alongside:
 
+- [fom_siso_family_map.md](fom_siso_family_map.md)
 - [fom_validate.md](fom_validate.md)
 - [fom_workbench.md](fom_workbench.md)
 - [fom_reading_map.md](fom_reading_map.md)

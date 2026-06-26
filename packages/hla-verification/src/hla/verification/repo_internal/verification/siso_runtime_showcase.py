@@ -234,7 +234,25 @@ def _family_paths(
 
 def _packet_paths(packet_id: str) -> tuple[str, ...]:
     if packet_id == "link16-rpr2-integrated":
-        return _family_paths("siso-rpr-2.0", include_fragment="Link 16")
+        packet_root = _repo_root() / "third_party" / "fom_baseline" / "siso" / "RPR FOM v2.0 Link 16 and Link 11"
+        ordered_names = (
+            "RPR-Foundation_v2.0.xml",
+            "RPR-Enumerations_v2.0.xml",
+            "RPR-Base_v2.0.xml",
+            "RPR-Physical_v2.0.xml",
+            "RPR-Aggregate_v2.0.xml",
+            "RPR-Communication_v2.0.xml",
+            "RPR-DER_v2.0.xml",
+            "RPR-Logistics_v2.0.xml",
+            "RPR-Minefield_v2.0.xml",
+            "RPR-SE_v2.0.xml",
+            "RPR-SIMAN_v2.0.xml",
+            "RPR-Switches_v2.0.xml",
+            "RPR-UA_v2.0.xml",
+            "RPR-Warfare_v2.0.xml",
+            "Link_16_v2.0.xml",
+        )
+        return tuple(str((packet_root / name).resolve()) for name in ordered_names)
     if packet_id == "rpr3-annex-a-normative":
         return _family_paths(
             "siso-rpr-3.0",

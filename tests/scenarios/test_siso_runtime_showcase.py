@@ -104,6 +104,17 @@ def test_siso_runtime_showcase_can_run_one_named_scenario() -> None:
     assert result["status"] == "lifecycle-green"
 
 
+def test_link16_integrated_packet_paths_include_rpr_parent_modules() -> None:
+    paths = showcase_module._packet_paths("link16-rpr2-integrated")  # noqa: SLF001
+
+    basenames = {Path(path).name for path in paths}
+    assert "Link_16_v2.0.xml" in basenames
+    assert "RPR-Communication_v2.0.xml" in basenames
+    assert "RPR-Enumerations_v2.0.xml" in basenames
+    assert "RPR-Base_v2.0.xml" in basenames
+    assert "Link_11_11B_v1.0.xml" not in basenames
+
+
 def test_siso_runtime_showcase_resolves_handles_per_rti() -> None:
     rtis = [_FakeRTI("sender"), _FakeRTI("observer")]
 

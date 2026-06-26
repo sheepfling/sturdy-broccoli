@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Iterable, Sequence
@@ -57,6 +58,9 @@ class DuplicateCandidate:
     status: str
     area: str
     scope: str
+    canonical_tracked: bool
+    duplicate_tracked: bool
+    delete_confidence: str
 
 
 @dataclass(frozen=True, slots=True)
@@ -124,6 +128,24 @@ def default_audit_root() -> Path:
 
 def strict_duplicate_candidates(report: DuplicateAuditReport) -> tuple[DuplicateCandidate, ...]:
     return tuple(row for row in report.duplicates if row.scope != "generated")
+
+
+def _tracked_relpaths(root: Path) -> set[str]:
+    try:
+        completed = subprocess.run(
+            ["git", "ls-files", "-z"],
+            cwd=root,
+            capture_output=True,
+            text=False,
+            check=True,
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return set()
+    return {
+        entry.decode("utf-8", errors="replace")
+        for entry in completed.stdout.split(b"\x00")
+        if entry
+    }
 
 
 def _is_candidate_name(name: str) -> re.Match[str] | None:
@@ -194,6 +216,7 @@ def build_duplicate_audit(root: Path | None = None) -> DuplicateAuditReport:
     audit_root = (root or default_audit_root()).resolve()
     duplicates: list[DuplicateCandidate] = []
     scanned_paths = 0
+    tracked_relpaths = _tracked_relpaths(audit_root)
 
     for path in sorted(_iter_repo_files(audit_root)):
         try:
@@ -218,18 +241,35 @@ def build_duplicate_audit(root: Path | None = None) -> DuplicateAuditReport:
                 status = "same-content-copy" if same_content_as_canonical else "different-content-copy"
             if not canonical_exists:
                 status = "orphaned-copy"
+            row_area, row_scope = _classify_scope(path, audit_root)
+            rel_path = str(path.relative_to(audit_root))
+            canonical_rel_path = str(canonical_path.relative_to(audit_root))
+            duplicate_tracked = rel_path in tracked_relpaths
+            canonical_tracked = canonical_rel_path in tracked_relpaths
+            delete_confidence = "manual-review"
+            if status == "orphaned-copy":
+                delete_confidence = "manual-review"
+            elif canonical_tracked and not duplicate_tracked:
+                delete_confidence = "delete"
+            elif row_scope == "generated":
+                delete_confidence = "delete"
+            elif status == "same-content-copy":
+                delete_confidence = "likely-delete"
             duplicates.append(
                 DuplicateCandidate(
-                    path=str(path.relative_to(audit_root)),
-                    canonical_path=str(canonical_path.relative_to(audit_root)),
+                    path=rel_path,
+                    canonical_path=canonical_rel_path,
                     copy_index=copy_index,
                     canonical_exists=canonical_exists,
                     same_content_as_canonical=same_content_as_canonical,
                     bytes=bytes_size,
                     canonical_bytes=canonical_bytes,
                     status=status,
-                    area=_classify_scope(path, audit_root)[0],
-                    scope=_classify_scope(path, audit_root)[1],
+                    area=row_area,
+                    scope=row_scope,
+                    canonical_tracked=canonical_tracked,
+                    duplicate_tracked=duplicate_tracked,
+                    delete_confidence=delete_confidence,
                 )
             )
         except FileNotFoundError:
@@ -286,8 +326,8 @@ def render_markdown(report: DuplicateAuditReport) -> str:
         f"- different-content copies: `{report.different_content_count}`",
         f"- orphaned copies: `{report.orphan_count}`",
         "",
-        "| Duplicate | Canonical | Area | Scope | Copy # | Status | Bytes | Canonical Bytes |",
-        "| --- | --- | --- | --- | ---: | --- | ---: | ---: |",
+        "| Duplicate | Canonical | Area | Scope | Canonical Tracked | Duplicate Tracked | Delete Confidence | Copy # | Status | Bytes | Canonical Bytes |",
+        "| --- | --- | --- | --- | --- | --- | --- | ---: | --- | ---: | ---: |",
     ]
     for row in report.duplicates:
         lines.append(
@@ -298,6 +338,9 @@ def render_markdown(report: DuplicateAuditReport) -> str:
                     row.canonical_path,
                     row.area,
                     row.scope,
+                    "yes" if row.canonical_tracked else "no",
+                    "yes" if row.duplicate_tracked else "no",
+                    row.delete_confidence,
                     str(row.copy_index),
                     row.status,
                     str(row.bytes),
@@ -336,7 +379,12 @@ def render_worklist_markdown(worklist: DuplicateWorklist) -> str:
             lines.extend(["None.", ""])
             continue
         for row in rows:
-            lines.append(f"- `{row.path}` -> `{row.canonical_path}` ({row.status}, area={row.area}, scope={row.scope})")
+            lines.append(
+                f"- `{row.path}` -> `{row.canonical_path}` "
+                f"({row.status}, area={row.area}, scope={row.scope}, "
+                f"canonical_tracked={row.canonical_tracked}, duplicate_tracked={row.duplicate_tracked}, "
+                f"delete_confidence={row.delete_confidence})"
+            )
         lines.append("")
     return "\n".join(lines)
 

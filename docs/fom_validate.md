@@ -11,6 +11,8 @@ This page is part of the FOM surface. If you are still deciding whether the
 problem is mostly backend, transport, or FOM, start at
 [`work_surfaces.md`](work_surfaces.md). For the FOM front door, start at
 [`fom_tooling_front_door.md`](fom_tooling_front_door.md).
+If the immediate confusion is family relationships, edition scope, or Pitch
+eligibility, start at [`fom_siso_family_map.md`](fom_siso_family_map.md).
 
 ## Front Door
 
@@ -166,6 +168,7 @@ SISO showcase:
 ## Read Next
 
 - [fom_reading_map.md](fom_reading_map.md)
+- [fom_siso_family_map.md](fom_siso_family_map.md)
 - [fom_siso_quirks.md](fom_siso_quirks.md)
 - [fom_workbench.md](fom_workbench.md)
 - [fom-examples/fom_inventory.md](fom-examples/fom_inventory.md)

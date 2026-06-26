@@ -3,6 +3,10 @@
 Use this page when you are trying to understand why a SISO FOM family loads
 the way it does in this repo.
 
+If you are still confused about how Link 16, RPR, and Space relate before you
+even get to parser quirks, start with
+[`fom_siso_family_map.md`](fom_siso_family_map.md).
+
 This is the shortest explanation of:
 
 - which XMLs are meant to stand alone
