@@ -2,30 +2,38 @@
 
 import pytest
 
+import hla.fom.mom as hla_mom
 from hla.backends.common.base import BackendConversionError
 from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
 from hla.rti1516e.exceptions import (
     AttributeNotDefined,
     AttributeNotPublished,
+    FederateServiceInvocationsAreBeingReportedViaMOM,
     FederateNotExecutionMember,
     InTimeAdvancingState,
+    InvalidDimensionHandle,
+    InvalidInteractionClassHandle,
+    InteractionClassNotDefined,
     InteractionClassNotPublished,
     InteractionParameterNotDefined,
-    InvalidInteractionClassHandle,
     InvalidLogicalTime,
     InvalidObjectClassHandle,
     InvalidRegion,
+    InvalidRegionContext,
     InvalidUpdateRateDesignator,
     LogicalTimeAlreadyPassed,
     NotConnected,
     ObjectInstanceNameInUse,
     ObjectInstanceNotKnown,
+    RegionInUseForUpdateOrSubscription,
+    RegionNotCreatedByThisFederate,
     RestoreInProgress,
     SaveInProgress,
 )
 from hla.rti1516e.handles import (
     AttributeHandle,
     AttributeSetRegionSetPairList,
+    DimensionHandle,
     InteractionClassHandle,
     MessageRetractionHandle,
     ObjectClassHandle,
@@ -814,6 +822,7 @@ def test_associate_regions_for_updates_rejects_not_connected_not_joined_unknown_
     _, tx, rx, _tx_fed, _rx_fed, _h1, _h2 = joined_pair("associate-regions-negative-fed")
     cls = tx.get_object_class_handle("HLAobjectRoot.Target")
     attr = tx.get_attribute_handle(cls, "Position")
+    foreign_region = rx.create_region({rx.get_dimension_handle("HLAdefaultRoutingSpace")})
     with pytest.raises(ObjectInstanceNotKnown):
         tx.associate_regions_for_updates(ObjectInstanceHandle(999), [])
 
@@ -822,6 +831,23 @@ def test_associate_regions_for_updates_rejects_not_connected_not_joined_unknown_
     obj = tx.register_object_instance(cls, "Associate-Negative")
     with pytest.raises(InvalidRegion):
         tx.associate_regions_for_updates(obj, pairs)
+    with pytest.raises(RegionNotCreatedByThisFederate):
+        tx.associate_regions_for_updates(
+            obj,
+            [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({foreign_region}))],
+        )
+    with pytest.raises(AttributeNotDefined):
+        tx.associate_regions_for_updates(
+            obj,
+            [
+                AttributeRegionAssociation(
+                    AttributeHandleSet({type(attr)(attr.value + 1000)}),
+                    RegionHandleSet({tx.create_region({tx.get_dimension_handle("HLAdefaultRoutingSpace")})}),
+                )
+            ],
+        )
+    with pytest.raises(InvalidRegionContext):
+        tx.associate_regions_for_updates(obj, [object()])
 
     tx.request_federation_save("ASSOC-SAVE")
     drain(tx, rx)
@@ -859,6 +885,7 @@ def test_unassociate_regions_for_updates_rejects_not_connected_not_joined_unknow
     _, tx, rx, _tx_fed, _rx_fed, _h1, _h2 = joined_pair("unassociate-regions-negative-fed")
     cls = tx.get_object_class_handle("HLAobjectRoot.Target")
     attr = tx.get_attribute_handle(cls, "Position")
+    foreign_region = rx.create_region({rx.get_dimension_handle("HLAdefaultRoutingSpace")})
     with pytest.raises(ObjectInstanceNotKnown):
         tx.unassociate_regions_for_updates(ObjectInstanceHandle(999), [])
 
@@ -871,6 +898,16 @@ def test_unassociate_regions_for_updates_rejects_not_connected_not_joined_unknow
     tx.associate_regions_for_updates(obj, valid_pairs)
     with pytest.raises(InvalidRegion):
         tx.unassociate_regions_for_updates(obj, pairs)
+    with pytest.raises(RegionNotCreatedByThisFederate):
+        tx.unassociate_regions_for_updates(
+            obj,
+            [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({foreign_region}))],
+        )
+    with pytest.raises(AttributeNotDefined):
+        tx.unassociate_regions_for_updates(
+            obj,
+            [AttributeRegionAssociation(AttributeHandleSet({type(attr)(attr.value + 1000)}), RegionHandleSet({tx_region}))],
+        )
 
     tx.request_federation_save("UNASSOC-SAVE")
     drain(tx, rx)
@@ -935,6 +972,19 @@ def test_ddm_region_subscriptions_reject_not_connected_not_joined_and_invalid_re
         pairs = [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({invalid_region}))]
         with pytest.raises(InvalidRegion):
             getattr(rx, method_name)(cls, pairs)
+        with pytest.raises(RegionNotCreatedByThisFederate):
+            getattr(
+                rx,
+                method_name,
+            )(
+                cls,
+                [
+                    AttributeRegionAssociation(
+                        AttributeHandleSet({attr}),
+                        RegionHandleSet({tx.create_region({tx.get_dimension_handle("HLAdefaultRoutingSpace")})}),
+                    )
+                ],
+            )
         bad_class = type(cls)(cls.value + 1000)
         with pytest.raises(InvalidObjectClassHandle):
             getattr(rx, method_name)(bad_class, [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({region}))])
@@ -943,12 +993,38 @@ def test_ddm_region_subscriptions_reject_not_connected_not_joined_and_invalid_re
             getattr(rx, method_name)(cls, [AttributeRegionAssociation(AttributeHandleSet({bad_attr}), RegionHandleSet({region}))])
         with pytest.raises(InvalidUpdateRateDesignator):
             getattr(rx, method_name)(cls, [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({region}))], "bad-rate")
+        with pytest.raises(InvalidRegionContext):
+            getattr(rx, method_name)(cls, [object()])
     else:
+        foreign_region = tx.create_region({tx.get_dimension_handle("HLAdefaultRoutingSpace")})
         with pytest.raises(InvalidRegion):
             getattr(rx, method_name)(interaction, {invalid_region})
+        with pytest.raises(RegionNotCreatedByThisFederate):
+            getattr(rx, method_name)(interaction, {foreign_region})
         bad_interaction = type(interaction)(interaction.value + 1000)
-        with pytest.raises(InvalidInteractionClassHandle):
+        with pytest.raises(InteractionClassNotDefined):
             getattr(rx, method_name)(bad_interaction, {region})
+        mom_report = rx.get_interaction_class_handle(
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation"
+        )
+        with pytest.raises(InvalidRegionContext):
+            getattr(rx, method_name)(mom_report, {region})
+        set_reporting = tx.get_interaction_class_handle(
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
+        )
+        sr_fed = tx.get_parameter_handle(set_reporting, "HLAfederate")
+        sr_state = tx.get_parameter_handle(set_reporting, "HLAreportingState")
+        tx.send_interaction(
+            set_reporting,
+            {
+                sr_fed: rx.backend.state.handle.encode(),
+                sr_state: hla_mom.encode_bool(True),
+            },
+            b"enable-ddm-service-reporting",
+        )
+        drain(tx, rx)
+        with pytest.raises(FederateServiceInvocationsAreBeingReportedViaMOM):
+            getattr(rx, method_name)(mom_report, {region})
 
     tx.request_federation_save(f"{method_name}-save")
     drain(tx, rx)
@@ -1095,13 +1171,23 @@ def test_unsubscribe_interaction_class_with_regions_and_delete_region_reject_not
     _, tx, rx, _tx_fed, _rx_fed, _h1, _h2 = joined_pair("unsub-icwr-delete-region-negative-fed")
     interaction = tx.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
     dim = rx.get_dimension_handle("HLAdefaultRoutingSpace")
+    foreign_region = tx.create_region({tx.get_dimension_handle("HLAdefaultRoutingSpace")})
     region = rx.create_region({dim})
     invalid_region = type(region)(999999)
 
     with pytest.raises(InvalidRegion):
         rx.unsubscribe_interaction_class_with_regions(interaction, {invalid_region})
+    with pytest.raises(InteractionClassNotDefined):
+        rx.unsubscribe_interaction_class_with_regions(type(interaction)(interaction.value + 1000), {region})
     with pytest.raises(InvalidRegion):
         rx.delete_region(invalid_region)
+    with pytest.raises(RegionNotCreatedByThisFederate):
+        rx.delete_region(foreign_region)
+
+    rx.subscribe_interaction_class_with_regions(interaction, {region})
+    with pytest.raises(RegionInUseForUpdateOrSubscription):
+        rx.delete_region(region)
+    rx.unsubscribe_interaction_class_with_regions(interaction, {region})
 
     rx.request_federation_save("UNSUB-ICWR-SAVE")
     drain(tx, rx)
@@ -1146,11 +1232,18 @@ def test_create_region_and_commit_region_modifications_reject_not_connected_not_
 
     _, tx, rx, _tx_fed, _rx_fed, _h1, _h2 = joined_pair("create-commit-region-negative-fed")
     dim = tx.get_dimension_handle("HLAdefaultRoutingSpace")
+    foreign_region = rx.create_region({rx.get_dimension_handle("HLAdefaultRoutingSpace")})
+    with pytest.raises(InvalidRegionContext):
+        tx.create_region(set())
+    with pytest.raises(InvalidDimensionHandle):
+        tx.create_region({DimensionHandle(999999)})
     region = tx.create_region({dim})
     invalid_region = type(region)(999999)
 
     with pytest.raises(InvalidRegion):
         tx.commit_region_modifications({invalid_region})
+    with pytest.raises(RegionNotCreatedByThisFederate):
+        tx.commit_region_modifications({foreign_region})
 
     tx.request_federation_save("REGION-SAVE")
     drain(tx, rx)

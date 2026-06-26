@@ -16,7 +16,9 @@ Named focused-test front door for faster iteration and restartability:
   ./tools/test-focus run target-radar
   ./tools/test-focus run fom-target-radar
   ./tools/test-focus run rti-factory
+  ./tools/test-focus run execution-membership
   ./tools/test-focus run python-2025-time
+  ./tools/test-focus run python-2025-ddm
   ./tools/test-focus run save-restore-2025
   ./tools/test-focus run routes-2025
   ./tools/test-focus resume python-2025-runtime
