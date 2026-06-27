@@ -255,18 +255,16 @@ Latest investigated decision:
   and owning shard command all support that reading
 - the current XML tail remains a stable bounded `274 XML_ELEM`, `89 XML_TYPE`,
   and `1 CLAUSE12_13_DETAIL` envelope
-- the current OMT tail remains a stable bounded `2` Annex B normalization-row
-  envelope
+- the OMT owner ledger is now fully mapped, including the former Annex B
+  normalization tail through executable common-subset helper coverage
 - the reader-facing owner surfaces now keep the XML and OMT ledgers canonical
   while retaining `hla1516_2_omt_xml_detailed_reconciliation.csv` only as a
   legacy bridge artifact
 - no narrower direct claim was identified that would preserve the current XML
-  and OMT row meanings without adding new one-row-per-element, one-row-per-
-  type, or stronger executable normalization proof
+  row meanings without adding new one-row-per-element or one-row-per-type proof
 - treat this bucket as maintained boundary documentation unless future XML atom
-  witnesses or stronger runtime normalization proof materially change the
-  bounded family disposition or leadership explicitly funds that tighter proof
-  scope
+  witnesses materially change the bounded family disposition or leadership
+  explicitly funds that tighter proof scope
 
 Settled but still useful reference:
 

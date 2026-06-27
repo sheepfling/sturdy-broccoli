@@ -1988,11 +1988,106 @@ def validate_fom_xml_schema(path: str | os.PathLike[str], *, profile: str = "dif
         raise FOMResolutionError(f"Schema-invalid {profile.upper()} XML {path}: {detail}", kind="read")
 
 
-def _uses_runtime_normalization_subset(normalization: str | None) -> bool:
+_LINEAR_NORMALIZATION_RE = re.compile(
+    r"^linear\s*\(\s*[^,]+,\s*(-?\d+)\s*,\s*(-?\d+)\s*\)\s*$",
+    re.IGNORECASE,
+)
+_LINEAR_ENUMERATED_NORMALIZATION_RE = re.compile(
+    r"^linearEnumerated\s*\(\s*[^,]+,\s*\[(.*?)\]\s*\)\s*$",
+    re.IGNORECASE,
+)
+_FEDERATE_HANDLE_NORMALIZATION_LABEL = "normalize federate handle service"
+_SERVICE_GROUP_NORMALIZATION_LABEL = "normalize service group service"
+
+
+def _coerce_normalized_integral(value: Any) -> int:
+    if isinstance(value, bool):
+        return int(value)
+    if isinstance(value, int):
+        return value
+    candidate = getattr(value, "value", None)
+    if isinstance(candidate, int):
+        return candidate
+    if isinstance(value, str):
+        stripped = value.strip()
+        if stripped.lstrip("-").isdigit():
+            return int(stripped)
+    try:
+        return int(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"Cannot normalize non-integral value {value!r}") from exc
+
+
+def supports_common_dimension_normalization(normalization: str | None) -> bool:
     if normalization is None:
-        return False
+        return True
     normalized = normalization.strip().lower()
-    return normalized not in {"", "none", "identity"}
+    if normalized in {"", "none", "identity"}:
+        return True
+    if normalized in {
+        _FEDERATE_HANDLE_NORMALIZATION_LABEL,
+        _SERVICE_GROUP_NORMALIZATION_LABEL,
+    }:
+        return True
+    if _LINEAR_NORMALIZATION_RE.fullmatch(normalization):
+        return True
+    return _LINEAR_ENUMERATED_NORMALIZATION_RE.fullmatch(normalization) is not None
+
+
+def normalize_dimension_value(
+    spec: DimensionSpec,
+    value: Any,
+    *,
+    normalize_federate_handle: Any | None = None,
+    normalize_service_group: Any | None = None,
+) -> int:
+    normalization = (spec.normalization or "").strip()
+    normalized = normalization.lower()
+    if normalized in {"", "none", "identity"}:
+        return _coerce_normalized_integral(value)
+
+    if normalized == _FEDERATE_HANDLE_NORMALIZATION_LABEL:
+        if normalize_federate_handle is None:
+            raise ValueError(
+                f"Dimension {spec.name!r} requires Normalize Federate Handle service support"
+            )
+        return _coerce_normalized_integral(normalize_federate_handle(value))
+
+    if normalized == _SERVICE_GROUP_NORMALIZATION_LABEL:
+        if normalize_service_group is None:
+            raise ValueError(
+                f"Dimension {spec.name!r} requires Normalize Service Group service support"
+            )
+        return _coerce_normalized_integral(normalize_service_group(value))
+
+    linear_match = _LINEAR_NORMALIZATION_RE.fullmatch(normalization)
+    if linear_match is not None:
+        lower = int(linear_match.group(1))
+        upper = int(linear_match.group(2))
+        raw = _coerce_normalized_integral(value)
+        if raw < lower or raw > upper:
+            raise ValueError(
+                f"Dimension {spec.name!r} value {value!r} is outside linear normalization range {lower}..{upper}"
+            )
+        return raw - lower
+
+    linear_enumerated_match = _LINEAR_ENUMERATED_NORMALIZATION_RE.fullmatch(normalization)
+    if linear_enumerated_match is not None:
+        enumerators = tuple(
+            token.strip() for token in linear_enumerated_match.group(1).split(",") if token.strip()
+        )
+        candidate = getattr(value, "name", value)
+        candidate_name = str(candidate).strip()
+        try:
+            return enumerators.index(candidate_name)
+        except ValueError as exc:
+            raise ValueError(
+                f"Dimension {spec.name!r} value {value!r} is not listed in normalization enumerators {enumerators!r}"
+            ) from exc
+
+    raise ValueError(
+        f"Dimension {spec.name!r} uses unsupported normalization {spec.normalization!r}"
+    )
 
 
 def assess_omt_conformance(
@@ -2024,11 +2119,11 @@ def assess_omt_conformance(
 
     unsupported_features: list[str] = []
     if any(
-        _uses_runtime_normalization_subset(spec.normalization)
+        not supports_common_dimension_normalization(spec.normalization)
         for spec in dict(module.dimension_specs).values()
     ):
         unsupported_features.append(
-            "Dimension normalization metadata is parsed and preserved, but runtime DDM normalization semantics are not yet executed."
+            "Dimension normalization metadata is parsed and preserved, but at least one normalization string falls outside the repo-supported common Annex B subset."
         )
 
     if validate_schema:
@@ -3272,7 +3367,9 @@ __all__ = [
     "default_fom_search_paths",
     "merge_fom_modules",
     "normalize_module_uri",
+    "normalize_dimension_value",
     "module_uri",
     "parse_fom_xml",
+    "supports_common_dimension_normalization",
     "standard_mim_module",
 ]

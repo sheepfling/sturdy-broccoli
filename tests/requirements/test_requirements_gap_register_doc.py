@@ -76,7 +76,7 @@ def test_gap_register_and_queue_keep_owner_companion_split_explicit() -> None:
     assert "2010 CAP-XML / CAP-OMT bounded family" in gap_text
     assert "stable bounded `274 XML_ELEM`, `89 XML_TYPE`," in gap_text
     assert "`1 CLAUSE12_13_DETAIL` envelope" in gap_text
-    assert "stable bounded `2` Annex B normalization-row" in gap_text
+    assert "OMT owner ledger is now fully mapped" in gap_text
     assert "kept as an explicit bounded/backend-resolution surface" in gap_text
     assert "2025 framework umbrella rows" in gap_text
     assert "2025 callback-control umbrella slice" in gap_text

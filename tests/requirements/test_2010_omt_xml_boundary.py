@@ -26,14 +26,12 @@ def test_xml_partial_tail_current_shape_is_stable() -> None:
     }
 
 
-def test_omt_partial_tail_is_only_annex_b_normalization() -> None:
+def test_omt_owner_ledger_is_fully_mapped_after_common_annex_b_support() -> None:
     rows = list(csv.DictReader(OMT_LEDGER.open(newline="", encoding="utf-8")))
     partial_rows = [row for row in rows if row["current_status"] == "partial"]
 
-    assert len(partial_rows) == 2
-    assert Counter(row["reconciliation_kind"] for row in partial_rows) == {
-        "OMT_CLAUSE_DETAIL": 2,
-    }
+    assert len(partial_rows) == 0
+    assert Counter(row["current_status"] for row in rows) == Counter({"mapped": 60})
 
 
 def test_omt_xml_boundary_doc_records_current_family_shape() -> None:
@@ -44,10 +42,12 @@ def test_omt_xml_boundary_doc_records_current_family_shape() -> None:
     assert "`274 XML_ELEM`" in text
     assert "`89 XML_TYPE`" in text
     assert "`1 CLAUSE12_13_DETAIL`" in text
-    assert "`58 mapped`" in text
-    assert "`2 partial`" in text
+    assert "`60 mapped`" in text
+    assert "`0 partial`" in text
     assert "`assess_omt_conformance`" in text
-    assert "non-identity normalization as only partially conforming" in text
+    assert "linear (...)` and `linearEnumerated (...)" in text
+    assert "Normalize Federate Handle service" in text
+    assert "Normalize Service Group service" in text
 
 
 def test_omt_and_xml_owner_surfaces_are_split_in_front_doors() -> None:
@@ -63,7 +63,7 @@ def test_omt_and_xml_owner_surfaces_are_split_in_front_doors() -> None:
     assert "hla1516_2_omt_detailed_reconciliation.csv" in front_door
     assert "hla1516_xml_detailed_reconciliation.csv" in front_door
     assert "hla1516_2_omt_xml_detailed_reconciliation.csv" in front_door
-    assert "bounded `partial` rows" in (ROOT / "requirements/README.md").read_text(encoding="utf-8")
+    assert "former Annex B normalization tail is now also `mapped`" in (ROOT / "requirements/README.md").read_text(encoding="utf-8")
 
 
 def test_2010_front_door_calls_out_basic_execution_rules_and_anchors() -> None:

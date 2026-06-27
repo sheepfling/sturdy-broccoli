@@ -2,19 +2,21 @@
 
 Use this page when the question is:
 
-- why do the 2010 OMT and XML surfaces still carry `partial` rows even though
-  parser, validator, schema, and round-trip coverage already exist?
-- which single document owns the remaining `CAP-XML` plus small `CAP-OMT`
-  partial pattern?
+- why does the 2010 XML surface still carry `partial` rows even though parser,
+  validator, schema, and round-trip coverage already exist?
+- which single document owns the remaining `CAP-XML` bounded pattern plus the
+  now-closed OMT normalization story?
 - are those partial rows still vague, or already in an explicit bounded final
   state?
 
 Short answer:
 
-- the remaining `CAP-XML` and Annex B normalization rows are already in an
-  explicit bounded family state
-- the canonical owner ledgers stay `partial` for those rows
-- the bounded reasons are now structured and reviewable instead of implied
+- the remaining `CAP-XML` rows are already in an explicit bounded family state
+- the canonical XML owner ledger stays `partial` for those rows
+- the OMT owner ledger is now fully mapped, including the former Annex B
+  normalization tail
+- the bounded or closeout reasons are structured and reviewable instead of
+  implied
 
 ## Owner Surface
 
@@ -32,11 +34,14 @@ Short answer:
 
 ## Final Claim Rule
 
-- keep the remaining XML and Annex B normalization rows `partial` when the repo
-  already proves schema-backed parse or reject behavior, metadata preservation,
-  merge-safe round trips, and explicit OMT conformance classification, but does
-  not yet prove every imported schema atom or normalization rule as its own
-  curated one-row witness
+- keep the remaining XML rows `partial` when the repo already proves
+  schema-backed parse or reject behavior, metadata preservation, and
+  merge-safe round trips, but does not yet prove every imported schema atom as
+  its own curated one-row witness
+- treat the OMT Annex B normalization rows as `mapped` when the repo proves
+  parser recognition, metadata preservation, executable support for the carried
+  common normalization forms, and explicit OMT conformance classification for
+  that supported subset
 - do not describe these rows as missing XML parsing or schema validation
 - do not describe these rows as unsupported OMT or FDD handling
 - do not flatten the family into `mapped` merely because the current parser and
@@ -59,13 +64,8 @@ The remaining `364 partial` XML rows cluster into stable categories:
 
 The current OMT owner ledger has `60` packet rows:
 
-- `58 mapped`
-- `2 partial`
-
-The remaining `2 partial` OMT rows are both Annex B normalization boundaries:
-
-- `1 omt.normalization`
-- `1 ddm/normalization`
+- `60 mapped`
+- `0 partial`
 
 ## What The Categories Mean
 
@@ -98,18 +98,20 @@ The repo already validates against the carried standard schema path, but that
 row still phrases the claim more broadly than the current direct curated
 requirement surface.
 
-### Annex B normalization boundary
+### Annex B normalization closeout
 
-The last `2` partial OMT rows are not about missing OMT parse support.
+The OMT normalization rows are no longer a bounded residual.
 
-They are specifically about DDM normalization semantics:
+They are now directly backed by:
 
-- the repo directly proves parser or schema recognition and preservation of
-  normalization metadata
-- `packages/hla-rti-core/src/hla/fom/__init__.py` `assess_omt_conformance`
-  still classifies non-identity normalization as only partially conforming
-- the repo therefore does not yet claim full executable runtime normalization
-  semantics for DDM routing values
+- parser or schema recognition and preservation of normalization metadata
+- executable helper coverage for the carried common Annex B forms
+  `linear (...)` and `linearEnumerated (...)`
+- standard-MIM normalization references that already align to the implemented
+  `Normalize Federate Handle service` and `Normalize Service Group service`
+- `packages/hla-rti-core/src/hla/fom/__init__.py` `assess_omt_conformance`,
+  which now treats that common subset as conforming while still classifying
+  unknown normalization strings as only partially conforming
 
 ## What Is Already Proved
 
@@ -141,8 +143,9 @@ Good reading:
 
 - the OMT and XML family is implemented, linked, and strongly validated at the
   schema-family, parser, validator, and metadata-preservation level
-- the remaining partial rows describe atom-level schema granularity limits plus
-  the narrow Annex B normalization-semantics boundary
+- the remaining partial rows describe atom-level XML schema granularity limits
+- the OMT normalization story is now directly closed on the common Annex B
+  subset the repo actually carries and tests
 - the family already has a defensible supported-scope reading
 
 Bad reading:

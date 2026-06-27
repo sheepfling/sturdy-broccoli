@@ -10,7 +10,9 @@ from google.protobuf import json_format
 
 import hla.fom as fom_module
 from hla.rti1516e.encoding import HLAboolean, HLAfixedArray, HLAfixedRecord, HLAinteger32BE
+from hla.rti1516e.enums import ServiceGroup
 from hla.rti1516e.exceptions import CouldNotDecode
+from hla.rti1516e.handles import FederateHandle
 from hla.fom import (
     OMTConformanceAssessment,
     ArrayDatatypeSpec,
@@ -32,7 +34,10 @@ from hla.fom import (
     assess_omt_conformance,
     merge_fom_modules,
     parse_fom_xml,
+    normalize_dimension_value,
     serialize_fom_module,
+    standard_mim_module,
+    supports_common_dimension_normalization,
     validate_encoded_datatype_value,
     validate_fom_xml_schema,
 )
@@ -2433,6 +2438,46 @@ def test_parse_fom_xml_preserves_dimension_normalization_metadata(tmp_path: Path
     assert spec.normalization == "Linear"
 
 
+def test_common_dimension_normalization_helpers_cover_annex_b_examples() -> None:
+    restaurant = parse_fom_xml("CERTI/xml/ieee1516-2010/1516_2-2010/RestaurantFOMmodule.xml")
+    soda = restaurant.dimension_specs["SodaFlavor"]
+    quantity = restaurant.dimension_specs["BarQuantity"]
+    waiter = restaurant.dimension_specs["WaiterId"]
+    mim = standard_mim_module()
+    federate_dim = mim.dimension_specs["HLAfederate"]
+    service_group_dim = mim.dimension_specs["HLAserviceGroup"]
+
+    assert supports_common_dimension_normalization(soda.normalization) is True
+    assert supports_common_dimension_normalization(quantity.normalization) is True
+    assert supports_common_dimension_normalization(waiter.normalization) is True
+    assert supports_common_dimension_normalization(federate_dim.normalization) is True
+    assert supports_common_dimension_normalization(service_group_dim.normalization) is True
+    assert supports_common_dimension_normalization("cylindrical (Azimuth, 0, 360)") is False
+
+    assert normalize_dimension_value(soda, "Cola") == 0
+    assert normalize_dimension_value(soda, "RootBeer") == 2
+    assert normalize_dimension_value(quantity, 1) == 0
+    assert normalize_dimension_value(quantity, 25) == 24
+    assert normalize_dimension_value(waiter, 20) == 19
+    assert normalize_dimension_value(
+        federate_dim,
+        FederateHandle(7),
+        normalize_federate_handle=lambda handle: handle.value,
+    ) == 7
+    assert normalize_dimension_value(
+        service_group_dim,
+        ServiceGroup.FEDERATION_MANAGEMENT,
+        normalize_service_group=lambda group: group.value,
+    ) == ServiceGroup.FEDERATION_MANAGEMENT.value
+
+    with pytest.raises(ValueError, match="outside linear normalization range"):
+        normalize_dimension_value(quantity, 26)
+    with pytest.raises(ValueError, match="is not listed in normalization enumerators"):
+        normalize_dimension_value(soda, "Cream")
+    with pytest.raises(ValueError, match="Normalize Federate Handle service support"):
+        normalize_dimension_value(federate_dim, FederateHandle(7))
+
+
 def test_assess_omt_conformance_classifies_conforming_partial_and_nonconforming_documents(
     tmp_path: Path,
 ):
@@ -2520,12 +2565,12 @@ def test_assess_omt_conformance_classifies_conforming_partial_and_nonconforming_
     assert conforming.parsed is True
     assert conforming.unsupported_features == ()
 
-    normalization = tmp_path / "normalization-omt.xml"
-    normalization.write_text(
+    supported_normalization = tmp_path / "supported-normalization-omt.xml"
+    supported_normalization.write_text(
         """<?xml version="1.0" encoding="utf-8"?>
 <objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
   <modelIdentification>
-    <name>Normalization OMT</name>
+    <name>Supported Normalization OMT</name>
     <type>FOM</type>
     <version>1.0</version>
     <modificationDate>2026-06-08</modificationDate>
@@ -2547,7 +2592,91 @@ def test_assess_omt_conformance_classifies_conforming_partial_and_nonconforming_
       <name>RouteDim</name>
       <dataType>DimValue</dataType>
       <upperBound>100</upperBound>
-      <normalization>Linear</normalization>
+      <normalization>linear (RouteDim, 1, 100)</normalization>
+    </dimension>
+  </dimensions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+    <transportation><name>HLAbestEffort</name><reliable>No</reliable></transportation>
+  </transportations>
+  <switches>
+    <autoProvide isEnabled="false"/>
+    <conveyRegionDesignatorSets isEnabled="false"/>
+    <conveyProducingFederate isEnabled="false"/>
+    <attributeScopeAdvisory isEnabled="false"/>
+    <attributeRelevanceAdvisory isEnabled="false"/>
+    <objectClassRelevanceAdvisory isEnabled="false"/>
+    <interactionRelevanceAdvisory isEnabled="false"/>
+    <serviceReporting isEnabled="false"/>
+    <exceptionReporting isEnabled="false"/>
+    <delaySubscriptionEvaluation isEnabled="false"/>
+    <automaticResignAction resignAction="NoAction"/>
+  </switches>
+  <dataTypes>
+    <basicDataRepresentations>
+      <basicData>
+        <name>HLAinteger32BE</name>
+        <size>32</size>
+        <interpretation>Integer</interpretation>
+        <endian>Big</endian>
+        <encoding>32-bit signed</encoding>
+      </basicData>
+    </basicDataRepresentations>
+    <simpleDataTypes>
+      <simpleData>
+        <name>DimValue</name>
+        <representation>HLAinteger32BE</representation>
+        <units>NA</units>
+        <resolution>1</resolution>
+        <accuracy>Perfect</accuracy>
+      </simpleData>
+    </simpleDataTypes>
+    <enumeratedDataTypes/>
+    <arrayDataTypes/>
+    <fixedRecordDataTypes/>
+    <variantRecordDataTypes/>
+  </dataTypes>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    supported = assess_omt_conformance(
+        supported_normalization, validate_schema=True, profile="omt"
+    )
+    assert supported.label == "conforming"
+    assert supported.schema_valid is True
+    assert supported.parsed is True
+    assert supported.unsupported_features == ()
+
+    unsupported_normalization = tmp_path / "unsupported-normalization-omt.xml"
+    unsupported_normalization.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+  <modelIdentification>
+    <name>Unsupported Normalization OMT</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-08</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Uses a normalization string outside the repo-supported subset.</description>
+    <poc><pocType>Sponsor</pocType><pocName>Codex</pocName></poc>
+  </modelIdentification>
+  <objects><objectClass><name>HLAobjectRoot</name><sharing>Neither</sharing></objectClass></objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <sharing>Neither</sharing>
+      <transportation>HLAreliable</transportation>
+      <order>Receive</order>
+    </interactionClass>
+  </interactions>
+  <dimensions>
+    <dimension>
+      <name>RouteDim</name>
+      <dataType>DimValue</dataType>
+      <upperBound>100</upperBound>
+      <normalization>cylindrical (Azimuth, 0, 360)</normalization>
     </dimension>
   </dimensions>
   <transportations>
@@ -2596,7 +2725,7 @@ def test_assess_omt_conformance_classifies_conforming_partial_and_nonconforming_
         encoding="utf-8",
     )
     partial = assess_omt_conformance(
-        normalization, validate_schema=True, profile="omt"
+        unsupported_normalization, validate_schema=True, profile="omt"
     )
     assert partial.label == "partially conforming"
     assert partial.schema_valid is True

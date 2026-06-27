@@ -24,7 +24,7 @@ def test_2010_bounded_family_execution_worklist_lists_current_bounded_buckets() 
         "`CAP-OWN`",
         "`CAP-TM`",
         "`CAP-DDM`",
-        "`CAP-XML` plus `CAP-OMT` tail",
+        "`CAP-XML` plus OMT closeout",
     ):
         assert token in text
 
@@ -32,7 +32,7 @@ def test_2010_bounded_family_execution_worklist_lists_current_bounded_buckets() 
     assert "`CAP-SUP`: `129 partial`" in text
     assert "`CAP-OM`: `102 partial`" in text
     assert "`CAP-FM`: `79 partial`" in text
-    assert "`CAP-OMT`: `2 partial`" in text
+    assert "`CAP-OMT`: `2 partial`" not in text
     assert "`20` `pass` OMT/XML area rows" in text
     assert "`3` `implemented-slice` OMT/XML execution witnesses" in text
     assert "`0` remaining OMT/XML area partial placeholders" in text
@@ -84,9 +84,9 @@ def test_2010_bounded_family_execution_worklist_keeps_owner_and_tightening_rules
     assert "broader packet universes" in text
     assert "keep the `CAP-DDM` family as canonical `partial`" in text
     assert "`6 EXC` and `10 EXC_API` rows" in text
-    assert "keep the `CAP-XML / CAP-OMT` family as canonical `partial`" in text
+    assert "keep the `CAP-XML / CAP-OMT` owner surface as canonical bounded XML closeout" in text
     assert "`274 XML_ELEM`, `89 XML_TYPE`, and `1 CLAUSE12_13_DETAIL` row" in text
-    assert "Annex B normalization rows" in text
+    assert "common-subset normalization support landed" in text
     assert "there is no remaining hidden `planned` inventory in the `2010` packet" in text
     assert "do not describe the `2010` lane as if every remaining non-`pass` row were" in text
     assert "the remaining OMT/XML rows are no longer planned inventory" in text

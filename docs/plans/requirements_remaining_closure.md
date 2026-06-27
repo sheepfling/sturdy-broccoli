@@ -173,7 +173,6 @@ are no longer active navigation or ownership gaps:
 - `CAP-FM`: `79 partial`
 - `CAP-TM`: `58 partial`
 - `CAP-FW`: `41 partial`
-- `CAP-OMT`: `2 partial`
 
 Practical reading:
 

@@ -12,7 +12,7 @@ def test_requirements_remaining_closure_uses_current_2010_large_family_story() -
 
     assert "`CAP-XML`: `364 partial`" in text
     assert "`CAP-OM`: `98 partial`" in text
-    assert "`CAP-OMT`: `2 partial`" in text
+    assert "`CAP-OMT`: `2 partial`" not in text
     assert "`CAP-API`: `394 partial`" not in text
     assert "omt_xml_bounded_family.md" in text
     assert "There are also no remaining active `2010` closeout buckets in this note." in text

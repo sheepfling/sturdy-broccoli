@@ -321,18 +321,18 @@ Result:
 Why:
 
 1. the current owner doc and reconciliation companions already express the
-   intended bounded XML schema-family and Annex B normalization reading
+   intended bounded XML schema-family reading plus the now-mapped common Annex B
+   normalization closeout
 2. the owning parser, validator, MOM-catalog, and round-trip shards are green
 3. the remaining XML tail is still a stable bounded `274 XML_ELEM`,
    `89 XML_TYPE`, and `1 CLAUSE12_13_DETAIL` envelope
-4. the remaining OMT tail is still a stable bounded `2` normalization-row
-   envelope
+4. the OMT ledger is now fully mapped after executable common-subset
+   normalization support landed
 5. the reader-facing owner surfaces now keep the XML and OMT ledgers canonical
    while retaining `hla1516_2_omt_xml_detailed_reconciliation.csv` only as a
    legacy bridge artifact
-6. no narrower direct claim was identified that would preserve the current row
-   meanings without adding one-row-per-element, one-row-per-type, or stronger
-   executable normalization proof
+6. no narrower direct claim was identified that would preserve the current XML
+   row meanings without adding one-row-per-element or one-row-per-type proof
 
 Use the OMT/XML owner docs as maintained bounded documentation. After this
 decision, there are no remaining 2010 family-level tightening buckets; only
@@ -381,7 +381,7 @@ boundary surfaces:
 | 2010 CAP-DM bounded family | the owner doc and reconciliation ledger now express the intended fully mapped closeout reading; rerun only if future work tries to widen the narrowed Clause 5 guard claims materially | `python3 -m pytest tests/backends/test_python_backend_object_ownership_extended.py tests/backends/test_python_backend_time_ddm_extended.py` | `declaration_management_bounded_family.md` plus `hla1516_1_dm_detailed_reconciliation.csv` |
 | 2010 CAP-DDM bounded family | the owner doc and reconciliation ledger already express the intended bounded supported-scope reading; rerun only if precondition-envelope scope or exception-envelope scope materially changes | `python3 -m pytest tests/backends/test_python_backend_time_ddm_extended.py tests/verification/test_compliance_slice_v011.py` | `data_distribution_management_bounded_family.md` plus `hla1516_1_ddm_detailed_reconciliation.csv` |
 | 2010 CAP-OWN bounded family | the owner doc and reconciliation ledger now express the intended fully mapped closeout reading; rerun only if future work tries to widen the narrowed Clause 7 guard claims materially | `python3 -m pytest tests/backends/test_python_backend_object_ownership_extended.py tests/scenarios/test_ownership_management_backend_matrix.py` | `ownership_management_bounded_family.md` plus `hla1516_1_own_detailed_reconciliation.csv` |
-| 2010 CAP-XML / CAP-OMT bounded family | the owner doc and companion ledgers already express the intended bounded schema-family and normalization-semantics reading; rerun only if the repo deliberately expands to one-row-per-atom XML witnesses or stronger runtime normalization semantics | `python3 -m pytest tests/factories/test_fom_omt_parsing.py tests/factories/test_fom_validate.py tests/mom/test_mom_catalog_validation_v012.py` | `omt_xml_bounded_family.md` plus `hla1516_xml_detailed_reconciliation.csv` and `hla1516_2_omt_detailed_reconciliation.csv` |
+| 2010 CAP-XML / CAP-OMT bounded family | the owner doc and companion ledgers already express the intended bounded XML schema-family reading plus the now-mapped OMT normalization closeout; rerun only if the repo deliberately expands to one-row-per-atom XML witnesses or broadens normalization beyond the carried common subset | `python3 -m pytest tests/factories/test_fom_omt_parsing.py tests/factories/test_fom_validate.py tests/mom/test_mom_catalog_validation_v012.py` | `omt_xml_bounded_family.md` plus `hla1516_xml_detailed_reconciliation.csv` and `hla1516_2_omt_detailed_reconciliation.csv` |
 | 2025 duplicate/umbrella framework rows | the owner doc and row-level disposition ledger already express the intended non-standalone final reading; rerun only if child claims or framework ownership change materially | `./tools/python verify-main-2025` only if child claims change | `framework_rules.md` plus `hla_2025_requirement_disposition_ledger.csv` |
 | 2025 duplicate/umbrella callback-binding rows | the owner doc, row-level disposition ledger, and FI binding matrix already express the intended non-standalone final reading; rerun only if child claims or binding ownership change materially | `./tools/test-surface run unit-shim-tooling` only if child claims change | `callback_binding_deltas.md` plus `hla_2025_requirement_disposition_ledger.csv` and `hla_2025_fi_binding_surface_matrix.csv` |
 | 2025 retired/legacy-only rows | the owner doc and row-level disposition ledger already express the intended exclusion reading; rerun only if the retired mapping changes or a compatibility program is deliberately added | `python3 -m pytest tests/test_documentation_policy.py tests/verification/test_imported_hla_packet_backlog.py` | `retired_legacy_mapping.md` plus `hla_2025_requirement_disposition_ledger.csv` |

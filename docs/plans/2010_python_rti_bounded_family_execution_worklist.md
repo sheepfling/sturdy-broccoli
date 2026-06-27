@@ -452,18 +452,19 @@ verifiers, and the owning shard command for:
 
 Decision:
 
-- keep the `CAP-XML / CAP-OMT` family as canonical `partial`
+- keep the `CAP-XML / CAP-OMT` owner surface as canonical bounded XML closeout
 - keep its XML tail recorded as the current bounded `XML_ELEM`, `XML_TYPE`,
   and narrow schema-source envelope
-- keep its OMT tail recorded as the current Annex B normalization boundary
-- do not promote the family to narrower direct support yet
+- keep its OMT closeout recorded as fully mapped on the carried common Annex B
+  normalization subset
+- do not promote the XML tail to narrower direct support yet
 
 Reason:
 
 1. the XML reconciliation companion still shows a stable bounded tail of
    `274 XML_ELEM`, `89 XML_TYPE`, and `1 CLAUSE12_13_DETAIL` row
-2. the OMT reconciliation companion still shows a stable bounded tail of `2`
-   Annex B normalization rows
+2. the OMT reconciliation companion is now fully mapped after executable
+   common-subset normalization support landed
 3. the current parser, validator, MOM-catalog, and round-trip shards are
    green, but the remaining packet rows still describe atom-level schema or
    normalization semantics beyond the current curated direct witnesses
@@ -473,8 +474,8 @@ Reason:
    - `hla1516_2_omt_xml_detailed_reconciliation.csv` is retained only as a
      legacy bridge artifact, not the canonical owner surface
 5. no narrower direct claim was identified that would preserve the current XML
-   and OMT row meanings without adding new one-row-per-element, one-row-per-
-   type, or stronger executable normalization proof
+   row meanings without adding new one-row-per-element or one-row-per-type
+   proof
 6. the current owner doc already expresses the honest final reading for the
    present evidence
 
@@ -497,7 +498,7 @@ Operational effect:
 | `CAP-OWN` | `ownership_management_bounded_family.md` | `requirements/2010/hla1516_1_own_detailed_reconciliation.csv` plus `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv` | `unit-scenarios-light` | `2010-core`, `ownership`, `scenarios` | Clause 7 is fully mapped because the former PRE/EXC/EXC_API tail is now intentionally narrowed to the direct ownership guard surface the repo actually proves | future work widens these rows only by adding stronger isolated witnesses, not by reintroducing bounded-partial wording |
 | `CAP-TM` | `time_management_bounded_family.md` | `requirements/2010/hla1516_1_tm_detailed_reconciliation.csv` plus `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv` | `unit-python-core` | `2010-core`, `time` | logical time, lookahead, callback ordering, retraction, and queries are already strong while the remaining rows still describe broader precondition, exception, or overview decomposition scope | new time-specific witnesses close the exact remaining `PRE`, `EXC`, `EXC_API`, or overview rows |
 | `CAP-DDM` | `data_distribution_management_bounded_family.md` | `requirements/2010/hla1516_1_ddm_detailed_reconciliation.csv` plus `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv` | `unit-python-core` | `2010-core`, `time`, `scenarios` | region lifecycle, overlap routing, DDM-gated routing, and MOM behavior are already strong while the remaining rows still describe broader precondition or exception envelopes | new DDM-specific witnesses close the exact remaining bounded row kinds |
-| `CAP-XML` plus `CAP-OMT` tail | `omt_xml_bounded_family.md` | `requirements/2010/hla1516_xml_detailed_reconciliation.csv`, `requirements/2010/hla1516_2_omt_detailed_reconciliation.csv`, and `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv` | `unit-fom-tooling` | `2010-core`, `fom-omt` | parser, schema, validator, and round-trip families are already strong while the remaining rows still describe one-row-per-atom XML witnesses or Annex B normalization semantics beyond the current direct proof | the repo deliberately adds curated element/type witnesses or stronger runtime normalization semantics and records them row by row |
+| `CAP-XML` plus OMT closeout | `omt_xml_bounded_family.md` | `requirements/2010/hla1516_xml_detailed_reconciliation.csv`, `requirements/2010/hla1516_2_omt_detailed_reconciliation.csv`, and `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv` | `unit-fom-tooling` | `2010-core`, `fom-omt` | parser, schema, validator, and round-trip families are already strong, the XML tail still describes one-row-per-atom witnesses beyond current proof, and the OMT normalization closeout is already mapped on the carried common subset | the repo deliberately adds curated XML element/type witnesses or broadens normalization support beyond the carried common subset and records that wider proof explicitly |
 
 ## Current 2010 Partial Shape
 
@@ -509,7 +510,6 @@ The current bounded-family tails called out by the closeout docs are:
 - `CAP-FM`: `79 partial`
 - `CAP-TM`: `58 partial`
 - `CAP-FW`: `41 partial`
-- `CAP-OMT`: `2 partial`
 
 Treat those counts as current bounded inventory, not as proof that the owner
 surfaces are vague or unfinished.

@@ -43,7 +43,7 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
     }
 
     statuses = Counter(row["harmonization_status"] for row in rows)
-    assert statuses == Counter({"mapped": 2936, "partial": 1067})
+    assert statuses == Counter({"mapped": 2938, "partial": 1065})
 
     by_id = {row["master_requirement_id"]: row for row in rows}
     assert by_id["HLA1516.1-SUP-10_2-GETAUTOMATICRESIGNDIRECTIVE-TEST-001"][
@@ -248,14 +248,14 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
         ]
         == "mapped"
     )
-    assert by_id["HLA1516.2-NORMALIZATION-030"]["harmonization_status"] == "partial"
+    assert by_id["HLA1516.2-NORMALIZATION-030"]["harmonization_status"] == "mapped"
     assert (
         by_id["HLA1516.2-NORMALIZATION-030"]["harmonization_source_file"]
         == "hla1516_2_omt_detailed_reconciliation.csv"
     )
     assert (
         by_id["HLA1516.2-OMT-OMT_NORM_NORMALIZATION-027"]["harmonization_status"]
-        == "partial"
+        == "mapped"
     )
     assert by_id["HLA1516.2-MERGE-PRINCIPLES-031"]["harmonization_status"] == "mapped"
     assert (
