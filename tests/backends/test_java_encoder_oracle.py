@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 from hla.backends.common import BackendConversionError, BackendInfo, Invocation
-from hla.bridges.java.common import JavaBridge, JavaRTIBackend, JavaValueConverter
+from hla.bridges.java.common import HLAJavaValueAdapter, JavaBridge, JavaRTIBackend
 
 
 class _FakeEncodedElement:
@@ -185,7 +185,7 @@ def test_java_converter_materializes_2025_credentials_for_vendor_routes() -> Non
     from hla.rti1516_2025.auth import HLAnoCredentials, HLAplainTextPassword
     from hla.rti1516_2025.datatypes import Credentials
 
-    converter = JavaValueConverter(_FakeBridge(api_profile="2025"))
+    converter = HLAJavaValueAdapter(_FakeBridge(api_profile="2025"))
 
     assert converter.to_backend(HLAnoCredentials(), expected_type_name="Credentials") == {
         "java_type": "HLAnoCredentials",
@@ -202,7 +202,7 @@ def test_java_converter_materializes_2025_credentials_for_vendor_routes() -> Non
 
 
 def test_java_converter_prefers_vendor_factory_over_python_owned_encoding_for_byte_arrays() -> None:
-    converter = JavaValueConverter(
+    converter = HLAJavaValueAdapter(
         _FakeBridge(),
         java_encoder_oracle=JavaRTIBackend(
             java_rti_ambassador=object(),

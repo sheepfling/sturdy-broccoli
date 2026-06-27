@@ -16,9 +16,7 @@ def test_split_backend_common_package_root_re_exports_conversion_surface():
 
 def test_split_java_common_package_imports_backend_common_from_new_package():
     from hla.backends.common import NativeHandleRegistry, ValueConverter
-    from hla.bridges.java.common import JavaValueConverter
+    from hla.bridges.java.common import HLAJavaValueAdapter
 
-    assert issubclass(JavaValueConverter, ValueConverter)
-    converter = JavaValueConverter.__mro__[1]
-    assert converter is ValueConverter
+    assert issubclass(HLAJavaValueAdapter, ValueConverter)
     assert NativeHandleRegistry.__name__ == "NativeHandleRegistry"

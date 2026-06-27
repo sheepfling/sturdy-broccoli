@@ -10,7 +10,7 @@ from hla.backends.common import (
     resolve_java_invocation_deterministic,
     set_java_invocation_resolver,
 )
-from hla.bridges.java.common import JavaBridge, JavaRTIBackend, JavaValueConverter, resolve_java_invocation
+from hla.bridges.java.common import HLAJavaValueAdapter, JavaBridge, JavaRTIBackend, resolve_java_invocation
 from hla.foms.target_radar._internal import target_radar_fom_path
 from hla.rti1516e.enums import CallbackModel, ResignAction
 from hla.rti1516e.handles import (
@@ -295,7 +295,7 @@ def test_java_overload_resolution_and_converter_prepare_vendor_owned_collections
     assert resolved.param_types == ("String", "URL[]", "String")
 
     bridge = RecordingBridge()
-    converter = JavaValueConverter(bridge, rti_ambassador=object())
+    converter = HLAJavaValueAdapter(bridge, rti_ambassador=object())
     assert converter.to_backend([TARGET_RADAR_FOM], expected_type_name="URL[]") == (f"url:{TARGET_RADAR_FOM}",)
 
     native_attr = ("native-attribute", 7)
@@ -550,7 +550,7 @@ def test_java_backend_fails_closed_on_strict_generic_container_fallback():
 
 def test_java_converter_uses_encoder_oracle_for_data_element_payload_slots():
     bridge = RecordingBridge()
-    converter = JavaValueConverter(
+    converter = HLAJavaValueAdapter(
         bridge,
         rti_ambassador=object(),
         java_encoder_oracle=JavaRTIBackend(
@@ -594,7 +594,7 @@ def test_java_converter_uses_encoder_oracle_for_data_element_payload_slots():
 
 def test_java_converter_prepares_attribute_region_association_pair_lists():
     bridge = RecordingBridge()
-    converter = JavaValueConverter(bridge, rti_ambassador=object())
+    converter = HLAJavaValueAdapter(bridge, rti_ambassador=object())
 
     native_attr = ("native-attribute", 7)
     native_region = ("native-region", 9)
@@ -621,7 +621,7 @@ class _ConfigurationResultLike:
 
 def test_java_converter_converts_2025_rti_configuration_without_expected_type_metadata():
     bridge = RecordingBridge(api_profile="2025")
-    converter = JavaValueConverter(bridge)
+    converter = HLAJavaValueAdapter(bridge)
 
     configuration = (
         RtiConfiguration.createConfiguration()
@@ -636,7 +636,7 @@ def test_java_converter_converts_2025_rti_configuration_without_expected_type_me
 
 
 def test_java_converter_converts_2025_configuration_result():
-    converter = JavaValueConverter(RecordingBridge(api_profile="2025"))
+    converter = HLAJavaValueAdapter(RecordingBridge(api_profile="2025"))
 
     converted = converter.from_backend(_ConfigurationResultLike(), expected_type_name="ConfigurationResult")
 

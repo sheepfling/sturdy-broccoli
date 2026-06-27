@@ -1,8 +1,4 @@
-"""Shared Java RTI support package.
-
-Prefer `GenericJavaValueAdapter` or `HLAJavaValueAdapter` for new code.
-`JavaValueConverter` remains exported as a transitional compatibility facade.
-"""
+"""Shared Java RTI support package."""
 # pyright: reportMissingImports=false
 from __future__ import annotations
 
@@ -22,18 +18,16 @@ from hla.backends.common import (
 from .java_common import (
     GenericJavaValueAdapter,
     HLAJavaValueAdapter,
-    JavaBridge,
-    JavaEncoderOracle,
     JavaRTIBackend,
-    JavaVendorEncoding,
-    JavaValueConverter,
-    PythonFederateAmbassadorDispatcher,
     ResolvedJavaInvocation,
     java_parameter_names,
     java_parameter_types,
     resolve_java_arguments,
     resolve_java_invocation,
 )
+from .java_bridge_base import JavaBridge
+from .java_callbacks import PythonFederateAmbassadorDispatcher, expected_java_callback_parameter_types, expected_java_return_type
+from .java_encoding import JavaEncoderOracle, JavaVendorEncoding
 from .java_runtime import discover_java_home, discover_java_tool, ensure_java_home
 from .java_toolchain import (
     JAVA_2010_JAR,
@@ -87,7 +81,6 @@ __all__ = [
     "RTIBackendSpec",
     "JavaRTIBackend",
     "RTITransportSpec",
-    "JavaValueConverter",
     "InProcessJavaRTIShim",
     "PythonFederateAmbassadorDispatcher",
     "ResolvedJavaInvocation",
@@ -118,6 +111,8 @@ __all__ = [
     "JAVA_2025_JAR",
     "java_api_profile",
     "load_python_java_binding_profile",
+    "expected_java_callback_parameter_types",
+    "expected_java_return_type",
     "java_parameter_names",
     "java_parameter_types",
     "make_rti_ambassador",

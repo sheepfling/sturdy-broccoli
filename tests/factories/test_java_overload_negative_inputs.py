@@ -15,7 +15,7 @@ from hla.backends.common import (
     resolve_java_invocation_deterministic,
     set_java_invocation_resolver,
 )
-from hla.bridges.java.common import JavaBridge, JavaValueConverter, resolve_java_invocation
+from hla.bridges.java.common import GenericJavaValueAdapter, HLAJavaValueAdapter, JavaBridge, resolve_java_invocation
 from hla.rti1516e.handles import AttributeHandle, ObjectInstanceHandle, ParameterHandle
 
 
@@ -239,7 +239,7 @@ def test_java_overload_resolution_treats_trailing_none_as_omitted_optional_suffi
 
 
 def test_java_converter_rejects_string_like_impostor_with_clear_error():
-    converter = JavaValueConverter(_FakeBridge())
+    converter = GenericJavaValueAdapter(_FakeBridge())
 
     with pytest.raises(BackendConversionError, match="Expected Java String") as exc_info:
         converter.to_backend(UserString("fed"), expected_type_name="String")
@@ -250,7 +250,7 @@ def test_java_converter_rejects_string_like_impostor_with_clear_error():
 
 
 def test_java_converter_rejects_custom_str_impostor_with_clear_error():
-    converter = JavaValueConverter(_FakeBridge())
+    converter = GenericJavaValueAdapter(_FakeBridge())
 
     with pytest.raises(BackendConversionError, match="Expected Java String") as exc_info:
         converter.to_backend(_CustomStringLike(), expected_type_name="String")
@@ -261,7 +261,7 @@ def test_java_converter_rejects_custom_str_impostor_with_clear_error():
 
 
 def test_java_converter_rejects_non_url_like_url_target_with_clear_error():
-    converter = JavaValueConverter(_FakeBridge())
+    converter = HLAJavaValueAdapter(_FakeBridge())
 
     with pytest.raises(BackendConversionError, match="Expected Java URL") as exc_info:
         converter.to_backend(object(), expected_type_name="URL")
@@ -272,7 +272,7 @@ def test_java_converter_rejects_non_url_like_url_target_with_clear_error():
 
 
 def test_java_converter_rejects_bad_url_array_member_with_indexed_error():
-    converter = JavaValueConverter(_FakeBridge())
+    converter = HLAJavaValueAdapter(_FakeBridge())
 
     with pytest.raises(BackendConversionError, match="Expected Java URL\\[\\]") as exc_info:
         converter.to_backend([Path("demo.xml"), object(), _FakeUriLike("resource:VendorSmokeFOM.xml")], expected_type_name="URL[]")
@@ -283,7 +283,7 @@ def test_java_converter_rejects_bad_url_array_member_with_indexed_error():
 
 
 def test_java_converter_rejects_non_iterable_handle_set_with_clear_error():
-    converter = JavaValueConverter(_FakeBridge())
+    converter = HLAJavaValueAdapter(_FakeBridge())
 
     with pytest.raises(BackendConversionError, match="Expected Java AttributeHandleSet") as exc_info:
         converter.to_backend(ObjectInstanceHandle(7), expected_type_name="AttributeHandleSet")
@@ -294,7 +294,7 @@ def test_java_converter_rejects_non_iterable_handle_set_with_clear_error():
 
 
 def test_java_converter_rejects_non_mapping_handle_value_map_with_clear_error():
-    converter = JavaValueConverter(_FakeBridge())
+    converter = HLAJavaValueAdapter(_FakeBridge())
 
     with pytest.raises(BackendConversionError, match="Expected Java AttributeHandleValueMap") as exc_info:
         converter.to_backend(object(), expected_type_name="AttributeHandleValueMap")
@@ -305,7 +305,7 @@ def test_java_converter_rejects_non_mapping_handle_value_map_with_clear_error():
 
 
 def test_java_converter_rejects_non_bytes_like_byte_array_target_with_clear_error():
-    converter = JavaValueConverter(_FakeBridge())
+    converter = GenericJavaValueAdapter(_FakeBridge())
 
     with pytest.raises(BackendConversionError, match="Expected Java byte\\[\\]") as exc_info:
         converter.to_backend(object(), expected_type_name="byte[]")

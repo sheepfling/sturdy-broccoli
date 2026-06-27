@@ -6,7 +6,7 @@ from __future__ import annotations
 from collections import deque
 from typing import Any, Callable, Deque, Iterable, Mapping
 
-from .java_common import JavaBridge
+from .java_bridge_base import JavaBridge
 from .java_shim_types import (
     JavaAttributeHandle,
     JavaByteArray,

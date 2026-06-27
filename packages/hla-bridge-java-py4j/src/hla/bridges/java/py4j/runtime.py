@@ -6,7 +6,8 @@ from dataclasses import dataclass, field
 from typing import Any, Mapping, Sequence
 
 from hla.bridges.java.common import CALLBACK_METHOD_NAMES, BackendUnavailableError
-from hla.bridges.java.common.java_common import JavaBridge, PythonFederateAmbassadorDispatcher
+from hla.bridges.java.common.java_bridge_base import JavaBridge
+from hla.bridges.java.common.java_callbacks import PythonFederateAmbassadorDispatcher
 from hla.bridges.java.common.java_intake import JavaApiProfile
 from hla.backends.common.invocation import JavaInvocationResolverName
 
