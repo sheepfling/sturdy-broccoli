@@ -191,6 +191,18 @@ def certify_cpp_sdk_core(request: CppSdkIntakeRequest, output_root: str | Path) 
             errors=discovery.errors,
             warnings=discovery.warnings,
         )
+    if discovery.capsule_dir is None:
+        return CppRtiCoreCertificationReport(
+            edition=discovery.edition,
+            transport=discovery.transport,
+            route=discovery.route,
+            artifact=artifact,
+            discovery=discovery.to_json_dict(),
+            capsule_dir=discovery.capsule_dir,
+            status="failed",
+            errors=("capsule generation did not return a capsule_dir",),
+            warnings=discovery.warnings,
+        )
     runtime = smoke_capsule(discovery.capsule_dir, discovery.transport, timeout_seconds=request.timeout_seconds)
     if runtime.errors:
         return CppRtiCoreCertificationReport(
@@ -238,6 +250,18 @@ def smoke_cpp_sdk_capsule(request: CppSdkIntakeRequest, output_root: str | Path)
             capsule_dir=discovery.capsule_dir,
             status="failed",
             errors=discovery.errors,
+            warnings=discovery.warnings,
+        )
+    if discovery.capsule_dir is None:
+        return CppRtiCoreCertificationReport(
+            edition=discovery.edition,
+            transport=discovery.transport,
+            route=discovery.route,
+            artifact=artifact,
+            discovery=discovery.to_json_dict(),
+            capsule_dir=discovery.capsule_dir,
+            status="failed",
+            errors=("capsule generation did not return a capsule_dir",),
             warnings=discovery.warnings,
         )
     runtime = smoke_capsule(discovery.capsule_dir, discovery.transport, timeout_seconds=request.timeout_seconds)

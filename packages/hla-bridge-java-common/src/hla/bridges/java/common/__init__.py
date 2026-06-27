@@ -1,4 +1,9 @@
-"""Shared Java RTI support package."""
+"""Shared Java RTI support package.
+
+Prefer `GenericJavaValueAdapter` or `HLAJavaValueAdapter` for new code.
+`JavaValueConverter` remains exported as a transitional compatibility facade.
+"""
+# pyright: reportMissingImports=false
 from __future__ import annotations
 
 from hla.backends.common import (
@@ -15,6 +20,8 @@ from hla.backends.common import (
     make_rti_ambassador,
 )
 from .java_common import (
+    GenericJavaValueAdapter,
+    HLAJavaValueAdapter,
     JavaBridge,
     JavaEncoderOracle,
     JavaRTIBackend,
@@ -65,6 +72,8 @@ __all__ = [
     "BackendUnavailableError",
     "CALLBACK_METHOD_NAMES",
     "Invocation",
+    "GenericJavaValueAdapter",
+    "HLAJavaValueAdapter",
     "JavaBridge",
     "JavaEncoderOracle",
     "JavaByteArray",

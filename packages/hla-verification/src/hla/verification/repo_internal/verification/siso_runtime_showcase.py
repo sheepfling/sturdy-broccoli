@@ -133,16 +133,17 @@ def _topology_for_slug(slug: str) -> TopologySpec:
 
 
 def _create_rtis(runtime: RuntimeSpec, count: int, *, backend: str | None = None) -> list[Any]:
+    backend_name = backend or "python1516_2025"
     if runtime.edition == "2010":
-        if backend not in {None, "", "python1516e"}:
-            return [create_rti_ambassador_2010(backend=backend) for _ in range(count)]
+        if backend_name not in {"python1516_2025", "python1516e"} and backend not in {None, ""}:
+            return [create_rti_ambassador_2010(backend=backend_name) for _ in range(count)]
         engine = InMemoryRTIEngine()
         return [
             create_rti_ambassador_2010(backend="python1516e", engine=engine)
             for _ in range(count)
         ]
     return [
-        create_rti_ambassador_2025(backend=backend or "python1516_2025")
+        create_rti_ambassador_2025(backend=backend_name)
         for _ in range(count)
     ]
 

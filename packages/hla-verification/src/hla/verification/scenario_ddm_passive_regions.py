@@ -6,6 +6,7 @@ from typing import Any
 
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.datatypes import AttributeRegionAssociation, RangeBounds
+from hla.rti1516e.handles import AttributeHandleSet, RegionHandleSet
 
 from .scenario_support import drain_callbacks_pair
 
@@ -87,8 +88,8 @@ def run_ddm_passive_region_subscription_scenario(
     publisher_rti.commit_region_modifications({publisher_region})
     subscriber_rti.commit_region_modifications({subscriber_region})
 
-    update_pairs = [AttributeRegionAssociation({publisher_attribute}, {publisher_region})]
-    subscription_pairs = [AttributeRegionAssociation({subscriber_attribute}, {subscriber_region})]
+    update_pairs = [AttributeRegionAssociation(AttributeHandleSet({publisher_attribute}), RegionHandleSet({publisher_region}))]
+    subscription_pairs = [AttributeRegionAssociation(AttributeHandleSet({subscriber_attribute}), RegionHandleSet({subscriber_region}))]
 
     subscriber_rti.subscribe_object_class_attributes_passively_with_regions(subscriber_class, subscription_pairs)
     publisher_rti.publish_object_class_attributes(publisher_class, {publisher_attribute})

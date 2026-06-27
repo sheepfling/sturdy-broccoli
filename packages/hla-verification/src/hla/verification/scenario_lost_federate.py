@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Callable
+from typing import Any, Callable, cast
 
 import hla.fom.mom as hla_mom
 from hla.rti1516e.enums import CallbackModel, ResignAction
@@ -27,7 +27,7 @@ def _encoded_logical_time_bytes(value: Any) -> bytes:
     encode = getattr(value, "encode", None)
     if callable(encode):
         try:
-            return encode()
+            return bytes(cast(Any, encode()))
         except TypeError:
             pass
     raise TypeError(f"Unable to encode logical time payload for {value!r}")
@@ -124,9 +124,13 @@ def run_lost_federate_mom_scenario(
     assert loss_record is not None
     assert getattr(loss_record.args[0], "value", None) == getattr(lost_report, "value", None)
     assert _payload_value_by_handle(loss_record.args[1], report_federate) == victim_handle.encode()
-    assert hla_mom.decode_text(_payload_value_by_handle(loss_record.args[1], report_federate_name)) == config.victim_name
+    report_federate_name_payload = _payload_value_by_handle(loss_record.args[1], report_federate_name)
+    report_fault_payload = _payload_value_by_handle(loss_record.args[1], report_fault)
+    assert report_federate_name_payload is not None
+    assert report_fault_payload is not None
+    assert hla_mom.decode_text(report_federate_name_payload) == config.victim_name
     assert _payload_value_by_handle(loss_record.args[1], report_timestamp) == _encoded_logical_time_bytes(victim_time_before_loss)
-    assert hla_mom.decode_text(_payload_value_by_handle(loss_record.args[1], report_fault)) == config.fault_description
+    assert hla_mom.decode_text(report_fault_payload) == config.fault_description
 
     removal = wait_for_callback(observer_rti, observer_federate, "removeObjectInstance", loops=120)
     assert removal is not None
@@ -214,9 +218,13 @@ def run_external_lost_federate_observer_scenario(
         assert loss_record is not None, victim_session.describe()
         assert getattr(loss_record.args[0], "value", None) == getattr(lost_report, "value", None)
         assert _payload_value_by_handle(loss_record.args[1], report_federate) == victim_session.victim_handle_bytes
-        assert hla_mom.decode_text(_payload_value_by_handle(loss_record.args[1], report_federate_name)) == victim_session.victim_name
+        report_federate_name_payload = _payload_value_by_handle(loss_record.args[1], report_federate_name)
+        report_fault_payload = _payload_value_by_handle(loss_record.args[1], report_fault)
+        assert report_federate_name_payload is not None
+        assert report_fault_payload is not None
+        assert hla_mom.decode_text(report_federate_name_payload) == victim_session.victim_name
         assert _payload_value_by_handle(loss_record.args[1], report_timestamp) == victim_session.victim_time_bytes
-        assert hla_mom.decode_text(_payload_value_by_handle(loss_record.args[1], report_fault)) == config.fault_description
+        assert hla_mom.decode_text(report_fault_payload) == config.fault_description
 
         removal = wait_for_callback(observer_rti, observer_federate, "removeObjectInstance", loops=320)
         assert removal is not None, victim_session.describe()

@@ -566,3 +566,6 @@ class RTIambassador(Protocol):
 
     # Source: C++ Decode handles. Java overloads: 0; C++ overloads: 1. Throws: CouldNotDecode, FederateNotExecutionMember, NotConnected, RTIinternalError.
     def decodeRegionHandle(self, encodedValue: bytes) -> RegionHandle: ...
+
+
+class UnimplementedRTIambassador(RTIambassador): ...

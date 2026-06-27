@@ -4,7 +4,7 @@ from __future__ import annotations
 import importlib
 import os
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from hla.backends.common import BackendInfo
 from hla.rti.plugin_api import BackendRequest
@@ -84,12 +84,14 @@ def create_java_intake_backend(edition: str, route: str, request: BackendRequest
         gateway = options.get("gateway")
         port = options.get("gateway_port")
         if gateway is None and port is None:
-            port = launch_gateway(
+            port = cast(int, launch_gateway(
                 classpath=os.pathsep.join(classpath),
                 die_on_exit=True,
                 java_path=discover_java_tool("java") or "java",
-            )
+            ))
         if gateway is None:
+            if port is None:
+                raise RuntimeError("Py4J gateway port was not provided and could not be discovered.")
             gateway = JavaGateway(
                 gateway_parameters=GatewayParameters(port=int(port)),
                 callback_server_parameters=CallbackServerParameters(port=0),

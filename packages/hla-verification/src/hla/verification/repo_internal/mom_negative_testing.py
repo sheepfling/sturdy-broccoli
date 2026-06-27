@@ -207,7 +207,7 @@ def _encoded_known_object_class(rti: Any) -> bytes:
             return rti.get_object_class_handle(name).encode()
         except Exception:
             continue
-    return ObjectClassHandle(1).encode()
+    return bytes(ObjectClassHandle(1).encode())
 
 
 def _encoded_known_interaction_class(rti: Any) -> bytes:
@@ -220,7 +220,7 @@ def _encoded_known_interaction_class(rti: Any) -> bytes:
             return rti.get_interaction_class_handle(name).encode()
         except Exception:
             continue
-    return InteractionClassHandle(1).encode()
+    return bytes(InteractionClassHandle(1).encode())
 
 
 def valid_mom_payload_for_parameter(rti: Any, rule: MOMInteractionRule, name: str) -> bytes:
@@ -234,12 +234,12 @@ def valid_mom_payload_for_parameter(rti: Any, rule: MOMInteractionRule, name: st
         return hla_mom.encode_text("1.0")
     if name in MOM_TIME_PARAMETERS:
         try:
-            return rti.get_time_factory().make_time(1.0).encode()
+            return bytes(rti.get_time_factory().make_time(1.0).encode())
         except Exception:
             return hla_mom.encode_text("1.0")
     if name in MOM_INTERVAL_PARAMETERS:
         try:
-            return rti.get_time_factory().make_interval(0.1).encode()
+            return bytes(rti.get_time_factory().make_interval(0.1).encode())
         except Exception:
             return hla_mom.encode_text("0.1")
     if name in {"HLAobjectClass", "HLAobjectClassName"}:
@@ -247,18 +247,18 @@ def valid_mom_payload_for_parameter(rti: Any, rule: MOMInteractionRule, name: st
     if name in {"HLAinteractionClass", "HLAinteractionClassName"}:
         return _encoded_known_interaction_class(rti)
     if name == "HLAobjectInstance":
-        return ObjectInstanceHandle(1).encode()
+        return bytes(ObjectInstanceHandle(1).encode())
     if name in {"HLAtransportation", "HLAtransportationType"}:
         try:
-            return rti.get_transportation_type_handle("HLAreliable").encode()
+            return bytes(rti.get_transportation_type_handle("HLAreliable").encode())
         except Exception:
-            return TransportationTypeHandle(1).encode()
+            return bytes(TransportationTypeHandle(1).encode())
     if name in {"HLAattributeList", "HLAattribute"}:
-        return AttributeHandle(1).encode()
+        return bytes(AttributeHandle(1).encode())
     if name == "HLAfederateList":
-        return rti.backend.state.handle.encode()
+        return bytes(rti.backend.state.handle.encode())
     if name == "HLAdimensionHandleSet":
-        return DimensionHandle(1).encode()
+        return bytes(DimensionHandle(1).encode())
     if name == "HLAsendOrder":
         return hla_mom.encode_text("RECEIVE")
     if name == "HLAresignAction":

@@ -12,7 +12,7 @@ from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 from hla.fom.proto2025 import scenario_fom_paths
 
 
-def _drain(*rtis: object, rounds: int = 25) -> None:
+def _drain(*rtis: Any, rounds: int = 25) -> None:
     for _ in range(rounds):
         for rti in rtis:
             rti.evokeMultipleCallbacks(0.0, 0.0)

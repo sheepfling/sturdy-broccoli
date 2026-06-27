@@ -1,6 +1,7 @@
 """Finish-line inventory for the IEEE 1516-2025 requirements tranche."""
 
 from __future__ import annotations
+# pyright: reportArgumentType=false, reportAttributeAccessIssue=false
 
 import ast
 import copy

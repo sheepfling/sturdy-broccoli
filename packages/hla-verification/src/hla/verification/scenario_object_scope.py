@@ -9,6 +9,7 @@ from hla.rti1516e.exceptions import AttributeNotOwned
 from hla.rti1516_2025.exceptions import AttributeNotOwned as AttributeNotOwned2025
 from hla.rti1516e.datatypes import RangeBounds
 from hla.rti1516e.datatypes import AttributeRegionAssociation
+from hla.rti1516e.handles import AttributeHandleSet, RegionHandleSet
 
 from .scenario_support import drain_callbacks_pair
 
@@ -108,12 +109,12 @@ def run_object_scope_relevance_scenario(
     observer_rti.enable_attribute_scope_advisory_switch()
     observer_rti.subscribe_object_class_attributes_with_regions(
         observer_class,
-        [AttributeRegionAssociation({observer_attribute}, {observer_region})],
+        [AttributeRegionAssociation(AttributeHandleSet({observer_attribute}), RegionHandleSet({observer_region}))],
     )
 
     object_instance = owner_rti.register_object_instance_with_regions(
         owner_class,
-        [AttributeRegionAssociation({owner_attribute}, {owner_region})],
+        [AttributeRegionAssociation(AttributeHandleSet({owner_attribute}), RegionHandleSet({owner_region}))],
         config.object_instance_name,
     )
     drain_callbacks_pair(owner_rti, acquirer_rti, observer_rti, loops=24)

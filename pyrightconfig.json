@@ -5,8 +5,19 @@
     "packages/hla-rti1516e/src/hla/rti1516e",
     "packages/hla-rti1516-2025/src/hla/rti1516_2025",
     "packages/hla-rti-core/src/hla/rti",
+    "packages/hla-rti-core/src/hla/spec",
+    "packages/hla-rti-core/src/hla/runtime",
     "packages/hla-backend-common/src/hla/backends/common",
-    "packages/hla-bridge-java-common/src/hla/bridges/java/common"
+    "packages/hla-bridge-java-common/src/hla/bridges/java/common",
+    "packages/hla-bridge-java-jpype/src/hla/bridges/java/jpype",
+    "packages/hla-bridge-java-py4j/src/hla/bridges/java/py4j",
+    "packages/hla-transport-common/src/hla/transports/common",
+    "packages/hla-transport-rest/src/hla/transports/rest",
+    "packages/hla-fom-target-radar/src/hla/foms/target_radar",
+    "packages/hla-fom-proto2025-message-test/src/hla/foms/proto2025_message_test",
+    "packages/hla-fom-proto2025-space-lite/src/hla/foms/proto2025_space_lite",
+    "packages/hla-fom-proto2025-time-mgmt-test/src/hla/foms/proto2025_time_mgmt_test",
+    "packages/hla-verification/src/hla/verification"
   ],
   "exclude": [
     "**/__pycache__",
@@ -16,9 +27,11 @@
   "extraPaths": [
     "packages/hla-rti1516e/src",
     "packages/hla-rti1516-2025/src",
-    "packages/hla-backend-inmemory/src",
+    "packages/hla-backend-python1516e/src",
+    "packages/hla-backend-python1516-2025/src",
     "packages/hla-backend-certi/src",
     "packages/hla-backend-common/src",
+    "packages/hla-backend-cpp-shim/src",
     "packages/hla-bridge-java-common/src",
     "packages/hla-rti-core/src",
     "packages/hla-bridge-java-jpype/src",
@@ -31,6 +44,9 @@
     "packages/hla-transport-grpc/src",
     "packages/hla-transport-rest/src",
     "packages/hla-fom-target-radar/src",
+    "packages/hla-fom-proto2025-message-test/src",
+    "packages/hla-fom-proto2025-space-lite/src",
+    "packages/hla-fom-proto2025-time-mgmt-test/src",
     "packages/hla-verification/src"
   ]
 }

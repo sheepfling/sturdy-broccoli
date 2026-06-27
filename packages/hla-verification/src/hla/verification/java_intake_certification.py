@@ -6,7 +6,7 @@ import os
 import re
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any, Sequence, cast
 
 from hla.bridges.java.common.java_intake import (
     JavaRtiIntakeRequest,
@@ -220,11 +220,11 @@ def certify_java_rti_core(request: JavaRtiIntakeRequest) -> JavaRtiCoreCertifica
             from hla.bridges.java.common.py4j_support import reset_py4j_callback_client
             from py4j.java_gateway import CallbackServerParameters, GatewayParameters, JavaGateway, launch_gateway
 
-            gateway_port = launch_gateway(
+            gateway_port = cast(int, launch_gateway(
                 classpath=os.pathsep.join(request.classpath),
                 die_on_exit=True,
                 java_path=discover_java_tool("java") or "java",
-            )
+            ))
             gateway = JavaGateway(
                 gateway_parameters=GatewayParameters(port=int(gateway_port)),
                 callback_server_parameters=CallbackServerParameters(port=0),

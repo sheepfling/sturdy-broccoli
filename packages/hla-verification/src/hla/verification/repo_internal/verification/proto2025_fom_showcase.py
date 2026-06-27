@@ -1,7 +1,7 @@
 """Executable showcase scenarios for the packaged Proto2025 v0.1 FOM set."""
 from __future__ import annotations
 
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 import csv
 import json
 import uuid
@@ -46,7 +46,7 @@ def _scenario_family(scenario: str) -> str:
     return scenario
 
 
-def _write_csv(path: Path, fieldnames: list[str], rows: list[Mapping[str, Any]]) -> Path:
+def _write_csv(path: Path, fieldnames: list[str], rows: Sequence[Mapping[str, Any]]) -> Path:
     with path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()

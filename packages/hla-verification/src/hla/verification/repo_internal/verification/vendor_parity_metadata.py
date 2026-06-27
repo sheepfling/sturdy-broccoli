@@ -38,7 +38,7 @@ def load_backend_conformance_vendor_rows(project_root: str | Path) -> dict[str, 
     return rows_by_clause
 
 
-def load_operational_vendor_profiles(project_root: str | Path) -> dict[str, list[dict[str, Any]]]:
+def load_operational_vendor_profiles(project_root: str | Path) -> dict[str, Any]:
     matrix_path = Path(project_root).resolve() / "docs" / "rti_options_and_test_matrix.md"
     if not matrix_path.exists():
         return {}

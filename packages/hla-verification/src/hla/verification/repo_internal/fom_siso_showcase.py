@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from hla.verification.repo_internal.fom_corpus_classification import classify_edition_scope
 from hla.verification.repo_internal.fom_inventory import (
@@ -382,14 +382,14 @@ def build_fom_siso_showcase(
             validation_json_path, validation_md_path, validation_report = write_fom_validation(
                 source_paths,
                 output_dir=validation_output_dir,
-                edition=str(validation_edition),
+                edition=cast(Any, str(validation_edition)),
                 strict_identification=strict_identification,
                 title=f"{spec.title} | FOM Validation",
             )
             validation_html = write_fom_validation_html(
                 source_paths,
                 output_dir=validation_output_dir,
-                edition=str(validation_edition),
+                edition=cast(Any, str(validation_edition)),
                 strict_identification=strict_identification,
                 title=f"{spec.title} | FOM Validation",
             )

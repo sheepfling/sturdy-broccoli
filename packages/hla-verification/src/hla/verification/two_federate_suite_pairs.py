@@ -30,12 +30,13 @@ class SuiteRecordingFederateAmbassador(RecordingFederateAmbassador):
 
     def discoverObjectInstance(
         self,
-        the_object: ObjectInstanceHandle,
-        the_object_class: ObjectClassHandle,
-        object_name: str,
+        theObject: ObjectInstanceHandle,
+        theObjectClass: ObjectClassHandle,
+        objectName: str,
+        producingFederate: Any | None = None,
         *extra: Any,
     ) -> Any:
-        return self.record_callback("discoverObjectInstance", the_object, the_object_class, object_name)
+        return self.record_callback("discoverObjectInstance", theObject, theObjectClass, objectName, producingFederate, *extra)
 
     def record_callback(self, method_name: str, *args: Any, **kwargs: Any) -> Any:
         result = super().record_callback(method_name, *args, **kwargs)

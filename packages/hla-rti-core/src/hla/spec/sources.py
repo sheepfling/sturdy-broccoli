@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 
-from .raw_api import API_METADATA
+from hla.rti1516e.raw_api import API_METADATA
 
 _LANGUAGE_LABELS = {
     "cpp": "C++",

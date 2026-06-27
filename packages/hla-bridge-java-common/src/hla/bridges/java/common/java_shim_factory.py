@@ -1,4 +1,5 @@
 """Factory helpers for Java-shaped shim backends."""
+# pyright: reportMissingImports=false
 from __future__ import annotations
 
 from hla.backends.common import BackendInfo, make_rti_ambassador

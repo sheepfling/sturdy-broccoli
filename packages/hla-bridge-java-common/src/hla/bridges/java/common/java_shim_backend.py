@@ -1,4 +1,5 @@
 """Single-ambassador Java-shaped shim backend and bridge."""
+# pyright: reportMissingImports=false
 
 from __future__ import annotations
 

@@ -1,8 +1,11 @@
 """Factory helpers for Py4J-backed Java RTI backends."""
 from __future__ import annotations
 
+from typing import Any, cast
+
 from hla.bridges.java.common import BackendInfo, make_rti_ambassador
 from hla.backends.common import java_invocation_resolver
+from hla.backends.common.invocation import JavaInvocationResolverName
 from .adapter import Py4JRTIBackend
 from .runtime import Py4JBridge, Py4JConfig
 
@@ -12,13 +15,14 @@ def create_py4j_backend(config: Py4JConfig = Py4JConfig()) -> Py4JRTIBackend:
 
     bridge = Py4JBridge(config)
     try:
-        factory_factory = bridge.gateway.jvm
+        factory_factory = cast(Any, bridge.gateway.jvm)
         for part in bridge.api_profile.factory_factory_class.split("."):
             factory_factory = getattr(factory_factory, part)
         if config.rti_factory_name:
             factory = factory_factory.getRtiFactory(config.rti_factory_name)
         else:
             factory = factory_factory.getRtiFactory()
+        factory = cast(Any, factory)
         java_rti = factory.getRtiAmbassador()
         try:
             name = str(factory.rtiName())

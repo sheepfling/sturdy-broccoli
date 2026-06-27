@@ -5,7 +5,7 @@ import importlib
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from hla.backends.common import BackendInfo
 from hla.rti.plugin_api import BackendRequest
@@ -100,7 +100,11 @@ def create_java_standard_2010_backend(route: str, request: BackendRequest):
         create_py4j_backend = getattr(py4j_factory, "create_py4j_backend")
         Py4JConfig = getattr(py4j_runtime, "Py4JConfig")
 
-        port = launch_gateway(classpath=str(jar_path), die_on_exit=True, java_path=discover_java_tool("java") or "java")
+        port = cast(int, launch_gateway(
+            classpath=str(jar_path),
+            die_on_exit=True,
+            java_path=discover_java_tool("java") or "java",
+        ))
         gateway = JavaGateway(
             gateway_parameters=GatewayParameters(port=port),
             callback_server_parameters=CallbackServerParameters(port=0),

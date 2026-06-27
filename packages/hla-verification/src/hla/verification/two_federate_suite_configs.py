@@ -8,7 +8,7 @@ from typing import Any
 from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time
 
 
-VENDOR_SMOKE_FOM = resources.files("hla.fom").joinpath("resources", "foms", "VendorSmokeFOM.xml")
+VENDOR_SMOKE_FOM = resources.files("hla.fom").joinpath("resources").joinpath("foms").joinpath("VendorSmokeFOM.xml")
 
 
 @dataclass(frozen=True)

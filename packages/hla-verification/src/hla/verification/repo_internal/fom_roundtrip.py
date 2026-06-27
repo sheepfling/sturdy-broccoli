@@ -21,7 +21,7 @@ from hla.verification.repo_internal.fom_corpus_classification import classify_ed
 
 
 TARGET_RADAR_FOM = Path(
-    str(resources.files("hla.foms.target_radar").joinpath("resources", "foms", "TargetRadarFOMmodule.xml"))
+    str(resources.files("hla.foms.target_radar").joinpath("resources").joinpath("foms").joinpath("TargetRadarFOMmodule.xml"))
 )
 
 _DEFAULT_MODULES_2010: tuple[str, ...] = (
@@ -122,7 +122,7 @@ class FOMRoundTripReport:
 
 
 def _module_signature(module: FOMModule) -> dict[str, Any]:
-    transportation_names = list(_DEFAULT_TRANSPORTATION_NAMES)
+    transportation_names: list[str] = list(_DEFAULT_TRANSPORTATION_NAMES)
     for name in module.transportation_names:
         if name not in transportation_names:
             transportation_names.append(name)

@@ -1,13 +1,15 @@
 """Runtime and bridge helpers for JPype-backed Java RTI backends."""
+# pyright: reportMissingImports=false
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Sequence
+from typing import Any, Sequence, cast
 
 from hla.bridges.java.common import BackendUnavailableError
 from hla.bridges.java.common.java_common import JavaBridge, PythonFederateAmbassadorDispatcher
 from hla.bridges.java.common.java_runtime import ensure_java_home
 from hla.bridges.java.common.java_intake import JavaApiProfile
+from hla.backends.common.invocation import JavaInvocationResolverName
 
 
 @dataclass(frozen=True)
@@ -22,7 +24,7 @@ class JPypeConfig:
     shutdown_jvm_on_close: bool = False
     convert_strings: bool = False
     java_api_profile: str | JavaApiProfile = "2010"
-    invocation_router: str = "weighted"
+    invocation_router: JavaInvocationResolverName = "weighted"
 
 
 class JPypeBridge(JavaBridge):
@@ -63,7 +65,8 @@ class JPypeBridge(JavaBridge):
     def byte_array(self, data: bytes) -> Any:
         JArray = self.jpype.JArray
         JByte = self.jpype.JByte
-        return JArray(JByte)([(item if item < 128 else item - 256) for item in data])
+        array_factory = cast(Any, JArray(JByte))
+        return array_factory([(item if item < 128 else item - 256) for item in data])
 
     def new_set(self, values: Sequence[Any]) -> Any:
         java_set = self.JClass("java.util.HashSet")()
@@ -89,7 +92,8 @@ class JPypeBridge(JavaBridge):
 
     def fom_url_array(self, values: Sequence[Any]) -> Any:
         URL = self.JClass("java.net.URL")
-        return self.jpype.JArray(URL)([self.fom_url(value) for value in values])
+        array_factory = cast(Any, self.jpype.JArray(URL))
+        return array_factory([self.fom_url(value) for value in values])
 
     def _factory_collection(
         self,
@@ -227,7 +231,8 @@ class JPypeBridge(JavaBridge):
         get_class = getattr(obj, "getClass", None)
         if callable(get_class):
             try:
-                return str(get_class().getName())
+                class_info = cast(Any, get_class())
+                return str(class_info.getName())
             except Exception:
                 pass
         return super().full_class_name(obj)
@@ -238,7 +243,8 @@ class JPypeBridge(JavaBridge):
         get_class = getattr(obj, "getClass", None)
         if callable(get_class):
             try:
-                return str(get_class().getSimpleName())
+                class_info = cast(Any, get_class())
+                return str(class_info.getSimpleName())
             except Exception:
                 pass
         return super().simple_class_name(obj)
@@ -247,7 +253,8 @@ class JPypeBridge(JavaBridge):
         get_class = getattr(exc, "getClass", None)
         if callable(get_class):
             try:
-                return str(get_class().getSimpleName())
+                class_info = cast(Any, get_class())
+                return str(class_info.getSimpleName())
             except Exception:
                 pass
         java_class = getattr(exc, "javaClass", None)

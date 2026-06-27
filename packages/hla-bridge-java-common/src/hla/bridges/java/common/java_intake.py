@@ -12,7 +12,7 @@ import os
 import re
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Iterable, Sequence
+from typing import Any, Iterable, Sequence, cast
 
 
 @dataclass(frozen=True, slots=True)
@@ -156,7 +156,8 @@ def _java_class_name(value: Any) -> str | None:
     get_class = getattr(value, "getClass", None)
     if callable(get_class):
         try:
-            return str(get_class().getName())
+            class_info = cast(Any, get_class())
+            return str(class_info.getName())
         except Exception:
             return None
     return None
@@ -167,7 +168,8 @@ def _java_interface_names(value: Any) -> tuple[str, ...]:
     if not callable(get_class):
         return ()
     try:
-        interfaces = get_class().getInterfaces()
+        class_info = cast(Any, get_class())
+        interfaces = class_info.getInterfaces()
     except Exception:
         return ()
     names: list[str] = []
@@ -320,7 +322,7 @@ def _discover_py4j(request: JavaRtiIntakeRequest) -> JavaRtiIntakeReport:
 
         if request.gateway_port is None:
             java_path = discover_java_tool("java") or "java"
-            port = launch_gateway(classpath=os.pathsep.join(request.classpath), die_on_exit=True, java_path=java_path)
+            port = cast(int, launch_gateway(classpath=os.pathsep.join(request.classpath), die_on_exit=True, java_path=java_path))
         else:
             port = request.gateway_port
         gateway = JavaGateway(

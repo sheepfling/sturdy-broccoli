@@ -1,12 +1,14 @@
 """Runtime and bridge helpers for Py4J-backed Java RTI backends."""
 from __future__ import annotations
+# pyright: reportCallIssue=false, reportAttributeAccessIssue=false, reportOptionalMemberAccess=false, reportOptionalCall=false, reportOptionalSubscript=false, reportMissingImports=false
 
 from dataclasses import dataclass, field
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
 from hla.bridges.java.common import CALLBACK_METHOD_NAMES, BackendUnavailableError
 from hla.bridges.java.common.java_common import JavaBridge, PythonFederateAmbassadorDispatcher
 from hla.bridges.java.common.java_intake import JavaApiProfile
+from hla.backends.common.invocation import JavaInvocationResolverName
 
 
 @dataclass(frozen=True)
@@ -20,7 +22,7 @@ class Py4JConfig:
     connect_local_settings_designator: str | None = None
     shutdown_gateway_on_close: bool = False
     java_api_profile: str | JavaApiProfile = "2010"
-    invocation_router: str = "weighted"
+    invocation_router: JavaInvocationResolverName = "weighted"
 
 
 class Py4JFederateAmbassadorProxy:
@@ -252,19 +254,19 @@ class Py4JBridge(JavaBridge):
         except Exception:
             return bytearray(data)
 
-    def new_set(self, values: list[Any] | tuple[Any, ...]) -> Any:
+    def new_set(self, values: Sequence[Any]) -> Any:
         java_set = self.gateway.jvm.java.util.HashSet()
         for value in values:
             java_set.add(value)
         return java_set
 
-    def new_list(self, values: list[Any] | tuple[Any, ...]) -> Any:
+    def new_list(self, values: Sequence[Any]) -> Any:
         java_list = self.gateway.jvm.java.util.ArrayList()
         for value in values:
             java_list.add(value)
         return java_list
 
-    def new_map(self, items: list[tuple[Any, Any]] | tuple[tuple[Any, Any], ...]) -> Any:
+    def new_map(self, items: Sequence[tuple[Any, Any]]) -> Any:
         java_map = self.gateway.jvm.java.util.HashMap()
         for key, value in items:
             java_map.put(key, value)
@@ -274,7 +276,7 @@ class Py4JBridge(JavaBridge):
         uri = self.python_binding.fom_module.module_uri(value)
         return self.gateway.jvm.java.net.URI(uri).toURL()
 
-    def fom_url_array(self, values: list[Any] | tuple[Any, ...]) -> Any:
+    def fom_url_array(self, values: Sequence[Any]) -> Any:
         URL = self.gateway.jvm.java.net.URL
         arr = self.gateway.new_array(URL, len(values))
         for idx, value in enumerate(values):
@@ -331,7 +333,7 @@ class Py4JBridge(JavaBridge):
         self,
         rti_ambassador: Any,
         factory_method: str,
-        values: list[Any] | tuple[Any, ...],
+        values: Sequence[Any],
         *,
         capacity: int | None = None,
     ) -> Any:
@@ -345,7 +347,7 @@ class Py4JBridge(JavaBridge):
                 collection.append(value)
         return collection
 
-    def new_handle_set(self, type_name: str, values: list[Any] | tuple[Any, ...], *, rti_ambassador: Any | None = None) -> Any:
+    def new_handle_set(self, type_name: str, values: Sequence[Any], *, rti_ambassador: Any | None = None) -> Any:
         methods = {
             "AttributeHandleSet": "getAttributeHandleSetFactory",
             "DimensionHandleSet": "getDimensionHandleSetFactory",
@@ -362,7 +364,7 @@ class Py4JBridge(JavaBridge):
     def new_handle_value_map(
         self,
         type_name: str,
-        items: list[tuple[Any, Any]] | tuple[tuple[Any, Any], ...],
+        items: Sequence[tuple[Any, Any]],
         *,
         rti_ambassador: Any | None = None,
     ) -> Any:
@@ -381,7 +383,7 @@ class Py4JBridge(JavaBridge):
                 pass
         return self.new_map(items)
 
-    def new_attribute_set_region_set_pair_list(self, values: list[Any] | tuple[Any, ...], *, rti_ambassador: Any | None = None) -> Any:
+    def new_attribute_set_region_set_pair_list(self, values: Sequence[Any], *, rti_ambassador: Any | None = None) -> Any:
         if rti_ambassador is not None:
             try:
                 return self._factory_collection(rti_ambassador, "getAttributeSetRegionSetPairListFactory", values, capacity=len(values))

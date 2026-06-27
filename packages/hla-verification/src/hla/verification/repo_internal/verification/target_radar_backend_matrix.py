@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import csv
 import json
+from typing import cast
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping, Sequence
@@ -102,7 +103,7 @@ def run_target_radar_backend_matrix(
                     backend=backend,
                     status="passed",
                     reason=None,
-                    backend_kinds=tuple(result.backend_kinds),
+                    backend_kinds=cast(tuple[str, str], tuple(result.backend_kinds)),
                     track_reports=len(track_reports),
                     first_range_m=first_range,
                     last_range_m=last_range,

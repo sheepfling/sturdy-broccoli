@@ -39,13 +39,13 @@ def make_target_radar_factory(
         pair_by_role: dict[str, Any] = {}
         create_python_pair = import_module("hla.backends.python1516e").create_python_pair
 
-        def factory(role: str) -> Any:
+        def python_factory(role: str) -> Any:
             if role not in pair_by_role:
                 target_rti, radar_rti = create_python_pair()
                 pair_by_role.update({"target": target_rti, "radar": radar_rti})
             return pair_by_role[role]
 
-        return factory
+        return python_factory
 
     if normalized in {"python1516e-grpc", "python-grpc"}:
         pair_by_role: dict[str, Any] = {}
@@ -55,7 +55,7 @@ def make_target_radar_factory(
         in_memory_rti_engine = import_module("hla.backends.python1516e").InMemoryRTIEngine
         engine = in_memory_rti_engine()
 
-        def factory(role: str) -> Any:
+        def python_grpc_factory(role: str) -> Any:
             if role not in pair_by_role:
                 left_server = start_python_grpc_server(engine=engine)
                 right_server = start_python_grpc_server(engine=engine)
@@ -68,7 +68,7 @@ def make_target_radar_factory(
                 )
             return pair_by_role[role]
 
-        return factory
+        return python_grpc_factory
 
     if normalized in {"jpype", "java-jpype"}:
         java_jpype = import_module("hla.bridges.java.jpype")
@@ -81,10 +81,10 @@ def make_target_radar_factory(
             jpype_options["rti_factory_name"] = rti_factory_name
         config = jpype_options.pop("config", None) or java_jpype.JPypeConfig(**jpype_options)
 
-        def factory(_role: str) -> Any:
+        def jpype_factory(_role: str) -> Any:
             return java_jpype.rti_ambassador(config)
 
-        return factory
+        return jpype_factory
 
     if normalized in {"py4j", "java-py4j"}:
         java_py4j = import_module("hla.bridges.java.py4j")
@@ -96,29 +96,29 @@ def make_target_radar_factory(
             py4j_options["rti_factory_name"] = rti_factory_name
         config = py4j_options.pop("config", None) or java_py4j.Py4JConfig(**py4j_options)
 
-        def factory(_role: str) -> Any:
+        def py4j_factory(_role: str) -> Any:
             return java_py4j.rti_ambassador(config)
 
-        return factory
+        return py4j_factory
 
     if normalized in _TARGET_RADAR_2025_BACKENDS:
         create_rti_ambassador = import_module("hla.runtime.rti1516_2025_factory").create_rti_ambassador
 
-        def factory(_role: str) -> Any:
+        def python2025_factory(_role: str) -> Any:
             rti = create_rti_ambassador(backend=normalized, **backend_options)
             return TargetRadar2025RTIAdapter(rti)
 
-        return factory
+        return python2025_factory
 
     create_rti_ambassador = import_module("hla.rti").create_rti_ambassador
 
-    def factory(_role: str) -> Any:
+    def generic_factory(_role: str) -> Any:
         rti = create_rti_ambassador(spec="2025", backend=normalized, **backend_options)
         if normalized in _TARGET_RADAR_2025_BACKENDS:
             return TargetRadar2025RTIAdapter(rti)
         return rti
 
-    return factory
+    return generic_factory
 
 
 __all__ = ["make_target_radar_factory", "target_radar_fom_path"]

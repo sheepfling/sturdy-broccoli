@@ -73,6 +73,7 @@ class FOMWorkbenchFamily:
     validation_issue_layers: tuple[str, ...] = ()
     validation_issue_groups: tuple[dict[str, Any], ...] = ()
     datatype_normalizations: tuple[dict[str, str], ...] = ()
+    resolved: tuple[Any, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -110,6 +111,7 @@ class FOMWorkbenchLoadSet:
     validation_issue_layers: tuple[str, ...] = ()
     validation_issue_groups: tuple[dict[str, Any], ...] = ()
     datatype_normalizations: tuple[dict[str, str], ...] = ()
+    resolved: tuple[Any, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -572,6 +574,7 @@ def _family_summary(records: tuple[FOMInventoryRecord, ...], *, validation_outpu
     validation_issue_layers: tuple[str, ...] = ()
     validation_issue_groups: tuple[dict[str, Any], ...] = ()
     datatype_normalizations: tuple[dict[str, str], ...] = ()
+    resolved: tuple[Any, ...] = ()
     validation_command = f"./tools/fom-validate --family {records[0].scenario_family} --html"
     try:
         resolver = FOMResolver()
@@ -610,7 +613,7 @@ def _family_summary(records: tuple[FOMInventoryRecord, ...], *, validation_outpu
         parse_status = "error"
         parse_error_kind, recommended_next_step = _workbench_failure(exc)
         parse_error = str(exc)
-        if 'resolved' in locals() and isinstance(exc, FOMMergeError):
+        if resolved and isinstance(exc, FOMMergeError):
             merge_conflict_kind, merge_conflict_symbol, merge_conflict_members, merge_conflict_member_details = _merge_conflict_from_modules(
                 str(exc),
                 tuple(resolved),
@@ -693,6 +696,7 @@ def _load_set_summary(name: str, records: tuple[FOMInventoryRecord, ...], *, val
     validation_issue_layers: tuple[str, ...] = ()
     validation_issue_groups: tuple[dict[str, Any], ...] = ()
     datatype_normalizations: tuple[dict[str, str], ...] = ()
+    resolved: tuple[Any, ...] = ()
     try:
         resolver = FOMResolver()
         resolved = resolver.resolve_many(tuple((_repo_root() / record.path) for record in records))
@@ -730,7 +734,7 @@ def _load_set_summary(name: str, records: tuple[FOMInventoryRecord, ...], *, val
         parse_status = "error"
         parse_error_kind, recommended_next_step = _workbench_failure(exc)
         parse_error = str(exc)
-        if 'resolved' in locals() and isinstance(exc, FOMMergeError):
+        if resolved and isinstance(exc, FOMMergeError):
             merge_conflict_kind, merge_conflict_symbol, merge_conflict_members, merge_conflict_member_details = _merge_conflict_from_modules(
                 str(exc),
                 tuple(resolved),

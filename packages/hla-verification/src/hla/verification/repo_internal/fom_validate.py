@@ -10,10 +10,11 @@ import re
 import xml.etree.ElementTree as ET
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Iterable, Literal
+from typing import Any, Iterable, Literal, cast
 
 from hla.fom.validation import ValidationIssue, validate_fom_module, validate_omt_xml_schema
 from hla.fom import (
+    FOMCatalog,
     merge_fom_modules,
     FOMResolver,
     FOMMergeError,
@@ -201,14 +202,14 @@ def _normalize_edition(source: Path, requested: EditionArg) -> Edition:
         except Exception:
             inventory = lookup_fom_inventory(source)
             if inventory is not None and inventory.edition_class in {"2010", "2025"}:
-                return inventory.edition_class
+                return cast(Edition, inventory.edition_class)
             return "2010"
         resolved_path = Path(str(resolved.path or resolved.source))
         if resolved_path.exists():
             return _sniff_effective_edition(resolved_path)
     inventory = lookup_fom_inventory(source)
     if inventory is not None and inventory.edition_class in {"2010", "2025"}:
-        return inventory.edition_class
+        return cast(Edition, inventory.edition_class)
     return _sniff_effective_edition(source)
 
 
@@ -243,7 +244,7 @@ def _module_counts(module: FOMModule | None) -> tuple[int, int, int, tuple[str, 
     )
 
 
-def _datatype_normalizations(module: FOMModule | None) -> tuple[dict[str, str], ...]:
+def _datatype_normalizations(module: FOMModule | FOMCatalog | None) -> tuple[dict[str, str], ...]:
     if module is None:
         return ()
     rows: list[dict[str, str]] = []

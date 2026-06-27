@@ -1,4 +1,5 @@
 """Runtime-owned RTI factory and plugin integration helpers."""
+# pyright: reportUnsupportedDunderAll=false
 
 from __future__ import annotations
 

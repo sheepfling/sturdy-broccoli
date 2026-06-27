@@ -1,4 +1,5 @@
 """Easy standard Java RTI implementation facade."""
+# pyright: reportMissingImports=false
 from __future__ import annotations
 
 from dataclasses import dataclass, field

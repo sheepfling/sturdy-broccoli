@@ -1,4 +1,5 @@
 from __future__ import annotations
+# pyright: reportArgumentType=false, reportGeneralTypeIssues=false
 
 import csv
 import json

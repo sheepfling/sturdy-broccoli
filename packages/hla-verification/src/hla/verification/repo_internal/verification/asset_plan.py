@@ -772,6 +772,7 @@ def write_traceability_csv(path: str | Path, *, version: str = "0.13.0") -> Path
                         "; ".join(asset.gaps),
                     ]
                 )
+    return target
 
 __all__ = [
     "VerificationAsset",

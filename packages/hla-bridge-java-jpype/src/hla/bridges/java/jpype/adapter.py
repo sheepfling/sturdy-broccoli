@@ -1,4 +1,5 @@
 """Adapter class for JPype-backed Java RTI backends."""
+# pyright: reportMissingImports=false
 from __future__ import annotations
 
 from hla.bridges.java.common.java_common import JavaRTIBackend

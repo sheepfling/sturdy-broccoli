@@ -136,6 +136,7 @@ class RTIAmbassadorLike(Protocol):
     def disconnect(self, *args: Any, **kwargs: Any) -> Any: ...
     def destroy_federation_execution(self, *args: Any, **kwargs: Any) -> Any: ...
     def evoke_multiple_callbacks(self, *args: Any, **kwargs: Any) -> Any: ...
+    def time_advance_request(self, *args: Any, **kwargs: Any) -> Any: ...
 
 
 RtiFactory = Callable[[str], RTIAmbassadorLike]
@@ -378,13 +379,16 @@ class RadarFederate(NullFederateAmbassador):
         *extra: Any,
     ) -> None:
         contact = self.contacts.setdefault(the_object, RadarContact(the_object, f"Object-{the_object.value}"))
-        if self.position_attr in the_attributes:
-            contact.position = decode_vec3(the_attributes[self.position_attr])
-        if self.velocity_attr in the_attributes:
-            contact.velocity = decode_vec3(the_attributes[self.velocity_attr])
+        position_attr = self.position_attr
+        velocity_attr = self.velocity_attr
+        rcs_attr = self.rcs_attr
+        if position_attr is not None and position_attr in the_attributes:
+            contact.position = decode_vec3(the_attributes[position_attr])
+        if velocity_attr is not None and velocity_attr in the_attributes:
+            contact.velocity = decode_vec3(the_attributes[velocity_attr])
         rcs_updated = False
-        if self.rcs_attr in the_attributes:
-            contact.rcs_square_meters = decode_float(the_attributes[self.rcs_attr])
+        if rcs_attr is not None and rcs_attr in the_attributes:
+            contact.rcs_square_meters = decode_float(the_attributes[rcs_attr])
             rcs_updated = True
         self._emit("reflect", (the_object, dict(the_attributes), user_supplied_tag))
         if rcs_updated and contact.position is not None and contact.rcs_square_meters is not None:
