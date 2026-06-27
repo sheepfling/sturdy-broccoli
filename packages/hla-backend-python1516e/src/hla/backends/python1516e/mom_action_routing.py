@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Mapping
+from typing import TYPE_CHECKING, Any, Mapping, Protocol
 
 import hla.fom.mom as hla_mom
 from hla.rti1516e.exceptions import (
@@ -14,8 +14,144 @@ from hla.backends.common import UnsupportedBackendService
 
 from .mom_parameter_decoding import PythonRTIMomParameterDecodingMixin
 
+if TYPE_CHECKING:
+    from .state import FederateState, FederationState, PythonRTIConfig
 
-class PythonRTIMomActionRoutingMixin(PythonRTIMomParameterDecodingMixin):
+
+class _MomActionRoutingContext(Protocol):
+    config: "PythonRTIConfig"
+    state: "FederateState"
+
+    def _require_joined(self) -> "FederationState": ...
+
+    def _target_federate_from_mom_params(self, federation: "FederationState", params: Mapping[str, bytes]) -> "FederateState": ...
+
+    def _mom_exposure_model(self, federation: "FederationState") -> Any: ...
+
+    def _mom_request_report_values(
+        self,
+        federation: "FederationState",
+        request_name: str,
+        report_name: str,
+        params: Mapping[str, bytes],
+    ) -> dict[str, Any]: ...
+
+    def _send_mom_report(self, federation: "FederationState", report_name: str, values: Mapping[str, Any]) -> None: ...
+
+    def _apply_mom_set_service_reporting(
+        self,
+        federation: "FederationState",
+        target: "FederateState",
+        enabled: bool,
+        interaction_name: str = "",
+        parameter_name: str = "HLAreportingState",
+    ) -> None: ...
+
+    def _ensure_service_report_file(self, federation: "FederationState", federate: "FederateState") -> str: ...
+
+    def _refresh_mom_attribute_values(self, federation: "FederationState") -> None: ...
+
+    def _svc_resignFederationExecution(self, resignAction: Any) -> Any: ...
+
+    def _svc_synchronizationPointAchieved(
+        self,
+        synchronizationPointLabel: str,
+        successIndicator: bool = True,
+    ) -> Any: ...
+
+    def _svc_federateSaveBegun(self) -> Any: ...
+
+    def _svc_federateSaveComplete(self) -> Any: ...
+
+    def _svc_federateSaveNotComplete(self) -> Any: ...
+
+    def _svc_federateRestoreComplete(self) -> Any: ...
+
+    def _svc_federateRestoreNotComplete(self) -> Any: ...
+
+    def _svc_publishObjectClassAttributes(self, theClass: Any, attributeList: Any) -> Any: ...
+
+    def _svc_unpublishObjectClassAttributes(self, theClass: Any, attributeList: Any) -> Any: ...
+
+    def _svc_publishInteractionClass(self, theInteraction: Any) -> Any: ...
+
+    def _svc_unpublishInteractionClass(self, theInteraction: Any) -> Any: ...
+
+    def _svc_subscribeObjectClassAttributes(
+        self,
+        theClass: Any,
+        attributeList: Any,
+        *unused: Any,
+    ) -> Any: ...
+
+    def _svc_subscribeObjectClassAttributesPassively(
+        self,
+        theClass: Any,
+        attributeList: Any,
+        *unused: Any,
+    ) -> Any: ...
+
+    def _svc_unsubscribeObjectClassAttributes(self, theClass: Any, attributeList: Any) -> Any: ...
+
+    def _svc_subscribeInteractionClass(self, theClass: Any, *unused: Any) -> Any: ...
+
+    def _svc_subscribeInteractionClassPassively(self, theClass: Any, *unused: Any) -> Any: ...
+
+    def _svc_unsubscribeInteractionClass(self, theClass: Any) -> Any: ...
+
+    def _svc_deleteObjectInstance(self, theObject: Any, userSuppliedTag: bytes, *unused: Any) -> Any: ...
+
+    def _svc_localDeleteObjectInstance(self, theObject: Any) -> Any: ...
+
+    def _svc_requestAttributeTransportationTypeChange(
+        self,
+        theObject: Any,
+        theAttributes: Any,
+        theType: Any,
+    ) -> Any: ...
+
+    def _svc_requestInteractionTransportationTypeChange(self, theClass: Any, theType: Any) -> Any: ...
+
+    def _svc_unconditionalAttributeOwnershipDivestiture(self, theObject: Any, theAttributes: Any) -> Any: ...
+
+    def _svc_enableTimeRegulation(self, theLookahead: Any) -> Any: ...
+
+    def _svc_disableTimeRegulation(self) -> Any: ...
+
+    def _svc_enableTimeConstrained(self) -> Any: ...
+
+    def _svc_disableTimeConstrained(self) -> Any: ...
+
+    def _svc_timeAdvanceRequest(self, theTime: Any) -> Any: ...
+
+    def _svc_timeAdvanceRequestAvailable(self, theTime: Any) -> Any: ...
+
+    def _svc_nextMessageRequest(self, theTime: Any) -> Any: ...
+
+    def _svc_nextMessageRequestAvailable(self, theTime: Any) -> Any: ...
+
+    def _svc_flushQueueRequest(self, theTime: Any) -> Any: ...
+
+    def _svc_enableAsynchronousDelivery(self) -> Any: ...
+
+    def _svc_disableAsynchronousDelivery(self) -> Any: ...
+
+    def _svc_modifyLookahead(self, theLookahead: Any) -> Any: ...
+
+    def _svc_changeAttributeOrderType(self, theObject: Any, theAttributes: Any, theType: Any) -> Any: ...
+
+    def _svc_changeInteractionOrderType(self, theClass: Any, theType: Any) -> Any: ...
+
+
+if TYPE_CHECKING:
+    class _MomActionRoutingMixinBase(PythonRTIMomParameterDecodingMixin, _MomActionRoutingContext):
+        pass
+else:
+    class _MomActionRoutingMixinBase(PythonRTIMomParameterDecodingMixin):
+        pass
+
+
+class PythonRTIMomActionRoutingMixin(_MomActionRoutingMixinBase):
     """MOM interaction routing plus service and adjust action dispatch."""
 
     def _run_mom_service_action(self, interaction_name: str, params: Mapping[str, bytes]) -> None:
