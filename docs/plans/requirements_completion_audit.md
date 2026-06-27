@@ -63,6 +63,11 @@ presentation packet.
   - `830` `verified`
   - `0` `vendor-divergent`
   - `78` `not-applicable`
+- coarse `2010` seed and traceability mirror status:
+  - `0` stale `partial` rows in `hla1516_framework_rules.csv`
+  - `0` stale `partial` rows in `hla1516_1_clause_5_declaration_management.csv`
+  - `0` stale `partial` rows in `hla1516_1_clause_6_object_management.csv`
+  - `0` stale `partial` rows in `traceability_matrix.csv`
 - defended policy-parent packet:
   - `9` intentionally bounded broad partial parents
   - `23` passing supported-subset child proofs
@@ -162,6 +167,9 @@ Current reading:
 - the top-level 2010 owner surface now keeps the remaining OMT family,
   OMT/XML bridge, and XML family stories separate instead of hiding them in one
   combined owner bucket
+- the coarse framework, Clause 5, Clause 6, and traceability seed files no
+  longer carry stale `partial` rows for matrix entries that the executable
+  packet already treats as direct `pass`
 - the imported master index currently reports:
   - `2675 mapped`
   - `1328 partial`

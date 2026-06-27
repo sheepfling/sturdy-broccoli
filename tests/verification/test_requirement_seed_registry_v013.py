@@ -74,3 +74,33 @@ def test_requirement_registry_declares_three_standard_sources():
     assert "source_id: HLA1516.1" in registry
     assert "source_id: HLA1516.2" in registry
     assert "HLA1516.1-FM-001" in registry
+
+
+def test_coarse_2010_seed_ledgers_do_not_keep_stale_partial_rows_for_closed_clause5_clause6_and_framework_entries():
+    framework_rows = {row["requirement_id"]: row for row in _rows(REFERENCE_DIR / "hla1516_framework_rules.csv")}
+    clause5_rows = {row["requirement_id"]: row for row in _rows(REFERENCE_DIR / "hla1516_1_clause_5_declaration_management.csv")}
+    clause6_rows = {row["requirement_id"]: row for row in _rows(REFERENCE_DIR / "hla1516_1_clause_6_object_management.csv")}
+    trace_rows = {row["requirement_id"]: row for row in _rows(REFERENCE_DIR / "traceability_matrix.csv")}
+
+    assert framework_rows["HLA1516-RULE-001"]["status"] == "pass"
+
+    for requirement_id in (
+        "HLA1516.1-DM-5.1-004",
+        "HLA1516.1-DM-5.10-001",
+        "HLA1516.1-DM-5.11-001",
+        "HLA1516.1-DM-5.12-001",
+        "HLA1516.1-DM-5.13-001",
+    ):
+        assert clause5_rows[requirement_id]["status"] == "pass"
+        assert trace_rows[requirement_id]["status"] == "pass"
+
+    for requirement_id in (
+        "HLA1516.1-OM-6.1.5-001",
+        "HLA1516.1-OM-6.1.6-001",
+        "HLA1516.1-OM-6.11-002",
+        "HLA1516.1-OM-6.12-004",
+        "HLA1516.1-OM-6.14-002",
+    ):
+        assert clause6_rows[requirement_id]["status"] == "pass"
+
+    assert trace_rows["HLA1516.1-OM-6.1.6-001"]["status"] == "pass"

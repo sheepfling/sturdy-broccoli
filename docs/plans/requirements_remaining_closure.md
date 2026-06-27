@@ -109,6 +109,9 @@ Example shape:
 The `2010` surface is structurally linked and collected.
 The focused `2010` backend-compliance packet now has no remaining `partial`
 rows.
+The coarse `2010` source seed ledgers and their direct traceability mirror now
+also have no remaining stale `partial` rows; the remaining bounded residuals
+live only in the explicit bounded-family owner companions.
 
 Current imported-master status from
 [`../../requirements/2010/hla_1516_master_harmonization_index_v1_0.csv`](../../requirements/2010/hla_1516_master_harmonization_index_v1_0.csv):
@@ -121,6 +124,8 @@ Current imported-master status from
 
 There are no remaining direct `planned` clause rows in the curated `2010`
 source ledgers.
+There are also no remaining stale direct `partial` rows in the coarse
+`2010` framework, Clause 5, Clause 6, or traceability seed files.
 
 There are also no remaining active `2010` closeout buckets in this note.
 
@@ -138,6 +143,11 @@ Exact current reading from the backend-compliance packet:
 - `0` `partial` rows total
 - `830` rows where Python is `verified`
 - `78` rows where Python is `not-applicable`
+- `0` stale `partial` rows across:
+  - `requirements/2010/hla1516_framework_rules.csv`
+  - `requirements/2010/hla1516_1_clause_5_declaration_management.csv`
+  - `requirements/2010/hla1516_1_clause_6_object_management.csv`
+  - `requirements/2010/traceability_matrix.csv`
 - the former mixed-backend clause tails are now closed owner rows with explicit
   backend-resolution companions:
   - `HLA1516.1-FM-4.1.5-001`

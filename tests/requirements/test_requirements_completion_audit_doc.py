@@ -32,6 +32,8 @@ def test_requirements_completion_audit_keeps_owner_vs_presentation_split_explici
     assert "`0` `partial`" in text
     assert "the current count is `0`" in text
     assert "the current count is `0`" in text
+    assert "coarse `2010` seed and traceability mirror status:" in text
+    assert "stale `partial` rows in `hla1516_1_clause_5_declaration_management.csv`" in text
     assert "hla1516_framework_detailed_reconciliation.csv" in text
     assert "the `2010` packet no longer contains any `planned` inventory rows" in text
     assert "`20` `pass` OMT/XML area rows" in text

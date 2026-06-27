@@ -20,6 +20,9 @@ the curated bounded-family closeout ledgers.
 
 The broader `2010` backend-compliance packet also no longer contains any
 `planned` rows.
+The coarse framework, Clause 5, Clause 6, and traceability seed files also no
+longer carry stale direct `partial` rows for entries that the packet already
+proves as `pass`.
 The former OMT-area and schema-conformance placeholders are now settled
 explicitly as:
 

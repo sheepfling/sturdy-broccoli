@@ -19,6 +19,10 @@ def test_requirements_remaining_closure_uses_current_2010_large_family_story() -
     assert "`0` `partial` rows total" in text
     assert "`830` rows where Python is `verified`" in text
     assert "`78` rows where Python is `not-applicable`" in text
+    assert "The coarse `2010` source seed ledgers and their direct traceability mirror now" in text
+    assert "`0` stale `partial` rows across:" in text
+    assert "hla1516_1_clause_5_declaration_management.csv" in text
+    assert "hla1516_1_clause_6_object_management.csv" in text
     assert "`0` supported-subset policy parents" in text
     assert "hla1516_framework_detailed_reconciliation.csv" in text
 
