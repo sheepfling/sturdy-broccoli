@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Mapping
+from typing import TYPE_CHECKING, Any, Mapping, Protocol
 
 from hla.rti1516_2025.datatypes import RangeBounds
 from hla.rti1516_2025.enums import OrderType, ResignAction, ServiceGroup
@@ -102,8 +102,45 @@ from .support_services_runtime import (
 )
 from .update_rate_runtime import get_update_rate_value
 
+if TYPE_CHECKING:
+    class _SupportSurfaceContext(Protocol):
+        _default_attribute_transportation: dict[tuple[str, str], str]
+        _default_attribute_order: dict[tuple[str, str], Any]
+        _mom_report_period_seconds: float | None
+        _logical_time_factory: Any
 
-class SupportSurfaceMixin:
+        def _record(self, method_name: str, *args: Any, **kwargs: Any) -> None: ...
+
+        def _require_connected(self, method_name: str) -> None: ...
+
+        def _require_joined(self, method_name: str) -> None: ...
+
+        @staticmethod
+        def _normalize_handle(handle: Any, expected_type: type[Any], exception_type: type[Exception]) -> int: ...
+
+        def _object_instance_record(self, object_instance: Any) -> Any: ...
+
+        def _attribute_name_by_handle(self, object_class_name: str, attribute: Any) -> str: ...
+
+        def _subscribed_update_rate_for_attribute(
+            self,
+            federate_key: int,
+            actual_class_name: str,
+            attribute_name: str,
+        ) -> float: ...
+
+        def _current_federate_key(self) -> int: ...
+
+
+if TYPE_CHECKING:
+    class _SupportSurfaceMixinBase(_SupportSurfaceContext):
+        pass
+else:
+    class _SupportSurfaceMixinBase:
+        pass
+
+
+class SupportSurfaceMixin(_SupportSurfaceMixinBase):
     """Keep the main ambassador focused on runtime semantics over API plumbing."""
 
     def getObjectClassHandle(self, objectClassName: str) -> ObjectClassHandle:  # noqa: N802

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any, Protocol
 
 from hla.rti1516_2025.datatypes import RangeBounds
 from hla.rti1516_2025.handles import AttributeHandle, DimensionHandle, ObjectInstanceHandle, RegionHandle
@@ -51,8 +51,36 @@ from .object_region_runtime import (
     unsubscribe_object_class_attributes_with_regions,
 )
 
+if TYPE_CHECKING:
+    class _DeclarationDdmSurfaceContext(Protocol):
+        def _record(self, method_name: str, *args: Any, **kwargs: Any) -> None: ...
 
-class DeclarationDdmSurfaceMixin:
+        def _require_joined(self, method_name: str) -> None: ...
+
+        def _require_no_save_or_restore(self, method_name: str) -> None: ...
+
+        def _object_instance_record_known(self, object_instance: Any) -> Any: ...
+
+        def _object_class_name(self, object_class: Any) -> str: ...
+
+        def _attribute_region_pairs(
+            self,
+            object_class_name: str,
+            attributes_and_regions: Any,
+        ) -> tuple[tuple[set[str], set[int]], ...]: ...
+
+        def _attribute_handles(self, object_class_name: str) -> dict[str, int]: ...
+
+
+if TYPE_CHECKING:
+    class _DeclarationDdmSurfaceMixinBase(_DeclarationDdmSurfaceContext):
+        pass
+else:
+    class _DeclarationDdmSurfaceMixinBase:
+        pass
+
+
+class DeclarationDdmSurfaceMixin(_DeclarationDdmSurfaceMixinBase):
     """Move mechanical declaration and DDM wrappers out of the ambassador body."""
 
     def publishObjectClassAttributes(self, objectClass: Any, attributes: Any) -> None:  # noqa: N802

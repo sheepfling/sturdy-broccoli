@@ -5,7 +5,7 @@ from importlib.resources import files
 from pathlib import Path
 import re
 from types import SimpleNamespace
-from typing import Any, Callable
+from typing import Any, Callable, NoReturn
 
 from hla.rti1516_2025.datatypes import (
     FederateHandleSaveStatusPair,
@@ -402,7 +402,7 @@ class FedPro2025RTIAmbassador:
     @staticmethod
     def _decode_interval(kind: str, value: str):
         if kind == "HLAfloat64Interval":
-            return get_logical_time_factory("HLAfloat64Time").make_interval(float(value))
+            return HLAfloat64Interval(float(value))
         return HLAinteger64Interval(int(value))
 
     @staticmethod
@@ -450,7 +450,7 @@ class FedPro2025RTIAmbassador:
         return str(scalar)
 
     @staticmethod
-    def _remap_transport_error(exc: TransportError):
+    def _remap_transport_error(exc: TransportError) -> NoReturn:
         if exc.code == "AlreadyConnected":
             raise AlreadyConnected(exc.message or exc.code) from exc
         if exc.code == "FederateIsExecutionMember":

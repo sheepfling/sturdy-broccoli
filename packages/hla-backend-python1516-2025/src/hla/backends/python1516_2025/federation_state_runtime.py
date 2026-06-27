@@ -226,7 +226,7 @@ def ensure_mom_federate_object(
     object_name = f"HLAmanager.HLAfederate.{federate_handle.value}.{federate_name}"
     if object_name in federation.object_instance_names:
         return
-    owner_by_attribute = {
+    owner_by_attribute: dict[str, FederateHandle | None] = {
         attribute_name: federate_handle
         for attribute_name in backend._attribute_handles(class_name)
         if attribute_name in {"HLAfederateHandle", "HLAfederateName", "HLAfederateType"}

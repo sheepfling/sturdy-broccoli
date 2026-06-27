@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Iterable, Mapping
+from typing import TYPE_CHECKING, Any, Iterable, Mapping, Protocol
 
 from hla.rti1516_2025.enums import OrderType, ResignAction
 from hla.rti1516_2025.handles import (
@@ -60,7 +60,27 @@ from .mom_runtime import (
 )
 from .object_instance_runtime import set_internal_object_attribute_values
 
-class MomSurfaceMixin:
+if TYPE_CHECKING:
+    class _MomSurfaceContext(Protocol):
+        def _transportation_handle_by_name(self, name: str) -> TransportationTypeHandle: ...
+
+        def _coerce_time(self, value: Any) -> Any: ...
+
+        def _coerce_interval(self, value: Any) -> Any: ...
+
+        def _object_class_handles(self) -> dict[str, int]: ...
+
+        def _interaction_class_handles(self) -> dict[str, int]: ...
+
+
+if TYPE_CHECKING:
+    class _MomSurfaceMixinBase(_MomSurfaceContext):
+        pass
+else:
+    class _MomSurfaceMixinBase:
+        pass
+
+class MomSurfaceMixin(_MomSurfaceMixinBase):
     """Move MOM helpers out of the primary ambassador class body."""
 
     @staticmethod
@@ -231,7 +251,7 @@ class MomSurfaceMixin:
         return mom_text(value, field_name)
 
     def _mom_transportation_handle(self, value: bytes | None, field_name: str) -> TransportationTypeHandle:
-        return self.getTransportationTypeHandle(self._mom_text(value, field_name))
+        return self._transportation_handle_by_name(self._mom_text(value, field_name))
 
     def _mom_time(self, value: bytes | None, field_name: str) -> Any:
         return self._coerce_time(self._mom_number(value, field_name))

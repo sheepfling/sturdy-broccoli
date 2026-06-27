@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any, Protocol
 
 from hla.backends.common import time_management as tm
 from hla.rti1516_2025.datatypes import ConfigurationResult, TimeQueryReturn
@@ -65,8 +65,28 @@ from .time_management_runtime import (
     validate_tso_send_time,
 )
 
+if TYPE_CHECKING:
+    class _FederationTimeSurfaceContext(Protocol):
+        _logical_time: Any
 
-class FederationTimeSurfaceMixin:
+        def _record(self, method_name: str, *args: Any, **kwargs: Any) -> None: ...
+
+        def _require_connected(self, method_name: str) -> None: ...
+
+        def _require_joined(self, method_name: str) -> None: ...
+
+        def _coerce_time(self, value: Any) -> Any: ...
+
+
+if TYPE_CHECKING:
+    class _FederationTimeSurfaceMixinBase(_FederationTimeSurfaceContext):
+        pass
+else:
+    class _FederationTimeSurfaceMixinBase:
+        pass
+
+
+class FederationTimeSurfaceMixin(_FederationTimeSurfaceMixinBase):
     """Keep the main ambassador body focused on stateful runtime helpers."""
 
     def connect(

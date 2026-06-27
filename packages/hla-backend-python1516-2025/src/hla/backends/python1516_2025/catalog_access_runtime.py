@@ -82,7 +82,7 @@ def dimension_default_upper_bound(backend: Any, dimension_name: str) -> int:
 
 
 def transportation_handles(backend: Any) -> dict[str, int]:
-    names = set(getattr(catalog(backend), "transportation_names", ()))
+    names: set[str] = {str(name) for name in getattr(catalog(backend), "transportation_names", ())}
     names.update({"HLAreliable", "HLAbestEffort"})
     return stable_handles(names)
 

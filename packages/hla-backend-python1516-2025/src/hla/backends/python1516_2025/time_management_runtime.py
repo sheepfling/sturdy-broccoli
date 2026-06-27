@@ -60,7 +60,8 @@ def query_galt_for(target: Any) -> TimeQueryReturn:
             include_self=False,
             factory=target._logical_time_factory,
         )
-        return TimeQueryReturn(query.time_is_valid, query.time)
+        logical_time = target._coerce_time(query.time) if query.time is not None else None
+        return TimeQueryReturn(query.time_is_valid, logical_time)
     return TimeQueryReturn(True, target._logical_time)
 
 
@@ -73,7 +74,7 @@ def query_lits_for(target: Any) -> TimeQueryReturn:
         factory=target._logical_time_factory,
     )
     galt = query_galt_for(target)
-    candidates = [query.time] if query.time_is_valid and query.time is not None else []
+    candidates: list[Any] = [target._coerce_time(query.time)] if query.time_is_valid and query.time is not None else []
     if galt.timeIsValid and galt.time is not None:
         candidates.append(galt.time)
     if not candidates:

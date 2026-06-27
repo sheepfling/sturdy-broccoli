@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any, Callable, ClassVar
 
 from hla.backends.common import time_management as tm
 from hla.backends.common.base import snake_to_lower_camel
@@ -27,8 +27,8 @@ class AmbassadorCoreSurfaceMixin:
     """Common shell, state, and fallback helpers for the 2025 ambassador."""
 
     backend_info: BackendInfo
-    _DEFAULT_LOGICAL_TIME_IMPLEMENTATION: str
-    _SWITCH_DEFAULTS: dict[str, bool]
+    _DEFAULT_LOGICAL_TIME_IMPLEMENTATION: ClassVar[str]
+    _SWITCH_DEFAULTS: ClassVar[dict[str, bool]]
     _automatic_resign_directive: ResignAction
 
     def __init__(self) -> None:

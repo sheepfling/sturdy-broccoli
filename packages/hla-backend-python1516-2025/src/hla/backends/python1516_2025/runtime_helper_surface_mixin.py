@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Iterable, Mapping
+from typing import TYPE_CHECKING, Any, Iterable, Mapping, Protocol
 
 from hla.rti1516_2025.datatypes import RangeBounds
 from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
@@ -159,8 +159,25 @@ from .update_rate_runtime import (
     time_scalar,
 )
 
+_DEFAULT_LOGICAL_TIME_IMPLEMENTATION = "HLAinteger64Time"
+_SUPPORTED_LOGICAL_TIME_IMPLEMENTATIONS = frozenset({"HLAinteger64Time", "HLAfloat64Time"})
 
-class RuntimeHelperSurfaceMixin:
+if TYPE_CHECKING:
+    class _RuntimeHelperSurfaceContext(Protocol):
+        _federate_name: str | None
+        _federation_name: str | None
+        _federate_handle: FederateHandle | None
+
+
+if TYPE_CHECKING:
+    class _RuntimeHelperSurfaceMixinBase(_RuntimeHelperSurfaceContext):
+        pass
+else:
+    class _RuntimeHelperSurfaceMixinBase:
+        pass
+
+
+class RuntimeHelperSurfaceMixin(_RuntimeHelperSurfaceMixinBase):
     """Move mechanical helper delegation out of the main ambassador class body."""
 
     def _deliver_callback(self, method_name: str, *args: Any) -> None:
@@ -295,8 +312,8 @@ class RuntimeHelperSurfaceMixin:
         return extract_logical_time_implementation_name(
             args,
             kwargs,
-            supported_logical_time_implementations=self._SUPPORTED_LOGICAL_TIME_IMPLEMENTATIONS,
-            default_logical_time_implementation=self._DEFAULT_LOGICAL_TIME_IMPLEMENTATION,
+            supported_logical_time_implementations=_SUPPORTED_LOGICAL_TIME_IMPLEMENTATIONS,
+            default_logical_time_implementation=_DEFAULT_LOGICAL_TIME_IMPLEMENTATION,
         )
 
     def _extract_fom_sources(

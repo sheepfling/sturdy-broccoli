@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Mapping
+from typing import TYPE_CHECKING, Any, Mapping, Protocol
 
 from hla.rti1516_2025.handles import AttributeHandle
 
@@ -38,8 +38,26 @@ from .ownership_runtime import (
     unconditional_attribute_ownership_divestiture,
 )
 
+if TYPE_CHECKING:
+    class _ObjectOwnershipSurfaceContext(Protocol):
+        def _record(self, method_name: str, *args: Any, **kwargs: Any) -> None: ...
 
-class ObjectOwnershipSurfaceMixin:
+        def _require_joined(self, method_name: str) -> None: ...
+
+        def _require_no_save_or_restore(self, method_name: str) -> None: ...
+
+        def _current_federate_handle(self) -> Any: ...
+
+
+if TYPE_CHECKING:
+    class _ObjectOwnershipSurfaceMixinBase(_ObjectOwnershipSurfaceContext):
+        pass
+else:
+    class _ObjectOwnershipSurfaceMixinBase:
+        pass
+
+
+class ObjectOwnershipSurfaceMixin(_ObjectOwnershipSurfaceMixinBase):
     """Move mechanical object and ownership service wrappers out of the main class body."""
 
     def registerObjectInstance(  # noqa: N802
