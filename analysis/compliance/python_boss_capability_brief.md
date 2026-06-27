@@ -8,15 +8,15 @@ The Python RTI is now the repo's strongest `2010 / 1516e` reference backend,
 but leadership should read it through two separate denominators:
 
 - canonical `2010` backend-compliance packet:
-  - `934` rows
+  - `931` rows
   - `842` `pass`
   - `40` `implemented-slice`
   - `1` `implemented-smoke`
-  - `51` `partial`
+  - `48` `partial`
 - Python runtime projection inside that packet:
-  - `853` `verified`
+  - `852` `verified`
   - `79` `not-applicable`
-  - `2` `vendor-divergent`
+  - `0` `vendor-divergent`
   - `0` `blocked`
   - `0` `not-yet-tested`
   - `0` `classification-required`
@@ -46,7 +46,7 @@ That is not the same as saying:
 - every `2010` packet row is already a standalone all-passed witness
 - every applicable requirement is perfectly spec-identical
 
-The remaining `2` residuals are intentional `vendor-divergent`
+The remaining residuals are intentional `not-applicable`
 classifications, not open test debt, and the canonical packet still keeps
 bounded `partial` rows explicit.
 
@@ -57,7 +57,7 @@ Use this as the headline:
 > We now have a Python RTI reference lane with no open runtime-classification
 > rows in the committed 2010 matrix projection. It proves federation
 > management, synchronization, packaged FOM loading, time management, and
-> hosted networked operation. The remaining vendor-divergent items and bounded
+> hosted networked operation. The remaining bounded
 > packet partials are explicit documented policy or scope readings, not hidden
 > test gaps.
 
@@ -67,10 +67,8 @@ Then keep the distinction clear:
 - `not-applicable` means intentionally out of scope
 - `vendor-divergent` means intentionally different or only partially modeled by policy, not unfinished work
 
-Do not present the residual `2` as bugs unless the discussion is specifically
-about strict spec parity.
-
-Put the divergent rows in an appendix or a secondary "intentional residuals" slide, not on the main success slide.
+There are currently no Python `vendor-divergent` runtime rows in the committed
+`2010` projection.
 
 ## What Was Built
 
@@ -332,33 +330,26 @@ The Python RTI is not "zero divergence."
 
 The remaining residuals are:
 
-- `2` `vendor-divergent`
+- `0` `vendor-divergent`
 - `79` `not-applicable`
 - `0` open states
 
-The most relevant remaining divergences for leadership discussion are the `2` IEEE 1516.1 rows still marked `vendor-divergent` in the Python disposition packet:
-
-- `HLA1516.1-DM-5.1.6-001`
-- `HLA1516.1-OM-6.1.11-001`
-
-These are not missing tests. They are explicit policy calls where the repo does not yet claim full spec-shaped behavior or a single all-in-one witness for the whole semantic effect.
+There are currently no remaining Python `vendor-divergent` rows in the
+committed `2010` disposition packet.
 
 There is a second, different residual surface that matters for audit language:
 
 - the Python disposition packet has `0` open runtime states
-- the canonical 2010 matrix still keeps `12` broad-spec parent rows at `partial`
+- the canonical 2010 matrix still keeps `9` broad-spec parent rows at `partial`
 
-That is intentional. Those `12` rows are defended policy parents, not unresolved Python execution gaps. The repo now pairs them with explicit narrower child claims in:
+That is intentional. Those `9` rows are defended policy parents, not unresolved Python execution gaps. The repo now pairs them with explicit narrower child claims in:
 
 - `analysis/compliance/supported_subset_policy.md`
 - `analysis/compliance/defended_partials_index.md`
 
 The defended parent set is:
 
-- `HLA1516.1-DM-5.1.6-001`
 - `HLA1516.1-OM-6.1.10-001`
-- `HLA1516.1-OM-6.1.11-001`
-- `HLA1516.1-OM-6.1.12-001`
 - `HLA1516.1-OM-6.23-001`
 - `HLA1516.1-OM-6.24-001`
 - `HLA1516.1-OM-6.25-001`

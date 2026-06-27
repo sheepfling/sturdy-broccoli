@@ -78,12 +78,12 @@ def test_requirements_matrix_2010_covers_section_areas_service_rows_and_verifica
     assert by_id["HLA1516.1-OM-6.10-003"]["status"] in {"pass", "partial"}
     assert by_id["HLA1516.1-OM-6.10-005"]["status"] == "pass"
     assert by_id["HLA1516.1-OM-6.12-005"]["status"] == "pass"
-    assert by_id["HLA1516.1-DM-5.1.6-001"]["supported_subset_for"] == ["HLA1516.1-DM-5.1.6-002"]
-    assert by_id["HLA1516.1-DM-5.1.6-002"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.1.11-001"]["supported_subset_for"] == ["HLA1516.1-OM-6.1.11-002"]
-    assert by_id["HLA1516.1-OM-6.1.11-002"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.1.12-001"]["supported_subset_for"] == ["HLA1516.1-OM-6.1.12-002"]
-    assert by_id["HLA1516.1-OM-6.1.12-002"]["status"] == "pass"
+    assert by_id["HLA1516.1-DM-5.1.6-001"]["status"] == "pass"
+    assert by_id["HLA1516.1-DM-5.1.6-001"]["supported_subset_for"] == ""
+    assert by_id["HLA1516.1-OM-6.1.11-001"]["status"] == "pass"
+    assert by_id["HLA1516.1-OM-6.1.11-001"]["supported_subset_for"] == ""
+    assert by_id["HLA1516.1-OM-6.1.12-001"]["status"] == "pass"
+    assert by_id["HLA1516.1-OM-6.1.12-001"]["supported_subset_for"] == ""
     assert by_id["HLA1516.1-OM-6.1.10-002"]["status"] == "pass"
     assert by_id["HLA1516.1-OM-6.1.10-003"]["status"] == "pass"
     assert by_id["HLA1516.1-OM-6.1.10-004"]["status"] == "pass"

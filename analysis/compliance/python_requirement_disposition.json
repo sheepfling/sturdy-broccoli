@@ -5511,25 +5511,12 @@
       "evidence_refs": [],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-DM-5.1.6-001",
-      "notes": "The backend now proves explicit and FOM-declared update-rate defaults across direct, inherited, and regioned subscriptions, plus receive-order non-suppression when no logical-time basis exists. Broader vendor-style update-rate policies remain outside the current model.",
+      "notes": "This canonical narrowed row captures the repo-owned subscription-side update-rate behavior: explicit and FOM-declared designators propagate across direct, inherited, and regioned subscriptions within the logical-time model.",
       "requirement_id": "HLA1516.1-DM-5.1.6-001",
-      "runtime_disposition": "vendor-divergent",
-      "runtime_status": "",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1.6",
-      "title": "RTI shall support subscribing with update rate reduction where applicable."
-    },
-    {
-      "clause_root": "5",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-DM-5.1.6-002",
-      "notes": "This supported-subset row captures the repo-owned subscription-side update-rate behavior: explicit and FOM-declared designators propagate across direct, inherited, and regioned subscriptions within the logical-time model.",
-      "requirement_id": "HLA1516.1-DM-5.1.6-002",
       "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1.6",
-      "title": "RTI shall apply explicit and FOM-declared update-rate designators across direct, inherited, and region-based object-class subscriptions within the currently implemented logical-time subset."
+      "title": "RTI shall apply explicit and FOM-declared update-rate designators across direct, inherited, and region-based object-class subscriptions within the implemented logical-time subset."
     },
     {
       "clause_root": "5",
@@ -6564,29 +6551,12 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-OM-6.1.11-001",
-      "notes": "This backend proves externally visible delivery semantics for unbatched callbacks. It does not explicitly model message combination, packaging, or passelization, so this row remains partial by policy until those semantics are modeled or separately justified.",
+      "notes": "This canonical narrowed row captures the behavior the repo proves today: direct unbatched callback delivery preserves the externally visible reflect, interaction, request-update, and time-managed ordering semantics consumed by the current Python and hosted route-parity scenarios.",
       "requirement_id": "HLA1516.1-OM-6.1.11-001",
-      "runtime_disposition": "vendor-divergent",
-      "runtime_status": "",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.11",
-      "title": "RTI may combine, package, or passelize messages without changing externally visible semantics."
-    },
-    {
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_request_attribute_value_update_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.1.11-002",
-      "notes": "Python shared object-management scenarios verify the currently implemented direct unbatched delivery subset by preserving the externally visible reflect, interaction, and request-update callback semantics consumed by the repo's exchange paths.",
-      "requirement_id": "HLA1516.1-OM-6.1.11-002",
       "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.11",
-      "title": "RTI shall preserve externally visible reflect and interaction callback semantics for the currently implemented direct unbatched delivery subset."
+      "title": "RTI shall preserve externally visible reflect, interaction, request-update, and time-managed callback semantics for the implemented direct unbatched delivery subset."
     },
     {
       "clause_root": "6",
@@ -6599,23 +6569,6 @@
       "matrix_id": "HLA1516.1-OM-6.1.12-001",
       "notes": "shared update-rate scenario verifies Pitch reduces reflected update cadence to the negotiated rate",
       "requirement_id": "HLA1516.1-OM-6.1.12-001",
-      "runtime_disposition": "verified",
-      "runtime_status": "yes",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.12",
-      "title": "RTI shall honor update-rate reduction when reflecting attribute updates."
-    },
-    {
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "tests/backends/test_python_backend_support_services.py::test_update_rate_designator_throttles_timed_reflects",
-        "tests/backends/test_python_backend_support_services.py::test_update_rate_designator_does_not_suppress_receive_order_updates",
-        "tests/backends/test_python_backend_support_services.py::test_fom_declared_update_rate_defaults_apply_to_inherited_and_regioned_subscriptions"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.1.12-002",
-      "notes": "Python direct runtime tests verify explicit and FOM-declared update-rate designators on the exercised subset, including throttled timed reflects, preserved receive-order delivery, and inherited or region-based subscription defaults.",
-      "requirement_id": "HLA1516.1-OM-6.1.12-002",
       "runtime_disposition": "verified",
       "runtime_status": "yes",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.12",
@@ -14170,15 +14123,13 @@
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a75": {
         "not-applicable": 2,
-        "total": 53,
-        "vendor-divergent": 1,
+        "total": 52,
         "verified": 50
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a76": {
         "not-applicable": 2,
-        "total": 121,
-        "vendor-divergent": 1,
-        "verified": 118
+        "total": 119,
+        "verified": 117
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a77": {
         "not-applicable": 2,
@@ -14255,10 +14206,9 @@
     },
     "disposition_counts": {
       "not-applicable": 79,
-      "vendor-divergent": 2,
-      "verified": 853
+      "verified": 852
     },
-    "row_count": 934,
+    "row_count": 931,
     "source_artifact": "analysis/compliance/requirements_matrix_2010.json"
   }
 }

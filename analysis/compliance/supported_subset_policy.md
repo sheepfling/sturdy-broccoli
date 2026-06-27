@@ -12,22 +12,20 @@ Interpretation:
 - Policy ID: `logical-time-update-rate-only`
 - Supported behavior: Update-rate reduction is implemented as logical-time-based throttling. Explicit and FOM-declared update-rate designators apply across direct, inherited, and regioned subscriptions when there is a logical-time basis.
 - Broad-gap rationale: The backend does not invent a wall-clock or unmanaged receive-order throttling policy, so broader vendor-style update-rate semantics remain out of scope.
-- Broad-spec status counts: partial=2
-- Supported-subset status counts: pass=2
+- Broad-spec status counts: none
+- Supported-subset status counts: none
 
 Broad-spec rows:
 
 | Requirement ID | Section | Status | Title | Notes |
 |---|---|---|---|---|
-| HLA1516.1-DM-5.1.6-001 | IEEE 1516.1-2010 (2010 edition) §5.1.6 | partial | RTI shall support subscribing with update rate reduction where applicable. | The backend now proves explicit and FOM-declared update-rate defaults across direct, inherited, and regioned subscriptions, plus receive-order non-suppression when no logical-time basis exists. Broader vendor-style update-rate policies remain outside the current model. |
-| HLA1516.1-OM-6.1.12-001 | IEEE 1516.1-2010 (2010 edition) §6.1.12 | partial | RTI shall honor update-rate reduction when reflecting attribute updates. | The backend proves explicit and FOM-declared update-rate throttling for direct, inherited, and regioned subscriptions, plus receive-order non-suppression when no logical-time basis exists. Broader vendor-style update-rate policies remain outside the current model, so this row remains partial. |
+| - | - | - | - | - |
 
 Supported-subset rows:
 
 | Requirement ID | Section | Status | Broad row | Title | Notes |
 |---|---|---|---|---|---|
-| HLA1516.1-DM-5.1.6-002 | IEEE 1516.1-2010 (2010 edition) §5.1.6 | pass | HLA1516.1-DM-5.1.6-001 | RTI shall apply explicit and FOM-declared update-rate designators across direct, inherited, and region-based object-class subscriptions within the currently implemented logical-time subset. | This supported-subset row captures the repo-owned subscription-side update-rate behavior: explicit and FOM-declared designators propagate across direct, inherited, and regioned subscriptions within the logical-time model. |
-| HLA1516.1-OM-6.1.12-002 | IEEE 1516.1-2010 (2010 edition) §6.1.12 | pass | HLA1516.1-OM-6.1.12-001 | RTI shall throttle timed reflected attribute delivery according to explicit and FOM-declared update-rate designators while preserving receive-order delivery that has no logical-time basis. | This supported-subset row captures the repo-owned reflection-side update-rate behavior: timed reflects are throttled by explicit and FOM-declared designators, but receive-order delivery is not artificially suppressed outside the logical-time model. |
+| - | - | - | - | - | - |
 
 ## Reliable and best-effort transport subset
 
@@ -86,18 +84,18 @@ Supported-subset rows:
 - Policy ID: `unbatched-callback-delivery-only`
 - Supported behavior: The backend preserves externally visible delivery semantics with direct unbatched callbacks.
 - Broad-gap rationale: Message combination, packaging, and passelization are not explicitly modeled, so the permissive broad row stays partial by policy.
-- Broad-spec status counts: partial=1
-- Supported-subset status counts: pass=1
+- Broad-spec status counts: none
+- Supported-subset status counts: none
 
 Broad-spec rows:
 
 | Requirement ID | Section | Status | Title | Notes |
 |---|---|---|---|---|
-| HLA1516.1-OM-6.1.11-001 | IEEE 1516.1-2010 (2010 edition) §6.1.11 | partial | RTI may combine, package, or passelize messages without changing externally visible semantics. | This backend proves externally visible delivery semantics for unbatched callbacks. It does not explicitly model message combination, packaging, or passelization, so this row remains partial by policy until those semantics are modeled or separately justified. |
+| - | - | - | - | - |
 
 Supported-subset rows:
 
 | Requirement ID | Section | Status | Broad row | Title | Notes |
 |---|---|---|---|---|---|
-| HLA1516.1-OM-6.1.11-002 | IEEE 1516.1-2010 (2010 edition) §6.1.11 | pass | HLA1516.1-OM-6.1.11-001 | RTI shall preserve externally visible reflect and interaction callback semantics for the currently implemented direct unbatched delivery subset. | This supported-subset row captures the behavior the repo actually proves today: direct unbatched callback delivery preserves the externally visible reflect, interaction, request-update, and time-managed ordering semantics consumed by the current Python and hosted route-parity scenarios. |
+| - | - | - | - | - | - |
 

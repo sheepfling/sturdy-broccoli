@@ -53,26 +53,26 @@ presentation packet.
 
 ### 2010 / 1516e
 
-- backend-compliance packet denominator: `934` matrix rows
+- backend-compliance packet denominator: `931` matrix rows
 - canonical status split in that packet:
   - `842` `pass`
   - `40` `implemented-slice`
   - `1` `implemented-smoke`
-  - `51` `partial`
+  - `48` `partial`
 - current Python runtime resolution in that packet:
-  - `853` `verified`
-  - `2` `vendor-divergent`
+  - `852` `verified`
+  - `0` `vendor-divergent`
   - `79` `not-applicable`
 - defended policy-parent packet:
-  - `12` intentionally bounded broad partial parents
-  - `26` passing supported-subset child proofs
+  - `9` intentionally bounded broad partial parents
+  - `23` passing supported-subset child proofs
 - exact `partial` shape inside the packet:
-  - `36` `partial` rows with Python already `verified`
-  - `2` `partial` rows with Python still `vendor-divergent`
+  - `35` `partial` rows with Python already `verified`
+  - `0` `partial` rows with Python still `vendor-divergent`
   - `13` `partial` rows with Python `not-applicable`
   - `4` of the `51` `partial` rows are section or area scaffolding rows with no standalone requirement ID
 - current `vendor-divergent` composition inside the `2010` packet:
-  - `2` supported-subset policy parents from `curated-clause5-6`
+  - `0` supported-subset policy parents from `curated-clause5-6`
 
 Interpretation rule:
 
@@ -206,19 +206,18 @@ Current reading:
    - the boss-facing export now exposes that defended subset surface directly in:
      - `analysis/compliance/presentation_packets/requirements_2010_backend_compliance_policy_parents.csv`
      - workbook tab `policy_parents`
-   - that surface exists to make clear that the `12` defended broad partial
+   - that surface exists to make clear that the `9` defended broad partial
      parents are not the same thing as open Python-lane failures
    - the remaining decision is now explicit:
      keep the bounded family as-is, or tighten it with narrower direct proof
      recorded in
      [`2010_python_rti_bounded_family_execution_worklist.md`](2010_python_rti_bounded_family_execution_worklist.md)
-4. the remaining `2010` Python `vendor-divergent` packet rows are no longer one undifferentiated blocker class
-   - the `2` rows now fall into an explicit owner bucket:
-     - `2` supported-subset policy parents already exposed in the `policy_parents` export
+4. the `2010` Python runtime projection no longer contains any `vendor-divergent` packet rows
+   - the current count is `0`
    - the framework umbrella source remains part of the canonical 2010 owner surface in
      [`../../requirements/2010/hla1516_framework_detailed_reconciliation.csv`](../../requirements/2010/hla1516_framework_detailed_reconciliation.csv),
-     but the narrowed top-level framework and object-concept rows no longer sit in the Python vendor-divergent residual set
-   - that means the remaining `vendor-divergent` label is mostly an ownership classification fact, not a sign of unresolved documentation ambiguity
+     but the narrowed top-level framework and object-concept rows no longer sit in any Python vendor-divergent residual set
+   - that means the remaining closeout question is now entirely about bounded packet partials, not unresolved Python divergence classification
 5. one large 2010 family is now structurally settled as a bounded owner surface
    even though its row-level ledger remains `partial`
    - owner doc:

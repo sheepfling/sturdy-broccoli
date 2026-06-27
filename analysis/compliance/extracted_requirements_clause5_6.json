@@ -1,13 +1,13 @@
 {
   "claim_scope_counts": {
     "broad-spec": 93,
-    "supported-subset": 28
+    "supported-subset": 25
   },
   "clause_counts": {
-    "5": 36,
-    "6": 85
+    "5": 35,
+    "6": 83
   },
-  "row_count": 121,
+  "row_count": 118,
   "rows": [
     {
       "artifact_refs": [
@@ -841,74 +841,6 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
-        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassively",
-        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassivelyWithRegions",
-        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesWithRegions",
-        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
-      ],
-      "kind": "extracted-requirement",
-      "linked_assets": [
-        "REQ-OM-UPDATE-RATE-001"
-      ],
-      "linked_methods": [
-        "subscribeObjectClassAttributes",
-        "subscribeObjectClassAttributesPassively",
-        "subscribeObjectClassAttributesWithRegions",
-        "subscribeObjectClassAttributesPassivelyWithRegions"
-      ],
-      "matrix_id": "HLA1516.1-DM-5.1.6-001",
-      "negative_test_refs": [
-        "tests/scenarios/test_ddm_backend_matrix.py",
-        "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_object_region_lifecycle_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_object_region_lifecycle_matrix"
-      ],
-      "notes": "The backend now proves explicit and FOM-declared update-rate defaults across direct, inherited, and regioned subscriptions, plus receive-order non-suppression when no logical-time basis exists. Broader vendor-style update-rate policies remain outside the current model.",
-      "pitch_runtime_status": "",
-      "policy_basis": "logical-time-update-rate-only",
-      "positive_test_refs": [
-        "tests/backends/test_python_backend_support_services.py::test_fom_declared_update_rate_defaults_apply_to_inherited_and_regioned_subscriptions",
-        "tests/backends/test_python_backend_support_services.py::test_update_rate_designator_does_not_suppress_receive_order_updates",
-        "tests/backends/test_python_backend_support_services.py::test_update_rate_designator_throttles_timed_reflects",
-        "tests/scenarios/test_ddm_backend_matrix.py",
-        "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_object_region_lifecycle_matrix",
-        "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_passive_region_subscription_matrix",
-        "tests/scenarios/test_object_management_backend_matrix.py",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
-        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
-        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_managed_declaration_independence_scenario_over_fedpro_route",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_object_region_lifecycle_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_passive_region_subscription_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
-      ],
-      "python_runtime_status": "",
-      "requirement_id": "HLA1516.1-DM-5.1.6-001",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1.6",
-      "service_group": "Declaration management",
-      "source": "curated-clause5-6",
-      "status": "partial",
-      "supported_subset_for": [
-        "HLA1516.1-DM-5.1.6-002"
-      ],
-      "title": "RTI shall support subscribing with update rate reduction where applicable.",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
-      "vendor_profile_bucket": "",
-      "vendor_profile_notes": "",
-      "vendor_profile_refs": [],
-      "vendor_profile_source": "",
-      "vendor_source": ""
-    },
-    {
-      "artifact_refs": [
-        "analysis/compliance/service_conformance.json"
-      ],
-      "certi_runtime_status": "",
-      "claim_scope": "supported-subset",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "implementation_refs": [
         "packages/hla-backend-python1516e/src/hla/backends/python1516e/subscriptions.py",
         "packages/hla-backend-python1516e/src/hla/backends/python1516e/backend.py",
         "hla2010/ambassadors.py"
@@ -923,23 +855,23 @@
         "subscribeObjectClassAttributesWithRegions",
         "subscribeObjectClassAttributesPassivelyWithRegions"
       ],
-      "matrix_id": "HLA1516.1-DM-5.1.6-002",
+      "matrix_id": "HLA1516.1-DM-5.1.6-001",
       "negative_test_refs": [],
-      "notes": "This supported-subset row captures the repo-owned subscription-side update-rate behavior: explicit and FOM-declared designators propagate across direct, inherited, and regioned subscriptions within the logical-time model.",
+      "notes": "This canonical narrowed row captures the repo-owned subscription-side update-rate behavior: explicit and FOM-declared designators propagate across direct, inherited, and regioned subscriptions within the logical-time model.",
       "pitch_runtime_status": "",
-      "policy_basis": "logical-time-update-rate-only",
+      "policy_basis": "",
       "positive_test_refs": [
         "tests/backends/test_python_backend_support_services.py::test_fom_declared_update_rate_defaults_apply_to_inherited_and_regioned_subscriptions",
         "tests/backends/test_python_backend_support_services.py::test_update_rate_designator_throttles_timed_reflects"
       ],
       "python_runtime_status": "",
-      "requirement_id": "HLA1516.1-DM-5.1.6-002",
+      "requirement_id": "HLA1516.1-DM-5.1.6-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1.6",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
-      "supported_subset_for": "HLA1516.1-DM-5.1.6-001",
-      "title": "RTI shall apply explicit and FOM-declared update-rate designators across direct, inherited, and region-based object-class subscriptions within the currently implemented logical-time subset.",
+      "supported_subset_for": "",
+      "title": "RTI shall apply explicit and FOM-declared update-rate designators across direct, inherited, and region-based object-class subscriptions within the implemented logical-time subset.",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
       "vendor_profile_bucket": "",
@@ -3189,65 +3121,6 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "RecordingFederateAmbassador callback + snake_case alias",
-        "hla2010/ambassadors.py"
-      ],
-      "kind": "extracted-requirement",
-      "linked_assets": [
-        "REQ-DM-SUBSCRIPTION-DELIVERY-001"
-      ],
-      "linked_methods": [
-        "reflectAttributeValues",
-        "receiveInteraction"
-      ],
-      "matrix_id": "HLA1516.1-OM-6.1.11-001",
-      "negative_test_refs": [],
-      "notes": "This backend proves externally visible delivery semantics for unbatched callbacks. It does not explicitly model message combination, packaging, or passelization, so this row remains partial by policy until those semantics are modeled or separately justified.",
-      "pitch_runtime_status": "",
-      "policy_basis": "unbatched-callback-delivery-only",
-      "positive_test_refs": [
-        "tests/backends/test_python_backend_time_ddm_extended.py",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_request_attribute_value_update_matrix",
-        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
-        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
-        "tests/scenarios/test_target_radar_scenario.py",
-        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
-        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_consumer_order_scenario_over_fedpro_route",
-        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_output_delivery_scenario_over_fedpro_route",
-        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_request_attribute_value_update_scenario_over_fedpro_route",
-        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix"
-      ],
-      "python_runtime_status": "",
-      "requirement_id": "HLA1516.1-OM-6.1.11-001",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.11",
-      "service_group": "Object management",
-      "source": "curated-clause5-6",
-      "status": "partial",
-      "supported_subset_for": [
-        "HLA1516.1-OM-6.1.11-002"
-      ],
-      "title": "RTI may combine, package, or passelize messages without changing externally visible semantics.",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
-      "vendor_profile_bucket": "Exchange",
-      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Pitch native HLA4 (JPype, direct or FedPro): smoke; Pitch native HLA4 (Py4J, direct or FedPro): smoke; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
-      "vendor_profile_refs": [
-        "docs/rti_options_and_test_matrix.md"
-      ],
-      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
-      "vendor_source": ""
-    },
-    {
-      "artifact_refs": [
-        "analysis/compliance/service_conformance.json"
-      ],
-      "certi_runtime_status": "",
-      "claim_scope": "supported-subset",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "implementation_refs": [
         "packages/hla-backend-python1516e/src/hla/backends/python1516e/object_delivery.py",
         "packages/hla-backend-python1516e/src/hla/backends/python1516e/time_queue_delivery.py",
         "packages/hla-rti1516e/src/hla/rti1516e/ambassadors.py"
@@ -3261,11 +3134,11 @@
         "receiveInteraction",
         "provideAttributeValueUpdate"
       ],
-      "matrix_id": "HLA1516.1-OM-6.1.11-002",
+      "matrix_id": "HLA1516.1-OM-6.1.11-001",
       "negative_test_refs": [],
-      "notes": "This supported-subset row captures the behavior the repo actually proves today: direct unbatched callback delivery preserves the externally visible reflect, interaction, request-update, and time-managed ordering semantics consumed by the current Python and hosted route-parity scenarios.",
+      "notes": "This canonical narrowed row captures the behavior the repo proves today: direct unbatched callback delivery preserves the externally visible reflect, interaction, request-update, and time-managed ordering semantics consumed by the current Python and hosted route-parity scenarios.",
       "pitch_runtime_status": "",
-      "policy_basis": "unbatched-callback-delivery-only",
+      "policy_basis": "",
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_request_attribute_value_update_matrix",
@@ -3273,13 +3146,13 @@
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order"
       ],
       "python_runtime_status": "",
-      "requirement_id": "HLA1516.1-OM-6.1.11-002",
+      "requirement_id": "HLA1516.1-OM-6.1.11-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.11",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
-      "supported_subset_for": "HLA1516.1-OM-6.1.11-001",
-      "title": "RTI shall preserve externally visible reflect and interaction callback semantics for the currently implemented direct unbatched delivery subset.",
+      "supported_subset_for": "",
+      "title": "RTI shall preserve externally visible reflect, interaction, request-update, and time-managed callback semantics for the implemented direct unbatched delivery subset.",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
       "vendor_profile_bucket": "Exchange",
@@ -3298,81 +3171,6 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
-        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesWithRegions",
-        "hla2010/ambassadors.py",
-        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
-      ],
-      "kind": "extracted-requirement",
-      "linked_assets": [
-        "REQ-OM-UPDATE-RATE-001"
-      ],
-      "linked_methods": [
-        "reflectAttributeValues",
-        "subscribeObjectClassAttributes",
-        "subscribeObjectClassAttributesWithRegions"
-      ],
-      "matrix_id": "HLA1516.1-OM-6.1.12-001",
-      "negative_test_refs": [
-        "tests/scenarios/test_ddm_backend_matrix.py",
-        "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_object_region_lifecycle_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_object_region_lifecycle_matrix"
-      ],
-      "notes": "The backend proves explicit and FOM-declared update-rate throttling for direct, inherited, and regioned subscriptions, plus receive-order non-suppression when no logical-time basis exists. Broader vendor-style update-rate policies remain outside the current model, so this row remains partial.",
-      "pitch_runtime_status": "yes",
-      "policy_basis": "logical-time-update-rate-only",
-      "positive_test_refs": [
-        "tests/backends/test_python_backend_support_services.py::test_fom_declared_update_rate_defaults_apply_to_inherited_and_regioned_subscriptions",
-        "tests/backends/test_python_backend_support_services.py::test_update_rate_designator_does_not_suppress_receive_order_updates",
-        "tests/backends/test_python_backend_support_services.py::test_update_rate_designator_throttles_timed_reflects",
-        "tests/scenarios/test_ddm_backend_matrix.py",
-        "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_object_region_lifecycle_matrix",
-        "tests/scenarios/test_object_management_backend_matrix.py",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_request_attribute_value_update_matrix",
-        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
-        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
-        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_request_attribute_value_update_scenario_over_fedpro_route",
-        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_managed_declaration_independence_scenario_over_fedpro_route",
-        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_object_region_lifecycle_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix"
-      ],
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.1.12-001",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.12",
-      "service_group": "Object management",
-      "source": "curated-clause5-6",
-      "status": "partial",
-      "supported_subset_for": [
-        "HLA1516.1-OM-6.1.12-002"
-      ],
-      "title": "RTI shall honor update-rate reduction when reflecting attribute updates.",
-      "vendor_evidence_refs": [
-        "../tests/scenarios/test_object_management_backend_matrix.py",
-        "../tests/vendors/test_pitch_real_backend_matrix.py"
-      ],
-      "vendor_notes": "shared update-rate scenario verifies Pitch reduces reflected update cadence to the negotiated rate",
-      "vendor_profile_bucket": "Exchange",
-      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Pitch native HLA4 (JPype, direct or FedPro): smoke; Pitch native HLA4 (Py4J, direct or FedPro): smoke; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
-      "vendor_profile_refs": [
-        "docs/rti_options_and_test_matrix.md"
-      ],
-      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
-      "vendor_source": "docs/backend_conformance_matrix.md"
-    },
-    {
-      "artifact_refs": [
-        "analysis/compliance/service_conformance.json"
-      ],
-      "certi_runtime_status": "no",
-      "claim_scope": "supported-subset",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "implementation_refs": [
         "packages/hla-backend-python1516e/src/hla/backends/python1516e/object_delivery.py",
         "packages/hla-backend-python1516e/src/hla/backends/python1516e/time_queue_delivery.py",
         "packages/hla-backend-python1516e/src/hla/backends/python1516e/subscriptions.py",
@@ -3387,23 +3185,23 @@
         "subscribeObjectClassAttributes",
         "subscribeObjectClassAttributesWithRegions"
       ],
-      "matrix_id": "HLA1516.1-OM-6.1.12-002",
+      "matrix_id": "HLA1516.1-OM-6.1.12-001",
       "negative_test_refs": [],
-      "notes": "This supported-subset row captures the repo-owned reflection-side update-rate behavior: timed reflects are throttled by explicit and FOM-declared designators, but receive-order delivery is not artificially suppressed outside the logical-time model.",
+      "notes": "This canonical narrowed row captures the repo-owned reflection-side update-rate behavior: timed reflects are throttled by explicit and FOM-declared designators, but receive-order delivery is not artificially suppressed outside the logical-time model.",
       "pitch_runtime_status": "yes",
-      "policy_basis": "logical-time-update-rate-only",
+      "policy_basis": "",
       "positive_test_refs": [
         "tests/backends/test_python_backend_support_services.py::test_update_rate_designator_throttles_timed_reflects",
         "tests/backends/test_python_backend_support_services.py::test_update_rate_designator_does_not_suppress_receive_order_updates",
         "tests/backends/test_python_backend_support_services.py::test_fom_declared_update_rate_defaults_apply_to_inherited_and_regioned_subscriptions"
       ],
       "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.1.12-002",
+      "requirement_id": "HLA1516.1-OM-6.1.12-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.12",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
-      "supported_subset_for": "HLA1516.1-OM-6.1.12-001",
+      "supported_subset_for": "",
       "title": "RTI shall throttle timed reflected attribute delivery according to explicit and FOM-declared update-rate designators while preserving receive-order delivery that has no logical-time basis.",
       "vendor_evidence_refs": [
         "../tests/scenarios/test_object_management_backend_matrix.py",
@@ -7031,7 +6829,7 @@
     }
   ],
   "status_counts": {
-    "partial": 14,
+    "partial": 11,
     "pass": 107
   },
   "supported_subset_rows_needed": true

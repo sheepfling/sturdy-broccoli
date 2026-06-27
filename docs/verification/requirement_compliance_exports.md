@@ -90,7 +90,7 @@ Read those `2010` columns with this split:
 
 The `2010` policy-parent export carries:
 
-- the `12 broad partial rows` intentionally defended by supported-subset proof
+- the `9 broad partial rows` intentionally defended by supported-subset proof
 - each broad requirement ID and policy basis
 - the exact passing supported-subset child IDs that justify the bounded claim
 - a direct reminder that this surface is `not an open Python gap list`
@@ -179,7 +179,7 @@ Current packet snapshot:
   - `5` `duplicate/umbrella`
   - `2` `retired/legacy-only`
 - `2010` packet summary currently reports:
-  - `934` backend-compliance matrix rows
+  - `931` backend-compliance matrix rows
   - `842` `pass`
   - `40` `implemented-slice`
   - `1` `implemented-smoke`

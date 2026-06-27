@@ -144,15 +144,11 @@ def test_requirement_compliance_spreadsheet_export_writes_both_editions(tmp_path
     assert execution_rows_2010["HLA1516.1-DDM-9.13-001"]["title"] == "RTI shall route attribute-value update requests based on region overlap"
     assert not any("transport-equivalence checks across native, gRPC, and REST entry points" in row["title"] for row in rows_2010)
     assert not any("Native lifecycle tests now have explicit hosted gRPC and REST lifecycle smoke coverage." in row["notes"] for row in rows_2010)
-    assert len(policy_rows_2010) == 12
-    assert sum(int(row["supported_subset_pass_count"]) for row in policy_rows_2010) == 26
+    assert len(policy_rows_2010) == 9
+    assert sum(int(row["supported_subset_pass_count"]) for row in policy_rows_2010) == 23
     assert all(row["supported_subset_links_match"] == "yes" for row in policy_rows_2010)
-    assert any(
-        row["broad_requirement_id"] == "HLA1516.1-DM-5.1.6-001"
-        and row["supported_subset_pass_ids"] == "HLA1516.1-DM-5.1.6-002"
-        and row["policy_basis"] == "logical-time-update-rate-only"
-        for row in policy_rows_2010
-    )
+    assert not any(row["policy_basis"] == "logical-time-update-rate-only" for row in policy_rows_2010)
+    assert not any(row["policy_basis"] == "unbatched-callback-delivery-only" for row in policy_rows_2010)
     assert any(
         row["broad_requirement_id"] == "HLA1516.1-OM-6.24-001"
         and row["supported_subset_pass_ids"] == "HLA1516.1-OM-6.24-002; HLA1516.1-OM-6.24-003; HLA1516.1-OM-6.24-004"
@@ -206,8 +202,8 @@ def test_requirement_compliance_spreadsheet_export_writes_both_editions(tmp_path
     )
     assert json.loads(summary_2010["python_runtime_disposition_counts"]).get("verified", 0) > 0
     assert json.loads(summary_2010["pitch_runtime_disposition_counts"]).get("classification-required", 0) > 0
-    assert summary_2010["policy_parent_partial_count"] == "12"
-    assert summary_2010["policy_parent_supported_subset_pass_count"] == "26"
+    assert summary_2010["policy_parent_partial_count"] == "9"
+    assert summary_2010["policy_parent_supported_subset_pass_count"] == "23"
     assert metadata_map_2010["canonical_status_meaning"].startswith("Requirement coverage state only")
     assert "direct Python 2010 runtime lane" in metadata_map_2010["python_runtime_disposition_meaning"]
     assert "Hosted gRPC/REST replay" in metadata_map_2010["python_runtime_disposition_meaning"]
@@ -257,7 +253,7 @@ def test_requirement_compliance_export_doc_keeps_2025_denominator_split_explicit
     assert "2010_python_rti_bounded_family_execution_worklist.md" in text
     assert "`requirements_2010_backend_compliance_policy_parents.csv`" in text
     assert "`policy_parents`" in text
-    assert "12 broad partial rows" in text
+    assert "9 broad partial rows" in text
     assert "not an open Python gap list" in text
 
 

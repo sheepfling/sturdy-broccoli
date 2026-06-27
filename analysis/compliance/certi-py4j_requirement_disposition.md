@@ -14,8 +14,8 @@ This profile currently inherits the CERTI family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) §11 | 37 | 0 | 0 | 0 | 0 | 2 | 35 |
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 0 | 0 | 0 | 0 | 1 | 9 |
 | IEEE 1516.1-2010 (2010 edition) §4 | 281 | 70 | 0 | 0 | 135 | 2 | 74 |
-| IEEE 1516.1-2010 (2010 edition) §5 | 53 | 0 | 0 | 0 | 0 | 2 | 51 |
-| IEEE 1516.1-2010 (2010 edition) §6 | 121 | 12 | 0 | 0 | 104 | 2 | 3 |
+| IEEE 1516.1-2010 (2010 edition) §5 | 52 | 0 | 0 | 0 | 0 | 2 | 50 |
+| IEEE 1516.1-2010 (2010 edition) §6 | 119 | 12 | 0 | 0 | 103 | 2 | 2 |
 | IEEE 1516.1-2010 (2010 edition) §7 | 39 | 12 | 0 | 8 | 16 | 2 | 1 |
 | IEEE 1516.1-2010 (2010 edition) §8 | 61 | 37 | 0 | 5 | 0 | 2 | 17 |
 | IEEE 1516.1-2010 (2010 edition) §9 | 31 | 0 | 0 | 0 | 29 | 2 | 0 |
@@ -303,8 +303,7 @@ This profile currently inherits the CERTI family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.1.3-001 | classification-required | extracted-requirement | RTI shall track published interaction classes per joined federate. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.1.3-002 | classification-required | extracted-requirement | RTI shall track subscribed interaction classes per joined federate. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.1.5-001 | classification-required | extracted-requirement | RTI shall support interaction between DM subscriptions and DDM subscriptions. |
-| IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.1.6-001 | classification-required | extracted-requirement | RTI shall support subscribing with update rate reduction where applicable. |
-| IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.1.6-002 | classification-required | extracted-requirement | RTI shall apply explicit and FOM-declared update-rate designators across direct, inherited, and region-based object-class subscriptions within the currently implemented logical-time subset. |
+| IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.1.6-001 | classification-required | extracted-requirement | RTI shall apply explicit and FOM-declared update-rate designators across direct, inherited, and region-based object-class subscriptions within the implemented logical-time subset. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.10-001 | classification-required | extracted-requirement | RTI shall invoke Start Registration For Object Class when registration becomes useful for subscribed federates. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.11-001 | classification-required | extracted-requirement | RTI shall invoke Stop Registration For Object Class when registration is no longer useful for subscribed federates. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.12-001 | classification-required | extracted-requirement | RTI shall invoke Turn Interactions On when a published interaction class has matching subscribers. |
@@ -371,10 +370,8 @@ This profile currently inherits the CERTI family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.1.10-002 | not-yet-tested | extracted-requirement | RTI shall support explicit reliable transportation type selection, query reporting, and restore persistence for object updates and interactions in the currently supported transport subset. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.1.10-003 | not-yet-tested | extracted-requirement | RTI shall support distinct best-effort versus reliable delivery semantics for object updates and interactions when explicit transportation selections differ. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.1.10-004 | not-yet-tested | extracted-requirement | RTI shall honor FOM-declared reliable and best-effort transportation defaults for object updates and interactions in the currently supported transport subset. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.1.11-001 | classification-required | extracted-requirement | RTI may combine, package, or passelize messages without changing externally visible semantics. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.1.11-002 | classification-required | extracted-requirement | RTI shall preserve externally visible reflect and interaction callback semantics for the currently implemented direct unbatched delivery subset. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.1.12-001 | not-yet-tested | extracted-requirement | RTI shall honor update-rate reduction when reflecting attribute updates. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.1.12-002 | not-yet-tested | extracted-requirement | RTI shall throttle timed reflected attribute delivery according to explicit and FOM-declared update-rate designators while preserving receive-order delivery that has no logical-time basis. |
+| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.1.11-001 | classification-required | extracted-requirement | RTI shall preserve externally visible reflect, interaction, request-update, and time-managed callback semantics for the implemented direct unbatched delivery subset. |
+| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.1.12-001 | not-yet-tested | extracted-requirement | RTI shall throttle timed reflected attribute delivery according to explicit and FOM-declared update-rate designators while preserving receive-order delivery that has no logical-time basis. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.1.2-001 | not-yet-tested | extracted-requirement | RTI shall determine whether an instance attribute is in scope for each joined federate. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.1.3-001 | not-yet-tested | extracted-requirement | RTI shall reflect attribute updates only when attributes are in scope and subscribed. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.1.4-001 | not-yet-tested | extracted-requirement | RTI shall not reflect out-of-scope attribute updates except where required by service semantics. |

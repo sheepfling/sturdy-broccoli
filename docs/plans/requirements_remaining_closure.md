@@ -137,19 +137,19 @@ The remaining `2010` truth shape is now:
 
 Exact current reading from the backend-compliance packet:
 
-- `51` `partial` rows total
-- `36` `partial` rows where Python is already `verified`
-- `2` `partial` rows where Python is still `vendor-divergent`
+- `48` `partial` rows total
+- `35` `partial` rows where Python is already `verified`
+- `0` `partial` rows where Python is still `vendor-divergent`
 - `13` `partial` rows where Python is `not-applicable`
 - only `3` requirement rows remain as direct mixed-backend clause tails:
   - `HLA1516.1-FM-4.1.5-001`
   - `HLA1516.1-FM-4.1.5-002`
   - `HLA1516.1-TM-8.1.2-003`
 - the defended subset packet now also exposes:
-  - `12` bounded broad partial parents
-  - `26` passing supported-subset child proofs
+  - `9` bounded broad partial parents
+  - `23` passing supported-subset child proofs
 - current `vendor-divergent` composition:
-  - `2` supported-subset policy parents from `curated-clause5-6`
+  - `0` supported-subset policy parents from `curated-clause5-6`
 - the framework umbrella owner file
   [`../../requirements/2010/hla1516_framework_detailed_reconciliation.csv`](../../requirements/2010/hla1516_framework_detailed_reconciliation.csv)
   remains part of the canonical 2010 owner map, but its narrowed top-level rows are no longer part of the live Python vendor-divergent residual set

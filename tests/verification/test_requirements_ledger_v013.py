@@ -119,7 +119,8 @@ def test_requirements_matrix_carries_vendor_parity_notes():
         assert row["pitch_runtime_status"] in {"yes", "blocked"}, requirement_id
 
     update_rate_row = rows["HLA1516.1-OM-6.1.12-001"]
-    assert "Broader vendor-style update-rate policies remain outside the current model" in update_rate_row["notes"]
+    assert "canonical narrowed row" in update_rate_row["notes"]
+    assert "receive-order delivery is not artificially suppressed outside the logical-time model" in update_rate_row["notes"]
 
 
 def test_requirements_matrix_writer_emits_vendor_columns(tmp_path: Path):
@@ -136,28 +137,29 @@ def test_requirements_matrix_writer_emits_vendor_columns(tmp_path: Path):
     assert "docs/rti_options_and_test_matrix.md" in csv_text
 
 
-def test_checked_in_supported_subset_packets_include_update_rate_child_rows() -> None:
+def test_checked_in_supported_subset_packets_no_longer_treat_update_rate_rows_as_policy_parents() -> None:
     project_root = Path(__file__).resolve().parents[2]
     defended_partials = (project_root / "analysis" / "compliance" / "defended_partials_index.md").read_text(encoding="utf-8")
     supported_subset_policy = (project_root / "analysis" / "compliance" / "supported_subset_policy.md").read_text(encoding="utf-8")
 
-    assert "HLA1516.1-DM-5.1.6-002 (IEEE 1516.1-2010 (2010 edition) §5.1.6)" in defended_partials
-    assert "HLA1516.1-OM-6.1.11-002 (IEEE 1516.1-2010 (2010 edition) §6.1.11)" in defended_partials
-    assert "HLA1516.1-OM-6.1.12-002 (IEEE 1516.1-2010 (2010 edition) §6.1.12)" in defended_partials
-    assert "- Supported-subset status counts: pass=2" in supported_subset_policy
-    assert "| HLA1516.1-DM-5.1.6-002 | IEEE 1516.1-2010 (2010 edition) §5.1.6 | pass | HLA1516.1-DM-5.1.6-001 |" in supported_subset_policy
-    assert "| HLA1516.1-OM-6.1.12-002 | IEEE 1516.1-2010 (2010 edition) §6.1.12 | pass | HLA1516.1-OM-6.1.12-001 |" in supported_subset_policy
+    assert "HLA1516.1-DM-5.1.6-002" not in defended_partials
+    assert "HLA1516.1-OM-6.1.12-002" not in defended_partials
+    assert "logical-time-update-rate-only" not in defended_partials
+    assert "## Logical-time update-rate subset" in supported_subset_policy
+    assert "- Broad-spec status counts: none" in supported_subset_policy
+    assert "- Supported-subset status counts: none" in supported_subset_policy
 
 
-def test_checked_in_supported_subset_packets_include_unbatched_callback_child_row() -> None:
+def test_checked_in_supported_subset_packets_no_longer_treat_unbatched_delivery_row_as_policy_parent() -> None:
     project_root = Path(__file__).resolve().parents[2]
     defended_partials = (project_root / "analysis" / "compliance" / "defended_partials_index.md").read_text(encoding="utf-8")
     supported_subset_policy = (project_root / "analysis" / "compliance" / "supported_subset_policy.md").read_text(encoding="utf-8")
 
-    assert "| HLA1516.1-OM-6.1.11-001 | IEEE 1516.1-2010 (2010 edition) §6.1.11 | unbatched-callback-delivery-only | HLA1516.1-OM-6.1.11-002 (IEEE 1516.1-2010 (2010 edition) §6.1.11) |" in defended_partials
+    assert "HLA1516.1-OM-6.1.11-002" not in defended_partials
+    assert "unbatched-callback-delivery-only" not in defended_partials
     assert "## Unbatched callback delivery subset" in supported_subset_policy
-    assert "- Supported-subset status counts: pass=1" in supported_subset_policy
-    assert "| HLA1516.1-OM-6.1.11-002 | IEEE 1516.1-2010 (2010 edition) §6.1.11 | pass | HLA1516.1-OM-6.1.11-001 |" in supported_subset_policy
+    assert supported_subset_policy.count("- Broad-spec status counts: none") >= 2
+    assert supported_subset_policy.count("- Supported-subset status counts: none") >= 2
 
 
 def test_checked_in_supported_subset_packets_include_transport_default_child_row() -> None:

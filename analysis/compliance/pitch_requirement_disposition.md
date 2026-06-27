@@ -6,8 +6,8 @@ This audit projects the shared HLA 2010 requirements matrix onto Pitch so every 
 
 | Pitch backend | Verified | Blocked | Vendor divergent | Not yet tested | Not applicable | Classification required |
 |---|---:|---:|---:|---:|---:|---:|
-| pitch-jpype | 553 | 4 | 43 | 96 | 26 | 212 |
-| pitch-py4j | 553 | 4 | 43 | 96 | 26 | 212 |
+| pitch-jpype | 551 | 4 | 43 | 96 | 26 | 211 |
+| pitch-py4j | 551 | 4 | 43 | 96 | 26 | 211 |
 
 ## Clause Summary
 
@@ -19,8 +19,8 @@ This audit projects the shared HLA 2010 requirements matrix onto Pitch so every 
 | IEEE 1516.1-2010 (2010 edition) §11 | 37 | 0 | 0 | 0 | 0 | 2 | 35 |
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 0 | 0 | 0 | 9 | 1 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §4 | 281 | 274 | 2 | 3 | 0 | 2 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §5 | 53 | 45 | 2 | 0 | 0 | 5 | 1 |
-| IEEE 1516.1-2010 (2010 edition) §6 | 121 | 107 | 0 | 9 | 3 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §5 | 52 | 45 | 2 | 0 | 0 | 5 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §6 | 119 | 105 | 0 | 9 | 3 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §7 | 39 | 27 | 0 | 10 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §8 | 61 | 41 | 0 | 18 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §9 | 31 | 29 | 0 | 0 | 0 | 2 | 0 |
@@ -50,8 +50,8 @@ This audit projects the shared HLA 2010 requirements matrix onto Pitch so every 
 | IEEE 1516.1-2010 (2010 edition) §11 | 37 | 0 | 0 | 0 | 0 | 2 | 35 |
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 0 | 0 | 0 | 9 | 1 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §4 | 281 | 274 | 2 | 3 | 0 | 2 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §5 | 53 | 45 | 2 | 0 | 0 | 5 | 1 |
-| IEEE 1516.1-2010 (2010 edition) §6 | 121 | 107 | 0 | 9 | 3 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §5 | 52 | 45 | 2 | 0 | 0 | 5 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §6 | 119 | 105 | 0 | 9 | 3 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §7 | 39 | 27 | 0 | 10 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §8 | 61 | 41 | 0 | 18 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §9 | 31 | 29 | 0 | 0 | 0 | 2 | 0 |
@@ -79,8 +79,8 @@ This audit projects the shared HLA 2010 requirements matrix onto Pitch so every 
 | IEEE 1516.1-2010 (2010 edition) §11 | 37 | 0 | 0 | 0 | 0 | 2 | 35 |
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 0 | 0 | 0 | 9 | 1 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §4 | 281 | 274 | 2 | 3 | 0 | 2 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §5 | 53 | 45 | 2 | 0 | 0 | 5 | 1 |
-| IEEE 1516.1-2010 (2010 edition) §6 | 121 | 107 | 0 | 9 | 3 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §5 | 52 | 45 | 2 | 0 | 0 | 5 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §6 | 119 | 105 | 0 | 9 | 3 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §7 | 39 | 27 | 0 | 10 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §8 | 61 | 41 | 0 | 18 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §9 | 31 | 29 | 0 | 0 | 0 | 2 | 0 |
@@ -234,7 +234,6 @@ Rows where `pitch-jpype` and `pitch-py4j` currently have different generated dis
 | IEEE 1516-2010 | unknown | HLA1516-RULE-001 | extracted-requirement | classification-required | The repo shall map federation-level architectural rules to RTI lifecycle behavior and federation-state transitions |
 | IEEE 1516-2010 | unknown | HLA1516-FW-001 | extracted-requirement | classification-required | The repo shall present IEEE 1516-2010 as the framework-level standard and keep that layer separated from IEEE 1516.1 RTI services and IEEE 1516.2 OMT structure in the authored hierarchy and reference docs. |
 | IEEE 1516-2010 | unknown | HLA1516-OBJ-001 | extracted-requirement | classification-required | The repo shall distinguish HLA object-model structures from programming-language objects by preserving separate OMT object-class and interaction-class catalogs and cross-linking them to the 1516.1 object-service and 1516.2 OMT families. |
-| IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.1.6-002 | extracted-requirement | runtime-or-service-probe | RTI shall apply explicit and FOM-declared update-rate designators across direct, inherited, and region-based object-class subscriptions within the currently implemented logical-time subset. |
 | IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-11.1-001 | extracted-requirement | artifact-or-model-verification | RTI shall expose management information through standard MOM objects and interactions |
 | IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-11.1-002 | extracted-requirement | artifact-or-model-verification | MOM shall use the OMT format |
 | IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-11.1-003 | extracted-requirement | artifact-or-model-verification | FDD for a federation execution shall include all MOM elements |

@@ -27,11 +27,11 @@ def test_requirements_completion_audit_keeps_owner_vs_presentation_split_explici
     assert "../verification/shard_registry.md" in text
     assert "row-level tracked universe: `691`" in text
     assert "current direct coverage on that active denominator: `645 / 645 = 100%`" in text
-    assert "backend-compliance packet denominator: `934` matrix rows" in text
+    assert "backend-compliance packet denominator: `931` matrix rows" in text
     assert "do not collapse those two denominators into one cross-edition completion" in text
-    assert "`51` `partial`" in text
-    assert "`2` `partial` rows with Python still `vendor-divergent`" in text
-    assert "`2` rows now fall into an explicit owner bucket" in text
+    assert "`48` `partial`" in text
+    assert "`0` `partial` rows with Python still `vendor-divergent`" in text
+    assert "the current count is `0`" in text
     assert "hla1516_framework_detailed_reconciliation.csv" in text
     assert "the `2010` packet no longer contains any `planned` inventory rows" in text
     assert "`20` `pass` OMT/XML area rows" in text
@@ -40,7 +40,7 @@ def test_requirements_completion_audit_keeps_owner_vs_presentation_split_explici
     assert "current bounded reading is already explicit for the `109` remaining rows" in text
     assert "No separate `2010` `planned` inventory remains in the current packet." in text
     assert "whether the repo wants to tighten the remaining bounded" in text
-    assert "the remaining `2010` Python `vendor-divergent` packet rows are no longer one undifferentiated blocker class" in text
+    assert "the `2010` Python runtime projection no longer contains any `vendor-divergent` packet rows" in text
     assert "the `22` umbrella rows are not missing-owner rows" in text
     assert "the 2025 federation-management closeout is now owner-clean" in text
     assert "`HLA2025-FI-SVC-005`" in text

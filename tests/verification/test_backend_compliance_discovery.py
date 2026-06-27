@@ -855,7 +855,7 @@ def test_vendor_discovery_backlog_covers_divergent_gated_matrixed_and_defended_r
     assert hosted_positive[0]["recommended_next_action"] == "widen from positive-path slice into deeper vendor matrix coverage"
 
     defended = [row for row in backlog["rows"] if row["current_status"] == "defended-partial"]
-    assert any(row["requirement_id"] == "HLA1516.1-OM-6.1.12-001" for row in defended)
+    assert any(row["requirement_id"] == "HLA1516.1-OM-6.1.10-001" for row in defended)
     assert backlog["rows"][0]["priority"] == "P1"
 
 
@@ -2245,14 +2245,14 @@ def test_pitch_clause6_1516_1_dispositions_are_fully_classified_and_harness_back
         "HLA1516.1-OM-6.29-003",
     }
 
-    assert len(raw_rows) == 121
+    assert len(raw_rows) == 119
     assert not {row["requirement_id"] for row in raw_rows if row["pitch_disposition"] == "classification-required"}
     assert {row["requirement_id"] for row in raw_rows if row["pitch_disposition"] == "not-yet-tested"} == not_yet_tested_ids
     assert not {row["requirement_id"] for row in raw_rows if row["pitch_disposition"] == "blocked"}
     assert {row["requirement_id"] for row in raw_rows if row["pitch_disposition"] == "vendor-divergent"} == vendor_divergent_ids
 
     verified_rows = [row for row in raw_rows if row["pitch_disposition"] == "verified"]
-    assert len(verified_rows) == 107
+    assert len(verified_rows) == 105
 
     for row in verified_rows:
         refs = row["evidence_refs"]
@@ -2739,9 +2739,8 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     clause5_summary = clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "5")
     assert clause5_summary == {
         "blocked": 2,
-        "classification-required": 1,
         "not-applicable": 5,
-        "total": 53,
+        "total": 52,
         "verified": 45,
     }
 
@@ -2905,17 +2904,15 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         and row["document"] == "IEEE 1516.1-2010 (2010 edition)"
         and row["pitch_disposition"] == "classification-required"
     }
-    assert remaining_clause5_classification_required == {
-        "HLA1516.1-DM-5.1.6-002"
-    }
+    assert remaining_clause5_classification_required == set()
 
     clause6_summary = clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "6")
     assert clause6_summary == {
         "not-applicable": 2,
         "not-yet-tested": 3,
-        "total": 121,
+        "total": 119,
         "vendor-divergent": 9,
-        "verified": 107,
+        "verified": 105,
     }
 
     for requirement_id in {
@@ -3348,7 +3345,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     assert clause6_disposition_counts == {
         "not-yet-tested": 3,
         "vendor-divergent": 9,
-        "verified": 72,
+        "verified": 70,
     }
     assert {
         requirement_id
@@ -4219,7 +4216,7 @@ def test_python_tranche_clauses_4_6_7_8_9_use_shared_harness_evidence_only() -> 
     }
     clause6_supported_subset_direct_evidence_rows = {
         "HLA1516.1-OM-6.1.10-004",
-        "HLA1516.1-OM-6.1.12-002",
+        "HLA1516.1-OM-6.1.12-001",
         "HLA1516.1-OM-6.23-003",
         "HLA1516.1-OM-6.24-004",
         "HLA1516.1-OM-6.25-003",
@@ -4320,14 +4317,12 @@ def test_python_tranche_clause_summaries_and_reclassified_rows_are_generated() -
     assert clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "4") == {
         "not-applicable": 2,
         "total": 281,
-        "vendor-divergent": 4,
-        "verified": 275,
+        "verified": 279,
     }
     assert clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "6") == {
         "not-applicable": 2,
-        "total": 121,
-        "vendor-divergent": 1,
-        "verified": 118,
+        "total": 119,
+        "verified": 117,
     }
     assert clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "7") == {
         "not-applicable": 2,

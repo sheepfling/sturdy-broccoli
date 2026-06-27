@@ -4419,20 +4419,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1.6",
-      "title": "RTI shall support subscribing with update rate reduction where applicable."
-    },
-    {
-      "clause_root": "5",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-DM-5.1.6-002",
-      "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
-      "requirement_id": "HLA1516.1-DM-5.1.6-002",
-      "runtime_disposition": "classification-required",
-      "runtime_status": "",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1.6",
-      "title": "RTI shall apply explicit and FOM-declared update-rate designators across direct, inherited, and region-based object-class subscriptions within the currently implemented logical-time subset."
+      "title": "RTI shall apply explicit and FOM-declared update-rate designators across direct, inherited, and region-based object-class subscriptions within the implemented logical-time subset."
     },
     {
       "clause_root": "5",
@@ -5359,20 +5346,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.11",
-      "title": "RTI may combine, package, or passelize messages without changing externally visible semantics."
-    },
-    {
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.1.11-002",
-      "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
-      "requirement_id": "HLA1516.1-OM-6.1.11-002",
-      "runtime_disposition": "classification-required",
-      "runtime_status": "",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.11",
-      "title": "RTI shall preserve externally visible reflect and interaction callback semantics for the currently implemented direct unbatched delivery subset."
+      "title": "RTI shall preserve externally visible reflect, interaction, request-update, and time-managed callback semantics for the implemented direct unbatched delivery subset."
     },
     {
       "clause_root": "6",
@@ -5382,19 +5356,6 @@
       "matrix_id": "HLA1516.1-OM-6.1.12-001",
       "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
       "requirement_id": "HLA1516.1-OM-6.1.12-001",
-      "runtime_disposition": "classification-required",
-      "runtime_status": "",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.12",
-      "title": "RTI shall honor update-rate reduction when reflecting attribute updates."
-    },
-    {
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.1.12-002",
-      "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
-      "requirement_id": "HLA1516.1-OM-6.1.12-002",
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.12",
@@ -12245,14 +12206,14 @@
         "total": 281
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a75": {
-        "classification-required": 51,
+        "classification-required": 50,
         "not-applicable": 2,
-        "total": 53
+        "total": 52
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a76": {
-        "classification-required": 119,
+        "classification-required": 117,
         "not-applicable": 2,
-        "total": 121
+        "total": 119
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a77": {
         "classification-required": 37,
@@ -12328,10 +12289,10 @@
       }
     },
     "disposition_counts": {
-      "classification-required": 831,
+      "classification-required": 828,
       "not-applicable": 103
     },
-    "row_count": 934,
+    "row_count": 931,
     "source_artifact": "analysis/compliance/portico_requirement_disposition.json"
   }
 }

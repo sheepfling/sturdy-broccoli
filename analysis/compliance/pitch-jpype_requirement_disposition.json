@@ -6053,25 +6053,12 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-DM-5.1.6-001",
-      "notes": "The backend now proves explicit and FOM-declared update-rate defaults across direct, inherited, and regioned subscriptions, plus receive-order non-suppression when no logical-time basis exists. Broader vendor-style update-rate policies remain outside the current model.",
+      "notes": "This canonical narrowed row captures the repo-owned subscription-side update-rate behavior: explicit and FOM-declared designators propagate across direct, inherited, and regioned subscriptions within the logical-time model.",
       "requirement_id": "HLA1516.1-DM-5.1.6-001",
       "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1.6",
-      "title": "RTI shall support subscribing with update rate reduction where applicable."
-    },
-    {
-      "clause_root": "5",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-DM-5.1.6-002",
-      "notes": "Pitch runtime disposition is explicitly generated as classification-required because the current evidence does not yet justify a narrower verified, blocked, vendor-divergent, not-applicable, or not-yet-tested outcome. This supported-subset row captures the repo-owned subscription-side update-rate behavior: explicit and FOM-declared designators propagate across direct, inherited, and regioned subscriptions within the logical-time model.",
-      "requirement_id": "HLA1516.1-DM-5.1.6-002",
-      "runtime_disposition": "classification-required",
-      "runtime_status": "",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1.6",
-      "title": "RTI shall apply explicit and FOM-declared update-rate designators across direct, inherited, and region-based object-class subscriptions within the currently implemented logical-time subset."
+      "title": "RTI shall apply explicit and FOM-declared update-rate designators across direct, inherited, and region-based object-class subscriptions within the implemented logical-time subset."
     },
     {
       "clause_root": "5",
@@ -7240,29 +7227,12 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-OM-6.1.11-001",
-      "notes": "This backend proves externally visible delivery semantics for unbatched callbacks. It does not explicitly model message combination, packaging, or passelization, so this row remains partial by policy until those semantics are modeled or separately justified.",
+      "notes": "This canonical narrowed row captures the behavior the repo proves today: direct unbatched callback delivery preserves the externally visible reflect, interaction, request-update, and time-managed ordering semantics consumed by the current Python and hosted route-parity scenarios.",
       "requirement_id": "HLA1516.1-OM-6.1.11-001",
       "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.11",
-      "title": "RTI may combine, package, or passelize messages without changing externally visible semantics."
-    },
-    {
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.1.11-002",
-      "notes": "This supported-subset row captures the behavior the repo actually proves today: direct unbatched callback delivery preserves the externally visible reflect, interaction, request-update, and time-managed ordering semantics consumed by the current Python and hosted route-parity scenarios.",
-      "requirement_id": "HLA1516.1-OM-6.1.11-002",
-      "runtime_disposition": "verified",
-      "runtime_status": "",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.11",
-      "title": "RTI shall preserve externally visible reflect and interaction callback semantics for the currently implemented direct unbatched delivery subset."
+      "title": "RTI shall preserve externally visible reflect, interaction, request-update, and time-managed callback semantics for the implemented direct unbatched delivery subset."
     },
     {
       "clause_root": "6",
@@ -7276,23 +7246,6 @@
       "matrix_id": "HLA1516.1-OM-6.1.12-001",
       "notes": "shared update-rate scenario verifies Pitch reduces reflected update cadence to the negotiated rate",
       "requirement_id": "HLA1516.1-OM-6.1.12-001",
-      "runtime_disposition": "verified",
-      "runtime_status": "",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.12",
-      "title": "RTI shall honor update-rate reduction when reflecting attribute updates."
-    },
-    {
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_update_rate.py::run_update_rate_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_update_rate_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_update_rate_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.1.12-002",
-      "notes": "shared update-rate scenario verifies Pitch reduces reflected update cadence to the negotiated rate",
-      "requirement_id": "HLA1516.1-OM-6.1.12-002",
       "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.12",
@@ -15391,17 +15344,16 @@
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a75": {
         "blocked": 2,
-        "classification-required": 1,
         "not-applicable": 5,
-        "total": 53,
+        "total": 52,
         "verified": 45
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a76": {
         "not-applicable": 2,
         "not-yet-tested": 3,
-        "total": 121,
+        "total": 119,
         "vendor-divergent": 9,
-        "verified": 107
+        "verified": 105
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a77": {
         "not-applicable": 2,
@@ -15482,13 +15434,13 @@
     },
     "disposition_counts": {
       "blocked": 4,
-      "classification-required": 212,
+      "classification-required": 211,
       "not-applicable": 26,
       "not-yet-tested": 96,
       "vendor-divergent": 43,
-      "verified": 553
+      "verified": 551
     },
-    "row_count": 934,
+    "row_count": 931,
     "source_artifact": "analysis/compliance/pitch_requirement_disposition.json"
   }
 }

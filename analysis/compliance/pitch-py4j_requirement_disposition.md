@@ -14,8 +14,8 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) §11 | 37 | 0 | 0 | 0 | 0 | 2 | 35 |
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 0 | 0 | 0 | 9 | 1 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §4 | 281 | 274 | 2 | 3 | 0 | 2 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §5 | 53 | 45 | 2 | 0 | 0 | 5 | 1 |
-| IEEE 1516.1-2010 (2010 edition) §6 | 121 | 107 | 0 | 9 | 3 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §5 | 52 | 45 | 2 | 0 | 0 | 5 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §6 | 119 | 105 | 0 | 9 | 3 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §7 | 39 | 27 | 0 | 10 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §8 | 61 | 41 | 0 | 18 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §9 | 31 | 29 | 0 | 0 | 0 | 2 | 0 |
@@ -74,7 +74,6 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.1.1-001 | not-applicable | extracted-requirement | Each FDD class shall have at most one immediate superclass. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.1.1-002 | not-applicable | extracted-requirement | Object classes shall expose declared and inherited available attributes. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.1.1-003 | not-applicable | extracted-requirement | Interaction classes shall expose declared and inherited available parameters. |
-| IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.1.6-002 | classification-required | extracted-requirement | RTI shall apply explicit and FOM-declared update-rate designators across direct, inherited, and region-based object-class subscriptions within the currently implemented logical-time subset. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.3-002 | blocked | extracted-requirement | Unpublishing shall remove the federate’s ability to update the specified attributes. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.5-002 | blocked | extracted-requirement | Unpublishing an interaction class shall remove the federate’s ability to send interactions of that class. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | AREA-1516.1-6 | not-applicable | section-area | Object management |
