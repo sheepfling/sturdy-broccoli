@@ -14,9 +14,9 @@ def test_object_management_partial_tail_current_shape_is_stable() -> None:
     rows = list(csv.DictReader(LEDGER.open(newline="", encoding="utf-8")))
     partial_rows = [row for row in rows if row["current_status"] == "partial"]
 
-    assert len(partial_rows) == 98
+    assert len(partial_rows) == 96
     assert Counter(row["reconciliation_kind"] for row in partial_rows) == {
-        "EFF": 20,
+        "EFF": 18,
         "CB_ORD": 25,
         "EXC_API": 16,
         "CB_ORDER": 17,
@@ -34,9 +34,9 @@ def test_object_management_boundary_doc_records_current_family_shape() -> None:
     assert "## Default Final Stance" in text
     assert "## Exit Condition" in text
     assert "canonical final reading for the current `CAP-OM`" in text
-    assert "`293 mapped`" in text
-    assert "`98 partial`" in text
-    assert "`20 EFF`" in text
+    assert "`295 mapped`" in text
+    assert "`96 partial`" in text
+    assert "`18 EFF`" in text
     assert "`25 CB_ORD`" in text
     assert "`16 EXC_API`" in text
     assert "`17 CB_ORDER`" in text
@@ -46,6 +46,7 @@ def test_object_management_boundary_doc_records_current_family_shape() -> None:
     assert "`./tools/test-surface run unit-scenarios-light`" in text
     assert "`updateAttributeValues` exception rows no longer live in this partial tail" in normalized
     assert "`updateAttributeValues` precondition row no longer lives in this partial tail" in normalized
+    assert "`updateAttributeValues` effect rows no longer live in this partial tail" in normalized
     assert "`reserveObjectInstanceName` precondition row no longer lives in this partial tail" in normalized
     assert "`localDeleteObjectInstance` precondition row no longer lives in this partial tail" in normalized
     assert "multiple-name reservation and release precondition rows no longer live in this partial tail" in normalized
@@ -101,6 +102,23 @@ def test_update_attribute_values_precondition_row_is_now_mapped_to_the_applicabl
     assert "test_update_attribute_values_rejects_not_connected_not_joined_unknown_object_invalid_time_not_owned_and_save_restore" in row["current_test_id"]
     assert "applicable precondition surface" in row["notes"]
     assert "`updateAttributeValues` overloads" in row["notes"]
+
+
+def test_update_attribute_values_effect_rows_are_now_mapped_to_the_supported_routing_slice() -> None:
+    rows = {
+        row["packet_requirement_id"]: row
+        for row in csv.DictReader(LEDGER.open(newline="", encoding="utf-8"))
+    }
+
+    for requirement_id in (
+        "HLA1516.1-OM-6_10-RTIAPI-001-EFF",
+        "HLA1516.1-OM-6_10-UPDATEATTRIBUTEVALUES-EFF-001",
+    ):
+        assert rows[requirement_id]["current_status"] == "mapped"
+        assert "test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions" in rows[requirement_id][
+            "current_test_id"
+        ]
+        assert "direct routing witness" in rows[requirement_id]["notes"]
 
 
 def test_local_delete_object_instance_precondition_row_is_now_mapped_to_the_applicable_guard_surface() -> None:

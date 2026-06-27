@@ -81,12 +81,12 @@ keep describing `CAP-OM` as vague or structurally unfinished.
 
 The current owner ledger has `391` object-management packet rows:
 
-- `293 mapped`
-- `98 partial`
+- `295 mapped`
+- `96 partial`
 
-The remaining `98 partial` rows cluster into stable categories:
+The remaining `96 partial` rows cluster into stable categories:
 
-- `20 EFF`
+- `18 EFF`
 - `25 CB_ORD`
 - `16 EXC_API`
 - `17 CB_ORDER`
@@ -98,7 +98,7 @@ The remaining `98 partial` rows cluster into stable categories:
 
 ### State-vector breadth tail
 
-The `25 EFF` rows usually describe a broader postcondition vector than the
+The `18 EFF` rows usually describe a broader postcondition vector than the
 current direct proof asserts in one place.
 
 Typical pattern:
@@ -142,6 +142,10 @@ Recent tightening examples:
   tail because direct negative-path witnesses now isolate the applicable
   connection-state, membership, handle-validation, ownership, invalid-logical-time,
   and save/restore guard surface across the exercised overloads
+- the `updateAttributeValues` effect rows no longer live in this partial tail
+  because the direct routing witness now isolates the supported owned,
+  published, declaration-plus-DDM update-reflection slice for subscribed
+  joined federates with overlapping scope
 - the `reserveObjectInstanceName` precondition row no longer lives in this
   partial tail because direct negative-path witnesses now isolate the
   applicable connection-state, membership, and save or restore guard surface

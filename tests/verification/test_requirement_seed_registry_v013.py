@@ -116,6 +116,7 @@ def test_clause_6_packet_reconciliation_does_not_keep_stale_partial_precondition
         "HLA1516.1-OM-6_2-PRE-004": "test_reserve_object_instance_name_rejects_not_connected_not_joined_and_save_restore",
         "HLA1516.1-OM-6_4-PRE-004": "test_name_release_and_query_interaction_transport_tail_reject_not_connected_not_joined_and_save_restore",
         "HLA1516.1-OM-6_8-PRE-004": "test_clause_6_federate_initiated_services_validate_core_argument_shapes;test_register_object_instance_rejects_not_connected_not_joined_name_in_use_and_save_restore",
+        "HLA1516.1-OM-6_10-EFF-005": "test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions",
         "HLA1516.1-OM-6_10-PRE-004": "test_clause_6_federate_initiated_services_validate_core_argument_shapes;test_update_attribute_values_rejects_not_connected_not_joined_unknown_object_invalid_time_not_owned_and_save_restore",
         "HLA1516.1-OM-6_10-EXC-006": "test_clause_6_federate_initiated_services_validate_core_argument_shapes;test_update_attribute_values_rejects_not_connected_not_joined_unknown_object_invalid_time_not_owned_and_save_restore;tests/backends/test_python_backend_time_ddm_extended.py::test_strict_publication_and_invalid_logical_time_guards_block_object_and_interaction_delivery",
         "HLA1516.1-OM-6_12-PRE-004": "test_clause_6_federate_initiated_services_validate_core_argument_shapes;test_send_interaction_rejects_not_connected_not_joined_invalid_inputs_and_invalid_time",
@@ -128,3 +129,18 @@ def test_clause_6_packet_reconciliation_does_not_keep_stale_partial_precondition
         row = packet_rows[requirement_id]
         assert row["current_status"] == "mapped"
         assert row["current_test_id"] == current_test_id
+
+
+def test_clause_6_packet_request_attribute_value_update_exception_row_keeps_the_canonical_partial_note():
+    packet_rows = {
+        row["packet_requirement_id"]: row
+        for row in _rows(REFERENCE_DIR / "hla1516_1_clause_6_om_detailed_reconciliation.csv")
+    }
+
+    row = packet_rows["HLA1516.1-OM-6_19-EXC-006"]
+    assert row["current_status"] == "partial"
+    assert row["current_test_id"] == (
+        "test_clause_6_federate_initiated_services_validate_core_argument_shapes;"
+        "test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore"
+    )
+    assert "InvalidObjectClassHandle" in row["notes"]

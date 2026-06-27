@@ -306,14 +306,14 @@
       "family": "Object Management",
       "kinds": {
         "ARG": 16,
-        "EFF": 18,
+        "EFF": 17,
         "EXC": 25,
         "PRE": 14,
         "SEM": 6,
         "SVC": 8
       },
-      "open_row_count": 87,
-      "queue_item_count": 27,
+      "open_row_count": 86,
+      "queue_item_count": 26,
       "queue_items": [
         {
           "acceptance_tests": [
@@ -875,6 +875,7 @@
         },
         {
           "acceptance_tests": [
+            "test_clause_6_federate_initiated_services_validate_core_argument_shapes",
             "test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore"
           ],
           "clause": "6.19",
@@ -996,31 +997,10 @@
             "partial": 2
           },
           "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions"
-          ],
-          "clause": "6.10",
-          "implementation_areas": [
-            "object_delivery"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Update Attribute Values",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_10-EFF-005"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add focused runtime or state-transition evidence for the remaining behavioral slice."
         }
       ],
       "statuses": {
-        "partial": 87
+        "partial": 86
       }
     },
     {
@@ -3061,14 +3041,14 @@
       "family": "Transports",
       "kinds": {
         "ARG": 4,
-        "EFF": 10,
+        "EFF": 9,
         "EXC": 80,
         "PRE": 96,
         "SEM": 2,
         "SVC": 8
       },
-      "open_row_count": 200,
-      "queue_item_count": 118,
+      "open_row_count": 199,
+      "queue_item_count": 117,
       "queue_items": [
         {
           "acceptance_tests": [
@@ -3569,6 +3549,7 @@
         },
         {
           "acceptance_tests": [
+            "test_clause_6_federate_initiated_services_validate_core_argument_shapes",
             "test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore"
           ],
           "clause": "6.19",
@@ -3680,27 +3661,6 @@
           ],
           "statuses": {
             "partial": 2
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions"
-          ],
-          "clause": "6.10",
-          "implementation_areas": [
-            "object_delivery"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Update Attribute Values",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_10-EFF-005"
-          ],
-          "statuses": {
-            "partial": 1
           },
           "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
         },
@@ -5874,11 +5834,11 @@
         }
       ],
       "statuses": {
-        "partial": 200
+        "partial": 199
       }
     }
   ],
   "generated_from": "harmonized requirements ledgers + imported HLA packet v1.0",
-  "total_open_rows": 460,
-  "total_queue_items": 236
+  "total_open_rows": 458,
+  "total_queue_items": 234
 }
