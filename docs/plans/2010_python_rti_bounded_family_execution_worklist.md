@@ -440,7 +440,7 @@ Operational effect:
 - the active execution queue should advance to `CAP-XML / CAP-OMT` instead of
   continuing to treat `CAP-DDM` as unresolved wording debt
 
-The `CAP-XML / CAP-OMT` bounded family was also re-audited on `2026-06-26`
+The `CAP-XML / CAP-OMT` bounded family was also re-audited on `2026-06-27`
 against the current owner doc, reconciliation companions, reconciliation
 verifiers, and the owning shard command for:
 
@@ -467,10 +467,15 @@ Reason:
 3. the current parser, validator, MOM-catalog, and round-trip shards are
    green, but the remaining packet rows still describe atom-level schema or
    normalization semantics beyond the current curated direct witnesses
-4. no narrower direct claim was identified that would preserve the current XML
+4. the reader-facing owner surfaces now keep the canonical split explicit:
+   - XML bounded rows stay owned by `hla1516_xml_detailed_reconciliation.csv`
+   - OMT bounded rows stay owned by `hla1516_2_omt_detailed_reconciliation.csv`
+   - `hla1516_2_omt_xml_detailed_reconciliation.csv` is retained only as a
+     legacy bridge artifact, not the canonical owner surface
+5. no narrower direct claim was identified that would preserve the current XML
    and OMT row meanings without adding new one-row-per-element, one-row-per-
    type, or stronger executable normalization proof
-5. the current owner doc already expresses the honest final reading for the
+6. the current owner doc already expresses the honest final reading for the
    present evidence
 
 Operational effect:

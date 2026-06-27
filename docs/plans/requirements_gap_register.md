@@ -249,7 +249,7 @@ Latest investigated decision:
 - treat this bucket as maintained boundary documentation unless future Clause 9
   negative-path witnesses materially change the bounded family disposition or
   leadership explicitly funds that tighter proof scope
-- on `2026-06-26`, the `2010 CAP-XML / CAP-OMT bounded family` was also
+- on `2026-06-27`, the `2010 CAP-XML / CAP-OMT bounded family` was also
   re-audited and kept as an explicit bounded family surface
 - the current owner doc, reconciliation companions, reconciliation verifiers,
   and owning shard command all support that reading
@@ -257,6 +257,9 @@ Latest investigated decision:
   and `1 CLAUSE12_13_DETAIL` envelope
 - the current OMT tail remains a stable bounded `2` Annex B normalization-row
   envelope
+- the reader-facing owner surfaces now keep the XML and OMT ledgers canonical
+  while retaining `hla1516_2_omt_xml_detailed_reconciliation.csv` only as a
+  legacy bridge artifact
 - no narrower direct claim was identified that would preserve the current XML
   and OMT row meanings without adding new one-row-per-element, one-row-per-
   type, or stronger executable normalization proof

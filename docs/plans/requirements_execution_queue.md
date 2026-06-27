@@ -311,7 +311,7 @@ Use the data-distribution owner docs as maintained bounded documentation and
 advance to `P1` / `P2` above for the next actual closeout move.
 
 The `2010 CAP-XML / CAP-OMT bounded family` was also re-audited on
-`2026-06-26`.
+`2026-06-27`.
 
 Result:
 
@@ -327,7 +327,10 @@ Why:
    `89 XML_TYPE`, and `1 CLAUSE12_13_DETAIL` envelope
 4. the remaining OMT tail is still a stable bounded `2` normalization-row
    envelope
-5. no narrower direct claim was identified that would preserve the current row
+5. the reader-facing owner surfaces now keep the XML and OMT ledgers canonical
+   while retaining `hla1516_2_omt_xml_detailed_reconciliation.csv` only as a
+   legacy bridge artifact
+6. no narrower direct claim was identified that would preserve the current row
    meanings without adding one-row-per-element, one-row-per-type, or stronger
    executable normalization proof
 
