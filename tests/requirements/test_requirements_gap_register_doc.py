@@ -58,7 +58,6 @@ def test_gap_register_and_queue_keep_owner_companion_split_explicit() -> None:
     assert "`1 OVW` Clause 6 family envelope" in gap_text
     assert "`updateAttributeValues` exception rows" in gap_text
     assert "`requestAttributeValueUpdate`" in gap_text
-    assert "`InvalidObjectClassHandle`" in gap_text
     assert "`ObjectClassNotDefined`" in gap_text
     assert "2010 CAP-OWN bounded family" in gap_text
     assert "stable bounded `8 PRE`, `11 EXC`, and" in gap_text

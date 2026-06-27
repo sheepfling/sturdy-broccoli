@@ -14,13 +14,13 @@ def test_object_management_partial_tail_current_shape_is_stable() -> None:
     rows = list(csv.DictReader(LEDGER.open(newline="", encoding="utf-8")))
     partial_rows = [row for row in rows if row["current_status"] == "partial"]
 
-    assert len(partial_rows) == 96
+    assert len(partial_rows) == 94
     assert Counter(row["reconciliation_kind"] for row in partial_rows) == {
         "EFF": 18,
         "CB_ORD": 25,
-        "EXC_API": 16,
+        "EXC_API": 15,
         "CB_ORDER": 17,
-        "EXC": 13,
+        "EXC": 12,
         "FED_CB": 6,
         "OVW": 1,
     }
@@ -34,13 +34,13 @@ def test_object_management_boundary_doc_records_current_family_shape() -> None:
     assert "## Default Final Stance" in text
     assert "## Exit Condition" in text
     assert "canonical final reading for the current `CAP-OM`" in text
-    assert "`295 mapped`" in text
-    assert "`96 partial`" in text
+    assert "`297 mapped`" in text
+    assert "`94 partial`" in text
     assert "`18 EFF`" in text
     assert "`25 CB_ORD`" in text
-    assert "`16 EXC_API`" in text
+    assert "`15 EXC_API`" in text
     assert "`17 CB_ORDER`" in text
-    assert "`13 EXC`" in text
+    assert "`12 EXC`" in text
     assert "`./tools/test-focus run execution-membership`" in text
     assert "`./tools/test-focus run backends`" in text
     assert "`./tools/test-surface run unit-scenarios-light`" in text
@@ -56,7 +56,7 @@ def test_object_management_boundary_doc_records_current_family_shape() -> None:
     assert "`deleteObjectInstance` precondition row no longer lives in this partial tail" in normalized
     assert "`sendInteraction` precondition row no longer lives in this partial tail" in normalized
     assert "`requestAttributeValueUpdate` precondition row no longer lives in this partial tail" in normalized
-    assert "current backend reports an unknown class handle as `InvalidObjectClassHandle` rather than the broader imported `ObjectClassNotDefined` wording" in normalized
+    assert "class-wide `requestAttributeValueUpdate` exception rows no longer live in this partial tail" in normalized
     assert "`HLA1516.1-OM-6_8-REGISTEROBJECTINSTANCE-PRE-001`" in text
     assert "`HLA1516.1-OM-6_10-UPDATEATTRIBUTEVALUES-PRE-001`" in text
     assert "`HLA1516.1-OM-6_10-UPDATEATTRIBUTEVALUES-EXC-001`" in text
@@ -226,14 +226,12 @@ def test_request_attribute_value_update_exception_rows_split_object_instance_and
     }
 
     assert rows["HLA1516.1-OM-6_19-RTIAPI-001-EXC"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_19-RTIAPI-002-EXC"]["current_status"] == "partial"
-    assert rows["HLA1516.1-OM-6_19-REQUESTATTRIBUTEVALUEUPDATE-EXC-001"]["current_status"] == "partial"
+    assert rows["HLA1516.1-OM-6_19-RTIAPI-002-EXC"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OM-6_19-REQUESTATTRIBUTEVALUEUPDATE-EXC-001"]["current_status"] == "mapped"
     assert "test_clause_6_federate_initiated_services_validate_core_argument_shapes" in rows[
         "HLA1516.1-OM-6_19-RTIAPI-001-EXC"
     ]["current_test_id"]
-    assert "InvalidObjectClassHandle" in rows[
-        "HLA1516.1-OM-6_19-RTIAPI-002-EXC"
-    ]["notes"]
+    assert "ObjectClassNotDefined" in rows["HLA1516.1-OM-6_19-RTIAPI-002-EXC"]["notes"]
 
 
 def test_request_attribute_value_update_precondition_row_is_now_mapped_to_the_applicable_guard_surface() -> None:

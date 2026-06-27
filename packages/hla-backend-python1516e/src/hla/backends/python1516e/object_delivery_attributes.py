@@ -9,7 +9,9 @@ from hla.rti1516e.enums import OrderType
 from hla.rti1516e.exceptions import (
     AttributeNotOwned,
     AttributeNotPublished,
+    InvalidObjectClassHandle,
     ObjectInstanceNotKnown,
+    ObjectClassNotDefined,
 )
 from hla.rti1516e.handles import (
     AttributeHandle,
@@ -242,7 +244,10 @@ class PythonRTIObjectAttributeDeliveryMixin(_ObjectAttributeDeliveryMixinBase):
             return
 
         if isinstance(target, ObjectClassHandle):
-            self.engine.object_class_for_handle(target)
+            try:
+                self.engine.object_class_for_handle(target)
+            except InvalidObjectClassHandle as exc:
+                raise ObjectClassNotDefined(repr(target)) from exc
             for attribute in attrs:
                 self.engine.attribute_name(target, attribute)
             for instance in list(federation.objects.values()):

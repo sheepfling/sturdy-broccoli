@@ -77,7 +77,6 @@ def test_2010_bounded_family_execution_worklist_keeps_owner_and_tightening_rules
     assert "`25 CB_ORD`, `17 CB_ORDER`, and the remaining bounded effect and exception" in text
     assert "`updateAttributeValues` exception rows" in text
     assert "`requestAttributeValueUpdate`" in text
-    assert "`InvalidObjectClassHandle`" in text
     assert "`ObjectClassNotDefined`" in text
     assert "keep the `CAP-OWN` family as canonical `partial`" in text
     assert "`8 PRE`, `11 EXC`, and `11 EXC_API` rows" in text

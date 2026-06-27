@@ -122,6 +122,7 @@ def test_clause_6_packet_reconciliation_does_not_keep_stale_partial_precondition
         "HLA1516.1-OM-6_12-PRE-004": "test_clause_6_federate_initiated_services_validate_core_argument_shapes;test_send_interaction_rejects_not_connected_not_joined_invalid_inputs_and_invalid_time",
         "HLA1516.1-OM-6_14-PRE-004": "test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore",
         "HLA1516.1-OM-6_16-PRE-004": "test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore",
+        "HLA1516.1-OM-6_19-EXC-006": "test_clause_6_federate_initiated_services_validate_core_argument_shapes;test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore",
         "HLA1516.1-OM-6_19-PRE-004": "test_clause_6_federate_initiated_services_validate_core_argument_shapes;test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore",
     }
 
@@ -129,18 +130,3 @@ def test_clause_6_packet_reconciliation_does_not_keep_stale_partial_precondition
         row = packet_rows[requirement_id]
         assert row["current_status"] == "mapped"
         assert row["current_test_id"] == current_test_id
-
-
-def test_clause_6_packet_request_attribute_value_update_exception_row_keeps_the_canonical_partial_note():
-    packet_rows = {
-        row["packet_requirement_id"]: row
-        for row in _rows(REFERENCE_DIR / "hla1516_1_clause_6_om_detailed_reconciliation.csv")
-    }
-
-    row = packet_rows["HLA1516.1-OM-6_19-EXC-006"]
-    assert row["current_status"] == "partial"
-    assert row["current_test_id"] == (
-        "test_clause_6_federate_initiated_services_validate_core_argument_shapes;"
-        "test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore"
-    )
-    assert "InvalidObjectClassHandle" in row["notes"]

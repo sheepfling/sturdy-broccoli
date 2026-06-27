@@ -336,10 +336,9 @@ Reason:
    recent tightening where the `updateAttributeValues` exception rows and the
    object-instance overload exception row for `requestAttributeValueUpdate`
    left the partial tail
-3. the remaining class-wide `requestAttributeValueUpdate` exception rows stay
-   intentionally bounded because the backend reports
-   `InvalidObjectClassHandle` rather than the broader imported
-   `ObjectClassNotDefined` wording
+3. the class-wide `requestAttributeValueUpdate` exception rows no longer stay
+   in the partial tail because the backend now surfaces the imported
+   `ObjectClassNotDefined` failure on the exercised class-wide overload
 4. the current remaining packet rows still describe broader callback-order,
    effect-vector, exception-envelope, or supported-transport-subset claims
    than the direct witnesses isolate

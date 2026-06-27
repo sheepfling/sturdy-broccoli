@@ -81,16 +81,16 @@ keep describing `CAP-OM` as vague or structurally unfinished.
 
 The current owner ledger has `391` object-management packet rows:
 
-- `295 mapped`
-- `96 partial`
+- `297 mapped`
+- `94 partial`
 
-The remaining `96 partial` rows cluster into stable categories:
+The remaining `94 partial` rows cluster into stable categories:
 
 - `18 EFF`
 - `25 CB_ORD`
-- `16 EXC_API`
+- `15 EXC_API`
 - `17 CB_ORDER`
-- `13 EXC`
+- `12 EXC`
 - `6 FED_CB`
 - `1 OVW`
 
@@ -182,10 +182,10 @@ Recent tightening examples:
   partial tail because direct negative-path witnesses now isolate the
   applicable connection-state, membership, handle-validation, and save/restore
   precondition surface across the object-instance and class-wide overloads
-- the class-wide `requestAttributeValueUpdate` exception rows still remain
-  partial because the current backend reports an unknown class handle as
-  `InvalidObjectClassHandle` rather than the broader imported
-  `ObjectClassNotDefined` wording
+- the class-wide `requestAttributeValueUpdate` exception rows no longer live in
+  this partial tail because the direct negative-path witnesses now isolate the
+  class-wide `ObjectClassNotDefined` failure alongside the existing
+  attribute-definition, membership, connection, and save/restore guards
 
 Execution-membership reading for this family:
 

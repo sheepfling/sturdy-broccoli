@@ -171,10 +171,10 @@ Latest investigated decision:
   that bounded tail because the current direct negative-path witnesses now
   isolate the applicable connection, membership, handle-validation, and
   save/restore guards across both overloads
-- the remaining class-wide `requestAttributeValueUpdate` exception rows stay
-  intentionally bounded because the backend reports
-  `InvalidObjectClassHandle` rather than the broader imported
-  `ObjectClassNotDefined` wording
+- the class-wide `requestAttributeValueUpdate` exception rows are also no
+  longer part of that bounded tail because the backend now surfaces the
+  imported `ObjectClassNotDefined` failure on the exercised class-wide
+  overload
 - no narrower direct claim was identified that would preserve the current
   Clause 6 row meanings without adding new isolated per-row callback-order,
   effect-vector, or negative-path proof

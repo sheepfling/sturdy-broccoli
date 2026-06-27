@@ -2479,7 +2479,7 @@ def test_clause_6_federate_initiated_services_validate_core_argument_shapes():
         owner.request_attribute_value_update(ObjectInstanceHandle(999), {attr}, b"tag")
     with pytest.raises(AttributeNotDefined):
         owner.request_attribute_value_update(obj, {bad_attr}, b"tag")
-    with pytest.raises(InvalidObjectClassHandle):
+    with pytest.raises(ObjectClassNotDefined):
         owner.request_attribute_value_update(bad_class, {attr}, b"tag")
 
     with pytest.raises(ObjectInstanceNotKnown):
