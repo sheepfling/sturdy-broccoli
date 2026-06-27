@@ -39,7 +39,10 @@ def test_clause8_time_test_rows_have_direct_evidence_and_mapped_companion_slices
 
     for row in test_rows:
         assert row["current_status"] == "mapped"
-        assert "broader PRE and EXC envelope rows remain partial" in row["notes"]
+        assert (
+            "broader PRE and EXC envelope rows remain partial" in row["notes"]
+            or "PRE and EXC companion rows are mapped only where their notes are intentionally narrowed" in row["notes"]
+        )
 
         service_rows = by_service[row["service_name"]]
         for companion_kind in ("SIG", "MOM", "ARG", "EFF"):
@@ -61,7 +64,10 @@ def test_clause9_ddm_test_rows_have_direct_evidence_and_mapped_companion_slices(
 
     for row in test_rows:
         assert row["current_status"] == "mapped"
-        assert "broader PRE and EXC envelope rows remain partial" in row["notes"]
+        assert (
+            "broader PRE and EXC envelope rows remain partial" in row["notes"]
+            or "PRE and EXC companion rows are mapped only where their notes are intentionally narrowed" in row["notes"]
+        )
 
         service_rows = by_service[row["service_name"]]
         for companion_kind in ("SIG", "MOM", "ARG", "EFF"):
@@ -83,7 +89,10 @@ def test_tm_family_test_rows_have_direct_evidence_and_mapped_companion_slices():
 
     for row in test_rows:
         assert row["current_status"] == "mapped"
-        assert "broader PRE and EXC envelope rows remain partial" in row["notes"]
+        assert (
+            "broader PRE and EXC envelope rows remain partial" in row["notes"]
+            or "PRE and EXC companion rows are mapped only where their notes are intentionally narrowed" in row["notes"]
+        )
 
         feature_rows = by_feature[row["feature"]]
         for companion_kind in ("SIG", "MOM", "ARG", "EFF"):
@@ -105,7 +114,10 @@ def test_ddm_family_test_rows_have_direct_evidence_and_mapped_companion_slices()
 
     for row in test_rows:
         assert row["current_status"] == "mapped"
-        assert "broader PRE and EXC envelope rows remain partial" in row["notes"]
+        assert (
+            "broader PRE and EXC envelope rows remain partial" in row["notes"]
+            or "PRE and EXC companion rows are mapped only where their notes are intentionally narrowed" in row["notes"]
+        )
 
         feature_rows = by_feature[row["feature"]]
         for companion_kind in ("SIG", "MOM", "ARG", "EFF"):

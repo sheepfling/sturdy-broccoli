@@ -1058,155 +1058,11 @@
     {
       "description": "Clause 9 packet-to-curated backlog for DDM services.",
       "family": "Data Distribution Management",
-      "kinds": {
-        "EXC": 6
-      },
-      "open_row_count": 6,
-      "queue_item_count": 6,
-      "queue_items": [
-        {
-          "acceptance_tests": [
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscription_update_and_unsubscribe_lifecycle",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_register_object_instance_with_regions_rejects_not_connected_not_joined_and_invalid_region"
-          ],
-          "clause": "9.5",
-          "implementation_areas": [
-            "ddm_object_registration"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "registerObjectInstanceWithRegions",
-          "requirement_ids": [
-            "HLA1516.1-DDM-9_5-REGISTEROBJECTINSTANCEWITHREGIONS-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscription_update_and_unsubscribe_lifecycle",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_request_attribute_value_update_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_request_attribute_value_update_routes_only_to_relevant_object_owners"
-          ],
-          "clause": "9.13",
-          "implementation_areas": [
-            "ddm_filtering"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "requestAttributeValueUpdateWithRegions",
-          "requirement_ids": [
-            "HLA1516.1-DDM-9_13-REQUESTATTRIBUTEVALUEUPDATEWITHREGIONS-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscription_update_and_unsubscribe_lifecycle",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_dm_ddm_subscriptions_gate_discovery_reflect_and_receive_until_declared",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_send_interaction_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore",
-            "tests/verification/test_compliance_slice_v011.py::test_ddm_region_filtering_applies_before_timestamp_order_delivery"
-          ],
-          "clause": "9.12",
-          "implementation_areas": [
-            "ddm_filtering"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "sendInteractionWithRegions",
-          "requirement_ids": [
-            "HLA1516.1-DDM-9_12-SENDINTERACTIONWITHREGIONS-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_passive_region_subscriptions_behave_like_active_region_subscriptions",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscriptions_reject_not_connected_not_joined_and_invalid_region"
-          ],
-          "clause": "9.8",
-          "implementation_areas": [
-            "ddm_subscription"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "subscribeObjectClassAttributesPassivelyWithRegions",
-          "requirement_ids": [
-            "HLA1516.1-DDM-9_8-SUBSCRIBEOBJECTCLASSATTRIBUTESPASSIVELYWITHREGIONS-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscription_update_and_unsubscribe_lifecycle",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_dm_ddm_subscriptions_gate_discovery_reflect_and_receive_until_declared",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscriptions_reject_not_connected_not_joined_and_invalid_region"
-          ],
-          "clause": "9.8",
-          "implementation_areas": [
-            "ddm_subscription"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "subscribeObjectClassAttributesWithRegions",
-          "requirement_ids": [
-            "HLA1516.1-DDM-9_8-SUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscription_update_and_unsubscribe_lifecycle",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_unsubscribe_object_class_attributes_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore"
-          ],
-          "clause": "9.9",
-          "implementation_areas": [
-            "ddm_subscription"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "unsubscribeObjectClassAttributesWithRegions",
-          "requirement_ids": [
-            "HLA1516.1-DDM-9_9-UNSUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        }
-      ],
-      "statuses": {
-        "partial": 6
-      }
+      "kinds": {},
+      "open_row_count": 0,
+      "queue_item_count": 0,
+      "queue_items": [],
+      "statuses": {}
     },
     {
       "description": "Clause 10 packet-to-curated backlog for support services.",
@@ -2347,11 +2203,11 @@
       "description": "Cross-cutting native/gRPC/REST transport-equivalence and transportation-type backlog rows.",
       "family": "Transports",
       "kinds": {
-        "EXC": 63,
+        "EXC": 57,
         "PRE": 82
       },
-      "open_row_count": 145,
-      "queue_item_count": 91,
+      "open_row_count": 139,
+      "queue_item_count": 85,
       "queue_items": [
         {
           "acceptance_tests": [
@@ -4007,52 +3863,6 @@
         },
         {
           "acceptance_tests": [
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscription_update_and_unsubscribe_lifecycle",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_register_object_instance_with_regions_rejects_not_connected_not_joined_and_invalid_region"
-          ],
-          "clause": "9.5",
-          "implementation_areas": [
-            "ddm_object_registration"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "registerObjectInstanceWithRegions",
-          "requirement_ids": [
-            "HLA1516.1-DDM-9_5-REGISTEROBJECTINSTANCEWITHREGIONS-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscription_update_and_unsubscribe_lifecycle",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_request_attribute_value_update_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_request_attribute_value_update_routes_only_to_relevant_object_owners"
-          ],
-          "clause": "9.13",
-          "implementation_areas": [
-            "ddm_filtering"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "requestAttributeValueUpdateWithRegions",
-          "requirement_ids": [
-            "HLA1516.1-DDM-9_13-REQUESTATTRIBUTEVALUEUPDATEWITHREGIONS-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
             "tests/time/test_mom_mim_time_v10.py::test_retract_removes_queued_tso_message_before_grant",
             "tests/backends/test_python_backend_object_ownership_extended.py::test_modify_lookahead_retract_change_attribute_order_type_and_enable_time_constrained_reject_core_negative_paths"
           ],
@@ -4072,31 +3882,6 @@
           ],
           "statuses": {
             "partial": 2
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscription_update_and_unsubscribe_lifecycle",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_dm_ddm_subscriptions_gate_discovery_reflect_and_receive_until_declared",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_send_interaction_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore",
-            "tests/verification/test_compliance_slice_v011.py::test_ddm_region_filtering_applies_before_timestamp_order_delivery"
-          ],
-          "clause": "9.12",
-          "implementation_areas": [
-            "ddm_filtering"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "sendInteractionWithRegions",
-          "requirement_ids": [
-            "HLA1516.1-DDM-9_12-SENDINTERACTIONWITHREGIONS-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
           },
           "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
         },
@@ -4238,52 +4023,6 @@
           ],
           "statuses": {
             "partial": 2
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_passive_region_subscriptions_behave_like_active_region_subscriptions",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscriptions_reject_not_connected_not_joined_and_invalid_region"
-          ],
-          "clause": "9.8",
-          "implementation_areas": [
-            "ddm_subscription"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "subscribeObjectClassAttributesPassivelyWithRegions",
-          "requirement_ids": [
-            "HLA1516.1-DDM-9_8-SUBSCRIBEOBJECTCLASSATTRIBUTESPASSIVELYWITHREGIONS-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscription_update_and_unsubscribe_lifecycle",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_dm_ddm_subscriptions_gate_discovery_reflect_and_receive_until_declared",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscriptions_reject_not_connected_not_joined_and_invalid_region"
-          ],
-          "clause": "9.8",
-          "implementation_areas": [
-            "ddm_subscription"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "subscribeObjectClassAttributesWithRegions",
-          "requirement_ids": [
-            "HLA1516.1-DDM-9_8-SUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
           },
           "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
         },
@@ -4498,36 +4237,14 @@
             "partial": 2
           },
           "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscription_update_and_unsubscribe_lifecycle",
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_unsubscribe_object_class_attributes_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore"
-          ],
-          "clause": "9.9",
-          "implementation_areas": [
-            "ddm_subscription"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "unsubscribeObjectClassAttributesWithRegions",
-          "requirement_ids": [
-            "HLA1516.1-DDM-9_9-UNSUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
         }
       ],
       "statuses": {
-        "partial": 145
+        "partial": 139
       }
     }
   ],
   "generated_from": "harmonized requirements ledgers + imported HLA packet v1.0",
-  "total_open_rows": 318,
-  "total_queue_items": 182
+  "total_open_rows": 306,
+  "total_queue_items": 170
 }

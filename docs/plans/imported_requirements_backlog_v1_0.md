@@ -3,8 +3,8 @@
 This generated backlog turns the harmonized open requirements rows into repo-native implementation queues.
 Some rows intentionally appear in multiple queues, especially `MOM/MIM` and `Transports`, because those are cross-cutting execution backlogs rather than mutually exclusive taxonomies.
 
-- Total open rows: 318
-- Total queue items: 182
+- Total open rows: 306
+- Total queue items: 170
 - Families: 11
 
 ## Queue Summary
@@ -16,12 +16,12 @@ Some rows intentionally appear in multiple queues, especially `MOM/MIM` and `Tra
 | Object Management | 0 | 0 | - | - |
 | Ownership Management | 19 | 11 | partial:19 | EXC:11, PRE:8 |
 | Time Management | 38 | 19 | partial:38 | EXC:19, PRE:19 |
-| Data Distribution Management | 6 | 6 | partial:6 | EXC:6 |
+| Data Distribution Management | 0 | 0 | - | - |
 | Support Services | 86 | 43 | partial:86 | EXC:43, PRE:43 |
 | MOM/MIM | 0 | 0 | - | - |
 | OMT | 0 | 0 | - | - |
 | XML | 0 | 0 | - | - |
-| Transports | 145 | 91 | partial:145 | PRE:82, EXC:63 |
+| Transports | 139 | 85 | partial:139 | PRE:82, EXC:57 |
 
 ## Federation Management
 
@@ -129,19 +129,13 @@ Clause 8 packet-to-curated backlog for time-management services.
 
 Clause 9 packet-to-curated backlog for DDM services.
 
-- Open rows: 6
-- Queue items: 6
-- Statuses: partial:6
-- Kinds: EXC:6
+- Open rows: 0
+- Queue items: 0
+- Statuses: -
+- Kinds: -
 
 | Queue item | Clause | Open rows | Kinds | Requirement IDs | Acceptance tests | Next action |
 |---|---|---:|---|---|---|---|
-| registerObjectInstanceWithRegions | 9.5 | 1 | EXC:1 | HLA1516.1-DDM-9_5-REGISTEROBJECTINSTANCEWITHREGIONS-EXC-001 | tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscription_update_and_unsubscribe_lifecycle, tests/backends/test_python_backend_time_ddm_extended.py::test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions, tests/backends/test_python_backend_time_ddm_extended.py::test_register_object_instance_with_regions_rejects_not_connected_not_joined_and_invalid_region | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
-| requestAttributeValueUpdateWithRegions | 9.13 | 1 | EXC:1 | HLA1516.1-DDM-9_13-REQUESTATTRIBUTEVALUEUPDATEWITHREGIONS-EXC-001 | tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscription_update_and_unsubscribe_lifecycle, tests/backends/test_python_backend_time_ddm_extended.py::test_request_attribute_value_update_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore, tests/backends/test_python_backend_time_ddm_extended.py::test_request_attribute_value_update_routes_only_to_relevant_object_owners | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
-| sendInteractionWithRegions | 9.12 | 1 | EXC:1 | HLA1516.1-DDM-9_12-SENDINTERACTIONWITHREGIONS-EXC-001 | tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscription_update_and_unsubscribe_lifecycle, tests/backends/test_python_backend_time_ddm_extended.py::test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions, tests/backends/test_python_backend_time_ddm_extended.py::test_dm_ddm_subscriptions_gate_discovery_reflect_and_receive_until_declared (+2 more) | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
-| subscribeObjectClassAttributesPassivelyWithRegions | 9.8 | 1 | EXC:1 | HLA1516.1-DDM-9_8-SUBSCRIBEOBJECTCLASSATTRIBUTESPASSIVELYWITHREGIONS-EXC-001 | tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_passive_region_subscriptions_behave_like_active_region_subscriptions, tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscriptions_reject_not_connected_not_joined_and_invalid_region | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
-| subscribeObjectClassAttributesWithRegions | 9.8 | 1 | EXC:1 | HLA1516.1-DDM-9_8-SUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-EXC-001 | tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscription_update_and_unsubscribe_lifecycle, tests/backends/test_python_backend_time_ddm_extended.py::test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions, tests/backends/test_python_backend_time_ddm_extended.py::test_dm_ddm_subscriptions_gate_discovery_reflect_and_receive_until_declared (+1 more) | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
-| unsubscribeObjectClassAttributesWithRegions | 9.9 | 1 | EXC:1 | HLA1516.1-DDM-9_9-UNSUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-EXC-001 | tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscription_update_and_unsubscribe_lifecycle, tests/backends/test_python_backend_time_ddm_extended.py::test_unsubscribe_object_class_attributes_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 
 ## Support Services
 
@@ -238,10 +232,10 @@ Open IEEE 1516.2 XML and schema-conformance backlog rows.
 
 Cross-cutting native/gRPC/REST transport-equivalence and transportation-type backlog rows.
 
-- Open rows: 145
-- Queue items: 91
-- Statuses: partial:145
-- Kinds: EXC:63, PRE:82
+- Open rows: 139
+- Queue items: 85
+- Statuses: partial:139
+- Kinds: EXC:57, PRE:82
 
 | Queue item | Clause | Open rows | Kinds | Requirement IDs | Acceptance tests | Next action |
 |---|---|---:|---|---|---|---|
@@ -314,18 +308,13 @@ Cross-cutting native/gRPC/REST transport-equivalence and transportation-type bac
 | queryLITS | 8.18 | 2 | EXC:1, PRE:1 | HLA1516.1-TM-8_18-QUERYLITS-EXC-001, HLA1516.1-TM-8_18-QUERYLITS-PRE-001 | tests/time/test_mom_mim_time_v10.py::test_timestamp_order_next_message_requests_deliver_in_time_order_and_query_galt_lits, tests/backends/test_python_backend_time_ddm_extended.py::test_time_query_tail_rejects_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | queryLogicalTime | 8.17 | 2 | EXC:1, PRE:1 | HLA1516.1-TM-8_17-QUERYLOGICALTIME-EXC-001, HLA1516.1-TM-8_17-QUERYLOGICALTIME-PRE-001 | tests/time/test_mom_mim_and_time_semantics_v010.py::test_section8_core_time_management_surface_covers_callbacks_states_and_grants, tests/backends/test_python_backend_time_ddm_extended.py::test_time_query_tail_rejects_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | queryLookahead | 8.20 | 2 | EXC:1, PRE:1 | HLA1516.1-TM-8_20-QUERYLOOKAHEAD-EXC-001, HLA1516.1-TM-8_20-QUERYLOOKAHEAD-PRE-001 | tests/time/test_mom_mim_and_time_semantics_v010.py::test_section8_core_time_management_surface_covers_callbacks_states_and_grants, tests/time/test_lookahead_backend_matrix.py::test_lookahead_backend_matrix_state_services, tests/backends/test_python_backend_object_ownership_extended.py::test_async_delivery_and_time_query_disable_tail_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| registerObjectInstanceWithRegions | 9.5 | 1 | EXC:1 | HLA1516.1-DDM-9_5-REGISTEROBJECTINSTANCEWITHREGIONS-EXC-001 | tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscription_update_and_unsubscribe_lifecycle, tests/backends/test_python_backend_time_ddm_extended.py::test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions, tests/backends/test_python_backend_time_ddm_extended.py::test_register_object_instance_with_regions_rejects_not_connected_not_joined_and_invalid_region | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| requestAttributeValueUpdateWithRegions | 9.13 | 1 | EXC:1 | HLA1516.1-DDM-9_13-REQUESTATTRIBUTEVALUEUPDATEWITHREGIONS-EXC-001 | tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscription_update_and_unsubscribe_lifecycle, tests/backends/test_python_backend_time_ddm_extended.py::test_request_attribute_value_update_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore, tests/backends/test_python_backend_time_ddm_extended.py::test_request_attribute_value_update_routes_only_to_relevant_object_owners | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | retract | 8.21 | 2 | EXC:1, PRE:1 | HLA1516.1-TM-8_21-RETRACT-EXC-001, HLA1516.1-TM-8_21-RETRACT-PRE-001 | tests/time/test_mom_mim_time_v10.py::test_retract_removes_queued_tso_message_before_grant, tests/backends/test_python_backend_object_ownership_extended.py::test_modify_lookahead_retract_change_attribute_order_type_and_enable_time_constrained_reject_core_negative_paths | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| sendInteractionWithRegions | 9.12 | 1 | EXC:1 | HLA1516.1-DDM-9_12-SENDINTERACTIONWITHREGIONS-EXC-001 | tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscription_update_and_unsubscribe_lifecycle, tests/backends/test_python_backend_time_ddm_extended.py::test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions, tests/backends/test_python_backend_time_ddm_extended.py::test_dm_ddm_subscriptions_gate_discovery_reflect_and_receive_until_declared (+2 more) | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | setAutomaticResignDirective | 10.3 | 1 | PRE:1 | HLA1516.1-SUP-10_3-SETAUTOMATICRESIGNDIRECTIVE-PRE-001 | tests/backends/test_python_backend_support_services.py::test_support_dimension_and_update_rate_helpers, tests/backends/test_python_backend_support_services.py::test_support_invalid_inputs_raise_expected_errors | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | setRangeBounds | 10.30 | 2 | EXC:1, PRE:1 | HLA1516.1-SUP-10_30-SETRANGEBOUNDS-EXC-001, HLA1516.1-SUP-10_30-SETRANGEBOUNDS-PRE-001 | tests/backends/test_python_backend_support_services.py::test_support_dimension_and_update_rate_helpers, tests/backends/test_python_backend_support_services.py::test_support_update_rate_lookup_for_attribute_reflects_subscribed_rate, tests/backends/test_python_backend_support_services.py::test_fom_declared_update_rate_defaults_apply_to_inherited_and_regioned_subscriptions (+2 more) | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | subscribeInteractionClass | 5.8 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_8-SUBSCRIBEINTERACTIONCLASS-EXC-001, HLA1516.1-DM-5_8-SUBSCRIBEINTERACTIONCLASS-PRE-001 | test_publish_unpublish_unsubscribe_and_interaction_subscription_tail_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | subscribeInteractionClassPassively | 5.8 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_8-SUBSCRIBEINTERACTIONCLASSPASSIVELY-EXC-001, HLA1516.1-DM-5_8-SUBSCRIBEINTERACTIONCLASSPASSIVELY-PRE-001 | test_publish_unpublish_unsubscribe_and_interaction_subscription_tail_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | subscribeObjectClassAttributes | 5.6 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_6-SUBSCRIBEOBJECTCLASSATTRIBUTES-EXC-001, HLA1516.1-DM-5_6-SUBSCRIBEOBJECTCLASSATTRIBUTES-PRE-001 | test_declaration_services_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | subscribeObjectClassAttributesPassively | 5.6 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_6-SUBSCRIBEOBJECTCLASSATTRIBUTESPASSIVELY-EXC-001, HLA1516.1-DM-5_6-SUBSCRIBEOBJECTCLASSATTRIBUTESPASSIVELY-PRE-001 | test_declaration_services_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| subscribeObjectClassAttributesPassivelyWithRegions | 9.8 | 1 | EXC:1 | HLA1516.1-DDM-9_8-SUBSCRIBEOBJECTCLASSATTRIBUTESPASSIVELYWITHREGIONS-EXC-001 | tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_passive_region_subscriptions_behave_like_active_region_subscriptions, tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscriptions_reject_not_connected_not_joined_and_invalid_region | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| subscribeObjectClassAttributesWithRegions | 9.8 | 1 | EXC:1 | HLA1516.1-DDM-9_8-SUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-EXC-001 | tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscription_update_and_unsubscribe_lifecycle, tests/backends/test_python_backend_time_ddm_extended.py::test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions, tests/backends/test_python_backend_time_ddm_extended.py::test_dm_ddm_subscriptions_gate_discovery_reflect_and_receive_until_declared (+1 more) | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | timeAdvanceRequest | 8.8 | 2 | EXC:1, PRE:1 | HLA1516.1-TM-8_8-TIMEADVANCEREQUEST-EXC-001, HLA1516.1-TM-8_8-TIMEADVANCEREQUEST-PRE-001 | tests/time/test_mom_mim_and_time_semantics_v010.py::test_section8_core_time_management_surface_covers_callbacks_states_and_grants, tests/backends/test_python_backend_time_ddm_extended.py::test_time_advance_services_reject_not_connected_not_joined_invalid_and_past_time, tests/backends/test_python_backend_time_ddm_extended.py::test_time_advance_services_reject_save_restore_and_outstanding_advance (+1 more) | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | timeAdvanceRequestAvailable | 8.9 | 2 | EXC:1, PRE:1 | HLA1516.1-TM-8_9-TIMEADVANCEREQUESTAVAILABLE-EXC-001, HLA1516.1-TM-8_9-TIMEADVANCEREQUESTAVAILABLE-PRE-001 | tests/time/test_mom_mim_time_v10.py::test_time_advance_request_waits_at_galt_boundary_but_available_request_can_grant_equal_galt, tests/backends/test_python_backend_time_ddm_extended.py::test_time_advance_services_reject_not_connected_not_joined_invalid_and_past_time, tests/backends/test_python_backend_time_ddm_extended.py::test_time_advance_services_reject_save_restore_and_outstanding_advance | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | unconditionalAttributeOwnershipDivestiture | 7.2 | 2 | EXC:1, PRE:1 | HLA1516.1-OWN-7_2-UNCONDITIONALATTRIBUTEOWNERSHIPDIVESTITURE-EXC-001, HLA1516.1-OWN-7_2-UNCONDITIONALATTRIBUTEOWNERSHIPDIVESTITURE-PRE-001 | test_unconditional_divestiture_query_ownership_and_is_owned_reject_not_connected_not_joined_unknown_object_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
@@ -335,5 +324,4 @@ Cross-cutting native/gRPC/REST transport-equivalence and transportation-type bac
 | unsubscribeInteractionClass | 5.9 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_9-UNSUBSCRIBEINTERACTIONCLASS-EXC-001, HLA1516.1-DM-5_9-UNSUBSCRIBEINTERACTIONCLASS-PRE-001 | test_publish_unpublish_and_unsubscribe_interaction_tail_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | unsubscribeObjectClass | 5.7 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_7-UNSUBSCRIBEOBJECTCLASS-EXC-001, HLA1516.1-DM-5_7-UNSUBSCRIBEOBJECTCLASS-PRE-001 | test_publish_unpublish_unsubscribe_and_interaction_subscription_tail_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | unsubscribeObjectClassAttributes | 5.7 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_7-UNSUBSCRIBEOBJECTCLASSATTRIBUTES-EXC-001, HLA1516.1-DM-5_7-UNSUBSCRIBEOBJECTCLASSATTRIBUTES-PRE-001 | test_publish_unpublish_unsubscribe_and_interaction_subscription_tail_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| unsubscribeObjectClassAttributesWithRegions | 9.9 | 1 | EXC:1 | HLA1516.1-DDM-9_9-UNSUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-EXC-001 | tests/backends/test_python_backend_time_ddm_extended.py::test_ddm_region_subscription_update_and_unsubscribe_lifecycle, tests/backends/test_python_backend_time_ddm_extended.py::test_unsubscribe_object_class_attributes_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 

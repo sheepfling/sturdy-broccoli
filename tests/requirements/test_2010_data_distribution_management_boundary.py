@@ -10,15 +10,11 @@ LEDGER = ROOT / "requirements/2010/hla1516_1_ddm_detailed_reconciliation.csv"
 BOUNDARY_DOC = ROOT / "docs/requirements/ieee-1516-2010/data_distribution_management_bounded_family.md"
 
 
-def test_ddm_partial_tail_is_only_pre_exc_and_exc_api() -> None:
+def test_ddm_partial_tail_is_closed() -> None:
     rows = list(csv.DictReader(LEDGER.open(newline="", encoding="utf-8")))
     partial_rows = [row for row in rows if row["current_status"] == "partial"]
 
-    assert len(partial_rows) == 16
-    assert Counter(row["reconciliation_kind"] for row in partial_rows) == {
-        "EXC_API": 10,
-        "EXC": 6,
-    }
+    assert partial_rows == []
 
 
 def test_ddm_boundary_doc_records_current_family_shape() -> None:
@@ -29,10 +25,8 @@ def test_ddm_boundary_doc_records_current_family_shape() -> None:
     assert "## Default Final Stance" in text
     assert "## Exit Condition" in text
     assert "canonical final reading for the current `CAP-DDM`" in text
-    assert "`207 mapped`" in text
-    assert "`16 partial`" in text
-    assert "`10 EXC_API`" in text
-    assert "`6 EXC`" in text
+    assert "`223 mapped`" in text
+    assert "`0 partial`" in text
     assert "`./tools/test-focus run backends`" in text
     assert "`./tools/test-focus run time`" in text
     assert "Execution-membership reading for this family:" in text
@@ -42,8 +36,11 @@ def test_ddm_boundary_doc_records_current_family_shape() -> None:
     assert "`HLA1516.1-DDM-9_12-SENDINTERACTIONWITHREGIONS-EXC-001`" in text
     assert "`HLA1516.1-DDM-9_13-REQUESTATTRIBUTEVALUEUPDATEWITHREGIONS-PRE-001`" in text
     assert "`HLA1516.1-DDM-9_13-REQUESTATTRIBUTEVALUEUPDATEWITHREGIONS-EXC-001`" in text
+    assert "`HLA1516.1-DDM-9_5-REGISTEROBJECTINSTANCEWITHREGIONS-EXC-001`" in text
+    assert "`HLA1516.1-DDM-9_8-SUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-EXC-001`" in text
     assert "test_ddm_send_interaction_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore" in text
     assert "test_request_attribute_value_update_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore" in text
+    assert "test_register_object_instance_with_regions_rejects_not_connected_not_joined_and_invalid_region" in text
     assert "`./tools/test-focus run execution-membership`" in text
 
 

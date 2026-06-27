@@ -43,7 +43,7 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
     }
 
     statuses = Counter(row["harmonization_status"] for row in rows)
-    assert statuses == Counter({"mapped": 2852, "partial": 1151})
+    assert statuses == Counter({"mapped": 2868, "partial": 1135})
 
     by_id = {row["master_requirement_id"]: row for row in rows}
     assert by_id["HLA1516.1-SUP-10_2-GETAUTOMATICRESIGNDIRECTIVE-TEST-001"][
@@ -171,6 +171,13 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
         by_id["HLA1516.1-DDM-9_2-RTIAPI-001-EXC"]["harmonization_status"]
         == "mapped"
     )
+    assert by_id["HLA1516.1-DDM-9_5-REGISTEROBJECTINSTANCEWITHREGIONS-EXC-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-DDM-9_5-RTIAPI-001-EXC"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-DDM-9_8-SUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-EXC-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-DDM-9_8-RTIAPI-001-EXC"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-DDM-9_9-UNSUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-EXC-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-DDM-9_12-SENDINTERACTIONWITHREGIONS-EXC-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-DDM-9_13-REQUESTATTRIBUTEVALUEUPDATEWITHREGIONS-EXC-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-DDM-9_12-RTIAPI-002-RET"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OWN-OVERVIEW-008"]["harmonization_status"] == "mapped"
     assert (

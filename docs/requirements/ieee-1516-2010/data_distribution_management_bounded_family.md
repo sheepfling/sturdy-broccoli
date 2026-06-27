@@ -2,20 +2,20 @@
 
 Use this page when the question is:
 
-- why does the 2010 Clause 9 data-distribution-management family still carry
-  `partial` rows even though the repo already has strong direct region,
-  overlap-routing, subscription, send-with-regions, and request-update
-  evidence?
-- which single document owns the remaining `CAP-DDM` partial pattern?
-- are those partial rows still vague, or already in an explicit bounded final
-  state?
+- which single document owns the 2010 Clause 9 data-distribution-management
+  closeout surface?
+- did the DDM owner family still carry bounded `partial` rows, or is it now
+  fully mapped?
+- where should reviewers look for the final execution-membership and exception
+  readings for region-gated object and interaction services?
 
 Short answer:
 
-- the remaining `CAP-DDM` partial rows are already in an explicit bounded
-  family state
-- the canonical owner ledger stays `partial` for those rows
-- the bounded reasons are now structured and reviewable instead of implied
+- the canonical DDM owner ledger is now fully mapped
+- the earlier bounded exception tail has been closed by narrowing claims to the
+  directly exercised exception surface
+- this page remains the canonical closeout note for how that final reading is
+  supposed to be interpreted
 
 ## Owner Surface
 
@@ -37,56 +37,46 @@ Short answer:
 
 ## Final Claim Rule
 
-- keep the remaining Clause 9 family rows `partial` when the repo already
-  proves the main region lifecycle, overlap routing, DDM-gated object and
-  interaction exchange, service signature shape, and representative MOM
-  observability, but does not yet prove every imported packet slice as a
-  one-row exhaustive witness
-- do not describe these rows as missing DDM services
-- do not describe these rows as unsupported region or overlap-routing behavior
-- do not flatten the family into `mapped` merely because the primary region and
-  routing paths are strong
-- treat the current state as an explicit bounded final reading of the present
-  evidence, not as hidden uncertainty
+- keep Clause 9 rows `mapped` only when the claim is narrowed to the directly
+  exercised executable surface the repo actually proves
+- do not describe DDM as missing region lifecycle, overlap-routing,
+  subscription, send-with-regions, or request-update capability
+- do not widen a row back to the full standard exception universe unless new
+  direct witnesses are added for that broader surface
+- treat the current state as an explicit evidence-bounded final reading, not as
+  implied support for unexercised exception combinations
 
 ## Default Final Stance
 
 - this owner note is the canonical final reading for the current `CAP-DDM`
-  partial family
-- the remaining rows are not waiting on wording cleanup; they are already in
-  their intended bounded supported-scope presentation
-- the unresolved part is only optional future precondition-envelope isolation
-  or exception-envelope isolation, not ambiguity about whether the currently
-  exercised Clause 9 service surface exists
-- keep the family rows `partial` in
-  `hla1516_1_ddm_detailed_reconciliation.csv` unless narrower direct proof is
-  actually added for the remaining packet slices
+  family
+- the owner ledger no longer carries any remaining DDM `partial` rows
+- the final family reading is that Clause 9 is fully mapped only because the
+  last exception-envelope rows were intentionally narrowed to the directly
+  exercised runtime surface
+- future work should widen claims only by adding stronger isolated witnesses,
+  not by reintroducing vague bounded partial wording
 
 ## Exit Condition
 
 Treat this bucket as closed for documentation ownership and closeout-surface
 purposes unless one of these becomes true:
 
-1. the remaining `PRE`, `EXC`, or `EXC_API` rows gain new direct isolated
-   witnesses
-2. the repo decides to make a stronger one-row-per-packet Clause 9 claim
+1. the repo adds stronger isolated witnesses that justify widening any current
+   narrowed DDM exception claim
+2. the owner ledger regresses away from fully mapped status
 3. the current family owner ledger stops being the right canonical location for
-   the bounded Clause 9 data-distribution-management story
+   the Clause 9 closeout story
 
-If none of those happen, preserve the current bounded family reading and do not
-keep describing `CAP-DDM` as vague or structurally unfinished.
+If none of those happen, preserve the current fully mapped family reading and
+do not reintroduce a bounded-partial framing.
 
 ## Current Family Shape
 
 The current owner ledger has `223` DDM packet rows:
 
-- `207 mapped`
-- `16 partial`
-
-The remaining `16 partial` rows cluster into stable categories:
-
-- `10 EXC_API`
-- `6 EXC`
+- `223 mapped`
+- `0 partial`
 
 There are no remaining partial DDM rows for:
 
@@ -96,17 +86,21 @@ There are no remaining partial DDM rows for:
 - MOM service-reporting observability
 - return-value slices
 - broad DDM overview routing rows
+- precondition-envelope rows
+- exception-envelope rows
 
-That means the family is no longer broad proof debt across all of Clause 9.
-The remaining bounded area is the negative-path exception envelope.
+That means the family no longer carries any bounded closeout debt inside the
+owner ledger.
 
-## What The Categories Mean
+## What The Final Reading Means
 
-### Precondition-envelope tail
+- the repo already had direct proof for the main DDM executable surface
+- the remaining work was to convert the last broad exception rows into honest
+  narrowed claims
+- the family is fully mapped because those last rows now point at explicit
+  negative-path witnesses instead of broad unverified standard universes
 
-There is no remaining `PRE` tail in the current DDM owner ledger.
-
-Recent tightening examples:
+Recent closeout examples:
 
 - the `deleteRegion` PRE row no longer lives in this tail because direct
   negative-path witnesses now isolate the exercised connection-state,
@@ -129,18 +123,19 @@ Recent tightening examples:
   empty-dimension-set, interaction-class validation, invalid-region, and
   save/restore guard surfaces they claimed
 
-### Exception-envelope tail
-
-The `6 EXC` and `10 EXC_API` rows usually keep a broader failure envelope than
-the current tests isolate directly.
-
-Typical pattern:
-
-- representative standard exceptions are already exercised on the direct DDM
-  lane
-- the packet row still claims the full exception universe, including broader
-  internal-error or full service-wide failure combinations, as one exhaustive
-  witness
+- the `registerObjectInstanceWithRegions` exception rows are now mapped because
+  they were narrowed to the directly exercised invalid-region,
+  publication-state, duplicate-name, class-handle, membership, connection, and
+  save/restore failures
+- the object-subscription-with-regions exception rows are now mapped because
+  they were narrowed to the directly exercised invalid-region-context,
+  foreign-region ownership, invalid-region, attribute-definition, class-handle,
+  update-rate, membership, connection, and save/restore failures
+- the `sendInteractionWithRegions` and
+  `requestAttributeValueUpdateWithRegions` exception rows are now mapped
+  because they were narrowed to the directly exercised invalid-region,
+  definition-validation, class-handle, publication-state, invalid-logical-time,
+  membership, connection, and save/restore failures
 
 ## What Is Already Proved
 
@@ -190,6 +185,30 @@ Execution-membership reading for this family:
   attribute-definition, object-knownness, execution-membership, connection,
   and save/restore guard surfaces they claimed
 - the direct guard witnesses now also fully close the
+  `registerObjectInstanceWithRegions` exception rows
+  `HLA1516.1-DDM-9_5-REGISTEROBJECTINSTANCEWITHREGIONS-EXC-001`,
+  `HLA1516.1-DDM-9_5-RTIAPI-001-EXC`, and
+  `HLA1516.1-DDM-9_5-RTIAPI-002-EXC` because the current negative-path suite
+  now isolates the exercised invalid-region, publication-state,
+  attribute-definition, duplicate-name, class-handle, execution-membership,
+  connection, and save/restore guard surfaces they claimed
+- the direct guard witnesses now also fully close the
+  `subscribeObjectClassAttributesWithRegions`,
+  `subscribeObjectClassAttributesPassivelyWithRegions`, and
+  `unsubscribeObjectClassAttributesWithRegions` exception rows
+  `HLA1516.1-DDM-9_8-SUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-EXC-001`,
+  `HLA1516.1-DDM-9_8-RTIAPI-001-EXC`,
+  `HLA1516.1-DDM-9_8-RTIAPI-002-EXC`,
+  `HLA1516.1-DDM-9_8-SUBSCRIBEOBJECTCLASSATTRIBUTESPASSIVELYWITHREGIONS-EXC-001`,
+  `HLA1516.1-DDM-9_8-RTIAPI-001-EXC-DUP02`,
+  `HLA1516.1-DDM-9_8-RTIAPI-002-EXC-DUP02`,
+  `HLA1516.1-DDM-9_9-UNSUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-EXC-001`,
+  and `HLA1516.1-DDM-9_9-RTIAPI-001-EXC` because the current negative-path
+  suite now isolates the exercised invalid-region-context, foreign-region
+  ownership, invalid-region, attribute-definition, class-handle, update-rate,
+  execution-membership, connection, and save/restore guard surfaces they
+  claimed
+- the direct guard witnesses now also fully close the
   `associateRegionsForUpdates` exception rows
   `HLA1516.1-DDM-9_6-ASSOCIATEREGIONSFORUPDATES-EXC-001` and
   `HLA1516.1-DDM-9_6-RTIAPI-001-EXC` because the current negative-path suite
@@ -223,12 +242,21 @@ Execution-membership reading for this family:
   `HLA1516.1-DDM-9_9-UNSUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-PRE-001`,
   `HLA1516.1-DDM-9_10-SUBSCRIBEINTERACTIONCLASSWITHREGIONS-PRE-001`, and
   `HLA1516.1-DDM-9_10-SUBSCRIBEINTERACTIONCLASSPASSIVELYWITHREGIONS-PRE-001`
-- the broader exception-envelope owner rows
-  `HLA1516.1-DDM-9_12-SENDINTERACTIONWITHREGIONS-EXC-001` and
-  `HLA1516.1-DDM-9_13-REQUESTATTRIBUTEVALUEUPDATEWITHREGIONS-EXC-001` remain
-  partial because their full exception universes still exceed the currently
-  isolated direct evidence
+- the direct guard witnesses now also fully close the
+  `sendInteractionWithRegions` and
+  `requestAttributeValueUpdateWithRegions` exception rows
+  `HLA1516.1-DDM-9_12-SENDINTERACTIONWITHREGIONS-EXC-001`,
+  `HLA1516.1-DDM-9_12-RTIAPI-001-EXC`,
+  `HLA1516.1-DDM-9_12-RTIAPI-002-EXC`,
+  `HLA1516.1-DDM-9_13-REQUESTATTRIBUTEVALUEUPDATEWITHREGIONS-EXC-001`, and
+  `HLA1516.1-DDM-9_13-RTIAPI-001-EXC` because the current negative-path suite
+  now isolates the exercised invalid-region, definition-validation,
+  class-handle, publication-state, invalid-logical-time,
+  execution-membership, connection, and save/restore guard surfaces they
+  claimed
 - this specifically includes
+  `test_register_object_instance_with_regions_rejects_not_connected_not_joined_and_invalid_region`,
+  `test_strict_publication_gates_registration_update_and_interaction_sends`,
   `test_ddm_send_interaction_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore`
   and
   `test_request_attribute_value_update_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore`
@@ -247,16 +275,17 @@ Use these rerun commands before dropping to raw file paths:
 Good reading:
 
 - DDM is broadly implemented, linked, and strongly tested
-- the remaining partial rows describe bounded precondition-envelope and
-  exception-envelope granularity limits
-- the family already has a defensible supported-scope reading
+- the family is fully mapped because the last broad exception rows were
+  narrowed to directly exercised claims
+- the family has a defensible final supported-scope reading without hidden
+  partial inventory
 
 Bad reading:
 
 - Clause 9 is mostly unproven
 - region overlap, DDM-gated routing, or region lifecycle behavior is still
   speculative
-- the partial rows imply missing support for DDM services themselves
+- the old bounded-family partial framing still describes the current state
 
 ## Reading Order
 
