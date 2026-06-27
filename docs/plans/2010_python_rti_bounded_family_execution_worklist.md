@@ -292,7 +292,7 @@ Operational effect:
 - the active execution queue should advance to `CAP-FM` instead of continuing
   to treat `CAP-TM` as unresolved wording debt
 
-The `CAP-FM` bounded family was also re-audited on `2026-06-26` against the
+The `CAP-FM` bounded family was also re-audited on `2026-06-27` against the
 current owner doc, reconciliation companion, reconciliation verifier, and the
 owning shard commands for:
 
@@ -310,8 +310,8 @@ Decision:
 Reason:
 
 1. the reconciliation companion still shows a stable bounded tail of
-   `43 ARG`, `17 CB_ORD`, and a much smaller residual tail of bounded effect,
-   callback, and exception rows
+   `43 ARG`, `17 CB_ORD`, `4 EFF`, `4 EXC`, and an `11`-row residual
+   overview/callback-fault tail
 2. the current federation-management shards are green, but the remaining
    packet rows still describe broader decomposition, callback-order, state
    vector, or connection-loss fault envelopes than the direct witnesses

@@ -42,8 +42,8 @@ def test_gap_register_and_queue_keep_owner_companion_split_explicit() -> None:
     assert "stable bounded `19 PRE`, `19 EXC`, `19 EXC_API`," in gap_text
     assert "and `1 OVW` Clause 8 family envelope" in gap_text
     assert "2010 CAP-FM bounded family" in gap_text
-    assert "stable bounded `43 ARG`, `23 EFF`, `17 CB_ORD`," in gap_text
-    assert "`15 EXC`, and `11` residual Clause 4 family envelope" in gap_text
+    assert "stable bounded `43 ARG`, `17 CB_ORD`," in gap_text
+    assert "`4 EFF`, `4 EXC`, and `11` residual Clause 4 family envelope" in gap_text
     assert "2010 CAP-OM bounded family" in gap_text
     assert "stable bounded `10 EFF`, `25 CB_ORD`," in gap_text
     assert "`17 CB_ORDER`, `6 EXC_API`, `5 EXC`, `6 FED_CB`, and" in gap_text

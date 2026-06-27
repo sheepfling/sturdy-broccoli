@@ -247,7 +247,7 @@ Why:
 Use the time-management owner docs as maintained bounded documentation and
 advance to `P1` / `P2` above for the next actual closeout move.
 
-The `2010 CAP-FM bounded family` was also re-audited on `2026-06-26`.
+The `2010 CAP-FM bounded family` was also re-audited on `2026-06-27`.
 
 Result:
 
@@ -259,9 +259,9 @@ Why:
 1. the current owner doc and reconciliation companion already express the
    intended bounded Clause 4 reading
 2. the owning federation-management shards are green
-3. the remaining tail is still a stable bounded `43 ARG`, `23 EFF`,
-   `17 CB_ORD`, `15 EXC`, and `11` residual envelope rather than a set of
-   isolated direct per-row witnesses
+3. the remaining tail is now a stable bounded `43 ARG`, `17 CB_ORD`,
+   `4 EFF`, `4 EXC`, and `11` residual envelope rather than a set of isolated
+   direct per-row witnesses
 4. no narrower direct claim was identified that would preserve the current row
    meanings without adding new row-level decomposition or direct runtime
    connection-loss callback proof

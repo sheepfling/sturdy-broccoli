@@ -79,15 +79,15 @@ keep describing `CAP-FM` as vague or structurally unfinished.
 
 The current owner ledger has `632` federation-management packet rows:
 
-- `523 mapped`
-- `109 partial`
+- `529 mapped`
+- `79 partial`
 
-The remaining `109 partial` rows cluster into stable categories:
+The remaining `79 partial` rows cluster into stable categories:
 
 - `43 ARG`
-- `23 EFF`
 - `17 CB_ORD`
-- `15 EXC`
+- `4 EFF`
+- `4 EXC`
 - `11` residual overview, callback-surface, or traceability-bounded rows
 
 Residual bounded row kinds in that last group:
@@ -112,16 +112,22 @@ map cleanly onto one direct row in
 This is primarily a harmonization-granularity limit, not evidence that the
 underlying services are absent.
 
-### State-vector breadth tail
+This is the current argument-harmonization tail for `CAP-FM`.
 
-The `23 EFF` rows usually describe a broader postcondition vector than the
-current direct proof asserts in one place.
+### Lost-connection callback/fault-surface tail
+
+The small `EFF`, `EXC`, `CB`, `FED_CB`, `PRE`, `SVC`, `MOM`, `MOM_TRACE`, and
+`EXC_API` remainder is now concentrated around the connection-lost surface and
+the list/report federation helper family.
 
 Typical pattern:
 
-- several important effect slices are already proven
-- the full multi-field state transition is not yet claimed as one exhaustive
-  witness
+- the generated callback surface and section mapping are present
+- the repo does not yet drive a concrete end-to-end connection-loss runtime
+  trigger
+- list/report federation helpers already prove the core service path, but the
+  broader fault or observer wording remains more expansive than the isolated
+  witnesses
 
 ### Callback-order breadth tail
 
@@ -135,13 +141,17 @@ They are rows where:
 - the broader ordering, timing, or scope envelope remains stated more broadly
   than the currently isolated proof
 
-### Exception-envelope breadth tail
+### List/report federation breadth tail
 
-The `15 EXC` rows usually keep a broader failure envelope than the current
-tests isolate directly, especially where the standard language includes
-internal-error or broader callback-trigger failure wording.
+The remaining `EXC_API`, `MOM_TRACE`, and part of the residual fault-surface
+tail also include the list/report federation helper family.
 
-### Residual overview and fault-surface tail
+These rows are not signs that federation reporting is missing.
+They remain `partial` because the current direct witness isolates the main
+report callback and the not-connected guard, but not every broader observer,
+callback-failure, or API-declared exception permutation as one exhaustive row.
+
+### Residual overview and harmonization tail
 
 The last `11` rows are the small bounded remainder:
 

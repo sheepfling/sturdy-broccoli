@@ -71,7 +71,7 @@ def test_2010_bounded_family_execution_worklist_keeps_owner_and_tightening_rules
     assert "stable bounded tail of" in text
     assert "`19 PRE`, `19 EXC`, `19 EXC_API`, and `1 OVW` row" in text
     assert "keep the `CAP-FM` family as canonical `partial`" in text
-    assert "`43 ARG`, `17 CB_ORD`, and a much smaller residual tail of bounded effect," in text
+    assert "`43 ARG`, `17 CB_ORD`, `4 EFF`, `4 EXC`, and an `11`-row residual" in text
     assert "runtime connection-loss callback proof" in text
     assert "keep the `CAP-OM` family as canonical `partial`" in text
     assert "`25 CB_ORD`, `17 CB_ORDER`, and the remaining bounded effect and exception" in text

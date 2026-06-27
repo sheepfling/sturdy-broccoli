@@ -117,12 +117,12 @@ Latest investigated decision:
 - treat this bucket as maintained boundary documentation unless future
   isolated Clause 8 witnesses materially change the bounded family disposition
   or leadership explicitly funds that tighter proof scope
-- on `2026-06-26`, the `2010 CAP-FM bounded family` was also re-audited and
+- on `2026-06-27`, the `2010 CAP-FM bounded family` was also re-audited and
   kept as an explicit bounded family surface
 - the current owner doc, reconciliation companion, reconciliation verifier,
   and owning shard commands all support that reading
-- the current tail remains a stable bounded `43 ARG`, `23 EFF`, `17 CB_ORD`,
-  `15 EXC`, and `11` residual Clause 4 family envelope
+- the current tail now remains a stable bounded `43 ARG`, `17 CB_ORD`,
+  `4 EFF`, `4 EXC`, and `11` residual Clause 4 family envelope
 - no narrower direct claim was identified that would preserve the current
   Clause 4 row meanings without adding new row-level decomposition or direct
   runtime connection-loss callback proof
