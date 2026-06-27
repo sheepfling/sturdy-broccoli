@@ -4,6 +4,7 @@ from __future__ import annotations
 import re
 import subprocess
 import sys
+import threading
 from pathlib import Path
 
 
@@ -47,6 +48,16 @@ def _emit_rerun_hints(output: str) -> None:
     print("- focused target discovery: ./tools/test-focus inventory", file=sys.stderr)
 
 
+def _stream_pipe(pipe: object, sink: object, chunks: list[str]) -> None:
+    assert hasattr(pipe, "__iter__")
+    assert hasattr(sink, "write")
+    for chunk in pipe:  # type: ignore[assignment]
+        text = str(chunk)
+        chunks.append(text)
+        sink.write(text)  # type: ignore[attr-defined]
+        sink.flush()  # type: ignore[attr-defined]
+
+
 def main(argv: list[str]) -> int:
     args = argv[1:]
     if args and args[0] in {"-h", "--help", "help"}:
@@ -54,17 +65,39 @@ def main(argv: list[str]) -> int:
         return 0
 
     cmd = [sys.executable, "-m", "pytest", "-q", *args]
-    result = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, check=False)
+    process = subprocess.Popen(
+        cmd,
+        cwd=ROOT,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        bufsize=1,
+    )
+    assert process.stdout is not None
+    assert process.stderr is not None
 
-    if result.stdout:
-        sys.stdout.write(result.stdout)
-    if result.stderr:
-        sys.stderr.write(result.stderr)
+    stdout_chunks: list[str] = []
+    stderr_chunks: list[str] = []
+    stdout_thread = threading.Thread(
+        target=_stream_pipe,
+        args=(process.stdout, sys.stdout, stdout_chunks),
+        daemon=True,
+    )
+    stderr_thread = threading.Thread(
+        target=_stream_pipe,
+        args=(process.stderr, sys.stderr, stderr_chunks),
+        daemon=True,
+    )
+    stdout_thread.start()
+    stderr_thread.start()
+    process.wait()
+    stdout_thread.join()
+    stderr_thread.join()
 
-    if result.returncode != 0:
-        _emit_rerun_hints(f"{result.stdout}\n{result.stderr}")
+    if process.returncode != 0:
+        _emit_rerun_hints(f"{''.join(stdout_chunks)}\n{''.join(stderr_chunks)}")
 
-    return result.returncode
+    return process.returncode
 
 
 if __name__ == "__main__":

@@ -184,7 +184,8 @@ def _classify_payload(payload: Any, *, returncode: int) -> tuple[str, bool, str]
 
 
 def _run_json_command(argv: tuple[str, ...]) -> dict[str, Any]:
-    result = subprocess.run(argv, cwd=ROOT, capture_output=True, text=True, check=False)
+    normalized_argv = _normalize_command_argv(argv)
+    result = subprocess.run(normalized_argv, cwd=ROOT, capture_output=True, text=True, check=False)
     stdout = result.stdout.strip()
     payload: Any = {}
     if stdout:
@@ -204,7 +205,7 @@ def _run_json_command(argv: tuple[str, ...]) -> dict[str, Any]:
                 payload = {"stdout": stdout}
     classification, runnable, reason = _classify_payload(payload, returncode=result.returncode)
     return {
-        "argv": list(argv),
+        "argv": list(normalized_argv),
         "returncode": result.returncode,
         "classification": classification,
         "runnable": runnable,
@@ -345,6 +346,12 @@ def _emit(payload: Any, *, as_json: bool) -> None:
     sys.stdout.write(_json_dump(payload))
 
 
+def _progress(message: str, *, enabled: bool) -> None:
+    if enabled:
+        sys.stderr.write(message + "\n")
+        sys.stderr.flush()
+
+
 def command_inventory(*, as_json: bool) -> int:
     lanes = load_manifest()
     payload = {
@@ -398,11 +405,12 @@ def command_recommend(*, as_json: bool) -> int:
     return 0
 
 
-def command_run(*, lane_id: str, as_json: bool, dry_run: bool) -> int:
+def command_run(*, lane_id: str, as_json: bool, dry_run: bool, emit_output: bool = True) -> int:
     lanes = lane_by_id()
     lane = lanes[resolve_lane_id(lane_id)]
     steps: list[dict[str, Any]] = []
     status = "passed"
+    progress_enabled = not dry_run
 
     def run_lane(current_lane: Lane) -> bool:
         nonlocal status
@@ -429,7 +437,16 @@ def command_run(*, lane_id: str, as_json: bool, dry_run: bool) -> int:
                         }
                     )
                     continue
-                nested_status = command_run(lane_id=nested_lane.lane_id, as_json=False, dry_run=False)
+                _progress(
+                    f"[test-surface] lane {current_lane.lane_id}: starting nested lane {nested_lane.lane_id}",
+                    enabled=progress_enabled,
+                )
+                nested_status = command_run(
+                    lane_id=nested_lane.lane_id,
+                    as_json=False,
+                    dry_run=False,
+                    emit_output=False,
+                )
                 step_status = "passed" if nested_status == 0 else "failed"
                 steps.append(
                     {
@@ -438,6 +455,10 @@ def command_run(*, lane_id: str, as_json: bool, dry_run: bool) -> int:
                         "returncode": 0 if nested_status == 0 else 1,
                         "status": step_status,
                     }
+                )
+                _progress(
+                    f"[test-surface] lane {current_lane.lane_id}: nested lane {nested_lane.lane_id} -> {step_status}",
+                    enabled=progress_enabled,
                 )
                 if nested_status != 0:
                     status = "failed"
@@ -449,9 +470,17 @@ def command_run(*, lane_id: str, as_json: bool, dry_run: bool) -> int:
             if dry_run:
                 steps.append({"argv": list(_display_command_argv(argv)), "returncode": 0, "status": "planned"})
                 continue
+            _progress(
+                f"[test-surface] lane {current_lane.lane_id}: running {' '.join(normalized_argv)}",
+                enabled=progress_enabled,
+            )
             result = subprocess.run(normalized_argv, cwd=ROOT, text=True, check=False)
             step_status = "passed" if result.returncode == 0 else "failed"
             steps.append({"argv": list(normalized_argv), "returncode": result.returncode, "status": step_status})
+            _progress(
+                f"[test-surface] lane {current_lane.lane_id}: {' '.join(normalized_argv)} -> {step_status}",
+                enabled=progress_enabled,
+            )
             if result.returncode != 0:
                 status = "failed"
                 return False
@@ -467,7 +496,8 @@ def command_run(*, lane_id: str, as_json: bool, dry_run: bool) -> int:
     }
     json_path, md_path = _write_summary(lane, payload)
     payload["artifacts"] = {"json": str(json_path.relative_to(ROOT)), "markdown": str(md_path.relative_to(ROOT))}
-    _emit(payload, as_json=as_json)
+    if emit_output:
+        _emit(payload, as_json=as_json)
     return 0 if status == "passed" else 1
 
 

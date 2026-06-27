@@ -235,6 +235,54 @@ def test_tools_test_surface_run_fast_dry_run_writes_summary_artifacts() -> None:
     assert (ROOT / payload["artifacts"]["markdown"]).is_file()
 
 
+def test_tools_test_surface_run_unit_vendor_onboarding_emits_live_progress_to_stderr() -> None:
+    result = subprocess.run(
+        ["bash", "tools/test-surface", "run", "unit-vendor-onboarding"],
+        cwd=ROOT,
+        env={
+            **os.environ,
+            "HLA2010_TEST_SURFACE_UNIT_VENDOR_ONBOARDING_CMD": ":",
+        },
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout or result.stderr
+    assert "unit-vendor-onboarding: passed" in result.stdout
+    assert "[test-surface] lane unit-vendor-onboarding: running sh -c :" in result.stderr
+    assert "[test-surface] lane unit-vendor-onboarding: sh -c : -> passed" in result.stderr
+
+
+def test_tools_test_surface_run_repo_green_units_emits_nested_progress_without_nested_stdout() -> None:
+    env = {
+        **os.environ,
+        "HLA2010_TEST_SURFACE_UNIT_FOUNDATION_CMD": ":",
+        "HLA2010_TEST_SURFACE_UNIT_PYTHON_CORE_CMD": ":",
+        "HLA2010_TEST_SURFACE_UNIT_FEDERATE_EXAMPLES_CMD": ":",
+        "HLA2010_TEST_SURFACE_UNIT_VENDOR_ONBOARDING_CMD": ":",
+        "HLA2010_TEST_SURFACE_UNIT_SHIM_TOOLING_CMD": ":",
+        "HLA2010_TEST_SURFACE_UNIT_FOM_TOOLING_CMD": ":",
+        "HLA2010_TEST_SURFACE_UNIT_PYTHON_2025_CORE_CMD": ":",
+        "HLA2010_TEST_SURFACE_UNIT_TRANSPORT_LOCAL_CMD": ":",
+        "HLA2010_TEST_SURFACE_UNIT_SCENARIOS_LIGHT_CMD": ":",
+    }
+    result = subprocess.run(
+        ["bash", "tools/test-surface", "run", "repo-green-units"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout or result.stderr
+    assert "repo-green-units: passed" in result.stdout
+    assert "\nunit-foundation: passed\n" not in result.stdout
+    assert "[test-surface] lane repo-green-units: starting nested lane unit-foundation" in result.stderr
+    assert "[test-surface] lane repo-green-units: nested lane unit-scenarios-light -> passed" in result.stderr
+
+
 def test_tools_test_surface_run_unit_foundation_dry_run_writes_summary_artifacts() -> None:
     result = subprocess.run(
         ["bash", "tools/test-surface", "run", "unit-foundation", "--dry-run", "--json"],
@@ -249,7 +297,7 @@ def test_tools_test_surface_run_unit_foundation_dry_run_writes_summary_artifacts
     assert payload["lane"] == "unit-foundation"
     assert payload["status"] == "passed"
     assert payload["dry_run"] is True
-    assert payload["steps"][0]["argv"] == ["bash", "./tools/test-focus", "run", "foundation"]
+    assert payload["steps"][0]["argv"] == ["./tools/test-focus", "run", "foundation"]
     assert payload["steps"][1]["argv"] == [
         "./tools/test",
         "tests/test_operator_surface_policy.py",
@@ -276,7 +324,7 @@ def test_tools_test_surface_run_unit_foundation_uses_bash_for_non_executable_wra
 
     assert result.returncode == 0, result.stdout or result.stderr
     payload = json.loads(result.stdout)
-    assert payload["steps"][0]["argv"] == ["bash", "./tools/test-focus", "run", "foundation"]
+    assert payload["steps"][0]["argv"] == ["./tools/test-focus", "run", "foundation"]
 
 
 def test_tools_test_surface_run_unit_federate_examples_dry_run_writes_summary_artifacts() -> None:
@@ -501,9 +549,21 @@ def test_tools_test_surface_run_matrix_dry_run_writes_summary_artifacts() -> Non
     assert payload["status"] == "passed"
     assert payload["dry_run"] is True
     assert payload["steps"][0]["argv"] == ["./tools/compliance", "generate"]
-    assert payload["steps"][1]["argv"] == ["python3", "scripts/run_spec2025_finish_line.py"]
-    assert payload["steps"][2]["argv"] == ["./tools/compliance", "discover", "--show-backlog"]
-    assert payload["steps"][3]["argv"] == ["./tools/section8-gate"]
+    assert payload["steps"][1]["argv"] == [
+        "./tools/fom-siso-runtime-surface-matrix",
+        "--preset",
+        "micro-bridge-smoke",
+        "--with-screenshots",
+    ]
+    assert payload["steps"][2]["argv"] == [
+        "./tools/fom-siso-runtime-surface-matrix",
+        "--preset",
+        "showcase-hydrated",
+        "--with-screenshots",
+    ]
+    assert payload["steps"][3]["argv"] == ["python3", "scripts/run_spec2025_finish_line.py"]
+    assert payload["steps"][4]["argv"] == ["./tools/compliance", "discover", "--show-backlog"]
+    assert payload["steps"][5]["argv"] == ["./tools/section8-gate"]
     assert all(step["status"] == "planned" for step in payload["steps"])
     assert (ROOT / payload["artifacts"]["json"]).is_file()
     assert (ROOT / payload["artifacts"]["markdown"]).is_file()

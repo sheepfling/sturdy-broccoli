@@ -172,6 +172,7 @@ def run_ddm_object_region_lifecycle_scenario(
     assert suppressed_receive is None
 
     subscriber_rti.unsubscribe_object_class_attributes_with_regions(subscriber_class, subscription_pairs)
+    publisher_rti.unassociate_regions_for_updates(object_instance, update_pairs)
     publisher_rti.delete_region(publisher_region)
     subscriber_rti.delete_region(subscriber_region)
 
@@ -315,6 +316,7 @@ def run_ddm_declaration_gating_scenario(
 
     subscriber_rti.unsubscribe_object_class_attributes_with_regions(subscriber_class, subscription_pairs)
     subscriber_rti.unsubscribe_interaction_class_with_regions(subscriber_interaction, {subscriber_region})
+    publisher_rti.unassociate_regions_for_updates(object_instance, update_pairs)
     publisher_rti.delete_region(publisher_region)
     subscriber_rti.delete_region(subscriber_region)
 

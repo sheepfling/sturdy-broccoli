@@ -322,6 +322,8 @@ def test_ddm_region_subscription_update_and_unsubscribe_lifecycle():
     rx.unsubscribe_object_class_attributes_with_regions(cls, subscription_pairs)
     assert cls not in rx.backend.state.object_region_subscriptions
 
+    tx.unassociate_regions_for_updates(obj, update_pairs)
+    assert attr not in tx.backend.state.update_regions.get(obj, {})
     tx.delete_region(tx_region)
     rx.delete_region(rx_region)
     assert tx_region not in tx.backend.state.regions

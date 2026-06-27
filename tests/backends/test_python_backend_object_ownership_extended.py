@@ -2302,6 +2302,7 @@ def test_clause_9_services_are_observable_through_mom_service_invocation_reporti
     owner.unsubscribe_interaction_class_with_regions(interaction, {region})
     owner.send_interaction_with_regions(interaction, {track_id: b"ddm-mom-track"}, {region}, b"ddm-mom-send")
     owner.request_attribute_value_update_with_regions(cls, pairs, b"ddm-mom-refresh")
+    owner.unassociate_regions_for_updates(obj, pairs)
     owner.delete_region(region)
     drain(owner, observer, witness)
 
