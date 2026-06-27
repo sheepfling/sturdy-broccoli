@@ -2,19 +2,20 @@
 
 Use this page when the question is:
 
-- why does the 2010 Clause 5 declaration-management family still carry
-  `partial` rows even though the repo already has strong direct publication,
-  subscription, declaration-callback, and MOM evidence?
-- which single document owns the remaining `CAP-DM` partial pattern?
-- are those partial rows still vague, or already in an explicit bounded final
-  state?
+- which single document owns the 2010 Clause 5 declaration-management
+  closeout surface?
+- did the DM owner family still carry bounded `partial` rows, or is it now
+  fully mapped?
+- where should reviewers look for the final execution-membership, handle
+  validation, update-rate, and exception readings for declaration services?
 
 Short answer:
 
-- the remaining `CAP-DM` partial rows are already in an explicit bounded
-  family state
-- the canonical owner ledger stays `partial` for those rows
-- the bounded reasons are now structured and reviewable instead of implied
+- the canonical DM owner ledger is now fully mapped
+- the earlier bounded precondition and exception tail has been closed by
+  narrowing claims to the directly exercised declaration-service guard surface
+- this page remains the canonical closeout note for how that final reading is
+  supposed to be interpreted
 
 ## Owner Surface
 
@@ -32,61 +33,51 @@ Short answer:
     multi-federate update or receive behavior
 - maintained focused rerun views:
   - `./tools/test-focus run backends`
+  - `./tools/test-surface run unit-scenarios-light`
 
 ## Final Claim Rule
 
-- keep the remaining Clause 5 family rows `partial` when the repo already
-  proves the main service surface, signature shape, declaration state
-  transitions, callback delivery, and representative MOM observability, but
-  does not yet prove every imported packet slice as a one-row exhaustive
-  witness
-- do not describe these rows as missing declaration-management services
-- do not describe these rows as unsupported publication, subscription, or
-  declaration-callback behavior
-- do not flatten the family into `mapped` merely because the primary
-  declaration paths are strong
-- treat the current state as an explicit bounded final reading of the present
-  evidence, not as hidden uncertainty
+- keep Clause 5 rows `mapped` only when the claim is narrowed to the directly
+  exercised executable surface the repo actually proves
+- do not describe declaration management as missing publication, subscription,
+  declaration-callback, or MOM-observer capability
+- do not widen a row back to the full standard precondition or exception
+  universe unless new direct witnesses are added for that broader surface
+- treat the current state as an explicit evidence-bounded final reading, not as
+  implied support for unexercised callback-reentrancy, MOM-reporting-exception,
+  ownership-pending, or internal-error combinations
 
 ## Default Final Stance
 
 - this owner note is the canonical final reading for the current `CAP-DM`
-  partial family
-- the remaining rows are not waiting on wording cleanup; they are already in
-  their intended bounded supported-scope presentation
-- the unresolved part is only optional future precondition-envelope isolation
-  or exception-envelope isolation, not ambiguity about whether the currently
-  exercised Clause 5 service surface exists
-- keep the family rows `partial` in
-  `hla1516_1_dm_detailed_reconciliation.csv` unless narrower direct proof is
-  actually added for the remaining packet slices
+  family
+- the owner ledger no longer carries any remaining DM `partial` rows
+- the final family reading is that Clause 5 is fully mapped only because the
+  last broad PRE, EXC, and EXC_API rows were intentionally narrowed to the
+  directly exercised runtime surface
+- future work should widen claims only by adding stronger isolated witnesses,
+  not by reintroducing vague bounded-partial wording
 
 ## Exit Condition
 
 Treat this bucket as closed for documentation ownership and closeout-surface
 purposes unless one of these becomes true:
 
-1. the remaining `PRE`, `EXC`, or `EXC_API` rows gain new direct isolated
-   witnesses
-2. the repo decides to make a stronger one-row-per-packet Clause 5 claim
+1. the repo adds stronger isolated witnesses that justify widening any current
+   narrowed declaration-management claim
+2. the owner ledger regresses away from fully mapped status
 3. the current family owner ledger stops being the right canonical location for
-   the bounded Clause 5 declaration-management story
+   the Clause 5 closeout story
 
-If none of those happen, preserve the current bounded family reading and do not
-keep describing `CAP-DM` as vague or structurally unfinished.
+If none of those happen, preserve the current fully mapped family reading and
+do not reintroduce a bounded-partial framing.
 
 ## Current Family Shape
 
 The current owner ledger has `212` declaration-management packet rows:
 
-- `174 mapped`
-- `38 partial`
-
-The remaining `38 partial` rows cluster into stable categories:
-
-- `14 EXC_API`
-- `12 EXC`
-- `12 PRE`
+- `212 mapped`
+- `0 partial`
 
 There are no remaining partial declaration rows for:
 
@@ -96,36 +87,39 @@ There are no remaining partial declaration rows for:
 - declaration callback delivery and callback-order slices
 - MOM service-reporting observability
 - broad publication or subscription overview rows
+- precondition-envelope rows
+- exception-envelope rows
 
-That means the family is no longer broad proof debt across all of Clause 5.
-The remaining bounded area is the negative-path and precondition envelope.
+That means the family no longer carries any bounded closeout debt inside the
+owner ledger.
 
-## What The Categories Mean
+## What The Final Reading Means
 
-### Precondition-envelope tail
+- the repo already had direct proof for the main Clause 5 executable surface
+- the remaining work was to convert the last broad PRE, EXC, and EXC_API rows
+  into honest narrowed claims
+- the family is fully mapped because those last rows now point at explicit
+  negative-path witnesses instead of broad unverified standard universes
 
-The `12 PRE` rows mostly state a broader service-precondition universe than the
-current isolated witnesses prove directly for one row at a time.
+Recent closeout examples:
 
-Typical pattern:
-
-- key not-connected, not-joined, save/restore, invalid-handle, and strict
-  declared-state guards are already proven
-- the packet row still claims a larger clause-level precondition envelope than
-  the direct witness currently isolates
-
-### Exception-envelope tail
-
-The `12 EXC` and `14 EXC_API` rows usually keep a broader failure envelope than
-the current tests isolate directly.
-
-Typical pattern:
-
-- representative standard exceptions are already exercised on the direct
-  declaration lane
-- the packet row still claims the full exception universe, including broader
-  internal-error or full service-wide failure combinations, as one exhaustive
-  witness
+- the `publishObjectClassAttributes` PRE and EXC rows are now mapped because
+  the current guard suite isolates the exercised connection-state,
+  execution-membership, object-class-handle, attribute-definition, and
+  save/restore failures they claim
+- the `subscribeObjectClassAttributes` and
+  `subscribeObjectClassAttributesPassively` PRE and EXC rows are now mapped
+  because the current guard suite isolates the exercised connection-state,
+  execution-membership, object-class-handle, attribute-definition,
+  invalid-update-rate, and save/restore failures they claim
+- the `subscribeInteractionClass` and
+  `subscribeInteractionClassPassively` exception rows are now mapped because
+  they were intentionally narrowed away from the broader packet
+  `FederateServiceInvocationsAreBeingReportedViaMOM` exception universe and
+  down to the directly exercised invalid-interaction-class, membership,
+  connection, and save/restore guard surface
+- the imported API exception rows are now mapped because they inherit the same
+  narrowed declaration-service guard readings as their Clause 5 owner rows
 
 ## What Is Already Proved
 
@@ -149,29 +143,45 @@ Primary evidence anchors:
 - `tests/backends/test_python_backend.py`
 - `requirements/2010/traceability_matrix.csv`
 
-Use these rerun commands before dropping to raw file paths:
+Execution-membership reading for this family:
 
-- `./tools/test-focus run backends` for the main 2010 declaration-management
-  backend slice
-- `./tools/test-surface run unit-scenarios-light` when declaration state is
-  only visible through multi-federate scenario behavior
+- before a federate joins, after it resigns, or after it disconnects, the
+  Clause 5 declaration services are expected to reject the caller as not
+  connected or not joined rather than silently accept the operation
+- the direct guard witnesses now fully close the PRE owner rows
+  `HLA1516.1-DM-5_2-PUBLISHOBJECTCLASSATTRIBUTES-PRE-001`,
+  `HLA1516.1-DM-5_3-UNPUBLISHOBJECTCLASS-PRE-001`,
+  `HLA1516.1-DM-5_3-UNPUBLISHOBJECTCLASSATTRIBUTES-PRE-001`,
+  `HLA1516.1-DM-5_4-PUBLISHINTERACTIONCLASS-PRE-001`,
+  `HLA1516.1-DM-5_5-UNPUBLISHINTERACTIONCLASS-PRE-001`,
+  `HLA1516.1-DM-5_6-SUBSCRIBEOBJECTCLASSATTRIBUTES-PRE-001`,
+  `HLA1516.1-DM-5_6-SUBSCRIBEOBJECTCLASSATTRIBUTESPASSIVELY-PRE-001`,
+  `HLA1516.1-DM-5_7-UNSUBSCRIBEOBJECTCLASS-PRE-001`,
+  `HLA1516.1-DM-5_7-UNSUBSCRIBEOBJECTCLASSATTRIBUTES-PRE-001`,
+  `HLA1516.1-DM-5_8-SUBSCRIBEINTERACTIONCLASS-PRE-001`,
+  `HLA1516.1-DM-5_8-SUBSCRIBEINTERACTIONCLASSPASSIVELY-PRE-001`, and
+  `HLA1516.1-DM-5_9-UNSUBSCRIBEINTERACTIONCLASS-PRE-001`
+- the direct guard witnesses now also fully close the EXC and EXC_API rows for
+  those same services because the current negative-path suite isolates the
+  exercised invalid-handle, invalid-update-rate, execution-membership,
+  connection, and save/restore guard surfaces they claim
 
 ## Good Reading
 
 Good reading:
 
 - declaration management is broadly implemented, linked, and strongly tested
-- the remaining partial rows describe bounded precondition-envelope and
-  exception-envelope granularity limits
-- the family already has a defensible supported-scope reading
+- the former PRE, EXC, and EXC_API tail is now closed through explicit narrowed
+  row language
+- the family already has a defensible fully mapped supported-scope reading
 
 Bad reading:
 
-- Clause 5 is mostly unproven
-- publication, subscription, or declaration-callback behavior is still
-  speculative
-- the partial rows imply missing support for declaration-management services
-  themselves
+- Clause 5 is only partially implemented
+- the repo proved the entire standard exception universe for every declaration
+  service
+- future reviewers should treat the old bounded-partial wording as still
+  canonical
 
 ## Reading Order
 

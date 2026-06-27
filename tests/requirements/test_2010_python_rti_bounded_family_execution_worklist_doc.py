@@ -63,10 +63,10 @@ def test_2010_bounded_family_execution_worklist_keeps_owner_and_tightening_rules
     assert "`REQ-RTI-SS-10_44-getMessageRetractionHandleFactory`" in text
     assert "`REQ-RTI-SS-10_44-getRegionHandleFactory`" in text
     assert "`status=pass` with `python_runtime_disposition=verified`" in text
-    assert "keep the `CAP-DM` family as canonical `partial`" in text
-    assert "`12 PRE`, `12 EXC`, and `14 EXC_API` rows" in text
-    assert "isolated per-row precondition or" in text
-    assert "negative-path proof" in text
+    assert "keep the `CAP-DM` family as canonical fully mapped closeout documentation" in text
+    assert "`212 mapped` and `0 partial` Clause 5" in text
+    assert "narrowed to the direct declaration witnesses" in text
+    assert "packet MOM-reporting exception universe" in text
     assert "keep the `CAP-TM` family as canonical `partial`" in text
     assert "stable bounded tail of" in text
     assert "`19 PRE`, `19 EXC`, `19 EXC_API`, and `1 OVW` row" in text

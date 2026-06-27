@@ -42,7 +42,7 @@ def test_declaration_family_test_rows_have_direct_evidence_and_mapped_companion_
 
     for row in test_rows:
         assert row["current_status"] == "mapped"
-        assert "broader PRE and EXC envelope rows remain partial" in row["notes"]
+        assert "PRE and EXC companion rows are intentionally narrowed" in row["notes"]
 
         feature_rows = by_feature[row["feature"]]
         for companion_kind in ("SIG", "MOM", "ARG", "EFF"):
@@ -61,13 +61,11 @@ def test_clause5_declaration_test_rows_match_family_level_direct_evidence():
 
     test_rows = [row for row in rows if row["reconciliation_kind"] == "TEST"]
     assert len(test_rows) == 12
-    assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 92, "partial": 24}
-    )
+    assert Counter(row["current_status"] for row in rows) == Counter({"mapped": 116})
 
     for row in test_rows:
         assert row["current_status"] == "mapped"
-        assert "broader PRE and EXC envelope rows remain partial" in row["notes"]
+        assert "PRE and EXC companion rows are intentionally narrowed" in row["notes"]
 
         feature_rows = by_feature[row["feature"]]
         for companion_kind in ("SIG", "MOM", "ARG", "EFF"):

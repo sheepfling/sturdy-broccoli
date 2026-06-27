@@ -115,10 +115,9 @@ granularity limit rather than a vague federation-management gap, use:
 
 - `docs/requirements/ieee-1516-2010/federation_management_bounded_family.md`
 
-For the human-facing explanation of the remaining `CAP-DM` partial family and
-why the Clause 5 tail is now an explicit bounded
-`PRE/EXC/EXC_API` granularity limit rather than a vague declaration-management
-gap, use:
+For the human-facing explanation of the final `CAP-DM` closeout reading and
+why the Clause 5 PRE/EXC/EXC_API tail is now fully mapped only through
+intentionally narrowed direct-guard claims, use:
 
 - `docs/requirements/ieee-1516-2010/declaration_management_bounded_family.md`
 

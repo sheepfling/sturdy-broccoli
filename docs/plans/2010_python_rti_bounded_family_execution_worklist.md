@@ -208,7 +208,7 @@ Operational effect:
 - the active execution queue should advance to `CAP-DM` instead of continuing
   to treat `CAP-SUP` as unresolved wording debt
 
-The `CAP-DM` bounded family was also re-audited on `2026-06-26` against the
+The `CAP-DM` bounded family was also re-audited on `2026-06-27` against the
 current owner doc, reconciliation companion, reconciliation verifier, and the
 owning shard commands for:
 
@@ -218,27 +218,28 @@ owning shard commands for:
 
 Decision:
 
-- keep the `CAP-DM` family as canonical `partial`
-- keep its Clause 5 tail recorded as the current bounded `PRE`, `EXC`, and
-  `EXC_API` envelope
-- do not promote the family to narrower direct support yet
+- keep the `CAP-DM` family as canonical fully mapped closeout documentation
+- keep its Clause 5 tail recorded as intentionally narrowed direct-guard
+  `PRE`, `EXC`, and `EXC_API` claims rather than a bounded partial envelope
+- do not widen those rows back to the broader packet universes without new
+  isolated witnesses
 
 Reason:
 
-1. the reconciliation companion still shows a stable bounded tail of
-   `12 PRE`, `12 EXC`, and `14 EXC_API` rows
-2. the current Clause 5 shards are green, but the remaining packet rows still
-   describe broader precondition or exception envelopes than the direct
-   declaration witnesses isolate
-3. no narrower direct claim was identified that would preserve the current
-   Clause 5 row meanings without adding new isolated per-row precondition or
-   negative-path proof
-4. the current owner doc already expresses the honest final reading for the
-   present evidence
+1. the reconciliation companion now shows `212 mapped` and `0 partial` Clause 5
+   rows
+2. the current Clause 5 shards are green, and the last PRE, EXC, and EXC_API
+   rows are now narrowed to the direct declaration witnesses the repo actually
+   isolates
+3. the interaction-subscription exception rows were explicitly narrowed away
+   from the broader packet MOM-reporting exception universe
+4. the current owner doc now expresses the honest final closeout reading for
+   the present evidence
 
 Operational effect:
 
-- `CAP-DM` remains a maintained bounded-family surface
+- `CAP-DM` remains a maintained owner-doc surface, but no longer a bounded
+  partial bucket
 - the active execution queue should advance to `CAP-TM` instead of continuing
   to treat `CAP-DM` as unresolved wording debt
 
@@ -468,7 +469,7 @@ Operational effect:
 | Bucket | Primary owner doc | Primary companion | Primary shard now | Primary views | Stay bounded when | Tighten only if |
 | --- | --- | --- | --- | --- | --- | --- |
 | `CAP-FM` | `federation_management_bounded_family.md` | `requirements/2010/hla1516_1_fm_detailed_reconciliation.csv` plus `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv` | `unit-scenarios-light` | `2010-core`, `scenarios`, `save-restore` | lifecycle, synchronization, save, and restore are already broadly proven but the remaining `ARG`, `EFF`, `CB_ORD`, `EXC`, and residual packet slices still overstate proof granularity | new direct witnesses close the exact remaining packet-row kinds or the repo deliberately moves to one-row-per-packet Clause 4 claims |
-| `CAP-DM` | `declaration_management_bounded_family.md` | `requirements/2010/hla1516_1_dm_detailed_reconciliation.csv` plus `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv` | `unit-foundation` | `2010-core`, `setup-preflight`, `scenarios` | publication, subscription, declaration callbacks, and representative negatives are already strong while the remaining precondition and exception envelope rows still describe broader matrices than the current direct witnesses | new direct per-row declaration witnesses close the remaining `PRE`, `EXC`, or `EXC_API` packet slices |
+| `CAP-DM` | `declaration_management_bounded_family.md` | `requirements/2010/hla1516_1_dm_detailed_reconciliation.csv` plus `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv` | `unit-foundation` | `2010-core`, `setup-preflight`, `scenarios` | Clause 5 is fully mapped because the former PRE/EXC/EXC_API tail is now intentionally narrowed to the direct declaration guard surface the repo actually proves | future work widens these rows only by adding stronger isolated witnesses, not by reintroducing bounded-partial wording |
 | `CAP-SUP` | `support_services_bounded_family.md` | `requirements/2010/hla1516_1_sup_detailed_reconciliation.csv` plus `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv` | `unit-python-core` | `2010-core`, `setup-preflight` | support-service presence, signatures, lookup behavior, MOM observability, and representative negative paths are already strong while the remaining negative envelope stays broader than the direct witnesses | new direct per-service negative-matrix witnesses close the remaining `PRE`, `EXC`, and `EXC_API` rows |
 | `CAP-OM` | `object_management_bounded_family.md` | `requirements/2010/hla1516_1_om_detailed_reconciliation.csv` plus `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv` | `unit-scenarios-light` | `2010-core`, `scenarios` | naming, discovery, update, interaction, delete, and supported transport-subset paths are already strong while the remaining rows still describe broader callback-order, effect-vector, or exception envelopes | new isolated row witnesses close the exact remaining bounded row kinds |
 | `CAP-OWN` | `ownership_management_bounded_family.md` | `requirements/2010/hla1516_1_own_detailed_reconciliation.csv` plus `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv` | `unit-scenarios-light` | `2010-core`, `ownership`, `scenarios` | divestiture, acquisition, callback, query, and MOM behavior are already strong while the remaining rows still describe broader precondition or exception envelopes | new ownership-specific witnesses close the remaining `PRE`, `EXC`, or `EXC_API` packet slices |

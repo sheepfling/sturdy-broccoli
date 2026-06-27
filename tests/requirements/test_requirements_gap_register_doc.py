@@ -35,8 +35,9 @@ def test_gap_register_and_queue_keep_owner_companion_split_explicit() -> None:
     assert "uniform bounded `43 PRE`, `43 EXC`, and" in gap_text
     assert "`43 EXC_API` negative-envelope family" in gap_text
     assert "2010 CAP-DM bounded family" in gap_text
-    assert "stable bounded `12 PRE`, `12 EXC`, and" in gap_text
-    assert "`14 EXC_API` Clause 5 family envelope" in gap_text
+    assert "advanced to an explicit fully mapped closeout surface" in gap_text
+    assert "intentionally narrowed `PRE`, `EXC`, and `EXC_API` guard claims" in normalized_gap_text
+    assert "broader packet MOM-reporting exception universe" in gap_text
     assert "2010 CAP-TM bounded family" in gap_text
     assert "stable bounded `19 PRE`, `19 EXC`, `19 EXC_API`," in gap_text
     assert "and `1 OVW` Clause 8 family envelope" in gap_text

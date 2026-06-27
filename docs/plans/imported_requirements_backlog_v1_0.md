@@ -3,8 +3,8 @@
 This generated backlog turns the harmonized open requirements rows into repo-native implementation queues.
 Some rows intentionally appear in multiple queues, especially `MOM/MIM` and `Transports`, because those are cross-cutting execution backlogs rather than mutually exclusive taxonomies.
 
-- Total open rows: 306
-- Total queue items: 170
+- Total open rows: 258
+- Total queue items: 146
 - Families: 11
 
 ## Queue Summary
@@ -12,7 +12,7 @@ Some rows intentionally appear in multiple queues, especially `MOM/MIM` and `Tra
 | Family | Open rows | Queue items | Statuses | Dominant kinds |
 |---|---:|---:|---|---|
 | Federation Management | 0 | 0 | - | - |
-| Declaration Management | 24 | 12 | partial:24 | EXC:12, PRE:12 |
+| Declaration Management | 0 | 0 | - | - |
 | Object Management | 0 | 0 | - | - |
 | Ownership Management | 19 | 11 | partial:19 | EXC:11, PRE:8 |
 | Time Management | 38 | 19 | partial:38 | EXC:19, PRE:19 |
@@ -21,7 +21,7 @@ Some rows intentionally appear in multiple queues, especially `MOM/MIM` and `Tra
 | MOM/MIM | 0 | 0 | - | - |
 | OMT | 0 | 0 | - | - |
 | XML | 0 | 0 | - | - |
-| Transports | 139 | 85 | partial:139 | PRE:82, EXC:57 |
+| Transports | 115 | 73 | partial:115 | PRE:70, EXC:45 |
 
 ## Federation Management
 
@@ -39,25 +39,13 @@ Clause 4 decomposition backlog for federation lifecycle and synchronization serv
 
 Clause 5 packet-to-curated backlog for declaration services.
 
-- Open rows: 24
-- Queue items: 12
-- Statuses: partial:24
-- Kinds: EXC:12, PRE:12
+- Open rows: 0
+- Queue items: 0
+- Statuses: -
+- Kinds: -
 
 | Queue item | Clause | Open rows | Kinds | Requirement IDs | Acceptance tests | Next action |
 |---|---|---:|---|---|---|---|
-| publishInteractionClass | 5.4 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_4-PUBLISHINTERACTIONCLASS-EXC-001, HLA1516.1-DM-5_4-PUBLISHINTERACTIONCLASS-PRE-001 | test_publish_unpublish_and_unsubscribe_interaction_tail_reject_not_connected_not_joined_and_save_restore | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
-| publishObjectClassAttributes | 5.2 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_2-PUBLISHOBJECTCLASSATTRIBUTES-EXC-001, HLA1516.1-DM-5_2-PUBLISHOBJECTCLASSATTRIBUTES-PRE-001 | test_strict_publication_gates_registration_update_and_interaction_sends, test_publish_unpublish_unsubscribe_and_interaction_subscription_tail_reject_not_connected_not_joined_and_save_restore | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
-| subscribeInteractionClass | 5.8 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_8-SUBSCRIBEINTERACTIONCLASS-EXC-001, HLA1516.1-DM-5_8-SUBSCRIBEINTERACTIONCLASS-PRE-001 | test_publish_unpublish_unsubscribe_and_interaction_subscription_tail_reject_not_connected_not_joined_and_save_restore | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
-| subscribeInteractionClassPassively | 5.8 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_8-SUBSCRIBEINTERACTIONCLASSPASSIVELY-EXC-001, HLA1516.1-DM-5_8-SUBSCRIBEINTERACTIONCLASSPASSIVELY-PRE-001 | test_publish_unpublish_unsubscribe_and_interaction_subscription_tail_reject_not_connected_not_joined_and_save_restore | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
-| subscribeObjectClassAttributes | 5.6 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_6-SUBSCRIBEOBJECTCLASSATTRIBUTES-EXC-001, HLA1516.1-DM-5_6-SUBSCRIBEOBJECTCLASSATTRIBUTES-PRE-001 | test_declaration_services_reject_not_connected_not_joined_and_save_restore | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
-| subscribeObjectClassAttributesPassively | 5.6 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_6-SUBSCRIBEOBJECTCLASSATTRIBUTESPASSIVELY-EXC-001, HLA1516.1-DM-5_6-SUBSCRIBEOBJECTCLASSATTRIBUTESPASSIVELY-PRE-001 | test_declaration_services_reject_not_connected_not_joined_and_save_restore | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
-| unpublishInteractionClass | 5.5 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_5-UNPUBLISHINTERACTIONCLASS-EXC-001, HLA1516.1-DM-5_5-UNPUBLISHINTERACTIONCLASS-PRE-001 | test_publish_unpublish_and_unsubscribe_interaction_tail_reject_not_connected_not_joined_and_save_restore | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
-| unpublishObjectClass | 5.3 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_3-UNPUBLISHOBJECTCLASS-EXC-001, HLA1516.1-DM-5_3-UNPUBLISHOBJECTCLASS-PRE-001 | test_declaration_services_reject_not_connected_not_joined_and_save_restore | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
-| unpublishObjectClassAttributes | 5.3 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_3-UNPUBLISHOBJECTCLASSATTRIBUTES-EXC-001, HLA1516.1-DM-5_3-UNPUBLISHOBJECTCLASSATTRIBUTES-PRE-001 | test_declaration_services_reject_not_connected_not_joined_and_save_restore | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
-| unsubscribeInteractionClass | 5.9 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_9-UNSUBSCRIBEINTERACTIONCLASS-EXC-001, HLA1516.1-DM-5_9-UNSUBSCRIBEINTERACTIONCLASS-PRE-001 | test_publish_unpublish_and_unsubscribe_interaction_tail_reject_not_connected_not_joined_and_save_restore | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
-| unsubscribeObjectClass | 5.7 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_7-UNSUBSCRIBEOBJECTCLASS-EXC-001, HLA1516.1-DM-5_7-UNSUBSCRIBEOBJECTCLASS-PRE-001 | test_publish_unpublish_unsubscribe_and_interaction_subscription_tail_reject_not_connected_not_joined_and_save_restore | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
-| unsubscribeObjectClassAttributes | 5.7 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_7-UNSUBSCRIBEOBJECTCLASSATTRIBUTES-EXC-001, HLA1516.1-DM-5_7-UNSUBSCRIBEOBJECTCLASSATTRIBUTES-PRE-001 | test_publish_unpublish_unsubscribe_and_interaction_subscription_tail_reject_not_connected_not_joined_and_save_restore | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 
 ## Object Management
 
@@ -232,10 +220,10 @@ Open IEEE 1516.2 XML and schema-conformance backlog rows.
 
 Cross-cutting native/gRPC/REST transport-equivalence and transportation-type backlog rows.
 
-- Open rows: 139
-- Queue items: 85
-- Statuses: partial:139
-- Kinds: EXC:57, PRE:82
+- Open rows: 115
+- Queue items: 73
+- Statuses: partial:115
+- Kinds: EXC:45, PRE:70
 
 | Queue item | Clause | Open rows | Kinds | Requirement IDs | Acceptance tests | Next action |
 |---|---|---:|---|---|---|---|
@@ -301,8 +289,6 @@ Cross-cutting native/gRPC/REST transport-equivalence and transportation-type bac
 | nextMessageRequestAvailable | 8.11 | 2 | EXC:1, PRE:1 | HLA1516.1-TM-8_11-NEXTMESSAGEREQUESTAVAILABLE-EXC-001, HLA1516.1-TM-8_11-NEXTMESSAGEREQUESTAVAILABLE-PRE-001 | tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_available_and_retraction, tests/backends/test_python_backend_time_ddm_extended.py::test_time_advance_services_reject_not_connected_not_joined_invalid_and_past_time, tests/backends/test_python_backend_time_ddm_extended.py::test_time_advance_services_reject_save_restore_and_outstanding_advance | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | normalizeFederateHandle | 10.31 | 1 | PRE:1 | HLA1516.1-SUP-10_31-NORMALIZEFEDERATEHANDLE-PRE-001 | tests/backends/test_python_backend_support_services.py::test_support_normalizers_and_factories, tests/backends/test_python_backend_support_services.py::test_support_invalid_inputs_raise_expected_errors, tests/backends/test_python_backend_object_ownership_extended.py::test_clause_6_federate_initiated_services_are_observable_through_mom_service_invocation_reporting | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | normalizeServiceGroup | 10.32 | 1 | PRE:1 | HLA1516.1-SUP-10_32-NORMALIZESERVICEGROUP-PRE-001 | tests/backends/test_python_backend_support_services.py::test_support_normalizers_and_factories, tests/backends/test_python_backend_support_services.py::test_support_invalid_inputs_raise_expected_errors, tests/backends/test_python_backend_object_ownership_extended.py::test_clause_6_federate_initiated_services_are_observable_through_mom_service_invocation_reporting | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| publishInteractionClass | 5.4 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_4-PUBLISHINTERACTIONCLASS-EXC-001, HLA1516.1-DM-5_4-PUBLISHINTERACTIONCLASS-PRE-001 | test_publish_unpublish_and_unsubscribe_interaction_tail_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| publishObjectClassAttributes | 5.2 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_2-PUBLISHOBJECTCLASSATTRIBUTES-EXC-001, HLA1516.1-DM-5_2-PUBLISHOBJECTCLASSATTRIBUTES-PRE-001 | test_strict_publication_gates_registration_update_and_interaction_sends, test_publish_unpublish_unsubscribe_and_interaction_subscription_tail_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | queryAttributeOwnership | 7.17 | 1 | EXC:1 | HLA1516.1-OWN-7_17-QUERYATTRIBUTEOWNERSHIP-EXC-001 | test_unconditional_divestiture_query_ownership_and_is_owned_reject_not_connected_not_joined_unknown_object_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | queryGALT | 8.16 | 2 | EXC:1, PRE:1 | HLA1516.1-TM-8_16-QUERYGALT-EXC-001, HLA1516.1-TM-8_16-QUERYGALT-PRE-001 | tests/time/test_mom_mim_time_v10.py::test_timestamp_order_next_message_requests_deliver_in_time_order_and_query_galt_lits, tests/backends/test_python_backend_time_ddm_extended.py::test_time_query_tail_rejects_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | queryLITS | 8.18 | 2 | EXC:1, PRE:1 | HLA1516.1-TM-8_18-QUERYLITS-EXC-001, HLA1516.1-TM-8_18-QUERYLITS-PRE-001 | tests/time/test_mom_mim_time_v10.py::test_timestamp_order_next_message_requests_deliver_in_time_order_and_query_galt_lits, tests/backends/test_python_backend_time_ddm_extended.py::test_time_query_tail_rejects_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
@@ -311,17 +297,7 @@ Cross-cutting native/gRPC/REST transport-equivalence and transportation-type bac
 | retract | 8.21 | 2 | EXC:1, PRE:1 | HLA1516.1-TM-8_21-RETRACT-EXC-001, HLA1516.1-TM-8_21-RETRACT-PRE-001 | tests/time/test_mom_mim_time_v10.py::test_retract_removes_queued_tso_message_before_grant, tests/backends/test_python_backend_object_ownership_extended.py::test_modify_lookahead_retract_change_attribute_order_type_and_enable_time_constrained_reject_core_negative_paths | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | setAutomaticResignDirective | 10.3 | 1 | PRE:1 | HLA1516.1-SUP-10_3-SETAUTOMATICRESIGNDIRECTIVE-PRE-001 | tests/backends/test_python_backend_support_services.py::test_support_dimension_and_update_rate_helpers, tests/backends/test_python_backend_support_services.py::test_support_invalid_inputs_raise_expected_errors | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | setRangeBounds | 10.30 | 2 | EXC:1, PRE:1 | HLA1516.1-SUP-10_30-SETRANGEBOUNDS-EXC-001, HLA1516.1-SUP-10_30-SETRANGEBOUNDS-PRE-001 | tests/backends/test_python_backend_support_services.py::test_support_dimension_and_update_rate_helpers, tests/backends/test_python_backend_support_services.py::test_support_update_rate_lookup_for_attribute_reflects_subscribed_rate, tests/backends/test_python_backend_support_services.py::test_fom_declared_update_rate_defaults_apply_to_inherited_and_regioned_subscriptions (+2 more) | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| subscribeInteractionClass | 5.8 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_8-SUBSCRIBEINTERACTIONCLASS-EXC-001, HLA1516.1-DM-5_8-SUBSCRIBEINTERACTIONCLASS-PRE-001 | test_publish_unpublish_unsubscribe_and_interaction_subscription_tail_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| subscribeInteractionClassPassively | 5.8 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_8-SUBSCRIBEINTERACTIONCLASSPASSIVELY-EXC-001, HLA1516.1-DM-5_8-SUBSCRIBEINTERACTIONCLASSPASSIVELY-PRE-001 | test_publish_unpublish_unsubscribe_and_interaction_subscription_tail_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| subscribeObjectClassAttributes | 5.6 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_6-SUBSCRIBEOBJECTCLASSATTRIBUTES-EXC-001, HLA1516.1-DM-5_6-SUBSCRIBEOBJECTCLASSATTRIBUTES-PRE-001 | test_declaration_services_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| subscribeObjectClassAttributesPassively | 5.6 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_6-SUBSCRIBEOBJECTCLASSATTRIBUTESPASSIVELY-EXC-001, HLA1516.1-DM-5_6-SUBSCRIBEOBJECTCLASSATTRIBUTESPASSIVELY-PRE-001 | test_declaration_services_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | timeAdvanceRequest | 8.8 | 2 | EXC:1, PRE:1 | HLA1516.1-TM-8_8-TIMEADVANCEREQUEST-EXC-001, HLA1516.1-TM-8_8-TIMEADVANCEREQUEST-PRE-001 | tests/time/test_mom_mim_and_time_semantics_v010.py::test_section8_core_time_management_surface_covers_callbacks_states_and_grants, tests/backends/test_python_backend_time_ddm_extended.py::test_time_advance_services_reject_not_connected_not_joined_invalid_and_past_time, tests/backends/test_python_backend_time_ddm_extended.py::test_time_advance_services_reject_save_restore_and_outstanding_advance (+1 more) | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | timeAdvanceRequestAvailable | 8.9 | 2 | EXC:1, PRE:1 | HLA1516.1-TM-8_9-TIMEADVANCEREQUESTAVAILABLE-EXC-001, HLA1516.1-TM-8_9-TIMEADVANCEREQUESTAVAILABLE-PRE-001 | tests/time/test_mom_mim_time_v10.py::test_time_advance_request_waits_at_galt_boundary_but_available_request_can_grant_equal_galt, tests/backends/test_python_backend_time_ddm_extended.py::test_time_advance_services_reject_not_connected_not_joined_invalid_and_past_time, tests/backends/test_python_backend_time_ddm_extended.py::test_time_advance_services_reject_save_restore_and_outstanding_advance | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | unconditionalAttributeOwnershipDivestiture | 7.2 | 2 | EXC:1, PRE:1 | HLA1516.1-OWN-7_2-UNCONDITIONALATTRIBUTEOWNERSHIPDIVESTITURE-EXC-001, HLA1516.1-OWN-7_2-UNCONDITIONALATTRIBUTEOWNERSHIPDIVESTITURE-PRE-001 | test_unconditional_divestiture_query_ownership_and_is_owned_reject_not_connected_not_joined_unknown_object_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| unpublishInteractionClass | 5.5 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_5-UNPUBLISHINTERACTIONCLASS-EXC-001, HLA1516.1-DM-5_5-UNPUBLISHINTERACTIONCLASS-PRE-001 | test_publish_unpublish_and_unsubscribe_interaction_tail_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| unpublishObjectClass | 5.3 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_3-UNPUBLISHOBJECTCLASS-EXC-001, HLA1516.1-DM-5_3-UNPUBLISHOBJECTCLASS-PRE-001 | test_declaration_services_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| unpublishObjectClassAttributes | 5.3 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_3-UNPUBLISHOBJECTCLASSATTRIBUTES-EXC-001, HLA1516.1-DM-5_3-UNPUBLISHOBJECTCLASSATTRIBUTES-PRE-001 | test_declaration_services_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| unsubscribeInteractionClass | 5.9 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_9-UNSUBSCRIBEINTERACTIONCLASS-EXC-001, HLA1516.1-DM-5_9-UNSUBSCRIBEINTERACTIONCLASS-PRE-001 | test_publish_unpublish_and_unsubscribe_interaction_tail_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| unsubscribeObjectClass | 5.7 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_7-UNSUBSCRIBEOBJECTCLASS-EXC-001, HLA1516.1-DM-5_7-UNSUBSCRIBEOBJECTCLASS-PRE-001 | test_publish_unpublish_unsubscribe_and_interaction_subscription_tail_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| unsubscribeObjectClassAttributes | 5.7 | 2 | EXC:1, PRE:1 | HLA1516.1-DM-5_7-UNSUBSCRIBEOBJECTCLASSATTRIBUTES-EXC-001, HLA1516.1-DM-5_7-UNSUBSCRIBEOBJECTCLASSATTRIBUTES-PRE-001 | test_publish_unpublish_unsubscribe_and_interaction_subscription_tail_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 

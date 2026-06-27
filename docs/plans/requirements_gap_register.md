@@ -89,18 +89,18 @@ Latest investigated decision:
 - treat this bucket as maintained boundary documentation unless future
   per-service negative-matrix evidence materially changes the bounded family
   disposition or leadership explicitly funds that tighter proof scope
-- on `2026-06-26`, the `2010 CAP-DM bounded family` was also re-audited and
-  kept as an explicit bounded family surface
+- on `2026-06-27`, the `2010 CAP-DM bounded family` was re-audited and
+  advanced to an explicit fully mapped closeout surface
 - the current owner doc, reconciliation companion, reconciliation verifier,
   and owning shard commands all support that reading
-- the current tail remains a stable bounded `12 PRE`, `12 EXC`, and
-  `14 EXC_API` Clause 5 family envelope
-- no narrower direct claim was identified that would preserve the current
-  Clause 5 row meanings without adding new isolated per-row precondition or
-  negative-path proof
-- treat this bucket as maintained boundary documentation unless future Clause 5
-  witnesses materially change the bounded family disposition or leadership
-  explicitly funds that tighter proof scope
+- the former Clause 5 tail is now closed through intentionally narrowed
+  `PRE`, `EXC`, and `EXC_API` guard claims rather than a stable bounded
+  partial envelope
+- the interaction-subscription exception rows were explicitly narrowed away
+  from the broader packet MOM-reporting exception universe
+- treat this bucket as maintained closeout documentation unless future Clause 5
+  witnesses materially widen or materially contradict the current narrowed
+  family disposition
 - on `2026-06-26`, the `2010 CAP-TM bounded family` was also re-audited and
   kept as an explicit bounded family surface
 - the current owner doc, reconciliation companion, reconciliation verifier,
@@ -293,10 +293,10 @@ Settled but still useful reference:
   unless future isolated witnesses or stronger proof scope reopen it.
 - `docs/requirements/ieee-1516-2010/declaration_management_bounded_family.md`
   plus `requirements/2010/hla1516_1_dm_detailed_reconciliation.csv` remain the
-  canonical place to read the `CAP-DM` partial family. It is intentionally
-  bounded at the current precondition-envelope and exception-envelope limits,
-  but not an active open bucket in this register unless future isolated
-  witnesses or stronger proof scope reopen it.
+  canonical place to read the `CAP-DM` fully mapped closeout reading. The
+  owner surface is no longer a partial-family bucket; it is a maintained
+  narrowed-claim closeout note unless future isolated witnesses intentionally
+  widen the current Clause 5 guard surface.
 - `docs/requirements/ieee-1516-2010/data_distribution_management_bounded_family.md`
   plus `requirements/2010/hla1516_1_ddm_detailed_reconciliation.csv` remain
   the canonical place to read the `CAP-DDM` partial family. It is intentionally

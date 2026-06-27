@@ -43,7 +43,7 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
     }
 
     statuses = Counter(row["harmonization_status"] for row in rows)
-    assert statuses == Counter({"mapped": 2868, "partial": 1135})
+    assert statuses == Counter({"mapped": 2906, "partial": 1097})
 
     by_id = {row["master_requirement_id"]: row for row in rows}
     assert by_id["HLA1516.1-SUP-10_2-GETAUTOMATICRESIGNDIRECTIVE-TEST-001"][
@@ -226,10 +226,7 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
     assert by_id["HLA1516.1-API_REFLECT_METHODS-008"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-API_RECEIVE_METHODS-009"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-API_REMOVE_METHODS-010"]["harmonization_status"] == "mapped"
-    assert (
-        by_id["HLA1516.1-DM-5_2-RTIAPI-001-EXC"]["harmonization_status"]
-        == "partial"
-    )
+    assert by_id["HLA1516.1-DM-5_2-RTIAPI-001-EXC"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-DM-5_10-FEDCB-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.2-OMT-OMT_SCOPE-001"]["harmonization_status"] == "mapped"
     assert (
