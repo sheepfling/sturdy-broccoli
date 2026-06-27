@@ -104,3 +104,27 @@ def test_coarse_2010_seed_ledgers_do_not_keep_stale_partial_rows_for_closed_clau
         assert clause6_rows[requirement_id]["status"] == "pass"
 
     assert trace_rows["HLA1516.1-OM-6.1.6-001"]["status"] == "pass"
+
+
+def test_clause_6_packet_reconciliation_does_not_keep_stale_partial_preconditions_for_rows_closed_by_the_canonical_owner_surface():
+    packet_rows = {
+        row["packet_requirement_id"]: row
+        for row in _rows(REFERENCE_DIR / "hla1516_1_clause_6_om_detailed_reconciliation.csv")
+    }
+
+    expected = {
+        "HLA1516.1-OM-6_2-PRE-004": "test_reserve_object_instance_name_rejects_not_connected_not_joined_and_save_restore",
+        "HLA1516.1-OM-6_4-PRE-004": "test_name_release_and_query_interaction_transport_tail_reject_not_connected_not_joined_and_save_restore",
+        "HLA1516.1-OM-6_8-PRE-004": "test_clause_6_federate_initiated_services_validate_core_argument_shapes;test_register_object_instance_rejects_not_connected_not_joined_name_in_use_and_save_restore",
+        "HLA1516.1-OM-6_10-PRE-004": "test_clause_6_federate_initiated_services_validate_core_argument_shapes;test_update_attribute_values_rejects_not_connected_not_joined_unknown_object_invalid_time_not_owned_and_save_restore",
+        "HLA1516.1-OM-6_10-EXC-006": "test_clause_6_federate_initiated_services_validate_core_argument_shapes;test_update_attribute_values_rejects_not_connected_not_joined_unknown_object_invalid_time_not_owned_and_save_restore;tests/backends/test_python_backend_time_ddm_extended.py::test_strict_publication_and_invalid_logical_time_guards_block_object_and_interaction_delivery",
+        "HLA1516.1-OM-6_12-PRE-004": "test_clause_6_federate_initiated_services_validate_core_argument_shapes;test_send_interaction_rejects_not_connected_not_joined_invalid_inputs_and_invalid_time",
+        "HLA1516.1-OM-6_14-PRE-004": "test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore",
+        "HLA1516.1-OM-6_16-PRE-004": "test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore",
+        "HLA1516.1-OM-6_19-PRE-004": "test_clause_6_federate_initiated_services_validate_core_argument_shapes;test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore",
+    }
+
+    for requirement_id, current_test_id in expected.items():
+        row = packet_rows[requirement_id]
+        assert row["current_status"] == "mapped"
+        assert row["current_test_id"] == current_test_id

@@ -3,489 +3,11 @@
     {
       "description": "Clause 4 decomposition backlog for federation lifecycle and synchronization services.",
       "family": "Federation Management",
-      "kinds": {
-        "EFF": 16,
-        "EXC": 11
-      },
-      "open_row_count": 27,
-      "queue_item_count": 22,
-      "queue_items": [
-        {
-          "acceptance_tests": [
-            "test_abort_federation_save_requires_save_in_progress"
-          ],
-          "clause": "4.21",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Abort Federation Save",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.21-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Optional: tighten this bounded FM state-vector tail into a single direct witness if broader granularity is desired; otherwise preserve the explicit bounded owner reading."
-        },
-        {
-          "acceptance_tests": [
-            "test_whole_federation_synchronization_announces_late_joiner_before_completion"
-          ],
-          "clause": "4.13",
-          "implementation_areas": [
-            "synchronization"
-          ],
-          "kinds": {
-            "EFF": 1,
-            "EXC": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "Announce Synchronization Point",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.13-EFF-001",
-            "HLA1516.1-FM-4.13-EXC-001"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_connect_adapts_python_federate_ambassador"
-          ],
-          "clause": "4.2",
-          "implementation_areas": [
-            "federation_lifecycle"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Connect",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.2-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Optional: tighten this bounded FM state-vector tail into a single direct witness if broader granularity is desired; otherwise preserve the explicit bounded owner reading."
-        },
-        {
-          "acceptance_tests": [
-            "test_create_federation_execution_with_explicit_mim_uses_requested_module"
-          ],
-          "clause": "4.5",
-          "implementation_areas": [
-            "federation_lifecycle"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Create Federation Execution",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.5-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Optional: tighten this bounded FM state-vector tail into a single direct witness if broader granularity is desired; otherwise preserve the explicit bounded owner reading."
-        },
-        {
-          "acceptance_tests": [
-            "test_federate_save_begun_rejects_not_connected_not_joined_and_missing_save"
-          ],
-          "clause": "4.18",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Federate Save Begun",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.18-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Optional: tighten this bounded FM state-vector tail into a single direct witness if broader granularity is desired; otherwise preserve the explicit bounded owner reading."
-        },
-        {
-          "acceptance_tests": [
-            "test_federate_save_complete_and_not_complete_reject_missing_save"
-          ],
-          "clause": "4.19",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Federate Save Complete and Federate Save Not Complete",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.19-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Optional: tighten this bounded FM state-vector tail into a single direct witness if broader granularity is desired; otherwise preserve the explicit bounded owner reading."
-        },
-        {
-          "acceptance_tests": [
-            "test_restore_status_response_and_failure_callback_paths"
-          ],
-          "clause": "4.26",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Federation Restore Begun",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.26-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_restore_status_response_and_failure_callback_paths"
-          ],
-          "clause": "4.32",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Federation Restore Status Response",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.32-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_restore_status_response_and_failure_callback_paths"
-          ],
-          "clause": "4.29",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Federation Restored and Federation Not Restored",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.29-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_synchronization_points_and_save_status_callbacks"
-          ],
-          "clause": "4.23",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Federation Save Status Response",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.23-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_save_failure_reports_federation_not_saved_and_clears_status"
-          ],
-          "clause": "4.20",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EFF": 1,
-            "EXC": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "Federation Saved and Federation Not Saved",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.20-EFF-001",
-            "HLA1516.1-FM-4.20-EXC-001"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_startup_helper_connects_joins_and_completes_ready_to_run_sync_point"
-          ],
-          "clause": "4.15",
-          "implementation_areas": [
-            "synchronization"
-          ],
-          "kinds": {
-            "EFF": 1,
-            "EXC": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "Federation Synchronized",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.15-EFF-001",
-            "HLA1516.1-FM-4.15-EXC-001"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_restore_status_response_and_failure_callback_paths"
-          ],
-          "clause": "4.27",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Initiate Federate Restore",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.27-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_synchronization_points_and_save_status_callbacks"
-          ],
-          "clause": "4.17",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EFF": 1,
-            "EXC": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "Initiate Federate Save",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.17-EFF-001",
-            "HLA1516.1-FM-4.17-EXC-001"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_join_federation_execution_with_additional_modules_updates_catalog"
-          ],
-          "clause": "4.9",
-          "implementation_areas": [
-            "federation_lifecycle"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Join Federation Execution",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.9-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Optional: tighten this bounded FM state-vector tail into a single direct witness if broader granularity is desired; otherwise preserve the explicit bounded owner reading."
-        },
-        {
-          "acceptance_tests": [
-            "test_query_federation_save_status_rejects_not_connected_and_not_joined"
-          ],
-          "clause": "4.22",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Query Federation Save Status",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.22-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Optional: tighten this bounded FM state-vector tail into a single direct witness if broader granularity is desired; otherwise preserve the explicit bounded owner reading."
-        },
-        {
-          "acceptance_tests": [
-            "test_register_federation_synchronization_point_rejects_not_connected_and_not_joined"
-          ],
-          "clause": "4.11",
-          "implementation_areas": [
-            "synchronization"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Register Federation Synchronization Point",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.11-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Optional: tighten this bounded FM state-vector tail into a single direct witness if broader granularity is desired; otherwise preserve the explicit bounded owner reading."
-        },
-        {
-          "acceptance_tests": [
-            "test_request_federation_restore_failed_is_reported_for_unknown_save_label"
-          ],
-          "clause": "4.25",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Request Federation Restore confirmation",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.25-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_request_federation_save_rejects_not_connected_and_not_joined"
-          ],
-          "clause": "4.16",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Request Federation Save",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.16-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Optional: tighten this bounded FM state-vector tail into a single direct witness if broader granularity is desired; otherwise preserve the explicit bounded owner reading."
-        },
-        {
-          "acceptance_tests": [
-            "test_resign_federation_execution_rejects_invalid_action_and_owned_attributes"
-          ],
-          "clause": "4.10",
-          "implementation_areas": [
-            "federation_lifecycle"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Resign Federation Execution",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.10-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Optional: tighten this bounded FM state-vector tail into a single direct witness if broader granularity is desired; otherwise preserve the explicit bounded owner reading."
-        },
-        {
-          "acceptance_tests": [
-            "test_synchronization_point_achieved_rejects_not_connected_not_joined_and_unknown_label"
-          ],
-          "clause": "4.14",
-          "implementation_areas": [
-            "synchronization"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Synchronization Point Achieved",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.14-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Optional: tighten this bounded FM state-vector tail into a single direct witness if broader granularity is desired; otherwise preserve the explicit bounded owner reading."
-        },
-        {
-          "acceptance_tests": [
-            "test_register_federation_synchronization_point_reports_duplicate_and_invalid_target_failures"
-          ],
-          "clause": "4.12",
-          "implementation_areas": [
-            "synchronization"
-          ],
-          "kinds": {
-            "EFF": 1,
-            "EXC": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "Synchronization Point Registration callbacks",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.12-EFF-001",
-            "HLA1516.1-FM-4.12-EXC-001"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        }
-      ],
-      "statuses": {
-        "partial": 27
-      }
+      "kinds": {},
+      "open_row_count": 0,
+      "queue_item_count": 0,
+      "queue_items": [],
+      "statuses": {}
     },
     {
       "description": "Clause 5 packet-to-curated backlog for declaration services.",
@@ -785,12 +307,12 @@
       "kinds": {
         "ARG": 16,
         "EFF": 18,
-        "EXC": 26,
-        "PRE": 22,
+        "EXC": 25,
+        "PRE": 14,
         "SEM": 6,
         "SVC": 8
       },
-      "open_row_count": 96,
+      "open_row_count": 87,
       "queue_item_count": 27,
       "queue_items": [
         {
@@ -911,18 +433,16 @@
           ],
           "kinds": {
             "EFF": 1,
-            "EXC": 1,
-            "PRE": 1
+            "EXC": 1
           },
-          "open_row_count": 3,
+          "open_row_count": 2,
           "queue_item": "Delete Object Instance",
           "requirement_ids": [
-            "HLA1516.1-OM-6_14-PRE-004",
             "HLA1516.1-OM-6_14-EFF-005",
             "HLA1516.1-OM-6_14-EXC-006"
           ],
           "statuses": {
-            "partial": 3
+            "partial": 2
           },
           "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
         },
@@ -953,8 +473,8 @@
         },
         {
           "acceptance_tests": [
-            "test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore",
-            "test_local_delete_clears_only_local_knowledge_and_object_can_be_rediscovered"
+            "test_local_delete_clears_only_local_knowledge_and_object_can_be_rediscovered",
+            "test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore"
           ],
           "clause": "6.16",
           "implementation_areas": [
@@ -962,18 +482,16 @@
           ],
           "kinds": {
             "EFF": 1,
-            "EXC": 1,
-            "PRE": 1
+            "EXC": 1
           },
-          "open_row_count": 3,
+          "open_row_count": 2,
           "queue_item": "Local Delete Object Instance",
           "requirement_ids": [
-            "HLA1516.1-OM-6_16-PRE-004",
             "HLA1516.1-OM-6_16-EFF-005",
             "HLA1516.1-OM-6_16-EXC-006"
           ],
           "statuses": {
-            "partial": 3
+            "partial": 2
           },
           "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
         },
@@ -1170,8 +688,8 @@
         },
         {
           "acceptance_tests": [
-            "test_register_object_instance_rejects_not_connected_not_joined_name_in_use_and_save_restore",
-            "test_two_python_federates_share_in_memory_rti"
+            "test_two_python_federates_share_in_memory_rti",
+            "test_register_object_instance_rejects_not_connected_not_joined_name_in_use_and_save_restore"
           ],
           "clause": "6.8",
           "implementation_areas": [
@@ -1179,18 +697,16 @@
           ],
           "kinds": {
             "EFF": 1,
-            "EXC": 1,
-            "PRE": 1
+            "EXC": 1
           },
-          "open_row_count": 3,
+          "open_row_count": 2,
           "queue_item": "Register Object Instance",
           "requirement_ids": [
-            "HLA1516.1-OM-6_8-PRE-004",
             "HLA1516.1-OM-6_8-EFF-005",
             "HLA1516.1-OM-6_8-EXC-006"
           ],
           "statuses": {
-            "partial": 3
+            "partial": 2
           },
           "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
         },
@@ -1232,19 +748,17 @@
           "kinds": {
             "ARG": 1,
             "EFF": 1,
-            "EXC": 1,
-            "PRE": 1
+            "EXC": 1
           },
-          "open_row_count": 4,
+          "open_row_count": 3,
           "queue_item": "Release Object Instance Name",
           "requirement_ids": [
             "HLA1516.1-OM-6_4-ARG-003",
-            "HLA1516.1-OM-6_4-PRE-004",
             "HLA1516.1-OM-6_4-EFF-005",
             "HLA1516.1-OM-6_4-EXC-006"
           ],
           "statuses": {
-            "partial": 4
+            "partial": 3
           },
           "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
         },
@@ -1368,17 +882,15 @@
             "object_refresh"
           ],
           "kinds": {
-            "EXC": 1,
-            "PRE": 1
+            "EXC": 1
           },
-          "open_row_count": 2,
+          "open_row_count": 1,
           "queue_item": "Request Attribute Value Update",
           "requirement_ids": [
-            "HLA1516.1-OM-6_19-PRE-004",
             "HLA1516.1-OM-6_19-EXC-006"
           ],
           "statuses": {
-            "partial": 2
+            "partial": 1
           },
           "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
         },
@@ -1448,19 +960,17 @@
           "kinds": {
             "ARG": 1,
             "EFF": 1,
-            "EXC": 1,
-            "PRE": 1
+            "EXC": 1
           },
-          "open_row_count": 4,
+          "open_row_count": 3,
           "queue_item": "Reserve Object Instance Name",
           "requirement_ids": [
             "HLA1516.1-OM-6_2-ARG-003",
-            "HLA1516.1-OM-6_2-PRE-004",
             "HLA1516.1-OM-6_2-EFF-005",
             "HLA1516.1-OM-6_2-EXC-006"
           ],
           "statuses": {
-            "partial": 4
+            "partial": 3
           },
           "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
         },
@@ -1474,51 +984,43 @@
           ],
           "kinds": {
             "EFF": 1,
-            "EXC": 1,
-            "PRE": 1
+            "EXC": 1
           },
-          "open_row_count": 3,
+          "open_row_count": 2,
           "queue_item": "Send Interaction",
           "requirement_ids": [
-            "HLA1516.1-OM-6_12-PRE-004",
             "HLA1516.1-OM-6_12-EFF-005",
             "HLA1516.1-OM-6_12-EXC-006"
           ],
           "statuses": {
-            "partial": 3
+            "partial": 2
           },
           "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
         },
         {
           "acceptance_tests": [
-            "test_two_python_federates_share_in_memory_rti",
             "test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions"
           ],
           "clause": "6.10",
           "implementation_areas": [
-            "object_update",
             "object_delivery"
           ],
           "kinds": {
-            "EFF": 1,
-            "EXC": 1,
-            "PRE": 1
+            "EFF": 1
           },
-          "open_row_count": 3,
+          "open_row_count": 1,
           "queue_item": "Update Attribute Values",
           "requirement_ids": [
-            "HLA1516.1-OM-6_10-PRE-004",
-            "HLA1516.1-OM-6_10-EFF-005",
-            "HLA1516.1-OM-6_10-EXC-006"
+            "HLA1516.1-OM-6_10-EFF-005"
           ],
           "statuses": {
-            "partial": 3
+            "partial": 1
           },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
+          "suggested_next_action": "Add focused runtime or state-transition evidence for the remaining behavioral slice."
         }
       ],
       "statuses": {
-        "partial": 96
+        "partial": 87
       }
     },
     {
@@ -3530,37 +3032,11 @@
     {
       "description": "Cross-cutting MOM observer, MOM service-reporting, and standard MIM backlog rows.",
       "family": "MOM/MIM",
-      "kinds": {
-        "EFF": 1
-      },
-      "open_row_count": 1,
-      "queue_item_count": 1,
-      "queue_items": [
-        {
-          "acceptance_tests": [
-            "test_create_federation_execution_with_explicit_mim_uses_requested_module"
-          ],
-          "clause": "4.5",
-          "implementation_areas": [
-            "federation_lifecycle"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Create Federation Execution",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.5-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add focused runtime or state-transition evidence for the remaining behavioral slice."
-        }
-      ],
-      "statuses": {
-        "partial": 1
-      }
+      "kinds": {},
+      "open_row_count": 0,
+      "queue_item_count": 0,
+      "queue_items": [],
+      "statuses": {}
     },
     {
       "description": "Open IEEE 1516.2 OMT parser, merge, and model-structure backlog rows.",
@@ -3585,57 +3061,15 @@
       "family": "Transports",
       "kinds": {
         "ARG": 4,
-        "EFF": 22,
-        "EXC": 86,
-        "PRE": 104,
+        "EFF": 10,
+        "EXC": 80,
+        "PRE": 96,
         "SEM": 2,
         "SVC": 8
       },
-      "open_row_count": 226,
-      "queue_item_count": 135,
+      "open_row_count": 200,
+      "queue_item_count": 118,
       "queue_items": [
-        {
-          "acceptance_tests": [
-            "test_abort_federation_save_requires_save_in_progress"
-          ],
-          "clause": "4.21",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Abort Federation Save",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.21-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_whole_federation_synchronization_announces_late_joiner_before_completion"
-          ],
-          "clause": "4.13",
-          "implementation_areas": [
-            "synchronization"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Announce Synchronization Point",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.13-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
         {
           "acceptance_tests": [
             "test_attributes_in_scope_and_out_of_scope_callbacks_track_region_scope_transitions"
@@ -3745,17 +3179,15 @@
             "object_deletion"
           ],
           "kinds": {
-            "EXC": 1,
-            "PRE": 1
+            "EXC": 1
           },
-          "open_row_count": 2,
+          "open_row_count": 1,
           "queue_item": "Delete Object Instance",
           "requirement_ids": [
-            "HLA1516.1-OM-6_14-PRE-004",
             "HLA1516.1-OM-6_14-EXC-006"
           ],
           "statuses": {
-            "partial": 2
+            "partial": 1
           },
           "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
         },
@@ -3782,195 +3214,6 @@
         },
         {
           "acceptance_tests": [
-            "test_federate_save_begun_rejects_not_connected_not_joined_and_missing_save"
-          ],
-          "clause": "4.18",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Federate Save Begun",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.18-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_federate_save_complete_and_not_complete_reject_missing_save"
-          ],
-          "clause": "4.19",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Federate Save Complete and Federate Save Not Complete",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.19-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_restore_status_response_and_failure_callback_paths"
-          ],
-          "clause": "4.26",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Federation Restore Begun",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.26-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_restore_status_response_and_failure_callback_paths"
-          ],
-          "clause": "4.32",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Federation Restore Status Response",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.32-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_restore_status_response_and_failure_callback_paths"
-          ],
-          "clause": "4.29",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Federation Restored and Federation Not Restored",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.29-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_save_failure_reports_federation_not_saved_and_clears_status"
-          ],
-          "clause": "4.20",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Federation Saved and Federation Not Saved",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.20-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_startup_helper_connects_joins_and_completes_ready_to_run_sync_point"
-          ],
-          "clause": "4.15",
-          "implementation_areas": [
-            "synchronization"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Federation Synchronized",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.15-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_restore_status_response_and_failure_callback_paths"
-          ],
-          "clause": "4.27",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Initiate Federate Restore",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.27-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_synchronization_points_and_save_status_callbacks"
-          ],
-          "clause": "4.17",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Initiate Federate Save",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.17-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
             "test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore"
           ],
           "clause": "6.16",
@@ -3978,17 +3221,15 @@
             "local_object_knowledge"
           ],
           "kinds": {
-            "EXC": 1,
-            "PRE": 1
+            "EXC": 1
           },
-          "open_row_count": 2,
+          "open_row_count": 1,
           "queue_item": "Local Delete Object Instance",
           "requirement_ids": [
-            "HLA1516.1-OM-6_16-PRE-004",
             "HLA1516.1-OM-6_16-EXC-006"
           ],
           "statuses": {
-            "partial": 2
+            "partial": 1
           },
           "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
         },
@@ -4088,27 +3329,6 @@
         },
         {
           "acceptance_tests": [
-            "test_query_federation_save_status_rejects_not_connected_and_not_joined"
-          ],
-          "clause": "4.22",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Query Federation Save Status",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.22-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
             "test_transportation_type_services_emit_confirm_and_report_callbacks",
             "negative=test_query_interaction_transportation_type_rejects_not_connected_not_joined_invalid_handle_and_save_restore"
           ],
@@ -4177,27 +3397,6 @@
         },
         {
           "acceptance_tests": [
-            "test_register_federation_synchronization_point_rejects_not_connected_and_not_joined"
-          ],
-          "clause": "4.11",
-          "implementation_areas": [
-            "synchronization"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Register Federation Synchronization Point",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.11-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
             "test_register_object_instance_rejects_not_connected_not_joined_name_in_use_and_save_restore"
           ],
           "clause": "6.8",
@@ -4205,17 +3404,15 @@
             "object_registration"
           ],
           "kinds": {
-            "EXC": 1,
-            "PRE": 1
+            "EXC": 1
           },
-          "open_row_count": 2,
+          "open_row_count": 1,
           "queue_item": "Register Object Instance",
           "requirement_ids": [
-            "HLA1516.1-OM-6_8-PRE-004",
             "HLA1516.1-OM-6_8-EXC-006"
           ],
           "statuses": {
-            "partial": 2
+            "partial": 1
           },
           "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
         },
@@ -4251,17 +3448,15 @@
             "object_naming"
           ],
           "kinds": {
-            "EXC": 1,
-            "PRE": 1
+            "EXC": 1
           },
-          "open_row_count": 2,
+          "open_row_count": 1,
           "queue_item": "Release Object Instance Name",
           "requirement_ids": [
-            "HLA1516.1-OM-6_4-PRE-004",
             "HLA1516.1-OM-6_4-EXC-006"
           ],
           "statuses": {
-            "partial": 2
+            "partial": 1
           },
           "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
         },
@@ -4381,56 +3576,12 @@
             "object_refresh"
           ],
           "kinds": {
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "Request Attribute Value Update",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_19-PRE-004",
-            "HLA1516.1-OM-6_19-EXC-006"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_request_federation_restore_failed_is_reported_for_unknown_save_label"
-          ],
-          "clause": "4.25",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
             "EXC": 1
           },
           "open_row_count": 1,
-          "queue_item": "Request Federation Restore confirmation",
+          "queue_item": "Request Attribute Value Update",
           "requirement_ids": [
-            "HLA1516.1-FM-4.25-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_request_federation_save_rejects_not_connected_and_not_joined"
-          ],
-          "clause": "4.16",
-          "implementation_areas": [
-            "save_restore"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Request Federation Save",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.16-EFF-001"
+            "HLA1516.1-OM-6_19-EXC-006"
           ],
           "statuses": {
             "partial": 1
@@ -4497,17 +3648,15 @@
             "object_naming"
           ],
           "kinds": {
-            "EXC": 1,
-            "PRE": 1
+            "EXC": 1
           },
-          "open_row_count": 2,
+          "open_row_count": 1,
           "queue_item": "Reserve Object Instance Name",
           "requirement_ids": [
-            "HLA1516.1-OM-6_2-PRE-004",
             "HLA1516.1-OM-6_2-EXC-006"
           ],
           "statuses": {
-            "partial": 2
+            "partial": 1
           },
           "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
         },
@@ -4521,87 +3670,37 @@
           ],
           "kinds": {
             "EFF": 1,
-            "EXC": 1,
-            "PRE": 1
+            "EXC": 1
           },
-          "open_row_count": 3,
+          "open_row_count": 2,
           "queue_item": "Send Interaction",
           "requirement_ids": [
-            "HLA1516.1-OM-6_12-PRE-004",
             "HLA1516.1-OM-6_12-EFF-005",
             "HLA1516.1-OM-6_12-EXC-006"
           ],
           "statuses": {
-            "partial": 3
+            "partial": 2
           },
           "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
         },
         {
           "acceptance_tests": [
-            "test_synchronization_point_achieved_rejects_not_connected_not_joined_and_unknown_label"
-          ],
-          "clause": "4.14",
-          "implementation_areas": [
-            "synchronization"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Synchronization Point Achieved",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.14-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_register_federation_synchronization_point_reports_duplicate_and_invalid_target_failures"
-          ],
-          "clause": "4.12",
-          "implementation_areas": [
-            "synchronization"
-          ],
-          "kinds": {
-            "EFF": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Synchronization Point Registration callbacks",
-          "requirement_ids": [
-            "HLA1516.1-FM-4.12-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_two_python_federates_share_in_memory_rti",
             "test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions"
           ],
           "clause": "6.10",
           "implementation_areas": [
-            "object_update",
             "object_delivery"
           ],
           "kinds": {
-            "EFF": 1,
-            "EXC": 1,
-            "PRE": 1
+            "EFF": 1
           },
-          "open_row_count": 3,
+          "open_row_count": 1,
           "queue_item": "Update Attribute Values",
           "requirement_ids": [
-            "HLA1516.1-OM-6_10-PRE-004",
-            "HLA1516.1-OM-6_10-EFF-005",
-            "HLA1516.1-OM-6_10-EXC-006"
+            "HLA1516.1-OM-6_10-EFF-005"
           ],
           "statuses": {
-            "partial": 3
+            "partial": 1
           },
           "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
         },
@@ -6775,11 +5874,11 @@
         }
       ],
       "statuses": {
-        "partial": 226
+        "partial": 200
       }
     }
   ],
   "generated_from": "harmonized requirements ledgers + imported HLA packet v1.0",
-  "total_open_rows": 523,
-  "total_queue_items": 276
+  "total_open_rows": 460,
+  "total_queue_items": 236
 }
