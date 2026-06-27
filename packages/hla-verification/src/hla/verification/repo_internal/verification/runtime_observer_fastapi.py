@@ -12,6 +12,13 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field
 
 from hla.verification.repo_internal.fom_workbench import write_fom_workbench_html
+from hla.verification.repo_internal.verification.federate_service_fastapi import federate_service_contract_json
+from hla.verification.repo_internal.verification.hla_studio_index import (
+    StudioArtifactLink,
+    StudioSurfaceLink,
+    relative_href,
+    write_hla_studio_index,
+)
 
 from .runtime_observer_core import (
     RUNTIME_OBSERVER_EVENT_SCHEMA_VERSION,
@@ -422,6 +429,7 @@ def render_runtime_subscriber_app_html(state: Mapping[str, Any]) -> str:
   <main>
     <section class="hero">
       <article class="card hero-card">
+        <div class="section-note">HLA Studio Surface</div>
         <h1>Federation Visualizer</h1>
         <p class="lede">A generic observer surface for live HLA federation state, event history, object and interaction inspection, and semantic scenario panels over one shared observer core.</p>
         <div class="hero-meta">
@@ -1173,7 +1181,80 @@ def create_runtime_observer_fastapi_app(control: RuntimeObserverControl) -> Fast
             write_fom_workbench_html(output_dir=workbench_root)
         except Exception:
             pass
+    studio_root = _repo_root() / "artifacts" / "hla_studio"
+    studio_root.mkdir(parents=True, exist_ok=True)
+    contract_export_path = studio_root / "federate_service_contract.json"
+    contract_export_path.write_text(federate_service_contract_json(), encoding="utf-8")
+    studio_artifacts: list[StudioArtifactLink] = [
+        StudioArtifactLink(
+            label="RTI Bridge API contract export",
+            href=relative_href(from_dir=studio_root, target=contract_export_path),
+            description="Generated bridge contract JSON for offline inspection and downstream consumers.",
+            group="RTI Bridge API",
+        )
+    ]
+    workbench_html = workbench_root / "fom_workbench.html"
+    if workbench_html.exists():
+        studio_artifacts.append(
+            StudioArtifactLink(
+                label="FOM Explorer HTML snapshot",
+                href=relative_href(from_dir=studio_root, target=workbench_html),
+                description="Generated FOM Explorer artifact built from the repo-owned inventory snapshot.",
+                group="FOM Explorer",
+            )
+        )
+    for label, target, description, group in (
+        (
+            "UI surface screenshot packet",
+            _repo_root() / "artifacts" / "ui_surface_screenshot_packet" / "index.html",
+            "Deterministic screenshot packet for the three HLA Studio surfaces.",
+            "Cross-surface",
+        ),
+        (
+            "SISO runtime surface matrix",
+            _repo_root() / "artifacts" / "siso_runtime_surface_matrix" / "siso_runtime_surface_matrix_index.html",
+            "Hydrated scenario matrix and per-row surface artifacts for observer and bridge lanes.",
+            "Federation Visualizer",
+        ),
+    ):
+        if target.exists():
+            studio_artifacts.append(
+                StudioArtifactLink(
+                    label=label,
+                    href=relative_href(from_dir=studio_root, target=target),
+                    description=description,
+                    group=group,
+                )
+            )
+    write_hla_studio_index(
+        studio_root,
+        surfaces=(
+            StudioSurfaceLink(
+                name="FOM Explorer",
+                href="../workbench/fom_workbench.html",
+                summary="Inspect, compare, validate, and compose FOM load sets and merged views.",
+                alias="./tools/fom-workbench",
+                command="./tools/fom-workbench --html",
+            ),
+            StudioSurfaceLink(
+                name="Federation Visualizer",
+                href="../",
+                summary="Observe live execution state, events, roster, object inspectors, and scenario panels.",
+                alias="./tools/federation-subscriber-api",
+                command="./tools/federation-subscriber-api",
+            ),
+            StudioSurfaceLink(
+                name="RTI Bridge API",
+                href="http://127.0.0.1:8788/",
+                summary="Drive bounded RTIambassador-style sessions over a typed HTTP surface.",
+                alias="./tools/federate-service-api",
+                command="./tools/federate-service-api",
+            ),
+        ),
+        artifacts=studio_artifacts,
+    )
     app.mount("/workbench", StaticFiles(directory=str(workbench_root)), name="workbench")
+    app.mount("/studio", StaticFiles(directory=str(studio_root)), name="studio")
 
     @app.get("/", response_class=HTMLResponse)
     async def index() -> str:

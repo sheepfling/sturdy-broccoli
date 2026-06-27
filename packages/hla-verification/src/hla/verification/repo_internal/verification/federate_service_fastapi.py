@@ -1,4 +1,4 @@
-"""FastAPI federate-service contract and bounded RTIambassador proxy surface."""
+"""FastAPI RTI Bridge API contract and bounded RTIambassador proxy surface."""
 from __future__ import annotations
 
 import importlib
@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
 from hla.backends.common import lower_camel_to_snake
@@ -21,6 +22,100 @@ from hla.rti1516e.raw_api import API_METADATA
 
 FEDERATE_SERVICE_CONTRACT_VERSION = "1.0.0"
 FEDERATE_SERVICE_NAME = "federate-service"
+
+
+def _render_rti_bridge_landing_html() -> str:
+    return """<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RTI Bridge API</title>
+  <style>
+    :root {
+      --bg: linear-gradient(180deg, #f7f0e6, #eaf0ec);
+      --panel: rgba(255,255,255,0.9);
+      --ink: #16232c;
+      --muted: #5d6c75;
+      --line: rgba(22,35,44,0.10);
+      --accent: #0e6671;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 15px/1.55 "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    main { max-width: 1120px; margin: 0 auto; padding: 28px; }
+    .hero, .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 16px 38px rgba(18,32,43,0.06);
+    }
+    .hero { padding: 24px; margin-bottom: 18px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .card { padding: 18px; }
+    .kicker {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    h1, h2 { margin-top: 0; }
+    code {
+      background: rgba(14,102,113,0.08);
+      border-radius: 6px;
+      padding: 2px 6px;
+    }
+    a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    a:hover { text-decoration: underline; }
+    .muted { color: var(--muted); }
+    @media (max-width: 720px) {
+      main { padding: 18px 14px 28px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <div class="kicker">HLA Studio Surface</div>
+      <h1>RTI Bridge API</h1>
+      <p class="muted"><strong>Alias:</strong> <code>federate-service</code> remains the tool and service identifier.</p>
+      <p>Bounded HTTP bridge for canonical RTIambassador-style operations, session lifecycle control, and contract inspection.</p>
+    </section>
+    <section class="grid">
+      <article class="card">
+        <div class="kicker">Docs</div>
+        <h2>Interactive Contract Docs</h2>
+        <p>Swagger UI for the typed bridge routes and request models.</p>
+        <p><a href="/docs">Open Swagger docs</a></p>
+      </article>
+      <article class="card">
+        <div class="kicker">Contract</div>
+        <h2>Generated Interface Contract</h2>
+        <p>Metadata-derived RTIambassador and FederateAmbassador contract JSON.</p>
+        <p><a href="/api/contract">Open contract JSON</a></p>
+      </article>
+      <article class="card">
+        <div class="kicker">Sessions</div>
+        <h2>Session Control Surface</h2>
+        <p>Create, inspect, invoke, and remove bounded bridge sessions.</p>
+        <p><a href="/api/sessions">Open sessions endpoint</a></p>
+      </article>
+      <article class="card">
+        <div class="kicker">Health</div>
+        <h2>Bridge Status</h2>
+        <p>Quick health and active session count for operator checks.</p>
+        <p><a href="/api/health">Open health endpoint</a></p>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
+"""
 
 _SUPPORTED_METHOD_ARGUMENTS: dict[str, tuple[str, ...]] = {
     "connect": (),
@@ -517,7 +612,7 @@ def _invoke_supported_method(session: Any, method_name: str, request: InvokeRequ
 
 def create_federate_service_fastapi_app(control: FederateServiceControl | None = None) -> FastAPI:
     app = FastAPI(
-        title="Federate Service API",
+        title="RTI Bridge API",
         version=FEDERATE_SERVICE_CONTRACT_VERSION,
         description="Canonical RTIambassador-named FastAPI contract with bounded execution adapters.",
     )
@@ -592,18 +687,9 @@ def create_federate_service_fastapi_app(control: FederateServiceControl | None =
         except Exception as exc:  # noqa: BLE001
             raise HTTPException(status_code=400, detail=repr(exc)) from exc
 
-    @app.get("/")
-    async def root() -> dict[str, Any]:
-        contract_model = build_federate_service_contract()
-        return {
-            "service": FEDERATE_SERVICE_NAME,
-            "contract_version": FEDERATE_SERVICE_CONTRACT_VERSION,
-            "interfaces": {name: interface.method_count for name, interface in contract_model.interfaces.items()},
-            "endpoints": {
-                "contract": "/api/contract",
-                "sessions": "/api/sessions",
-            },
-        }
+    @app.get("/", response_class=HTMLResponse)
+    async def root() -> str:
+        return _render_rti_bridge_landing_html()
 
     return app
 

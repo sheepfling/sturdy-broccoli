@@ -23,6 +23,7 @@ Two other top-level reading surfaces sit across those engineering lanes:
 | `Backend` -> backend swaps, route names, JPype, Py4J, vendor lanes, or wrapping a Java RTI | [`backend_transport_fom_selection_guide.md`](backend_transport_fom_selection_guide.md) | [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md), [`java_bridge_wrapping_guide.md`](java_bridge_wrapping_guide.md), [`java_bridge_encoding_and_bytes.md`](java_bridge_encoding_and_bytes.md), [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md), [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md) |
 | `Transport` -> `grpc`, `rest`, hosted routes, wire formats, callback polling, or a slightly different vendor protocol | [`extending_ambassador_transports.md`](extending_ambassador_transports.md) | [`transport_extension_playbook.md`](transport_extension_playbook.md), [`networked_rti_python.md`](networked_rti_python.md) |
 | `FOM` -> FOM families, validation, workbench/UI, baselines, or authoring | [`fom_tooling_front_door.md`](fom_tooling_front_door.md) | [`fom_reading_map.md`](fom_reading_map.md), [`fom_validate.md`](fom_validate.md), [`fom_workbench.md`](fom_workbench.md) |
+| `UI surfaces` -> FOM Explorer, Federation Visualizer, RTI Bridge API naming, backlog, or product direction | [`runtime_surface_naming_and_backlog.md`](runtime_surface_naming_and_backlog.md) | [`plans/hla_studio_surface_worklist.md`](plans/hla_studio_surface_worklist.md), [`fom_workbench.md`](fom_workbench.md), [`fom_siso_runtime_showcase.md`](fom_siso_runtime_showcase.md), [`reference/runtime_observer_event_schema.md`](reference/runtime_observer_event_schema.md) |
 | `Testing` -> repo green, lane choice, shard reruns, or junior failure diagnosis | [`repo_green_quickstart.md`](repo_green_quickstart.md) | [`test_surface.md`](test_surface.md), [`local_verification_commands.md`](local_verification_commands.md), [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md) |
 | `Requirements` -> claims, proofs, traceability, or requirement-facing evidence | [`requirements/ieee-1516-2010/README.md`](requirements/ieee-1516-2010/README.md) or [`requirements/ieee-1516-2025/README.md`](requirements/ieee-1516-2025/README.md) | [`verification/README.md`](verification/README.md), [`spec_reading_map.md`](spec_reading_map.md), [`requirements_trace_one_method.md`](requirements_trace_one_method.md) |
 | `Requirements exports | status` -> boss-facing spreadsheets, closeout truth, or remaining bucket audit | [`verification/requirement_compliance_exports.md`](verification/requirement_compliance_exports.md) or [`plans/requirements_completion_audit.md`](plans/requirements_completion_audit.md) | [`plans/requirements_remaining_closure.md`](plans/requirements_remaining_closure.md), [`spec_reading_map.md`](spec_reading_map.md) |
@@ -213,6 +214,8 @@ If the main noun in the problem is:
   use `Transport`
 - FOM, OMT, module, validation, workbench, or baseline:
   use `FOM`
+- naming or backlog for the browser/API surfaces:
+  use `UI surfaces`
 - repo green, shard, rerun, failure, or lane:
   use `Testing`
 - requirement, claim, proof, bounded note, traceability, or evidence packet:

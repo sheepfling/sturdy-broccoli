@@ -1812,7 +1812,9 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
   <div class="wrap">
     <div class="hero">
       <section class="panel">
-        <h1>{html.escape(snapshot.title)}</h1>
+        <div class="surface-kicker">HLA Studio Surface</div>
+        <h1>FOM Explorer</h1>
+        <p class="muted"><strong>Alias:</strong> FOM Workbench snapshot and tool routes remain valid.</p>
         <p class="muted">Display, inspect, search, compare, and compose FOM load sets without reparsing XML in the browser. Repo-owned edit flow stays guarded and precomputed validation packets remain explicit.</p>
         <div>
           <span class="pill">families: {len(snapshot.families)}</span>

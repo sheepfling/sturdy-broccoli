@@ -51,6 +51,7 @@ Practical routing rule:
 | extend or swap a transport or variant gRPC layer | `Transport` -> [`extending_ambassador_transports.md`](extending_ambassador_transports.md) -> [`transport_extension_playbook.md`](transport_extension_playbook.md) |
 | decide whether a change belongs to FOM shape, transport wiring, or adapter dialect | `Runtime` -> [`federate_cli_change_map.md`](federate_cli_change_map.md) |
 | work on FOM validation, inspection, or UI/tooling | `FOM` -> [`fom_tooling_front_door.md`](fom_tooling_front_door.md) |
+| name or plan the three browser/API surfaces cleanly | `Runtime` -> [`runtime_surface_naming_and_backlog.md`](runtime_surface_naming_and_backlog.md) -> [`plans/hla_studio_surface_worklist.md`](plans/hla_studio_surface_worklist.md) |
 | run focused tests, rerun failures, or pick a restart lane | `Testing` -> [`test_surface.md`](test_surface.md) -> [`local_verification_commands.md`](local_verification_commands.md) |
 | understand which shard owns a requirement status change and which views may overlap it | `Testing` -> [`test_surface.md`](test_surface.md) -> [`verification/shard_registry.md`](verification/shard_registry.md) -> [`verification/view_registry.md`](verification/view_registry.md) |
 | understand what the repo claims, what is proven, and where the evidence lives | `Requirements` -> [`requirements/ieee-1516-2010/README.md`](requirements/ieee-1516-2010/README.md) or [`requirements/ieee-1516-2025/README.md`](requirements/ieee-1516-2025/README.md) -> [`verification/README.md`](verification/README.md) -> [`spec_reading_map.md`](spec_reading_map.md) |
@@ -242,6 +243,8 @@ Use these when you need structure, not onboarding:
 - [`supported_subset_policy.md`](supported_subset_policy.md): supported-scope policy and non-claim boundary
 - [`upstream_compliance.md`](upstream_compliance.md): frozen `upstream_reference` contract boundary and layout rules
 - [`fom_workbench.md`](fom_workbench.md): FOM workbench scope and operator path
+- [`runtime_surface_naming_and_backlog.md`](runtime_surface_naming_and_backlog.md): recommended names and backlog for FOM Explorer, Federation Visualizer, and RTI Bridge API
+- [`plans/hla_studio_surface_worklist.md`](plans/hla_studio_surface_worklist.md): tracked implementation worklist for the HLA Studio surfaces and cross-surface glue
 - [`fom_tooling_front_door.md`](fom_tooling_front_door.md): one-page routing for FOM inspection, validation, UI/workbench, and authoring
 - [`fom_reading_map.md`](fom_reading_map.md): FOM inventory, baseline, and inspection front door
 - [`fom_siso_family_map.md`](fom_siso_family_map.md): one-page explanation of how Link 16, RPR, Space, edition scope, parser quirks, and Pitch eligibility relate

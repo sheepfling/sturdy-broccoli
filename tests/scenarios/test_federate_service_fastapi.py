@@ -16,6 +16,14 @@ def test_federate_service_contract_exposes_canonical_interfaces_and_support() ->
     app = create_federate_service_fastapi_app(FederateServiceControl())
     client = TestClient(app)
 
+    landing = client.get("/")
+    assert landing.status_code == 200
+    assert "RTI Bridge API" in landing.text
+    assert "federate-service" in landing.text
+    assert "/api/contract" in landing.text
+    assert "/api/sessions" in landing.text
+    assert "/docs" in landing.text
+
     health = client.get("/api/health")
     assert health.status_code == 200
     assert health.json()["service"] == "federate-service"

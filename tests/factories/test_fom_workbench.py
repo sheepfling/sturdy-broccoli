@@ -117,6 +117,8 @@ def test_fom_workbench_snapshot_groups_families_and_precomputes_default_load_set
         diff_specs=(("custom-target-plus-demo", "custom-proto-message"),),
     )
     html_text = html_path.read_text(encoding="utf-8")
+    assert "FOM Explorer" in html_text
+    assert "FOM Workbench snapshot and tool routes remain valid." in html_text
     assert "FOM Workbench Snapshot" in html_text
     assert ">Search<" in html_text
     assert ">Diff<" in html_text

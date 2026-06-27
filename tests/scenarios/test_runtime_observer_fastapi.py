@@ -179,6 +179,7 @@ def test_runtime_observer_fastapi_frontend_and_websocket_surface(tmp_path: Path,
     html = client.get("/")
     assert html.status_code == 200
     assert "Federation Visualizer" in html.text
+    assert "HLA Studio Surface" in html.text
     assert "/api/schema" in html.text
     assert "/ws/events" in html.text
     assert "Object Instances" in html.text
@@ -201,6 +202,14 @@ def test_runtime_observer_fastapi_frontend_and_websocket_surface(tmp_path: Path,
     assert 'expanded ? "collapse" : "expand"' in html.text
     assert "preview objects:${directActivity.instances}" in html.text
     assert "preview receives:${directActivity.receives}" in html.text
+
+    studio = client.get("/studio/index.html")
+    assert studio.status_code == 200
+    assert "HLA Studio" in studio.text
+    assert "FOM Explorer" in studio.text
+    assert "Federation Visualizer" in studio.text
+    assert "RTI Bridge API" in studio.text
+    assert "federate_service_contract.json" in studio.text
 
     with client.websocket_connect("/ws/events") as websocket:
         control.start(provider="two-federate", scenario="workspace-two-federate", options={"target_radar_steps": 1})
