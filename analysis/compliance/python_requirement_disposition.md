@@ -13,7 +13,7 @@ This audit projects the shared HLA 2010 requirements matrix onto `python` so eve
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 9 | 0 | 0 | 0 | 1 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §4 | 281 | 279 | 0 | 0 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §5 | 52 | 50 | 0 | 0 | 0 | 2 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §6 | 119 | 117 | 0 | 0 | 0 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §6 | 96 | 94 | 0 | 0 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §7 | 39 | 37 | 0 | 0 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §8 | 61 | 59 | 0 | 0 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §9 | 31 | 29 | 0 | 0 | 0 | 2 | 0 |

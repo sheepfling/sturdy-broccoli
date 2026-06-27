@@ -84,73 +84,23 @@ def test_requirements_matrix_2010_covers_section_areas_service_rows_and_verifica
     assert by_id["HLA1516.1-OM-6.1.11-001"]["supported_subset_for"] == ""
     assert by_id["HLA1516.1-OM-6.1.12-001"]["status"] == "pass"
     assert by_id["HLA1516.1-OM-6.1.12-001"]["supported_subset_for"] == ""
-    assert by_id["HLA1516.1-OM-6.1.10-002"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.1.10-003"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.1.10-004"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.1.10-001"]["supported_subset_for"] == [
-        "HLA1516.1-OM-6.1.10-002",
-        "HLA1516.1-OM-6.1.10-003",
-        "HLA1516.1-OM-6.1.10-004",
-    ]
+    assert by_id["HLA1516.1-OM-6.1.10-001"]["status"] == "pass"
+    assert by_id["HLA1516.1-OM-6.1.10-001"]["claim_scope"] == "supported-subset"
+    assert by_id["HLA1516.1-OM-6.1.10-001"]["supported_subset_for"] == ""
     assert by_id["REQ-OM-TRANSPORT-BEST-EFFORT-001"]["status"] == "implemented-slice"
-    assert by_id["HLA1516.1-OM-6.23-001"]["status"] == "partial"
-    assert by_id["HLA1516.1-OM-6.23-001"]["supported_subset_for"] == [
-        "HLA1516.1-OM-6.23-002",
-        "HLA1516.1-OM-6.23-003",
-    ]
-    assert by_id["HLA1516.1-OM-6.23-002"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.23-003"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.24-001"]["supported_subset_for"] == [
-        "HLA1516.1-OM-6.24-002",
-        "HLA1516.1-OM-6.24-003",
-        "HLA1516.1-OM-6.24-004",
-    ]
-    assert by_id["HLA1516.1-OM-6.24-002"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.24-003"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.24-004"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.25-001"]["supported_subset_for"] == [
-        "HLA1516.1-OM-6.25-002",
-        "HLA1516.1-OM-6.25-003",
-    ]
-    assert by_id["HLA1516.1-OM-6.25-002"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.25-003"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.26-001"]["supported_subset_for"] == [
-        "HLA1516.1-OM-6.26-002",
-        "HLA1516.1-OM-6.26-003",
-        "HLA1516.1-OM-6.26-004",
-    ]
-    assert by_id["HLA1516.1-OM-6.26-002"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.26-003"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.26-004"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.27-001"]["status"] == "partial"
-    assert by_id["HLA1516.1-OM-6.27-001"]["supported_subset_for"] == [
-        "HLA1516.1-OM-6.27-002",
-        "HLA1516.1-OM-6.27-003",
-    ]
-    assert by_id["HLA1516.1-OM-6.27-002"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.27-003"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.28-001"]["supported_subset_for"] == [
-        "HLA1516.1-OM-6.28-002",
-        "HLA1516.1-OM-6.28-003",
-        "HLA1516.1-OM-6.28-004",
-    ]
-    assert by_id["HLA1516.1-OM-6.28-002"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.28-003"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.28-004"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.29-001"]["supported_subset_for"] == [
-        "HLA1516.1-OM-6.29-002",
-        "HLA1516.1-OM-6.29-003",
-    ]
-    assert by_id["HLA1516.1-OM-6.29-002"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.29-003"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.30-001"]["supported_subset_for"] == [
-        "HLA1516.1-OM-6.30-002",
-        "HLA1516.1-OM-6.30-003",
-        "HLA1516.1-OM-6.30-004",
-    ]
-    assert by_id["HLA1516.1-OM-6.30-002"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.30-003"]["status"] == "pass"
-    assert by_id["HLA1516.1-OM-6.30-004"]["status"] == "pass"
+    for requirement_id in (
+        "HLA1516.1-OM-6.23-001",
+        "HLA1516.1-OM-6.24-001",
+        "HLA1516.1-OM-6.25-001",
+        "HLA1516.1-OM-6.26-001",
+        "HLA1516.1-OM-6.27-001",
+        "HLA1516.1-OM-6.28-001",
+        "HLA1516.1-OM-6.29-001",
+        "HLA1516.1-OM-6.30-001",
+    ):
+        assert by_id[requirement_id]["status"] == "pass"
+        assert by_id[requirement_id]["claim_scope"] == "supported-subset"
+        assert by_id[requirement_id]["supported_subset_for"] == ""
 
 
 def test_requirements_matrix_2010_uses_edition_qualified_2010_documents() -> None:

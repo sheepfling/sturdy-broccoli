@@ -321,7 +321,17 @@ def generate_exports(output_dir: Path) -> list[Path]:
 
     _write_csv(summary_csv, list(summary_rows[0].keys()), summary_rows)
     _write_csv(detail_csv, list(detail_rows[0].keys()), detail_rows)
-    _write_csv(policy_parent_csv, list(policy_parent_rows[0].keys()), policy_parent_rows)
+    policy_fields = list(policy_parent_rows[0].keys()) if policy_parent_rows else [
+        "broad_requirement_id",
+        "section",
+        "canonical_status",
+        "policy_basis",
+        "supported_subset_pass_count",
+        "supported_subset_pass_ids",
+        "supported_subset_links_match",
+        "notes",
+    ]
+    _write_csv(policy_parent_csv, policy_fields, policy_parent_rows)
     _export_workbook(
         workbook,
         summary_rows,

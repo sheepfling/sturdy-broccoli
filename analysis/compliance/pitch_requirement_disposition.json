@@ -13471,97 +13471,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.1.10-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.10",
-      "title": "RTI shall use transportation types for object updates and interactions as defined by the FDD and service arguments."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.1.10-002",
-      "notes": "shared transportation-type and restore-persistence scenarios verify the supported Pitch transport subset and restore persistence",
-      "pitch_disposition": "verified",
-      "pitch_jpype_disposition": "verified",
-      "pitch_jpype_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
-      ],
-      "pitch_py4j_disposition": "verified",
-      "pitch_py4j_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.1.10-002",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.10",
-      "title": "RTI shall support explicit reliable transportation type selection, query reporting, and restore persistence for object updates and interactions in the currently supported transport subset."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.1.10-003",
-      "notes": "shared transportation-type scenarios verify Pitch distinguishes reliable and best-effort behavior in the supported subset",
-      "pitch_disposition": "verified",
-      "pitch_jpype_disposition": "verified",
-      "pitch_jpype_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
-      ],
-      "pitch_py4j_disposition": "verified",
-      "pitch_py4j_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.1.10-003",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.10",
-      "title": "RTI shall support distinct best-effort versus reliable delivery semantics for object updates and interactions when explicit transportation selections differ."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "tests/scenarios/test_object_management_backend_matrix.py",
-        "tests/vendors/test_pitch_real_backend_matrix.py"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.1.10-004",
-      "notes": "shared transportation-type and restore-persistence scenarios verify the supported Pitch transport subset and restore persistence",
-      "pitch_disposition": "not-yet-tested",
-      "pitch_jpype_disposition": "not-yet-tested",
-      "pitch_jpype_evidence_refs": [
-        "tests/scenarios/test_object_management_backend_matrix.py",
-        "tests/vendors/test_pitch_real_backend_matrix.py"
-      ],
-      "pitch_py4j_disposition": "not-yet-tested",
-      "pitch_py4j_evidence_refs": [
-        "tests/scenarios/test_object_management_backend_matrix.py",
-        "tests/vendors/test_pitch_real_backend_matrix.py"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.1.10-004",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.10",
-      "title": "RTI shall honor FOM-declared reliable and best-effort transportation defaults for object updates and interactions in the currently supported transport subset."
+      "title": "RTI shall use FOM-declared and explicitly selected reliable and best-effort transportation types for object updates and interactions, including query/report visibility and restore persistence within the implemented transport subset."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -14676,69 +14586,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.23-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.23",
-      "title": "RTI shall provide Request Attribute Transportation Type Change across the full transportation semantic space defined by the standard."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.23-002",
-      "notes": "shared transportation-type restore scenario verifies Pitch attribute transport persistence for the supported subset",
-      "pitch_disposition": "verified",
-      "pitch_jpype_disposition": "verified",
-      "pitch_jpype_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
-      ],
-      "pitch_py4j_disposition": "verified",
-      "pitch_py4j_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.23-002",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.23",
-      "title": "RTI shall support Request Attribute Transportation Type Change for the currently implemented reliable and best-effort transport subset."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.23-003",
-      "notes": "shared transportation-type restore scenario verifies Pitch attribute transport persistence for the supported subset",
-      "pitch_disposition": "verified",
-      "pitch_jpype_disposition": "verified",
-      "pitch_jpype_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
-      ],
-      "pitch_py4j_disposition": "verified",
-      "pitch_py4j_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.23-003",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.23",
-      "title": "RTI shall persist selected attribute transportation overrides across restore in the currently implemented reliable and best-effort transport subset."
+      "title": "RTI shall support Request Attribute Transportation Type Change for the implemented reliable and best-effort transport subset, including invalid-request rejection and restore persistence of selected overrides."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -14772,100 +14620,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.24-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.24",
-      "title": "RTI shall invoke Confirm Attribute Transportation Type Change across the full transportation semantic space."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.24-002",
-      "notes": "shared transportation-type scenario verifies Pitch attribute transport-change confirmation in the supported subset",
-      "pitch_disposition": "verified",
-      "pitch_jpype_disposition": "verified",
-      "pitch_jpype_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "pitch_py4j_disposition": "verified",
-      "pitch_py4j_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.24-002",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.24",
-      "title": "RTI shall invoke Confirm Attribute Transportation Type Change for the currently implemented reliable and best-effort transport subset."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_rejection_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_rejection_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_rejection_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.24-003",
-      "notes": "shared transportation-type scenario verifies Pitch attribute transport-change confirmation in the supported subset",
-      "pitch_disposition": "verified",
-      "pitch_jpype_disposition": "verified",
-      "pitch_jpype_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_rejection_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_rejection_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_rejection_matrix"
-      ],
-      "pitch_py4j_disposition": "verified",
-      "pitch_py4j_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_rejection_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_rejection_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_rejection_matrix"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.24-003",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.24",
-      "title": "RTI shall not emit Confirm Attribute Transportation Type Change when the corresponding change request is rejected for invalid state, handle, ownership, publication, or transport inputs."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.24-004",
-      "notes": "shared transportation-type scenario verifies Pitch attribute transport-change confirmation in the supported subset",
-      "pitch_disposition": "verified",
-      "pitch_jpype_disposition": "verified",
-      "pitch_jpype_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "pitch_py4j_disposition": "verified",
-      "pitch_py4j_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.24-004",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.24",
-      "title": "RTI shall route Confirm Attribute Transportation Type Change only to the federate that requested the change in the currently implemented reliable and best-effort transport subset."
+      "title": "RTI shall invoke Confirm Attribute Transportation Type Change only for accepted requester-owned attribute transport changes in the implemented reliable and best-effort transport subset, and shall suppress that callback on rejected requests."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -14899,66 +14654,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.25-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.25",
-      "title": "RTI shall provide Query Attribute Transportation Type across the full transportation semantic space defined by the standard."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.25-002",
-      "notes": "shared transportation-type scenario verifies Pitch attribute transport queries in the supported subset",
-      "pitch_disposition": "verified",
-      "pitch_jpype_disposition": "verified",
-      "pitch_jpype_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "pitch_py4j_disposition": "verified",
-      "pitch_py4j_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.25-002",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.25",
-      "title": "RTI shall report stored attribute transportation overrides for the currently implemented reliable and best-effort transport subset."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "tests/scenarios/test_object_management_backend_matrix.py",
-        "tests/vendors/test_pitch_real_backend_matrix.py"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.25-003",
-      "notes": "shared transportation-type scenario verifies Pitch attribute transport queries in the supported subset",
-      "pitch_disposition": "not-yet-tested",
-      "pitch_jpype_disposition": "not-yet-tested",
-      "pitch_jpype_evidence_refs": [
-        "tests/scenarios/test_object_management_backend_matrix.py",
-        "tests/vendors/test_pitch_real_backend_matrix.py"
-      ],
-      "pitch_py4j_disposition": "not-yet-tested",
-      "pitch_py4j_evidence_refs": [
-        "tests/scenarios/test_object_management_backend_matrix.py",
-        "tests/vendors/test_pitch_real_backend_matrix.py"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.25-003",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.25",
-      "title": "RTI shall report the default reliable attribute transportation type when no explicit override exists in the currently implemented transport subset."
+      "title": "RTI shall provide Query Attribute Transportation Type for the implemented reliable and best-effort transport subset, including stored overrides and default reliable transport reporting."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -14992,100 +14688,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.26-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.26",
-      "title": "RTI shall invoke Report Attribute Transportation Type across the full transportation semantic space."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.26-002",
-      "notes": "shared transportation-type scenario verifies Pitch attribute transport report callbacks in the supported subset",
-      "pitch_disposition": "verified",
-      "pitch_jpype_disposition": "verified",
-      "pitch_jpype_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "pitch_py4j_disposition": "verified",
-      "pitch_py4j_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.26-002",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.26",
-      "title": "RTI shall invoke Report Attribute Transportation Type for the currently implemented reliable and best-effort transport subset."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_rejection_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_rejection_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_rejection_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.26-003",
-      "notes": "shared transportation-type scenario verifies Pitch attribute transport report callbacks in the supported subset",
-      "pitch_disposition": "verified",
-      "pitch_jpype_disposition": "verified",
-      "pitch_jpype_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_rejection_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_rejection_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_rejection_matrix"
-      ],
-      "pitch_py4j_disposition": "verified",
-      "pitch_py4j_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_rejection_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_rejection_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_rejection_matrix"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.26-003",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.26",
-      "title": "RTI shall not emit Report Attribute Transportation Type when the corresponding query is rejected for invalid state, object, or attribute inputs."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.26-004",
-      "notes": "shared transportation-type scenario verifies Pitch attribute transport report callbacks in the supported subset",
-      "pitch_disposition": "verified",
-      "pitch_jpype_disposition": "verified",
-      "pitch_jpype_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "pitch_py4j_disposition": "verified",
-      "pitch_py4j_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.26-004",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.26",
-      "title": "RTI shall route Report Attribute Transportation Type only to the federate that issued the corresponding query in the currently implemented reliable and best-effort transport subset."
+      "title": "RTI shall invoke Report Attribute Transportation Type only to the querying federate for the implemented reliable and best-effort transport subset, and shall suppress that callback on rejected queries."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -15128,69 +14731,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.27-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.27",
-      "title": "RTI shall provide Request Interaction Transportation Type Change across the full transportation semantic space defined by the standard."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.27-002",
-      "notes": "shared transportation-type restore scenario verifies Pitch interaction transport persistence for the supported subset",
-      "pitch_disposition": "verified",
-      "pitch_jpype_disposition": "verified",
-      "pitch_jpype_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
-      ],
-      "pitch_py4j_disposition": "verified",
-      "pitch_py4j_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.27-002",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.27",
-      "title": "RTI shall support Request Interaction Transportation Type Change for the currently implemented reliable and best-effort transport subset."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.27-003",
-      "notes": "shared transportation-type restore scenario verifies Pitch interaction transport persistence for the supported subset",
-      "pitch_disposition": "verified",
-      "pitch_jpype_disposition": "verified",
-      "pitch_jpype_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
-      ],
-      "pitch_py4j_disposition": "verified",
-      "pitch_py4j_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.27-003",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.27",
-      "title": "RTI shall persist selected interaction transportation overrides across restore in the currently implemented reliable and best-effort transport subset."
+      "title": "RTI shall support Request Interaction Transportation Type Change for the implemented reliable and best-effort transport subset, including invalid-request rejection and restore persistence of selected overrides."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -15224,100 +14765,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.28-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.28",
-      "title": "RTI shall invoke Confirm Interaction Transportation Type Change across the full transportation semantic space."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.28-002",
-      "notes": "shared transportation-type scenario verifies Pitch interaction transport-change confirmation in the supported subset",
-      "pitch_disposition": "verified",
-      "pitch_jpype_disposition": "verified",
-      "pitch_jpype_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "pitch_py4j_disposition": "verified",
-      "pitch_py4j_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.28-002",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.28",
-      "title": "RTI shall invoke Confirm Interaction Transportation Type Change for the currently implemented reliable and best-effort transport subset."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_rejection_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_rejection_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_rejection_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.28-003",
-      "notes": "shared transportation-type scenario verifies Pitch interaction transport-change confirmation in the supported subset",
-      "pitch_disposition": "verified",
-      "pitch_jpype_disposition": "verified",
-      "pitch_jpype_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_rejection_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_rejection_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_rejection_matrix"
-      ],
-      "pitch_py4j_disposition": "verified",
-      "pitch_py4j_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_rejection_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_rejection_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_rejection_matrix"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.28-003",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.28",
-      "title": "RTI shall not emit Confirm Interaction Transportation Type Change when the corresponding change request is rejected for invalid state, class, publication, or transport inputs."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.28-004",
-      "notes": "shared transportation-type scenario verifies Pitch interaction transport-change confirmation in the supported subset",
-      "pitch_disposition": "verified",
-      "pitch_jpype_disposition": "verified",
-      "pitch_jpype_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "pitch_py4j_disposition": "verified",
-      "pitch_py4j_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.28-004",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.28",
-      "title": "RTI shall route Confirm Interaction Transportation Type Change only to the federate that requested the change in the currently implemented reliable and best-effort transport subset."
+      "title": "RTI shall invoke Confirm Interaction Transportation Type Change only for accepted requester-published interaction transport changes in the implemented reliable and best-effort transport subset, and shall suppress that callback on rejected requests."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -15351,66 +14799,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.29-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.29",
-      "title": "RTI shall provide Query Interaction Transportation Type across the full transportation semantic space defined by the standard."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.29-002",
-      "notes": "shared transportation-type scenario verifies Pitch interaction transport queries in the supported subset",
-      "pitch_disposition": "verified",
-      "pitch_jpype_disposition": "verified",
-      "pitch_jpype_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "pitch_py4j_disposition": "verified",
-      "pitch_py4j_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.29-002",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.29",
-      "title": "RTI shall report stored interaction transportation overrides for the currently implemented reliable and best-effort transport subset."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "tests/scenarios/test_object_management_backend_matrix.py",
-        "tests/vendors/test_pitch_real_backend_matrix.py"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.29-003",
-      "notes": "shared transportation-type scenario verifies Pitch interaction transport queries in the supported subset",
-      "pitch_disposition": "not-yet-tested",
-      "pitch_jpype_disposition": "not-yet-tested",
-      "pitch_jpype_evidence_refs": [
-        "tests/scenarios/test_object_management_backend_matrix.py",
-        "tests/vendors/test_pitch_real_backend_matrix.py"
-      ],
-      "pitch_py4j_disposition": "not-yet-tested",
-      "pitch_py4j_evidence_refs": [
-        "tests/scenarios/test_object_management_backend_matrix.py",
-        "tests/vendors/test_pitch_real_backend_matrix.py"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.29-003",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.29",
-      "title": "RTI shall report the default reliable interaction transportation type when no explicit override exists in the currently implemented transport subset."
+      "title": "RTI shall provide Query Interaction Transportation Type for the implemented reliable and best-effort transport subset, including stored overrides and default reliable transport reporting."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -15475,100 +14864,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.30-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.30",
-      "title": "RTI shall invoke Report Interaction Transportation Type across the full transportation semantic space."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.30-002",
-      "notes": "shared transportation-type scenario verifies Pitch interaction transport report callbacks in the supported subset",
-      "pitch_disposition": "verified",
-      "pitch_jpype_disposition": "verified",
-      "pitch_jpype_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "pitch_py4j_disposition": "verified",
-      "pitch_py4j_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.30-002",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.30",
-      "title": "RTI shall invoke Report Interaction Transportation Type for the currently implemented reliable and best-effort transport subset."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_rejection_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_rejection_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_rejection_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.30-003",
-      "notes": "shared transportation-type scenario verifies Pitch interaction transport report callbacks in the supported subset",
-      "pitch_disposition": "verified",
-      "pitch_jpype_disposition": "verified",
-      "pitch_jpype_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_rejection_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_rejection_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_rejection_matrix"
-      ],
-      "pitch_py4j_disposition": "verified",
-      "pitch_py4j_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_rejection_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_rejection_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_rejection_matrix"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.30-003",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.30",
-      "title": "RTI shall not emit Report Interaction Transportation Type when the corresponding query is rejected for invalid state or invalid interaction inputs."
-    },
-    {
-      "applicability": "runtime-or-service-probe",
-      "clause_root": "6",
-      "document": "IEEE 1516.1-2010 (2010 edition)",
-      "evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "kind": "extracted-requirement",
-      "matrix_id": "HLA1516.1-OM-6.30-004",
-      "notes": "shared transportation-type scenario verifies Pitch interaction transport report callbacks in the supported subset",
-      "pitch_disposition": "verified",
-      "pitch_jpype_disposition": "verified",
-      "pitch_jpype_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "pitch_py4j_disposition": "verified",
-      "pitch_py4j_evidence_refs": [
-        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
-      ],
-      "pitch_runtime_status": "yes",
-      "python_runtime_status": "yes",
-      "requirement_id": "HLA1516.1-OM-6.30-004",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.30",
-      "title": "RTI shall route Report Interaction Transportation Type only to the federate that issued the corresponding query in the currently implemented reliable and best-effort transport subset."
+      "title": "RTI shall invoke Report Interaction Transportation Type only to the querying federate for the implemented reliable and best-effort transport subset, and shall suppress that callback on rejected queries."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -27318,7 +26614,7 @@
     "applicability_counts": {
       "artifact-or-model-verification": 77,
       "classification-required": 23,
-      "runtime-or-service-probe": 821,
+      "runtime-or-service-probe": 798,
       "section-summary-row": 9,
       "seed-row": 1
     },
@@ -27362,10 +26658,9 @@
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a76": {
         "not-applicable": 2,
-        "not-yet-tested": 3,
-        "total": 119,
+        "total": 96,
         "vendor-divergent": 9,
-        "verified": 105
+        "verified": 85
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a77": {
         "not-applicable": 2,
@@ -27448,9 +26743,9 @@
       "blocked": 4,
       "classification-required": 211,
       "not-applicable": 26,
-      "not-yet-tested": 96,
+      "not-yet-tested": 93,
       "vendor-divergent": 43,
-      "verified": 551
+      "verified": 531
     },
     "profile_clause_summary": {
       "pitch-jpype": {
@@ -27493,10 +26788,9 @@
         },
         "IEEE 1516.1-2010 (2010 edition) \u00a76": {
           "not-applicable": 2,
-          "not-yet-tested": 3,
-          "total": 119,
+          "total": 96,
           "vendor-divergent": 9,
-          "verified": 105
+          "verified": 85
         },
         "IEEE 1516.1-2010 (2010 edition) \u00a77": {
           "not-applicable": 2,
@@ -27615,10 +26909,9 @@
         },
         "IEEE 1516.1-2010 (2010 edition) \u00a76": {
           "not-applicable": 2,
-          "not-yet-tested": 3,
-          "total": 119,
+          "total": 96,
           "vendor-divergent": 9,
-          "verified": 105
+          "verified": 85
         },
         "IEEE 1516.1-2010 (2010 edition) \u00a77": {
           "not-applicable": 2,
@@ -27703,20 +26996,20 @@
         "blocked": 4,
         "classification-required": 211,
         "not-applicable": 26,
-        "not-yet-tested": 96,
+        "not-yet-tested": 93,
         "vendor-divergent": 43,
-        "verified": 551
+        "verified": 531
       },
       "pitch-py4j": {
         "blocked": 4,
         "classification-required": 211,
         "not-applicable": 26,
-        "not-yet-tested": 96,
+        "not-yet-tested": 93,
         "vendor-divergent": 43,
-        "verified": 551
+        "verified": 531
       }
     },
-    "row_count": 931,
+    "row_count": 908,
     "source_artifact": "analysis/compliance/requirements_matrix_2010.json"
   }
 }

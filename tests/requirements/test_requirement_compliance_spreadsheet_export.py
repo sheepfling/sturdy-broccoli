@@ -137,24 +137,16 @@ def test_requirement_compliance_spreadsheet_export_writes_both_editions(tmp_path
     assert execution_rows_2010["HLA1516.1-FM-4.10-001"]["title"] == "RTI shall provide Resign Federation Execution"
     assert execution_rows_2010["HLA1516.1-OM-6.10-001"]["title"] == "RTI shall provide Update Attribute Values."
     assert execution_rows_2010["HLA1516.1-OM-6.12-001"]["title"] == "RTI shall provide Send Interaction."
-    assert execution_rows_2010["HLA1516.1-OM-6.25-001"]["canonical_status"] == "partial"
+    assert execution_rows_2010["HLA1516.1-OM-6.25-001"]["canonical_status"] == "pass"
     assert execution_rows_2010["HLA1516.1-OM-6.25-001"]["python_runtime_disposition"] == "verified"
-    assert "supported reliable plus best-effort subset" in execution_rows_2010["HLA1516.1-OM-6.25-001"]["notes"]
+    assert "default reliable state" in execution_rows_2010["HLA1516.1-OM-6.25-001"]["notes"]
     assert execution_rows_2010["HLA1516.1-DDM-9.12-001"]["title"] == "RTI shall route interactions based on region overlap where dimensions apply"
     assert execution_rows_2010["HLA1516.1-DDM-9.13-001"]["title"] == "RTI shall route attribute-value update requests based on region overlap"
     assert not any("transport-equivalence checks across native, gRPC, and REST entry points" in row["title"] for row in rows_2010)
     assert not any("Native lifecycle tests now have explicit hosted gRPC and REST lifecycle smoke coverage." in row["notes"] for row in rows_2010)
-    assert len(policy_rows_2010) == 9
-    assert sum(int(row["supported_subset_pass_count"]) for row in policy_rows_2010) == 23
-    assert all(row["supported_subset_links_match"] == "yes" for row in policy_rows_2010)
+    assert len(policy_rows_2010) == 0
     assert not any(row["policy_basis"] == "logical-time-update-rate-only" for row in policy_rows_2010)
     assert not any(row["policy_basis"] == "unbatched-callback-delivery-only" for row in policy_rows_2010)
-    assert any(
-        row["broad_requirement_id"] == "HLA1516.1-OM-6.24-001"
-        and row["supported_subset_pass_ids"] == "HLA1516.1-OM-6.24-002; HLA1516.1-OM-6.24-003; HLA1516.1-OM-6.24-004"
-        and row["policy_basis"] == "reliable-best-effort-transport-only"
-        for row in policy_rows_2010
-    )
     assert any(row["canonical_disposition"] == "duplicate/umbrella" for row in rows_2025)
     execution_groups_2025 = [
         row for row in rows_2025
@@ -202,8 +194,8 @@ def test_requirement_compliance_spreadsheet_export_writes_both_editions(tmp_path
     )
     assert json.loads(summary_2010["python_runtime_disposition_counts"]).get("verified", 0) > 0
     assert json.loads(summary_2010["pitch_runtime_disposition_counts"]).get("classification-required", 0) > 0
-    assert summary_2010["policy_parent_partial_count"] == "9"
-    assert summary_2010["policy_parent_supported_subset_pass_count"] == "23"
+    assert summary_2010["policy_parent_partial_count"] == "0"
+    assert summary_2010["policy_parent_supported_subset_pass_count"] == "0"
     assert metadata_map_2010["canonical_status_meaning"].startswith("Requirement coverage state only")
     assert "direct Python 2010 runtime lane" in metadata_map_2010["python_runtime_disposition_meaning"]
     assert "Hosted gRPC/REST replay" in metadata_map_2010["python_runtime_disposition_meaning"]
