@@ -5,11 +5,11 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-from scripts.generate_ui_surface_screenshot_packet import (
-    _capture_live_federate_service,
-    _capture_live_visualizer,
-    _write_index_html,
-    _write_manifest,
+from hla.verification.repo_internal.verification.ui_surface_capture import (
+    capture_live_federate_service,
+    capture_live_visualizer,
+    write_gallery_index,
+    write_gallery_manifest,
 )
 
 
@@ -57,8 +57,8 @@ def test_ui_surface_screenshot_packet_gallery_files(tmp_path: Path) -> None:
             "source": "http://127.0.0.1:9000/",
         },
     ]
-    index_path = _write_index_html(tmp_path, browser_name="chromium", captures=captures)
-    manifest_path = _write_manifest(
+    index_path = write_gallery_index(tmp_path, browser_name="chromium", captures=captures)
+    manifest_path = write_gallery_manifest(
         tmp_path,
         browser_name="chromium",
         captures=captures,
@@ -137,12 +137,12 @@ def test_capture_live_visualizer_and_federate_service_additive(tmp_path: Path) -
             "#plugin-root": 1,
         }
     )
-    visualizer_captures = _capture_live_visualizer(
+    visualizer_captures = capture_live_visualizer(
         page,
         tmp_path,
         base_url="http://127.0.0.1:9000/",
     )
-    federate_service_captures = _capture_live_federate_service(
+    federate_service_captures = capture_live_federate_service(
         page,
         tmp_path,
         base_url="http://127.0.0.1:9100",

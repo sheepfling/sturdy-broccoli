@@ -157,6 +157,28 @@
       ]
     },
     {
+      "id": "siso-surfaces",
+      "aliases": ["siso-runtime-surfaces", "observer-ui"],
+      "title": "SISO observer and surface matrix tests",
+      "description": "Focused SISO showcase, runtime observer, screenshot packet, and surface-matrix checks for API and visualizer integration artifacts.",
+      "owner_packages": [
+        "hla-verification"
+      ],
+      "estimated_cost": "medium",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/scenarios/test_siso_runtime_showcase.py",
+          "tests/scenarios/test_siso_runtime_showcase_launcher.py",
+          "tests/scenarios/test_runtime_observer_fastapi.py",
+          "tests/scenarios/test_runtime_observer_server.py",
+          "tests/scenarios/test_runtime_observer_cli.py",
+          "tests/scenarios/test_ui_surface_screenshot_packet.py",
+          "tests/scenarios/test_siso_runtime_surface_matrix.py"
+        ]
+      ]
+    },
+    {
       "id": "python-2025-runtime",
       "aliases": ["runtime-2025", "python1516_2025"],
       "title": "Python 2025 runtime tests",

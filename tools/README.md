@@ -40,6 +40,7 @@ Core operator entrypoints:
 - `./tools/federate-service-api`
 - `./tools/ui-surface-screenshots`
 - `./tools/fom-siso-runtime-showcase`
+- `./tools/fom-siso-runtime-surface-matrix`
 - `./tools/fom-siso-runtime-observer`
 - `./tools/fom-siso-showcase`
 - `./tools/fom-corpus-classification`
@@ -134,6 +135,9 @@ Shortest common paths:
 - run the schema-positive top-to-bottom audit: `./tools/fom-schema-audit` and inspect its `Edition Scope` column across validator, JSON cycle, and workbench outputs
 - run the high-value SISO top-to-bottom audit: `./tools/fom-siso-audit` and inspect its `Edition Scope` column across validator, JSON cycle, and workbench outputs
 - generate the runtime-backed SISO showcase packet: `./tools/fom-siso-runtime-showcase`
+- generate the scenario x surface matrix for runtime-only, observer/visualizer, and observer/visualizer/bridge rows: `./tools/fom-siso-runtime-surface-matrix`
+  - writes per-row API snapshots and optional screenshot galleries under `artifacts/siso_runtime_surface_matrix/`
+  - use `--with-screenshots` to attempt visualizer and bridge docs screenshots when Playwright is available
 - inspect the listener-federate index for that showcase: `artifacts/siso_runtime_showcase/siso_runtime_showcase_listener_index.html`
 - generate the runtime-backed SISO launcher packet: `./tools/fom-siso-runtime-launcher`
 - stand up the live runtime observer control plane and use the page to start/stop SISO, two-federate, or target-radar runs: `./tools/fom-siso-runtime-observer`
