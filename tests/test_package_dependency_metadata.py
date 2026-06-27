@@ -19,7 +19,7 @@ ALLOWED_INTERNAL_DEPENDENCIES: dict[str, set[str]] = {
     "hla-rti-core": set(),
     "hla-backend-certi": {"hla-rti1516e", "hla-backend-common", "hla-rti-core", "hla-transport-common"},
     "hla-bridge-java-jpype": {"hla-rti1516e", "hla-rti-core", "hla-backend-common", "hla-bridge-java-common"},
-    "hla-bridge-java-py4j": {"hla-rti1516e", "hla-rti-core", "hla-bridge-java-common"},
+    "hla-bridge-java-py4j": {"hla-rti1516e", "hla-rti-core", "hla-backend-common", "hla-bridge-java-common"},
     "hla-vendor-pitch": {"hla-rti1516e", "hla-bridge-java-common", "hla-rti-core"},
     "hla-vendor-pitch-jpype": {
         "hla-rti1516e",

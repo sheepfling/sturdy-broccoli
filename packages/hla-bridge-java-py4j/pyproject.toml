@@ -8,7 +8,7 @@ version = "0.13.0"
 description = "Generic Py4J Java RTI bridge package for hla-rti1516e"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = ["hla-rti1516e==0.13.0", "hla-rti-core==0.13.0", "hla-bridge-java-common==0.13.0", "py4j"]
+dependencies = ["hla-rti1516e==0.13.0", "hla-rti-core==0.13.0", "hla-backend-common==0.13.0", "hla-bridge-java-common==0.13.0", "py4j"]
 
 [project.optional-dependencies]
 test = ["pytest"]

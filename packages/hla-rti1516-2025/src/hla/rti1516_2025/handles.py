@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from inspect import Parameter, Signature
 from typing import Any, Generic, Mapping, NamedTuple, TypeVar, cast
 from typing_extensions import Self
 
@@ -278,3 +279,14 @@ class ParameterHandleValueMapFactory(CollectionFactory[ParameterHandleValueMap])
 class AttributeSetRegionSetPairListFactory(CollectionFactory[AttributeSetRegionSetPairList]):
     def __init__(self) -> None:
         super().__init__(AttributeSetRegionSetPairList)
+
+
+_HANDLE_ENCODE_SIGNATURE = Signature(
+    parameters=(
+        Parameter("self", kind=Parameter.POSITIONAL_OR_KEYWORD),
+        Parameter("buffer", kind=Parameter.POSITIONAL_OR_KEYWORD),
+        Parameter("offset", kind=Parameter.POSITIONAL_OR_KEYWORD),
+    )
+)
+HandleKind.encode.__signature__ = _HANDLE_ENCODE_SIGNATURE
+_IntegerHandle.encode.__signature__ = _HANDLE_ENCODE_SIGNATURE

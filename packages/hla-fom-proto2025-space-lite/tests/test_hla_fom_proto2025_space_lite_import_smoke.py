@@ -1,9 +1,7 @@
 from __future__ import annotations
 
-from pathlib import Path
-
-from package_import_smoke import assert_package_tree_importable
+from package_import_smoke import assert_package_tree_importable, package_root_from_test_file
 
 
 def test_hla_fom_proto2025_space_lite_package_modules_import() -> None:
-    assert_package_tree_importable(Path(__file__).resolve().parents[1])
+    assert_package_tree_importable(package_root_from_test_file(__file__))

@@ -1043,6 +1043,7 @@ def test_vendor_java_backend_packages_depend_on_generic_bridge_packages():
     assert "py4j" in java_py4j_dependencies
     assert "hla-bridge-java-common==0.13.0" in java_jpype_dependencies
     assert "hla-bridge-java-common==0.13.0" in java_py4j_dependencies
+    assert "hla-backend-common==0.13.0" in java_py4j_dependencies
 
     pitch_jpype_dependencies = set(_load_project("hla-vendor-pitch-jpype")["project"].get("dependencies", ()))
     pitch_py4j_dependencies = set(_load_project("hla-vendor-pitch-py4j")["project"].get("dependencies", ()))

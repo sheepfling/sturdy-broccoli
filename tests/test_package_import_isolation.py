@@ -48,7 +48,7 @@ ALLOWED_PACKAGE_DEPENDENCIES: dict[str, set[str]] = {
     "hla-backend-certi": {"hla-rti1516e", "hla-backend-common", "hla-rti-core", "hla-transport-common"},
     "hla-bridge-java-common": {"hla-rti1516e", "hla-rti1516-2025", "hla-backend-common", "hla-backend-python1516-2025", "hla-backend-shim", "hla-rti-core"},
     "hla-bridge-java-jpype": {"hla-rti1516e", "hla-backend-common", "hla-bridge-java-common", "hla-rti-core"},
-    "hla-bridge-java-py4j": {"hla-rti1516e", "hla-bridge-java-common", "hla-rti-core"},
+    "hla-bridge-java-py4j": {"hla-rti1516e", "hla-backend-common", "hla-bridge-java-common", "hla-rti-core"},
     "hla-vendor-pitch": {"hla-rti1516e", "hla-bridge-java-common", "hla-rti-core"},
     "hla-vendor-pitch-jpype": {"hla-rti1516e", "hla-bridge-java-common", "hla-bridge-java-jpype", "hla-rti-core", "hla-vendor-pitch", "hla-backend-python1516-2025"},
     "hla-vendor-pitch-py4j": {"hla-rti1516e", "hla-bridge-java-common", "hla-bridge-java-py4j", "hla-rti-core", "hla-vendor-pitch", "hla-backend-python1516-2025"},

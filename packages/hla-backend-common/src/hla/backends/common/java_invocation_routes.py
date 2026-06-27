@@ -7,9 +7,9 @@ from typing import Any, Callable, Mapping
 
 from .base import BackendConversionError, Invocation
 from .conversion import handle_type_from_java_class_name, handle_type_from_java_type_name
-from .invocation import JavaInvocationResolver, ResolvedJavaInvocation, register_java_invocation_resolver
 from .java_invocation_metadata import java_parameter_names, java_parameter_types, ordered_args_for_overload
 from .java_invocation_scoring import is_sequence_not_text, looks_like_time_factory_name, score_value_for_java_type
+from .java_invocation_types import ResolvedJavaInvocation
 
 
 @dataclass(frozen=True)
@@ -253,10 +253,11 @@ def get_deterministic_java_invocation_router() -> DeterministicJavaInvocationRou
     return _DETERMINISTIC_JAVA_ROUTER
 
 
-def register_default_java_invocation_resolvers() -> dict[str, JavaInvocationResolver]:
-    weighted = register_java_invocation_resolver("weighted", resolve_java_invocation_weighted, default=True)
-    deterministic = register_java_invocation_resolver("deterministic", resolve_java_invocation_deterministic, default=False)
-    return {"weighted": weighted, "deterministic": deterministic}
+def default_java_invocation_resolvers() -> dict[str, Callable[[Invocation], ResolvedJavaInvocation]]:
+    return {
+        "weighted": resolve_java_invocation_weighted,
+        "deterministic": resolve_java_invocation_deterministic,
+    }
 
 
 __all__ = [

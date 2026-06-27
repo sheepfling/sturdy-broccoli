@@ -13,7 +13,7 @@ import os
 from collections.abc import Iterable as CollectionsIterable
 from collections.abc import Mapping as CollectionsMapping
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Iterable, Mapping, cast
+from typing import Any, Iterable, Mapping, cast
 
 from hla.backends.common import (
     BackendConversionError,
@@ -23,15 +23,11 @@ from hla.backends.common import (
     handle_type_from_java_class_name,
     handle_type_from_java_type_name,
 )
-from hla.backends.common.java_invocation_policy import (
+from hla.backends.common.java_invocation_scoring import (
     _JAVA_HANDLE_SET_TYPES,
     _JAVA_HANDLE_VALUE_MAP_TYPES,
 )
 from .java_binding_profile import PythonJavaBindingProfile
-
-if TYPE_CHECKING:
-    from .java_bridge_base import JavaBridge
-    from .java_encoding import JavaEncoderOracle
 
 
 def _maybe_call_noarg(obj: Any, *names: str) -> Any:
@@ -136,11 +132,11 @@ class GenericJavaValueAdapter(ValueConverter):
 
     def __init__(
         self,
-        bridge: JavaBridge,
+        bridge: Any,
         *,
         handle_registry: NativeHandleRegistry | None = None,
         rti_ambassador: Any | None = None,
-        java_encoder_oracle: JavaEncoderOracle | None = None,
+        java_encoder_oracle: Any | None = None,
     ) -> None:
         super().__init__(handle_registry=handle_registry)
         self.bridge = bridge

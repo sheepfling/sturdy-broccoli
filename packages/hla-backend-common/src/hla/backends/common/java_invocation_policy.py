@@ -9,8 +9,8 @@ from .java_invocation_metadata import java_parameter_names, java_parameter_types
 from .java_invocation_routes import (
     DeterministicJavaInvocationRouter,
     DeterministicJavaRoute,
+    default_java_invocation_resolvers,
     get_deterministic_java_invocation_router,
-    register_default_java_invocation_resolvers,
     resolve_java_invocation_deterministic,
     resolve_java_invocation_weighted,
 )
@@ -27,7 +27,7 @@ __all__ = [
     "get_deterministic_java_invocation_router",
     "java_parameter_names",
     "java_parameter_types",
-    "register_default_java_invocation_resolvers",
+    "default_java_invocation_resolvers",
     "resolve_java_invocation_deterministic",
     "resolve_java_invocation_weighted",
 ]

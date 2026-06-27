@@ -2,19 +2,15 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import TYPE_CHECKING, Any, Sequence
+from typing import Any, Sequence
 
 from hla.backends.common import BackendConversionError
-
-if TYPE_CHECKING:
-    from .java_bridge_base import JavaBridge
-    from .java_common import JavaRTIBackend
 
 
 class JavaEncoderOracle:
     """Live Java ``EncoderFactory`` helper bound to one backend runtime."""
 
-    def __init__(self, bridge: JavaBridge, encoder_factory: Any) -> None:
+    def __init__(self, bridge: Any, encoder_factory: Any) -> None:
         self.bridge = bridge
         self.encoder_factory = encoder_factory
 
@@ -85,7 +81,7 @@ class JavaEncoderOracle:
 class JavaVendorEncoding:
     """Python-facing helper that routes final encoding through a live vendor runtime."""
 
-    def __init__(self, backend: JavaRTIBackend) -> None:
+    def __init__(self, backend: Any) -> None:
         self.backend = backend
         self.python_binding = backend.bridge.python_binding
 

@@ -1,25 +1,14 @@
 """Backend-neutral invocation framework and swappable resolver hooks."""
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Callable, Literal, Mapping
+from typing import Any, cast
 
 from .base import BackendConversionError, Invocation
-
-if TYPE_CHECKING:
-    from .java_invocation_policy import DeterministicJavaInvocationRouter, DeterministicJavaRoute
-
-
-@dataclass(frozen=True)
-class ResolvedJavaInvocation:
-    args: tuple[Any, ...]
-    param_types: tuple[str | None, ...]
-    overload: Mapping[str, Any] | None = None
-    strict_container_shapes: bool = False
-
-
-JavaInvocationResolver = Callable[[Invocation], ResolvedJavaInvocation]
-JavaInvocationResolverName = Literal["weighted", "deterministic"]
+from .java_invocation_types import (
+    JavaInvocationResolver,
+    JavaInvocationResolverName,
+    ResolvedJavaInvocation,
+)
 
 _JAVA_INVOCATION_RESOLVERS: dict[JavaInvocationResolverName, JavaInvocationResolver] = {}
 _JAVA_DEFAULT_RESOLVER_NAME: JavaInvocationResolverName | None = None
@@ -31,9 +20,14 @@ def _load_java_policy_defaults() -> None:
     global _JAVA_POLICY_LOADED
     if _JAVA_POLICY_LOADED:
         return
-    from .java_invocation_policy import register_default_java_invocation_resolvers
+    from .java_invocation_policy import default_java_invocation_resolvers
 
-    register_default_java_invocation_resolvers()
+    for name, resolver in default_java_invocation_resolvers().items():
+        register_java_invocation_resolver(
+            cast(JavaInvocationResolverName, name),
+            resolver,
+            default=name == "weighted",
+        )
     _JAVA_POLICY_LOADED = True
 
 
@@ -99,7 +93,7 @@ def reset_java_invocation_resolver() -> None:
     _JAVA_INVOCATION_RESOLVER = _require_java_resolver(_JAVA_DEFAULT_RESOLVER_NAME)
 
 
-def get_deterministic_java_invocation_router() -> DeterministicJavaInvocationRouter:
+def get_deterministic_java_invocation_router() -> Any:
     from .java_invocation_policy import get_deterministic_java_invocation_router as _get_router
 
     return _get_router()

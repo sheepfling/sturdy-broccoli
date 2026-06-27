@@ -50,3 +50,7 @@ def assert_package_tree_importable(package_root: Path) -> None:
     if failures:
         joined = "\n".join(f"- {failure}" for failure in failures)
         raise AssertionError(f"package import smoke failed for {package_root.name}\n{joined}")
+
+
+def package_root_from_test_file(test_file: str) -> Path:
+    return Path(test_file).resolve().parent.parent

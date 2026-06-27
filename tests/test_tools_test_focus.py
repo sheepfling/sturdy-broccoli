@@ -53,6 +53,7 @@ def test_tools_test_focus_inventory_json_lists_expected_targets() -> None:
         "py4j",
         "fom",
         "target-radar",
+        "siso-surfaces",
         "python-2025-runtime",
         "execution-membership",
         "python-2025-time",

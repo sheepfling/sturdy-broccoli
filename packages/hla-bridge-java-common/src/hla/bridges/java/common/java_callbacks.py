@@ -1,13 +1,10 @@
 """Java FederateAmbassador callback dispatch helpers."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from hla.backends.common import CALLBACK_METHOD_NAMES, Invocation, clean_java_type_name
 from .java_binding_profile import load_python_java_binding_profile
-
-if TYPE_CHECKING:
-    from .java_value_adapter import HLAJavaValueAdapter
 
 _DEFAULT_BINDING = load_python_java_binding_profile("2010")
 hla_exceptions = _DEFAULT_BINDING.exceptions_module
@@ -54,7 +51,7 @@ def expected_java_callback_parameter_types(
 class PythonFederateAmbassadorDispatcher:
     """Dispatch Java FederateAmbassador callbacks to a Python ambassador."""
 
-    def __init__(self, ambassador: Any, converter: HLAJavaValueAdapter):
+    def __init__(self, ambassador: Any, converter: Any):
         self.ambassador = ambassador
         self.converter = converter
 

@@ -3,14 +3,10 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from collections.abc import Iterable, Mapping as CollectionsMapping, Sequence
-from typing import TYPE_CHECKING, Any, Protocol, TypeVar, cast
+from typing import Any, Protocol, TypeVar, cast
 
 from hla.backends.common import BackendConversionError
 from .java_binding_profile import load_python_java_binding_profile
-
-if TYPE_CHECKING:
-    from .java_intake import JavaApiProfile
-    from .java_callbacks import PythonFederateAmbassadorDispatcher
 
 
 _JavaKeyT = TypeVar("_JavaKeyT", covariant=True)
@@ -35,7 +31,7 @@ class JavaBridge(ABC):
 
     name: str = "java"
 
-    def __init__(self, api_profile: str | JavaApiProfile = "2010"):
+    def __init__(self, api_profile: str | Any = "2010"):
         self.python_binding = load_python_java_binding_profile(api_profile)
         self.api_profile = self.python_binding.api_profile
 
@@ -44,7 +40,7 @@ class JavaBridge(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def create_federate_proxy(self, dispatcher: PythonFederateAmbassadorDispatcher) -> Any:
+    def create_federate_proxy(self, dispatcher: Any) -> Any:
         raise NotImplementedError
 
     def enum_constant(self, enum_class_name: str, member_name: str) -> Any:

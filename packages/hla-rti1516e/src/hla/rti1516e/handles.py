@@ -114,6 +114,17 @@ class RegionHandle(Handle):
 class TransportationTypeHandle(Handle):
     pass
 
+
+def _coerce_compatible_handle(value: Any, expected_type: type[Handle]) -> Handle:
+    if isinstance(value, expected_type):
+        return value
+    if type(value).__name__ == expected_type.__name__ and hasattr(value, "value"):
+        raw_value = getattr(value, "value")
+        if isinstance(raw_value, int):
+            return expected_type(raw_value)
+    raise TypeError(f"{expected_type.__name__} compatibility check failed for {type(value).__name__}")
+
+
 class TypedHandleSet(set):
     """A ``set`` that enforces the handle type used by an HLA set interface."""
 
@@ -124,9 +135,10 @@ class TypedHandleSet(set):
         self.update(values)
 
     def _validate(self, value: Any) -> Handle:
-        if not isinstance(value, self.handle_type):
-            raise TypeError(f"{type(self).__name__} only accepts {self.handle_type.__name__}; got {type(value).__name__}")
-        return value
+        try:
+            return _coerce_compatible_handle(value, self.handle_type)
+        except TypeError as exc:
+            raise TypeError(f"{type(self).__name__} only accepts {self.handle_type.__name__}; got {type(value).__name__}") from exc
 
     def add(self, value: Handle) -> None:  # type: ignore[override]
         super().add(self._validate(value))
@@ -167,9 +179,10 @@ class HandleValueMap(dict):
             self.update(initial)
 
     def _validate_key(self, key: Any) -> Handle:
-        if not isinstance(key, self.key_type):
-            raise TypeError(f"{type(self).__name__} keys must be {self.key_type.__name__}; got {type(key).__name__}")
-        return key
+        try:
+            return _coerce_compatible_handle(key, self.key_type)
+        except TypeError as exc:
+            raise TypeError(f"{type(self).__name__} keys must be {self.key_type.__name__}; got {type(key).__name__}") from exc
 
     @staticmethod
     def _validate_value(value: Any) -> bytes:
@@ -182,10 +195,16 @@ class HandleValueMap(dict):
     def __setitem__(self, key: Handle, value: bytes) -> None:  # type: ignore[override]
         super().__setitem__(self._validate_key(key), self._validate_value(value))
 
-    def update(self, other: Mapping[Handle, bytes] | Iterable[tuple[Handle, bytes]] = ()) -> None:  # type: ignore[override]
+    def update(  # type: ignore[override]
+        self,
+        other: Mapping[Handle, bytes] | Iterable[tuple[Handle, bytes]] = (),
+        **kwargs: bytes,
+    ) -> None:
         items = cast(Iterable[tuple[Handle, bytes]], other.items()) if isinstance(other, Mapping) else other
         for key, value in items:
             self[key] = value
+        for key, value in kwargs.items():
+            self[cast(Any, key)] = value
 
     def clone(self):
         return type(self)(self)
