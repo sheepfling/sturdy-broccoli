@@ -141,6 +141,7 @@ Operator guide links:
 - `scripts/check_vendor_runner_template_drift.py`: CI helper that verifies the runner provisioning template, validator profiles, and workflow env contracts stay aligned
 - `scripts/ci/vendor_runtime_smoke.py`: Python implementation behind the vendor-runtime lane; it runs mandatory vendor preflight first, writes standard JSON artifacts under `artifacts/preflight_artifacts/`, and can still classify/skip blocked vendor runs even when the repo virtualenv has not been activated yet
 - `./tools/python verify`: canonical Python / repo-green wrapper around the default full verification lane
+- `./tools/python verify-fast --with-gold`: run the fast Python/operator/docs lane and then chain the stricter hygiene gate without making it part of default repo-green
 - `./tools/python verify-gold`: artifact-free higher-standard package hygiene gate over typing quality, stringified annotations, `__init__` front-door smell, and path/env sniffing
 - `./tools/vendor-green [profile]`: strict vendor-runtime gate for dedicated real-runtime runners; under CI it self-validates the dedicated runner contract before trying the runtime lane
 - `scripts/ci/run_vendor_probe_stability.py`: repeated probe implementation used by the promotion-review flow; under CI it validates the dedicated runner contract once before collecting repeated-run evidence and disables redundant per-attempt revalidation inside the loop

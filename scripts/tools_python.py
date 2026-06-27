@@ -97,6 +97,7 @@ def usage() -> str:
             "  ./tools/python verify                  # run the repo-green verification lane",
             "  ./tools/python verify-smoke            # run the fast-fail repo smoke lane before expensive integration depth",
             "  ./tools/python verify-fast             # run the low-cost operator/docs/Python-matrix lane",
+            "  ./tools/python verify-fast --with-gold # run verify-fast, then chain the higher-standard hygiene gate",
             "  ./tools/python verify-gold            # run the higher-standard package hygiene / typing smell gate",
             "  ./tools/python verify-main-2025        # run the primary 2025 Python RTI main-surface proof lane (python1516_2025)",
             "  ./tools/python verify-routes           # run 2010 Python direct-vs-gRPC route parity checks",
@@ -202,7 +203,18 @@ def verify_fast(args: list[str]) -> int:
     delegate_status = _run_delegate("HLA2010_PYTHON_VERIFY_FAST_DELEGATE", args)
     if delegate_status is not None:
         return delegate_status
-    return _run_workspace_python(_workspace_python_bin(), [*VERIFY_FAST_ARGS, *args])
+    with_gold = False
+    passthrough: list[str] = []
+    for arg in args:
+        if arg == "--with-gold":
+            with_gold = True
+            continue
+        passthrough.append(arg)
+
+    status = _run_workspace_python(_workspace_python_bin(), [*VERIFY_FAST_ARGS, *passthrough])
+    if status != 0 or not with_gold:
+        return status
+    return verify_gold([])
 
 
 def verify_gold(args: list[str]) -> int:
