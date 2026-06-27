@@ -3,8 +3,8 @@
 This generated backlog turns the harmonized open requirements rows into repo-native implementation queues.
 Some rows intentionally appear in multiple queues, especially `MOM/MIM` and `Transports`, because those are cross-cutting execution backlogs rather than mutually exclusive taxonomies.
 
-- Total open rows: 407
-- Total queue items: 208
+- Total open rows: 387
+- Total queue items: 204
 - Families: 11
 
 ## Queue Summary
@@ -13,7 +13,7 @@ Some rows intentionally appear in multiple queues, especially `MOM/MIM` and `Tra
 |---|---:|---:|---|---|
 | Federation Management | 0 | 0 | - | - |
 | Declaration Management | 24 | 12 | partial:24 | EXC:12, PRE:12 |
-| Object Management | 50 | 13 | partial:50 | EXC:12, EFF:10, SVC:8 |
+| Object Management | 40 | 11 | partial:40 | EXC:10, EFF:8, SEM:6 |
 | Ownership Management | 19 | 11 | partial:19 | EXC:11, PRE:8 |
 | Time Management | 38 | 19 | partial:38 | EXC:19, PRE:19 |
 | Data Distribution Management | 6 | 6 | partial:6 | EXC:6 |
@@ -21,7 +21,7 @@ Some rows intentionally appear in multiple queues, especially `MOM/MIM` and `Tra
 | MOM/MIM | 0 | 0 | - | - |
 | OMT | 0 | 0 | - | - |
 | XML | 0 | 0 | - | - |
-| Transports | 184 | 104 | partial:184 | PRE:89, EXC:72, EFF:9 |
+| Transports | 174 | 102 | partial:174 | PRE:87, EXC:70, EFF:7 |
 
 ## Federation Management
 
@@ -63,14 +63,13 @@ Clause 5 packet-to-curated backlog for declaration services.
 
 Clause 6 packet-to-curated backlog for object-management services.
 
-- Open rows: 50
-- Queue items: 13
-- Statuses: partial:50
-- Kinds: ARG:7, EFF:10, EXC:12, PRE:7, SEM:6, SVC:8
+- Open rows: 40
+- Queue items: 11
+- Statuses: partial:40
+- Kinds: ARG:5, EFF:8, EXC:10, PRE:5, SEM:6, SVC:6
 
 | Queue item | Clause | Open rows | Kinds | Requirement IDs | Acceptance tests | Next action |
 |---|---|---:|---|---|---|---|
-| Confirm Attribute Transportation Type Change | 6.24 | 5 | ARG:1, EFF:1, EXC:1, PRE:1, SVC:1 | HLA1516.1-OM-6_24-SVC-001, HLA1516.1-OM-6_24-ARG-003, HLA1516.1-OM-6_24-PRE-004 (+2 more) | test_transportation_type_services_emit_confirm_and_report_callbacks | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 | Confirm Interaction Transportation Type Change | 6.28 | 5 | ARG:1, EFF:1, EXC:1, PRE:1, SVC:1 | HLA1516.1-OM-6_28-SVC-001, HLA1516.1-OM-6_28-ARG-003, HLA1516.1-OM-6_28-PRE-004 (+2 more) | test_transportation_type_services_emit_confirm_and_report_callbacks | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 | Object Management semantic overview | 6.1 | 6 | SEM:6 | HLA1516.1-OM-6_1-SEM-004, HLA1516.1-OM-6_1-SEM-005, HLA1516.1-OM-6_1-SEM-006 (+3 more) | test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions, test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates, test_timestamp_order_attribute_updates_are_released_in_time_order (+5 more) | Add focused runtime or state-transition evidence for the remaining behavioral slice. |
 | Query Attribute Transportation Type | 6.25 | 3 | EFF:1, EXC:1, SVC:1 | HLA1516.1-OM-6_25-SVC-001, HLA1516.1-OM-6_25-EFF-005, HLA1516.1-OM-6_25-EXC-006 | test_transportation_type_services_emit_confirm_and_report_callbacks, negative=test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
@@ -78,7 +77,6 @@ Clause 6 packet-to-curated backlog for object-management services.
 | Receive Interaction | 6.13 | 3 | ARG:1, EXC:1, PRE:1 | HLA1516.1-OM-6_13-ARG-003, HLA1516.1-OM-6_13-PRE-004, HLA1516.1-OM-6_13-EXC-006 | test_two_python_federates_share_in_memory_rti | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 | Reflect Attribute Values | 6.11 | 4 | ARG:1, EFF:1, EXC:1, PRE:1 | HLA1516.1-OM-6_11-ARG-003, HLA1516.1-OM-6_11-PRE-004, HLA1516.1-OM-6_11-EFF-005 (+1 more) | test_two_python_federates_share_in_memory_rti | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 | Remove Object Instance | 6.15 | 3 | ARG:1, EXC:1, PRE:1 | HLA1516.1-OM-6_15-ARG-003, HLA1516.1-OM-6_15-PRE-004, HLA1516.1-OM-6_15-EXC-006 | test_delete_object_instance_notifies_known_federates_with_remove_object_instance | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
-| Report Attribute Transportation Type | 6.26 | 5 | ARG:1, EFF:1, EXC:1, PRE:1, SVC:1 | HLA1516.1-OM-6_26-SVC-001, HLA1516.1-OM-6_26-ARG-003, HLA1516.1-OM-6_26-PRE-004 (+2 more) | test_transportation_type_services_emit_confirm_and_report_callbacks | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 | Report Interaction Transportation Type | 6.30 | 5 | ARG:1, EFF:1, EXC:1, PRE:1, SVC:1 | HLA1516.1-OM-6_30-SVC-001, HLA1516.1-OM-6_30-ARG-003, HLA1516.1-OM-6_30-PRE-004 (+2 more) | test_transportation_type_services_emit_confirm_and_report_callbacks | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 | Request Attribute Transportation Type Change | 6.23 | 3 | EFF:1, EXC:1, SVC:1 | HLA1516.1-OM-6_23-SVC-001, HLA1516.1-OM-6_23-EFF-005, HLA1516.1-OM-6_23-EXC-006 | test_transportation_type_services_emit_confirm_and_report_callbacks, mapped_runtime=test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates, mapped_restore=test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides (+1 more) | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 | Request Interaction Transportation Type Change | 6.27 | 3 | EFF:1, EXC:1, SVC:1 | HLA1516.1-OM-6_27-SVC-001, HLA1516.1-OM-6_27-EFF-005, HLA1516.1-OM-6_27-EXC-006 | test_transportation_type_services_emit_confirm_and_report_callbacks, mapped_runtime=test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates, mapped_restore=test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides (+1 more) | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
@@ -251,14 +249,13 @@ Open IEEE 1516.2 XML and schema-conformance backlog rows.
 
 Cross-cutting native/gRPC/REST transport-equivalence and transportation-type backlog rows.
 
-- Open rows: 184
-- Queue items: 104
-- Statuses: partial:184
-- Kinds: ARG:4, EFF:9, EXC:72, PRE:89, SEM:2, SVC:8
+- Open rows: 174
+- Queue items: 102
+- Statuses: partial:174
+- Kinds: ARG:2, EFF:7, EXC:70, PRE:87, SEM:2, SVC:6
 
 | Queue item | Clause | Open rows | Kinds | Requirement IDs | Acceptance tests | Next action |
 |---|---|---:|---|---|---|---|
-| Confirm Attribute Transportation Type Change | 6.24 | 5 | ARG:1, EFF:1, EXC:1, PRE:1, SVC:1 | HLA1516.1-OM-6_24-SVC-001, HLA1516.1-OM-6_24-ARG-003, HLA1516.1-OM-6_24-PRE-004 (+2 more) | test_transportation_type_services_emit_confirm_and_report_callbacks | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Confirm Interaction Transportation Type Change | 6.28 | 5 | ARG:1, EFF:1, EXC:1, PRE:1, SVC:1 | HLA1516.1-OM-6_28-SVC-001, HLA1516.1-OM-6_28-ARG-003, HLA1516.1-OM-6_28-PRE-004 (+2 more) | test_transportation_type_services_emit_confirm_and_report_callbacks | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Object Management semantic overview | 6.1 | 2 | SEM:2 | HLA1516.1-OM-6_1-SEM-004, HLA1516.1-OM-6_1-SEM-005 | test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions, test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates, test_timestamp_order_attribute_updates_are_released_in_time_order (+1 more) | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Query Attribute Transportation Type | 6.25 | 3 | EFF:1, EXC:1, SVC:1 | HLA1516.1-OM-6_25-SVC-001, HLA1516.1-OM-6_25-EFF-005, HLA1516.1-OM-6_25-EXC-006 | test_transportation_type_services_emit_confirm_and_report_callbacks, negative=test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
@@ -266,7 +263,6 @@ Cross-cutting native/gRPC/REST transport-equivalence and transportation-type bac
 | Receive Interaction | 6.13 | 1 | PRE:1 | HLA1516.1-OM-6_13-PRE-004 | test_two_python_federates_share_in_memory_rti | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Reflect Attribute Values | 6.11 | 1 | PRE:1 | HLA1516.1-OM-6_11-PRE-004 | test_two_python_federates_share_in_memory_rti | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Remove Object Instance | 6.15 | 1 | PRE:1 | HLA1516.1-OM-6_15-PRE-004 | test_delete_object_instance_notifies_known_federates_with_remove_object_instance | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| Report Attribute Transportation Type | 6.26 | 5 | ARG:1, EFF:1, EXC:1, PRE:1, SVC:1 | HLA1516.1-OM-6_26-SVC-001, HLA1516.1-OM-6_26-ARG-003, HLA1516.1-OM-6_26-PRE-004 (+2 more) | test_transportation_type_services_emit_confirm_and_report_callbacks | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Report Interaction Transportation Type | 6.30 | 5 | ARG:1, EFF:1, EXC:1, PRE:1, SVC:1 | HLA1516.1-OM-6_30-SVC-001, HLA1516.1-OM-6_30-ARG-003, HLA1516.1-OM-6_30-PRE-004 (+2 more) | test_transportation_type_services_emit_confirm_and_report_callbacks | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Request Attribute Transportation Type Change | 6.23 | 3 | EFF:1, EXC:1, SVC:1 | HLA1516.1-OM-6_23-SVC-001, HLA1516.1-OM-6_23-EFF-005, HLA1516.1-OM-6_23-EXC-006 | test_transportation_type_services_emit_confirm_and_report_callbacks, mapped_runtime=test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates, mapped_restore=test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides (+1 more) | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Request Interaction Transportation Type Change | 6.27 | 3 | EFF:1, EXC:1, SVC:1 | HLA1516.1-OM-6_27-SVC-001, HLA1516.1-OM-6_27-EFF-005, HLA1516.1-OM-6_27-EXC-006 | test_transportation_type_services_emit_confirm_and_report_callbacks, mapped_runtime=test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates, mapped_restore=test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides (+1 more) | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |

@@ -1427,6 +1427,61 @@ def test_transportation_type_services_emit_confirm_and_report_callbacks():
     owner.destroy_federation_execution("transport-positive-fed")
 
 
+def test_attribute_transportation_callbacks_validate_payload_context_and_wrap_callback_failures():
+    _, owner, observer, owner_fed, observer_fed, _owner_handle, _observer_handle = joined_pair(
+        "transport-attribute-callback-contract-fed"
+    )
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+    best_effort = owner.backend.engine.transportation_best_effort
+
+    owner.publish_object_class_attributes(cls, {attr})
+    obj = owner.register_object_instance(cls, "Transport-Attribute-Contract-1")
+    owner_fed.clear()
+
+    owner.request_attribute_transportation_type_change(obj, {attr}, best_effort)
+    owner.query_attribute_transportation_type(obj, attr)
+    drain(owner, observer)
+
+    confirm = owner_fed.last_callback("confirmAttributeTransportationTypeChange")
+    report = owner_fed.last_callback("reportAttributeTransportationType")
+    assert confirm is not None
+    assert confirm.args == (obj, {attr}, best_effort)
+    assert report is not None
+    assert report.args == (obj, attr, best_effort)
+    assert observer_fed.callbacks_named("confirmAttributeTransportationTypeChange") == []
+    assert observer_fed.callbacks_named("reportAttributeTransportationType") == []
+
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("transport-attribute-callback-contract-fed")
+
+    class _FailingAttributeTransportAmbassador(RecordingFederateAmbassador):
+        def on_confirm_attribute_transportation_type_change(self, *args, **kwargs):
+            raise RuntimeError("confirm-attribute-transport-failed")
+
+        def on_report_attribute_transportation_type(self, *args, **kwargs):
+            raise RuntimeError("report-attribute-transport-failed")
+
+    failing = rti_ambassador(engine=InMemoryRTIEngine())
+    failing.connect(_FailingAttributeTransportAmbassador(), CallbackModel.HLA_IMMEDIATE)
+    failing.create_federation_execution("transport-attribute-callback-failing-fed", "TargetRadarFOMmodule.xml")
+    failing.join_federation_execution("alpha", "type-a", "transport-attribute-callback-failing-fed")
+    fail_cls = failing.get_object_class_handle("HLAobjectRoot.Target")
+    fail_attr = failing.get_attribute_handle(fail_cls, "Position")
+    fail_best_effort = failing.backend.engine.transportation_best_effort
+    failing.publish_object_class_attributes(fail_cls, {fail_attr})
+    fail_obj = failing.register_object_instance(fail_cls, "Transport-Attribute-Failing-1")
+
+    with pytest.raises(FederateInternalError):
+        failing.request_attribute_transportation_type_change(fail_obj, {fail_attr}, fail_best_effort)
+    with pytest.raises(FederateInternalError):
+        failing.query_attribute_transportation_type(fail_obj, fail_attr)
+
+    failing.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    failing.destroy_federation_execution("transport-attribute-callback-failing-fed")
+
+
 def test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates():
     _, owner, observer, _owner_fed, observer_fed, _h1, _h2 = joined_pair("transport-runtime-behavior-fed")
     cls = owner.get_object_class_handle("HLAobjectRoot.Target")
