@@ -1,7 +1,7 @@
 """Backend-neutral invocation framework and swappable resolver hooks."""
 from __future__ import annotations
 
-from typing import Any, cast
+from typing import Any, Mapping, cast
 
 from .base import BackendConversionError, Invocation
 from .java_invocation_types import (

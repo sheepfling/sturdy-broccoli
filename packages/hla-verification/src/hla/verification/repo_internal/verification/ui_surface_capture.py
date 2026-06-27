@@ -39,7 +39,7 @@ def find_free_port() -> int:
 
 @contextlib.contextmanager
 def run_local_app(app: Any, *, host: str = "127.0.0.1"):
-    import uvicorn
+    import uvicorn  # pyright: ignore[reportMissingImports]
 
     port = find_free_port()
     config = uvicorn.Config(app, host=host, port=port, log_level="error")

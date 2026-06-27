@@ -8,6 +8,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from inspect import Parameter, Signature
+from typing import Any, cast
 from typing import Any, Generic, Mapping, NamedTuple, TypeVar, cast
 from typing_extensions import Self
 
@@ -288,5 +289,5 @@ _HANDLE_ENCODE_SIGNATURE = Signature(
         Parameter("offset", kind=Parameter.POSITIONAL_OR_KEYWORD),
     )
 )
-HandleKind.encode.__signature__ = _HANDLE_ENCODE_SIGNATURE
-_IntegerHandle.encode.__signature__ = _HANDLE_ENCODE_SIGNATURE
+cast(Any, HandleKind.encode).__signature__ = _HANDLE_ENCODE_SIGNATURE
+cast(Any, _IntegerHandle.encode).__signature__ = _HANDLE_ENCODE_SIGNATURE
