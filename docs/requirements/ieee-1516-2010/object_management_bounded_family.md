@@ -81,16 +81,16 @@ keep describing `CAP-OM` as vague or structurally unfinished.
 
 The current owner ledger has `391` object-management packet rows:
 
-- `297 mapped`
-- `94 partial`
+- `309 mapped`
+- `82 partial`
 
-The remaining `94 partial` rows cluster into stable categories:
+The remaining `82 partial` rows cluster into stable categories:
 
-- `18 EFF`
+- `14 EFF`
 - `25 CB_ORD`
-- `15 EXC_API`
+- `10 EXC_API`
 - `17 CB_ORDER`
-- `12 EXC`
+- `9 EXC`
 - `6 FED_CB`
 - `1 OVW`
 
@@ -98,7 +98,7 @@ The remaining `94 partial` rows cluster into stable categories:
 
 ### State-vector breadth tail
 
-The `18 EFF` rows usually describe a broader postcondition vector than the
+The `14 EFF` rows usually describe a broader postcondition vector than the
 current direct proof asserts in one place.
 
 Typical pattern:
@@ -122,7 +122,7 @@ They are rows where:
 
 ### Exception and precondition breadth tail
 
-The `16 EXC_API` and `13 EXC` rows usually keep a broader negative
+The `10 EXC_API` and `9 EXC` rows usually keep a broader negative
 envelope than the current tests isolate directly.
 
 Typical pattern:
@@ -153,6 +153,11 @@ Recent tightening examples:
   tail because direct negative-path witnesses now isolate the applicable
   connection-state, membership, duplicate-name, and save or restore guard
   surface across the exercised overloads
+- the `registerObjectInstance` effect and exception rows no longer live in
+  this partial tail because direct positive and negative-path witnesses now
+  isolate object creation plus discovery eligibility and the exercised
+  class-definition, strict-publication, duplicate-name, membership,
+  connection, and save/restore failures
 - the `releaseObjectInstanceName` precondition row no longer lives in this
   partial tail because direct negative-path witnesses now isolate the
   applicable connection-state, membership, and save or restore guard surface
@@ -160,6 +165,11 @@ Recent tightening examples:
   tail because direct negative-path witnesses now isolate the applicable
   connection-state, membership, object-knownness, delete-privilege, and save
   or restore guard surface
+- the `deleteObjectInstance` effect and exception rows no longer live in this
+  partial tail because direct lifecycle and negative-path witnesses now
+  isolate the supported known-object removal effect plus the exercised
+  privilege, object-knownness, membership, connection, save/restore, and
+  invalid-logical-time failures
 - the `sendInteraction` precondition row no longer lives in this partial tail
   because direct negative-path witnesses now isolate the applicable
   connection-state, membership, publication-state, handle-validation, and
@@ -169,6 +179,11 @@ Recent tightening examples:
   partial tail because direct negative-path witnesses now isolate the
   applicable connection-state, membership, object-knownness, ownership-state,
   and save/restore guard surface
+- the `localDeleteObjectInstance` effect and exception rows no longer live in
+  this partial tail because direct lifecycle and negative-path witnesses now
+  isolate the supported local-knowledge-only effect plus the exercised
+  pending-acquisition, ownership, object-knownness, membership, connection,
+  and save/restore failures
 - the multiple-name reservation and release precondition rows no longer live in
   this partial tail because direct negative-path witnesses now isolate the
   applicable connection-state, membership, and save/restore guard surface for

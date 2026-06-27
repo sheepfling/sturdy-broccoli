@@ -3,7 +3,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Iterable, Protocol
 
-from hla.rti1516e.exceptions import ObjectInstanceNameInUse
+from hla.rti1516e.exceptions import (
+    InvalidObjectClassHandle,
+    ObjectClassNotDefined,
+    ObjectClassNotPublished,
+    ObjectInstanceNameInUse,
+)
 from hla.rti1516e.handles import ObjectClassHandle, ObjectInstanceHandle
 from .object_delivery import PythonRTIObjectDeliveryMixin
 from .state import ObjectInstance
@@ -94,7 +99,12 @@ class PythonRTIObjectMixin(_ObjectMixinBase):
     ) -> ObjectInstanceHandle:
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
-        self.engine.object_class_for_handle(theClass)
+        try:
+            self.engine.object_class_for_handle(theClass)
+        except InvalidObjectClassHandle as exc:
+            raise ObjectClassNotDefined(repr(theClass)) from exc
+        if self.config.strict_object_publication and theClass not in self.state.published_objects:
+            raise ObjectClassNotPublished(repr(theClass))
         if theObjectName is None:
             theObjectName = f"Object-{self.engine._next_values[ObjectInstanceHandle]}"
         with self.engine._lock:

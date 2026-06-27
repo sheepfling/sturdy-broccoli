@@ -23,6 +23,8 @@ from hla.rti1516e.exceptions import (
     InvalidUpdateRateDesignator,
     LogicalTimeAlreadyPassed,
     NotConnected,
+    ObjectClassNotDefined,
+    ObjectClassNotPublished,
     ObjectInstanceNameInUse,
     ObjectInstanceNotKnown,
     RegionInUseForUpdateOrSubscription,
@@ -684,7 +686,7 @@ def test_strict_publication_gates_registration_update_and_interaction_sends():
     pair = [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({region}))]
     unpublished_pair = [AttributeRegionAssociation(AttributeHandleSet({rcs}), RegionHandleSet({region}))]
 
-    with pytest.raises(InvalidObjectClassHandle):
+    with pytest.raises(ObjectClassNotDefined):
         tx.register_object_instance(type(cls)(cls.value + 1000), "Bad-Class")
     with pytest.raises(InvalidObjectClassHandle):
         tx.register_object_instance_with_regions(type(cls)(cls.value + 1000), pair, "Bad-Class-Regions")
@@ -693,10 +695,15 @@ def test_strict_publication_gates_registration_update_and_interaction_sends():
     with pytest.raises(ObjectInstanceNameInUse):
         tx.register_object_instance_with_regions(cls, pair, "Strict-Update-Object")
     tx.backend.config.strict_object_publication = True
+    with pytest.raises(ObjectClassNotPublished):
+        tx.register_object_instance(cls, "Strict-Unpublished-Class-Object")
     with pytest.raises(AttributeNotPublished):
         tx.update_attribute_values(obj, {attr: b"strict"}, b"tag")
-    with pytest.raises(AttributeNotPublished):
+    with pytest.raises(ObjectClassNotPublished):
         tx.register_object_instance_with_regions(cls, unpublished_pair, "Strict-Unpublished-Object")
+    tx.publish_object_class_attributes(cls, {attr})
+    with pytest.raises(AttributeNotPublished):
+        tx.register_object_instance_with_regions(cls, unpublished_pair, "Strict-Unpublished-Attr-Object")
 
     tx.backend.config.strict_object_publication = False
     tx.backend.config.strict_interaction_publication = True

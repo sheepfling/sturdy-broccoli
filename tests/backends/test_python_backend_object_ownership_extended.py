@@ -2457,7 +2457,7 @@ def test_clause_6_federate_initiated_services_validate_core_argument_shapes():
     owner.publish_interaction_class(interaction)
     obj = owner.register_object_instance(cls, "OM-Arg-Validation")
 
-    with pytest.raises(InvalidObjectClassHandle):
+    with pytest.raises(ObjectClassNotDefined):
         owner.register_object_instance(bad_class, "bad-class")
 
     with pytest.raises(ObjectInstanceNotKnown):
@@ -2583,6 +2583,13 @@ def test_delete_and_local_delete_object_instance_reject_not_connected_not_joined
     with pytest.raises(FederateOwnsAttributes):
         owner.local_delete_object_instance(obj)
 
+    acquirer = observer
+    acquirer.attribute_ownership_acquisition(obj, {attr}, b"req")
+    drain(owner, acquirer)
+    with pytest.raises(OwnershipAcquisitionPending):
+        acquirer.local_delete_object_instance(obj)
+    owner.attribute_ownership_release_denied(obj, {attr})
+
     owner.request_federation_save("DELETE-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
@@ -2605,6 +2612,16 @@ def test_delete_and_local_delete_object_instance_reject_not_connected_not_joined
 
     owner.abort_federation_restore()
     drain(owner, observer)
+
+    factory = owner.get_time_factory()
+    owner.enable_time_regulation(factory.make_interval(1.0))
+    observer.enable_time_constrained()
+    drain(owner, observer)
+    owner.time_advance_request(factory.make_time(2.0))
+    drain(owner, observer)
+    with pytest.raises(InvalidLogicalTime):
+        owner.delete_object_instance(obj, b"tag", factory.make_time(1.0))
+
     owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("delete-negative-fed")
@@ -2987,6 +3004,13 @@ def test_register_object_instance_rejects_not_connected_not_joined_name_in_use_a
 
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("register-negative-fed")
     cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+    owner.backend.config.strict_object_publication = True
+    with pytest.raises(ObjectClassNotPublished):
+        owner.register_object_instance(cls, "Needs-Publication")
+    with pytest.raises(ObjectClassNotDefined):
+        owner.register_object_instance(type(cls)(cls.value + 1000), "Bad-Class")
+    owner.publish_object_class_attributes(cls, {attr})
     owner.register_object_instance(cls, "Duplicate-Object")
     with pytest.raises(ObjectInstanceNameInUse):
         owner.register_object_instance(cls, "Duplicate-Object")

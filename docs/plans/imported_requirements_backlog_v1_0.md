@@ -3,8 +3,8 @@
 This generated backlog turns the harmonized open requirements rows into repo-native implementation queues.
 Some rows intentionally appear in multiple queues, especially `MOM/MIM` and `Transports`, because those are cross-cutting execution backlogs rather than mutually exclusive taxonomies.
 
-- Total open rows: 456
-- Total queue items: 232
+- Total open rows: 447
+- Total queue items: 226
 - Families: 11
 
 ## Queue Summary
@@ -13,7 +13,7 @@ Some rows intentionally appear in multiple queues, especially `MOM/MIM` and `Tra
 |---|---:|---:|---|---|
 | Federation Management | 0 | 0 | - | - |
 | Declaration Management | 24 | 12 | partial:24 | EXC:12, PRE:12 |
-| Object Management | 85 | 25 | partial:85 | EXC:24, EFF:17, ARG:16 |
+| Object Management | 79 | 22 | partial:79 | EXC:21, ARG:16, EFF:14 |
 | Ownership Management | 19 | 11 | partial:19 | EXC:11, PRE:8 |
 | Time Management | 38 | 19 | partial:38 | EXC:19, PRE:19 |
 | Data Distribution Management | 6 | 6 | partial:6 | EXC:6 |
@@ -21,7 +21,7 @@ Some rows intentionally appear in multiple queues, especially `MOM/MIM` and `Tra
 | MOM/MIM | 0 | 0 | - | - |
 | OMT | 0 | 0 | - | - |
 | XML | 0 | 0 | - | - |
-| Transports | 198 | 116 | partial:198 | PRE:96, EXC:79, EFF:9 |
+| Transports | 195 | 113 | partial:195 | PRE:96, EXC:76, EFF:9 |
 
 ## Federation Management
 
@@ -63,10 +63,10 @@ Clause 5 packet-to-curated backlog for declaration services.
 
 Clause 6 packet-to-curated backlog for object-management services.
 
-- Open rows: 85
-- Queue items: 25
-- Statuses: partial:85
-- Kinds: ARG:16, EFF:17, EXC:24, PRE:14, SEM:6, SVC:8
+- Open rows: 79
+- Queue items: 22
+- Statuses: partial:79
+- Kinds: ARG:16, EFF:14, EXC:21, PRE:14, SEM:6, SVC:8
 
 | Queue item | Clause | Open rows | Kinds | Requirement IDs | Acceptance tests | Next action |
 |---|---|---:|---|---|---|---|
@@ -74,9 +74,7 @@ Clause 6 packet-to-curated backlog for object-management services.
 | Attributes Out Of Scope | 6.18 | 3 | ARG:1, EXC:1, PRE:1 | HLA1516.1-OM-6_18-ARG-003, HLA1516.1-OM-6_18-PRE-004, HLA1516.1-OM-6_18-EXC-006 | test_attributes_in_scope_and_out_of_scope_callbacks_track_region_scope_transitions | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 | Confirm Attribute Transportation Type Change | 6.24 | 5 | ARG:1, EFF:1, EXC:1, PRE:1, SVC:1 | HLA1516.1-OM-6_24-SVC-001, HLA1516.1-OM-6_24-ARG-003, HLA1516.1-OM-6_24-PRE-004 (+2 more) | test_transportation_type_services_emit_confirm_and_report_callbacks | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 | Confirm Interaction Transportation Type Change | 6.28 | 5 | ARG:1, EFF:1, EXC:1, PRE:1, SVC:1 | HLA1516.1-OM-6_28-SVC-001, HLA1516.1-OM-6_28-ARG-003, HLA1516.1-OM-6_28-PRE-004 (+2 more) | test_transportation_type_services_emit_confirm_and_report_callbacks | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
-| Delete Object Instance | 6.14 | 2 | EFF:1, EXC:1 | HLA1516.1-OM-6_14-EFF-005, HLA1516.1-OM-6_14-EXC-006 | test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 | Discover Object Instance | 6.9 | 3 | ARG:1, EXC:1, PRE:1 | HLA1516.1-OM-6_9-ARG-003, HLA1516.1-OM-6_9-PRE-004, HLA1516.1-OM-6_9-EXC-006 | test_discovery_uses_closest_subscribed_superclass_and_known_class_stays_stable | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
-| Local Delete Object Instance | 6.16 | 2 | EFF:1, EXC:1 | HLA1516.1-OM-6_16-EFF-005, HLA1516.1-OM-6_16-EXC-006 | test_local_delete_clears_only_local_knowledge_and_object_can_be_rediscovered, test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 | Multiple Object Instance Names Reserved | 6.6 | 3 | ARG:1, EXC:1, PRE:1 | HLA1516.1-OM-6_6-ARG-003, HLA1516.1-OM-6_6-PRE-004, HLA1516.1-OM-6_6-EXC-006 | test_name_reservation_callbacks_report_success_and_failure | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 | Object Instance Name Reserved | 6.3 | 3 | ARG:1, EXC:1, PRE:1 | HLA1516.1-OM-6_3-ARG-003, HLA1516.1-OM-6_3-PRE-004, HLA1516.1-OM-6_3-EXC-006 | test_name_reservation_callbacks_report_success_and_failure | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 | Object Management semantic overview | 6.1 | 6 | SEM:6 | HLA1516.1-OM-6_1-SEM-004, HLA1516.1-OM-6_1-SEM-005, HLA1516.1-OM-6_1-SEM-006 (+3 more) | test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions, test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates, test_timestamp_order_attribute_updates_are_released_in_time_order (+5 more) | Add focused runtime or state-transition evidence for the remaining behavioral slice. |
@@ -84,7 +82,6 @@ Clause 6 packet-to-curated backlog for object-management services.
 | Query Interaction Transportation Type | 6.29 | 3 | EFF:1, EXC:1, SVC:1 | HLA1516.1-OM-6_29-SVC-001, HLA1516.1-OM-6_29-EFF-005, HLA1516.1-OM-6_29-EXC-006 | test_transportation_type_services_emit_confirm_and_report_callbacks, negative=test_query_interaction_transportation_type_rejects_not_connected_not_joined_invalid_handle_and_save_restore | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 | Receive Interaction | 6.13 | 3 | ARG:1, EXC:1, PRE:1 | HLA1516.1-OM-6_13-ARG-003, HLA1516.1-OM-6_13-PRE-004, HLA1516.1-OM-6_13-EXC-006 | test_two_python_federates_share_in_memory_rti | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 | Reflect Attribute Values | 6.11 | 4 | ARG:1, EFF:1, EXC:1, PRE:1 | HLA1516.1-OM-6_11-ARG-003, HLA1516.1-OM-6_11-PRE-004, HLA1516.1-OM-6_11-EFF-005 (+1 more) | test_two_python_federates_share_in_memory_rti | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
-| Register Object Instance | 6.8 | 2 | EFF:1, EXC:1 | HLA1516.1-OM-6_8-EFF-005, HLA1516.1-OM-6_8-EXC-006 | test_two_python_federates_share_in_memory_rti, test_register_object_instance_rejects_not_connected_not_joined_name_in_use_and_save_restore | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 | Release Multiple Object Instance Names | 6.7 | 4 | ARG:1, EFF:1, EXC:1, PRE:1 | HLA1516.1-OM-6_7-ARG-003, HLA1516.1-OM-6_7-PRE-004, HLA1516.1-OM-6_7-EFF-005 (+1 more) | test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 | Release Object Instance Name | 6.4 | 3 | ARG:1, EFF:1, EXC:1 | HLA1516.1-OM-6_4-ARG-003, HLA1516.1-OM-6_4-EFF-005, HLA1516.1-OM-6_4-EXC-006 | test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 | Remove Object Instance | 6.15 | 3 | ARG:1, EXC:1, PRE:1 | HLA1516.1-OM-6_15-ARG-003, HLA1516.1-OM-6_15-PRE-004, HLA1516.1-OM-6_15-EXC-006 | test_delete_object_instance_notifies_known_federates_with_remove_object_instance | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
@@ -263,10 +260,10 @@ Open IEEE 1516.2 XML and schema-conformance backlog rows.
 
 Cross-cutting native/gRPC/REST transport-equivalence and transportation-type backlog rows.
 
-- Open rows: 198
-- Queue items: 116
-- Statuses: partial:198
-- Kinds: ARG:4, EFF:9, EXC:79, PRE:96, SEM:2, SVC:8
+- Open rows: 195
+- Queue items: 113
+- Statuses: partial:195
+- Kinds: ARG:4, EFF:9, EXC:76, PRE:96, SEM:2, SVC:8
 
 | Queue item | Clause | Open rows | Kinds | Requirement IDs | Acceptance tests | Next action |
 |---|---|---:|---|---|---|---|
@@ -274,9 +271,7 @@ Cross-cutting native/gRPC/REST transport-equivalence and transportation-type bac
 | Attributes Out Of Scope | 6.18 | 1 | PRE:1 | HLA1516.1-OM-6_18-PRE-004 | test_attributes_in_scope_and_out_of_scope_callbacks_track_region_scope_transitions | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Confirm Attribute Transportation Type Change | 6.24 | 5 | ARG:1, EFF:1, EXC:1, PRE:1, SVC:1 | HLA1516.1-OM-6_24-SVC-001, HLA1516.1-OM-6_24-ARG-003, HLA1516.1-OM-6_24-PRE-004 (+2 more) | test_transportation_type_services_emit_confirm_and_report_callbacks | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Confirm Interaction Transportation Type Change | 6.28 | 5 | ARG:1, EFF:1, EXC:1, PRE:1, SVC:1 | HLA1516.1-OM-6_28-SVC-001, HLA1516.1-OM-6_28-ARG-003, HLA1516.1-OM-6_28-PRE-004 (+2 more) | test_transportation_type_services_emit_confirm_and_report_callbacks | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| Delete Object Instance | 6.14 | 1 | EXC:1 | HLA1516.1-OM-6_14-EXC-006 | test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Discover Object Instance | 6.9 | 1 | PRE:1 | HLA1516.1-OM-6_9-PRE-004 | test_discovery_uses_closest_subscribed_superclass_and_known_class_stays_stable | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| Local Delete Object Instance | 6.16 | 1 | EXC:1 | HLA1516.1-OM-6_16-EXC-006 | test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Multiple Object Instance Names Reserved | 6.6 | 1 | PRE:1 | HLA1516.1-OM-6_6-PRE-004 | test_name_reservation_callbacks_report_success_and_failure | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Object Instance Name Reserved | 6.3 | 1 | PRE:1 | HLA1516.1-OM-6_3-PRE-004 | test_name_reservation_callbacks_report_success_and_failure | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Object Management semantic overview | 6.1 | 2 | SEM:2 | HLA1516.1-OM-6_1-SEM-004, HLA1516.1-OM-6_1-SEM-005 | test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions, test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates, test_timestamp_order_attribute_updates_are_released_in_time_order (+1 more) | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
@@ -284,7 +279,6 @@ Cross-cutting native/gRPC/REST transport-equivalence and transportation-type bac
 | Query Interaction Transportation Type | 6.29 | 3 | EFF:1, EXC:1, SVC:1 | HLA1516.1-OM-6_29-SVC-001, HLA1516.1-OM-6_29-EFF-005, HLA1516.1-OM-6_29-EXC-006 | test_transportation_type_services_emit_confirm_and_report_callbacks, negative=test_query_interaction_transportation_type_rejects_not_connected_not_joined_invalid_handle_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Receive Interaction | 6.13 | 1 | PRE:1 | HLA1516.1-OM-6_13-PRE-004 | test_two_python_federates_share_in_memory_rti | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Reflect Attribute Values | 6.11 | 1 | PRE:1 | HLA1516.1-OM-6_11-PRE-004 | test_two_python_federates_share_in_memory_rti | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| Register Object Instance | 6.8 | 1 | EXC:1 | HLA1516.1-OM-6_8-EXC-006 | test_register_object_instance_rejects_not_connected_not_joined_name_in_use_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Release Multiple Object Instance Names | 6.7 | 2 | EXC:1, PRE:1 | HLA1516.1-OM-6_7-PRE-004, HLA1516.1-OM-6_7-EXC-006 | test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Release Object Instance Name | 6.4 | 1 | EXC:1 | HLA1516.1-OM-6_4-EXC-006 | test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Remove Object Instance | 6.15 | 1 | PRE:1 | HLA1516.1-OM-6_15-PRE-004 | test_delete_object_instance_notifies_known_federates_with_remove_object_instance | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |

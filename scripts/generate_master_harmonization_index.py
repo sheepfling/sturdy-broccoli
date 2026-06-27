@@ -8,6 +8,7 @@ from pathlib import Path
 SCRIPT_REPO_ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = Path.cwd()
 REQUIREMENTS_ROOT = REPO_ROOT / "requirements"
+RECONCILIATION_ROOT = REQUIREMENTS_ROOT / "2010"
 OUTPUT_PATH = REQUIREMENTS_ROOT / "hla_1516_master_harmonization_index_v1_0.csv"
 
 
@@ -63,7 +64,7 @@ def build_index_rows() -> list[dict[str, str]]:
     packet = load_imported_hla_packet(REPO_ROOT)
     bridge_lookup: dict[str, dict[str, str]] = {}
     bridge_precedence: dict[str, int] = {}
-    for path in sorted(REQUIREMENTS_ROOT.glob("*detailed_reconciliation.csv")):
+    for path in sorted(RECONCILIATION_ROOT.glob("*detailed_reconciliation.csv")):
         precedence = RECONCILIATION_PRECEDENCE.get(path.name, 0)
         with path.open(newline="", encoding="utf-8") as handle:
             for row in csv.DictReader(handle):

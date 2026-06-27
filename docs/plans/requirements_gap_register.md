@@ -130,8 +130,8 @@ Latest investigated decision:
   kept as an explicit bounded family surface
 - the current owner doc, reconciliation companion, reconciliation verifier,
   and owning shard commands all support that reading
-- the current tail now remains a stable bounded `25 EFF`, `25 CB_ORD`,
-  `17 CB_ORDER`, `16 EXC_API`, `13 EXC`, `6 FED_CB`, and
+- the current tail now remains a stable bounded `14 EFF`, `25 CB_ORD`,
+  `17 CB_ORDER`, `10 EXC_API`, `9 EXC`, `6 FED_CB`, and
   `1 OVW` Clause 6 family envelope
 - the recent `updateAttributeValues` exception rows and the object-instance
   overload exception row for `requestAttributeValueUpdate` are no longer part
@@ -147,6 +147,11 @@ Latest investigated decision:
   bounded tail because the current direct negative-path witnesses now isolate
   the applicable connection, membership, duplicate-name, and save or restore
   guards across the exercised overloads
+- the `registerObjectInstance` effect and exception rows are also no longer
+  part of that bounded tail because the current direct positive and
+  negative-path witnesses now isolate object creation plus discovery
+  eligibility and the exercised class-definition, strict-publication,
+  duplicate-name, membership, connection, and save/restore failures
 - the `releaseObjectInstanceName` precondition row is also no longer part of
   that bounded tail because the current direct negative-path witnesses now
   isolate the applicable connection, membership, and save or restore guards
@@ -154,10 +159,20 @@ Latest investigated decision:
   that bounded tail because the current direct negative-path witnesses now
   isolate the applicable connection, membership, object-knownness,
   ownership-state, and save/restore guards
+- the `localDeleteObjectInstance` effect and exception rows are also no longer
+  part of that bounded tail because the current direct lifecycle and
+  negative-path witnesses now isolate the supported local-knowledge-only
+  effect plus the exercised pending-acquisition, ownership, object-knownness,
+  membership, connection, and save/restore failures
 - the `deleteObjectInstance` precondition row is also no longer part of that
   bounded tail because the current direct negative-path witnesses now isolate
   the applicable connection, membership, object-knownness, delete-privilege,
   and save or restore guards
+- the `deleteObjectInstance` effect and exception rows are also no longer part
+  of that bounded tail because the current direct lifecycle and negative-path
+  witnesses now isolate the supported known-object removal effect plus the
+  exercised privilege, object-knownness, membership, connection, save/restore,
+  and invalid-logical-time failures
 - the `sendInteraction` precondition row is also no longer part of that
   bounded tail because the current direct negative-path witnesses now isolate
   the applicable connection, membership, publication-state, handle-validation,

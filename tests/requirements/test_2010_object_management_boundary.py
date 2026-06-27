@@ -14,13 +14,13 @@ def test_object_management_partial_tail_current_shape_is_stable() -> None:
     rows = list(csv.DictReader(LEDGER.open(newline="", encoding="utf-8")))
     partial_rows = [row for row in rows if row["current_status"] == "partial"]
 
-    assert len(partial_rows) == 94
+    assert len(partial_rows) == 82
     assert Counter(row["reconciliation_kind"] for row in partial_rows) == {
-        "EFF": 18,
+        "EFF": 14,
         "CB_ORD": 25,
-        "EXC_API": 15,
+        "EXC_API": 10,
         "CB_ORDER": 17,
-        "EXC": 12,
+        "EXC": 9,
         "FED_CB": 6,
         "OVW": 1,
     }
@@ -34,13 +34,13 @@ def test_object_management_boundary_doc_records_current_family_shape() -> None:
     assert "## Default Final Stance" in text
     assert "## Exit Condition" in text
     assert "canonical final reading for the current `CAP-OM`" in text
-    assert "`297 mapped`" in text
-    assert "`94 partial`" in text
-    assert "`18 EFF`" in text
+    assert "`309 mapped`" in text
+    assert "`82 partial`" in text
+    assert "`14 EFF`" in text
     assert "`25 CB_ORD`" in text
-    assert "`15 EXC_API`" in text
+    assert "`10 EXC_API`" in text
     assert "`17 CB_ORDER`" in text
-    assert "`12 EXC`" in text
+    assert "`9 EXC`" in text
     assert "`./tools/test-focus run execution-membership`" in text
     assert "`./tools/test-focus run backends`" in text
     assert "`./tools/test-surface run unit-scenarios-light`" in text
@@ -52,11 +52,14 @@ def test_object_management_boundary_doc_records_current_family_shape() -> None:
     assert "multiple-name reservation and release precondition rows no longer live in this partial tail" in normalized
     assert "object-instance overload exception row for `requestAttributeValueUpdate` no longer lives in this partial tail" in normalized
     assert "`registerObjectInstance` precondition row no longer lives in this partial tail" in normalized
+    assert "`registerObjectInstance` effect and exception rows no longer live in this partial tail" in normalized
     assert "`releaseObjectInstanceName` precondition row no longer lives in this partial tail" in normalized
     assert "`deleteObjectInstance` precondition row no longer lives in this partial tail" in normalized
+    assert "`deleteObjectInstance` effect and exception rows no longer live in this partial tail" in normalized
     assert "`sendInteraction` precondition row no longer lives in this partial tail" in normalized
     assert "`requestAttributeValueUpdate` precondition row no longer lives in this partial tail" in normalized
     assert "class-wide `requestAttributeValueUpdate` exception rows no longer live in this partial tail" in normalized
+    assert "`localDeleteObjectInstance` effect and exception rows no longer live in this partial tail" in normalized
     assert "`HLA1516.1-OM-6_8-REGISTEROBJECTINSTANCE-PRE-001`" in text
     assert "`HLA1516.1-OM-6_10-UPDATEATTRIBUTEVALUES-PRE-001`" in text
     assert "`HLA1516.1-OM-6_10-UPDATEATTRIBUTEVALUES-EXC-001`" in text
@@ -148,6 +151,28 @@ def test_register_object_instance_precondition_row_is_now_mapped_to_the_applicab
     assert "`registerObjectInstance` overloads" in row["notes"]
 
 
+def test_register_object_instance_effect_and_exception_rows_are_now_mapped_to_supported_surfaces() -> None:
+    rows = {
+        row["packet_requirement_id"]: row
+        for row in csv.DictReader(LEDGER.open(newline="", encoding="utf-8"))
+    }
+
+    for requirement_id in (
+        "HLA1516.1-OM-6_8-REGISTEROBJECTINSTANCE-EFF-001",
+        "HLA1516.1-OM-6_8-REGISTEROBJECTINSTANCE-EXC-001",
+        "HLA1516.1-OM-6_8-RTIAPI-001-EXC",
+        "HLA1516.1-OM-6_8-RTIAPI-002-EXC",
+    ):
+        assert rows[requirement_id]["current_status"] == "mapped"
+
+    assert "test_two_python_federates_share_in_memory_rti" in rows[
+        "HLA1516.1-OM-6_8-REGISTEROBJECTINSTANCE-EFF-001"
+    ]["current_test_id"]
+    assert "ObjectClassNotPublished" in rows["HLA1516.1-OM-6_8-REGISTEROBJECTINSTANCE-EXC-001"]["requirement_text"]
+    assert "ObjectClassNotDefined" in rows["HLA1516.1-OM-6_8-REGISTEROBJECTINSTANCE-EXC-001"]["requirement_text"]
+    assert "ObjectInstanceNameNotReserved" not in rows["HLA1516.1-OM-6_8-REGISTEROBJECTINSTANCE-EXC-001"]["requirement_text"]
+
+
 def test_release_object_instance_name_precondition_row_is_now_mapped_to_the_applicable_guard_surface() -> None:
     rows = {
         row["packet_requirement_id"]: row
@@ -185,6 +210,37 @@ def test_delete_object_instance_precondition_row_is_now_mapped_to_the_applicable
     assert "test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore" in row["current_test_id"]
     assert "applicable precondition surface" in row["notes"]
     assert "delete-privilege" in row["notes"]
+
+
+def test_delete_and_local_delete_effect_and_exception_rows_are_now_mapped_to_supported_surfaces() -> None:
+    rows = {
+        row["packet_requirement_id"]: row
+        for row in csv.DictReader(LEDGER.open(newline="", encoding="utf-8"))
+    }
+
+    for requirement_id in (
+        "HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-EFF-001",
+        "HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-EXC-001",
+        "HLA1516.1-OM-6_14-RTIAPI-001-EFF",
+        "HLA1516.1-OM-6_14-RTIAPI-001-EXC",
+        "HLA1516.1-OM-6_14-RTIAPI-002-EXC",
+        "HLA1516.1-OM-6_16-LOCALDELETEOBJECTINSTANCE-EFF-001",
+        "HLA1516.1-OM-6_16-LOCALDELETEOBJECTINSTANCE-EXC-001",
+        "HLA1516.1-OM-6_16-RTIAPI-001-EFF",
+        "HLA1516.1-OM-6_16-RTIAPI-001-EXC",
+    ):
+        assert rows[requirement_id]["current_status"] == "mapped"
+
+    assert "test_delete_object_instance_notifies_known_federates_with_remove_object_instance" in rows[
+        "HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-EFF-001"
+    ]["current_test_id"]
+    assert "InvalidLogicalTime" in rows["HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-EXC-001"]["requirement_text"]
+    assert "RTIinternalError" not in rows["HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-EXC-001"]["requirement_text"]
+    assert "test_local_delete_clears_only_local_knowledge_and_object_can_be_rediscovered" in rows[
+        "HLA1516.1-OM-6_16-LOCALDELETEOBJECTINSTANCE-EFF-001"
+    ]["current_test_id"]
+    assert "OwnershipAcquisitionPending" in rows["HLA1516.1-OM-6_16-LOCALDELETEOBJECTINSTANCE-EXC-001"]["requirement_text"]
+    assert "RTIinternalError" not in rows["HLA1516.1-OM-6_16-LOCALDELETEOBJECTINSTANCE-EXC-001"]["requirement_text"]
 
 
 def test_send_interaction_precondition_row_is_now_mapped_to_the_applicable_guard_surface() -> None:
