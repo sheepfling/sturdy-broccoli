@@ -25,6 +25,12 @@ from hla.rti1516e.exceptions import (
     ErrorReadingMIM,
     InconsistentFDD,
 )
+from hla.rti1516e.datatypes import (
+    AttributeHandleSet,
+    AttributeRegionAssociation,
+    RangeBounds,
+    RegionHandleSet,
+)
 from hla.rti1516e.handles import FederateHandleSet
 from hla.spec.refs import method_label, method_reference
 
@@ -291,6 +297,115 @@ def test_join_federation_execution_applies_full_effect_vector(tmp_path):
     creator.destroy_federation_execution("join-effects-fed")
     creator.disconnect()
     joiner.disconnect()
+
+
+def test_resign_federation_execution_applies_full_effect_vector():
+    _, owner, observer, owner_fed, observer_fed, owner_handle, observer_handle = joined_pair(
+        "resign-effects-fed"
+    )
+    federation = owner.backend.state.federation
+    assert federation is not None
+
+    factory = owner.get_time_factory()
+    owner.enable_time_regulation(factory.make_interval(1.0))
+    observer.enable_time_constrained()
+    drain(owner, observer)
+
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    track_id = owner.get_parameter_handle(interaction, "TrackId")
+    dim = owner.get_dimension_handle("HLAdefaultRoutingSpace")
+
+    owner.publish_object_class_attributes(cls, {attr})
+    owner.publish_interaction_class(interaction)
+    observer.subscribe_object_class_attributes(cls, {attr})
+    observer.subscribe_interaction_class(interaction)
+    drain(owner, observer)
+
+    owner_region = owner.create_region({dim})
+    observer_region = observer.create_region({dim})
+    owner.set_range_bounds(owner_region, dim, RangeBounds(10, 20))
+    observer.set_range_bounds(observer_region, dim, RangeBounds(15, 25))
+    owner.commit_region_modifications({owner_region})
+    observer.commit_region_modifications({observer_region})
+
+    update_pairs = [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({owner_region}))]
+    subscription_pairs = [
+        AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({owner_region}))
+    ]
+    observer_region_pairs = [
+        AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({observer_region}))
+    ]
+
+    owner.subscribe_object_class_attributes_with_regions(cls, subscription_pairs)
+    owner.subscribe_interaction_class_with_regions(interaction, {owner_region})
+    observer.subscribe_object_class_attributes_with_regions(cls, observer_region_pairs)
+    observer.subscribe_interaction_class_with_regions(interaction, {observer_region})
+
+    obj = owner.register_object_instance_with_regions(cls, update_pairs, "Resign-Owned-Target")
+    owner.update_attribute_values(obj, {attr: b"10,20"}, b"init")
+    owner.send_interaction_with_regions(interaction, {track_id: b"before-resign"}, {owner_region}, b"send")
+    drain(owner, observer)
+
+    owner.register_federation_synchronization_point("READY-RESIGN", b"sync")
+    drain(owner, observer)
+    owner.synchronization_point_achieved("READY-RESIGN")
+
+    observer.time_advance_request(factory.make_time(10.0))
+    drain(owner, observer)
+
+    assert observer_fed.last_callback("timeAdvanceGrant") is None
+    assert observer.backend.state.pending_time_advance is not None
+    assert owner.backend.state.registration_interest_classes == {cls}
+    assert owner.backend.state.interaction_interest_classes == {interaction}
+    assert owner.backend.state.published_objects == {cls: {attr}}
+    assert owner.backend.state.subscribed_objects == {cls: {attr}}
+    assert owner.backend.state.published_interactions == {interaction}
+    assert owner.backend.state.subscribed_interactions == {interaction}
+    assert owner.backend.state.object_region_subscriptions[cls][attr] == {owner_region}
+    assert owner.backend.state.interaction_region_subscriptions[interaction] == {owner_region}
+    assert owner.backend.state.update_regions[obj][attr] == {owner_region}
+    point = federation.synchronization_points["READY-RESIGN"]
+    assert point.targets == {owner_handle, observer_handle}
+    assert point.announced == {owner_handle, observer_handle}
+    assert point.achieved == {owner_handle}
+    assert federation.region_owners[owner_region] == owner_handle
+    assert obj in federation.objects
+
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    drain(observer)
+
+    assert owner.backend.state.handle is None
+    assert owner.backend.state.federation is None
+    assert owner_handle not in federation.federates
+    assert owner_handle not in federation.mom_federate_objects
+    assert owner_region not in federation.region_owners
+    assert obj not in federation.objects
+    assert owner.backend.state.published_objects == {}
+    assert owner.backend.state.subscribed_objects == {}
+    assert owner.backend.state.registration_interest_classes == set()
+    assert owner.backend.state.published_interactions == set()
+    assert owner.backend.state.subscribed_interactions == set()
+    assert owner.backend.state.interaction_interest_classes == set()
+    assert owner.backend.state.regions == {}
+    assert owner.backend.state.region_bounds == {}
+    assert owner.backend.state.update_regions == {}
+    assert owner.backend.state.object_region_subscriptions == {}
+    assert owner.backend.state.interaction_region_subscriptions == {}
+    point = federation.synchronization_points["READY-RESIGN"]
+    assert point.targets == {observer_handle}
+    assert point.announced == {observer_handle}
+    assert point.achieved == set()
+    grant = observer_fed.last_callback("timeAdvanceGrant")
+    assert grant is not None
+    assert grant.args[0] == factory.make_time(10.0)
+    assert observer.backend.state.pending_time_advance is None
+
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.destroy_federation_execution("resign-effects-fed")
+    owner.disconnect()
+    observer.disconnect()
 
 
 def test_connect_joined_federate_is_visible_in_mom_summary():

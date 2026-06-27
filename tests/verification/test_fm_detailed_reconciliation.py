@@ -23,7 +23,7 @@ def test_fm_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 632
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 528, "partial": 104}
+        {"mapped": 529, "partial": 103}
     )
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
@@ -171,3 +171,12 @@ def test_fm_core_lifecycle_effect_and_return_rows_use_direct_runtime_witnesses()
             item.strip() for item in row["current_test_id"].split(";") if item.strip()
         } == expected_resign_tests
         assert row["notes"].startswith("Direct ")
+
+    broad_resign_test = (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_resign_federation_execution_applies_full_effect_vector"
+    )
+    broad_resign_row = rows["HLA1516.1-FM-4_10-RTIAPI-001-EFF"]
+    assert broad_resign_row["current_status"] == "mapped"
+    assert broad_resign_row["current_test_id"] == broad_resign_test
+    assert broad_resign_row["notes"].startswith("Direct ")

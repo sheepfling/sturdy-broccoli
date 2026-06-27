@@ -55,25 +55,23 @@ presentation packet.
 
 - backend-compliance packet denominator: `934` matrix rows
 - canonical status split in that packet:
-  - `839` `pass`
+  - `842` `pass`
   - `40` `implemented-slice`
   - `1` `implemented-smoke`
-  - `54` `partial`
+  - `51` `partial`
 - current Python runtime resolution in that packet:
-  - `850` `verified`
-  - `5` `vendor-divergent`
+  - `853` `verified`
+  - `2` `vendor-divergent`
   - `79` `not-applicable`
 - defended policy-parent packet:
   - `12` intentionally bounded broad partial parents
   - `26` passing supported-subset child proofs
 - exact `partial` shape inside the packet:
   - `36` `partial` rows with Python already `verified`
-  - `5` `partial` rows with Python still `vendor-divergent`
+  - `2` `partial` rows with Python still `vendor-divergent`
   - `13` `partial` rows with Python `not-applicable`
-  - `4` of the `54` `partial` rows are section or area scaffolding rows with no standalone requirement ID
+  - `4` of the `51` `partial` rows are section or area scaffolding rows with no standalone requirement ID
 - current `vendor-divergent` composition inside the `2010` packet:
-  - `1` federation-management effect-vector row from `requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv`
-  - `2` framework or architecture rows owned by `requirements/2010/hla1516_framework_detailed_reconciliation.csv`
   - `2` supported-subset policy parents from `curated-clause5-6`
 
 Interpretation rule:
@@ -215,12 +213,11 @@ Current reading:
      recorded in
      [`2010_python_rti_bounded_family_execution_worklist.md`](2010_python_rti_bounded_family_execution_worklist.md)
 4. the remaining `2010` Python `vendor-divergent` packet rows are no longer one undifferentiated blocker class
-   - the `5` rows now fall into explicit owner buckets:
-     - `1` Clause 4 FM effect-vector row already covered by
-       [`../../docs/requirements/ieee-1516-2010/federation_management_bounded_family.md`](../../docs/requirements/ieee-1516-2010/federation_management_bounded_family.md)
-     - `2` framework or architecture rows owned by
-       [`../../requirements/2010/hla1516_framework_detailed_reconciliation.csv`](../../requirements/2010/hla1516_framework_detailed_reconciliation.csv)
+   - the `2` rows now fall into an explicit owner bucket:
      - `2` supported-subset policy parents already exposed in the `policy_parents` export
+   - the framework umbrella source remains part of the canonical 2010 owner surface in
+     [`../../requirements/2010/hla1516_framework_detailed_reconciliation.csv`](../../requirements/2010/hla1516_framework_detailed_reconciliation.csv),
+     but the narrowed top-level framework and object-concept rows no longer sit in the Python vendor-divergent residual set
    - that means the remaining `vendor-divergent` label is mostly an ownership classification fact, not a sign of unresolved documentation ambiguity
 5. one large 2010 family is now structurally settled as a bounded owner surface
    even though its row-level ledger remains `partial`

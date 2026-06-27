@@ -9,14 +9,14 @@ but leadership should read it through two separate denominators:
 
 - canonical `2010` backend-compliance packet:
   - `934` rows
-  - `839` `pass`
+  - `842` `pass`
   - `40` `implemented-slice`
   - `1` `implemented-smoke`
-  - `54` `partial`
+  - `51` `partial`
 - Python runtime projection inside that packet:
-  - `850` `verified`
+  - `853` `verified`
   - `79` `not-applicable`
-  - `5` `vendor-divergent`
+  - `2` `vendor-divergent`
   - `0` `blocked`
   - `0` `not-yet-tested`
   - `0` `classification-required`
@@ -46,7 +46,7 @@ That is not the same as saying:
 - every `2010` packet row is already a standalone all-passed witness
 - every applicable requirement is perfectly spec-identical
 
-The remaining `5` residuals are intentional `vendor-divergent`
+The remaining `2` residuals are intentional `vendor-divergent`
 classifications, not open test debt, and the canonical packet still keeps
 bounded `partial` rows explicit.
 
@@ -67,7 +67,7 @@ Then keep the distinction clear:
 - `not-applicable` means intentionally out of scope
 - `vendor-divergent` means intentionally different or only partially modeled by policy, not unfinished work
 
-Do not present the residual `5` as bugs unless the discussion is specifically
+Do not present the residual `2` as bugs unless the discussion is specifically
 about strict spec parity.
 
 Put the divergent rows in an appendix or a secondary "intentional residuals" slide, not on the main success slide.
@@ -96,13 +96,13 @@ The package split is intentional and visible in:
 
 ### 1. Initial Federate Capabilities
 
-Status: **Proven, with a small number of intentional lifecycle-semantics divergences**
+Status: **Proven**
 
 The Python backend has no open states in Clause 4 federation management:
 
 - IEEE 1516.1-2010 §4: `281` total
-- `275` verified
-- `4` vendor-divergent
+- `279` verified
+- `0` vendor-divergent
 - `2` not-applicable
 - `0` open states
 
@@ -121,10 +121,6 @@ Representative executable evidence:
 - `tests/backends/test_python_backend_federation_extended.py`
 - `tests/scenarios/test_federation_lifecycle_backend_matrix.py`
 - `tests/scenarios/test_federation_management_backend_matrix.py`
-
-Important caveat:
-
-- There are still Clause 4 `vendor-divergent` rows where the backend behavior is proven in slices, but the repo policy does not yet treat the entire standard-shaped lifecycle effect vector as asserted in one place.
 
 ### 2. Standing Up Federations and Synchronizing Federates
 
@@ -336,16 +332,12 @@ The Python RTI is not "zero divergence."
 
 The remaining residuals are:
 
-- `23` `vendor-divergent`
+- `2` `vendor-divergent`
 - `79` `not-applicable`
 - `0` open states
 
-The most relevant remaining divergences for leadership discussion are the `6` IEEE 1516.1 rows still marked `vendor-divergent` in the Python disposition packet:
+The most relevant remaining divergences for leadership discussion are the `2` IEEE 1516.1 rows still marked `vendor-divergent` in the Python disposition packet:
 
-- `HLA1516.1-FM-4.2-EFF-001`
-- `HLA1516.1-FM-4.5-EFF-001`
-- `HLA1516.1-FM-4.9-EFF-001`
-- `HLA1516.1-FM-4.10-EFF-001`
 - `HLA1516.1-DM-5.1.6-001`
 - `HLA1516.1-OM-6.1.11-001`
 

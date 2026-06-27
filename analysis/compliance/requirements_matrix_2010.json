@@ -1115,30 +1115,31 @@
       "certi_runtime_status": "",
       "document": "IEEE 1516-2010",
       "implementation_refs": [
-        "docs/verification/verification_plan.md"
+        "docs/verification/requirements_hierarchy.md",
+        "docs/reference/README.md"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
       "linked_methods": [],
       "matrix_id": "HLA1516-FW-001",
       "negative_test_refs": [],
-      "notes": "verification_method=shall; requirements skeleton; Top-level framework scope is now stated explicitly in the authored framework rules catalog",
+      "notes": "verification_method=documentation hierarchy audit; Current hierarchy and reference docs explicitly separate the framework layer from the RTI-service and OMT standards.; Framework scope is now a narrow documentation-and-traceability requirement backed directly by the hierarchy and reference docs.",
       "pitch_jpype_runtime_disposition": "classification-required",
       "pitch_py4j_runtime_disposition": "classification-required",
       "pitch_runtime_disposition": "classification-required",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
       "positive_test_refs": [
-        "Framework-level concepts still need clause-by-clause extraction"
+        "tests/verification/test_framework_rule_docs_v1_0.py::test_framework_docs_capture_product_set_scope_and_source_policy"
       ],
-      "python_runtime_disposition": "vendor-divergent",
+      "python_runtime_disposition": "verified",
       "python_runtime_status": "",
       "requirement_id": "HLA1516-FW-001",
       "section_ref": "IEEE 1516-2010 Framework concepts",
       "service_group": "Framework concepts",
       "source": "requirements/2010/hla1516_framework_rules.csv",
-      "status": "partial",
-      "title": "The repo shall treat IEEE 1516-2010 as the top-level framework and keep federate behavior",
+      "status": "pass",
+      "title": "The repo shall present IEEE 1516-2010 as the framework-level standard and keep that layer separated from IEEE 1516.1 RTI services and IEEE 1516.2 OMT structure in the authored hierarchy and reference docs.",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
       "vendor_profile_bucket": "",
@@ -1149,34 +1150,39 @@
     },
     {
       "artifact_refs": [
+        "analysis/compliance/requirements_matrix_2010.csv",
         "requirements/2010/hla1516_framework_rules.csv"
       ],
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516-2010",
       "implementation_refs": [
-        "hla2010/fom.py"
+        "hla2010/fom.py",
+        "docs/verification/requirements_hierarchy.md"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
       "linked_methods": [],
       "matrix_id": "HLA1516-OBJ-001",
       "negative_test_refs": [],
-      "notes": "verification_method=requirements skeleton; Cross-links to the 1516.1 OM and 1516.2 OMT families are now explicit.",
+      "notes": "verification_method=parser structure audit + hierarchy cross-link audit; Current parser evidence preserves distinct OMT object and interaction catalogs while the hierarchy docs cross-link those concepts into the 1516.1 and 1516.2 families.; Object-model scope is now a narrow parser-and-hierarchy requirement backed by direct OMT structure parsing plus cross-standard hierarchy links.",
       "pitch_jpype_runtime_disposition": "classification-required",
       "pitch_py4j_runtime_disposition": "classification-required",
       "pitch_runtime_disposition": "classification-required",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
-      "positive_test_refs": [],
-      "python_runtime_disposition": "vendor-divergent",
+      "positive_test_refs": [
+        "tests/factories/test_fom_omt_parsing.py::test_parse_fom_xml_recognizes_standard_omt_component_tables_across_fom_som_and_mim",
+        "tests/verification/test_framework_rule_docs_v1_0.py::test_framework_docs_capture_product_set_scope_and_source_policy"
+      ],
+      "python_runtime_disposition": "verified",
       "python_runtime_status": "",
       "requirement_id": "HLA1516-OBJ-001",
       "section_ref": "IEEE 1516-2010 Object model concepts",
       "service_group": "Object concepts",
       "source": "requirements/2010/hla1516_framework_rules.csv",
-      "status": "partial",
-      "title": "The repo shall distinguish object-model concepts from programming-language objects and map them to the 1516.1 object services and 1516.2 OMT structure",
+      "status": "pass",
+      "title": "The repo shall distinguish HLA object-model structures from programming-language objects by preserving separate OMT object-class and interaction-class catalogs and cross-linking them to the 1516.1 object-service and 1516.2 OMT families.",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
       "vendor_profile_bucket": "",
@@ -3733,22 +3739,22 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.10-EFF-001",
       "negative_test_refs": [],
-      "notes": "verification_method=stateful integration test; The implementation performs a rich state transition, but only slices are asserted directly today.",
+      "notes": "verification_method=stateful integration test; Direct lifecycle witness now asserts resign removes federation membership deletes owned objects for the selected directive drops synchronization-point participation processes a blocked time advance and clears local declaration and region state.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_resign_federation_execution_rejects_invalid_action_and_owned_attributes"
+        "tests/backends/test_python_backend_federation_extended.py::test_resign_federation_execution_applies_full_effect_vector"
       ],
-      "python_runtime_disposition": "vendor-divergent",
+      "python_runtime_disposition": "verified",
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-FM-4.10-EFF-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.10",
       "service_group": "FM/EFF",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
+      "status": "pass",
       "title": "Successful Resign Federation Execution shall remove the federate from federation membership, remove or divest owned objects as directed by the resign action, remove synchronization-point participation, refresh time advancement processing, and clear local publication and subscription state.",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -44278,15 +44284,15 @@
     },
     "python_runtime_disposition_counts": {
       "not-applicable": 79,
-      "vendor-divergent": 5,
-      "verified": 850
+      "vendor-divergent": 2,
+      "verified": 853
     },
     "row_count": 934,
     "status_counts": {
       "implemented-slice": 40,
       "implemented-smoke": 1,
-      "partial": 54,
-      "pass": 839
+      "partial": 51,
+      "pass": 842
     },
     "version": "0.13.0"
   }

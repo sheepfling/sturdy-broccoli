@@ -297,7 +297,7 @@
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
       "section_ref": "IEEE 1516-2010 Framework concepts",
-      "title": "The repo shall treat IEEE 1516-2010 as the top-level framework and keep federate behavior"
+      "title": "The repo shall present IEEE 1516-2010 as the framework-level standard and keep that layer separated from IEEE 1516.1 RTI services and IEEE 1516.2 OMT structure in the authored hierarchy and reference docs."
     },
     {
       "clause_root": "unknown",
@@ -310,7 +310,7 @@
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
       "section_ref": "IEEE 1516-2010 Object model concepts",
-      "title": "The repo shall distinguish object-model concepts from programming-language objects and map them to the 1516.1 object services and 1516.2 OMT structure"
+      "title": "The repo shall distinguish HLA object-model structures from programming-language objects by preserving separate OMT object-class and interaction-class catalogs and cross-linking them to the 1516.1 object-service and 1516.2 OMT families."
     },
     {
       "clause_root": "unknown",

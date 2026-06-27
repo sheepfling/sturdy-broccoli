@@ -180,10 +180,10 @@ Current packet snapshot:
   - `2` `retired/legacy-only`
 - `2010` packet summary currently reports:
   - `934` backend-compliance matrix rows
-  - `839` `pass`
+  - `842` `pass`
   - `40` `implemented-slice`
   - `1` `implemented-smoke`
-  - `54` `partial`
+  - `51` `partial`
   - `12` defended policy-parent partial rows backed by `26` passing supported-subset children
 
 Interpret those packet counts together with the edition-specific owner docs.

@@ -425,7 +425,7 @@
       "evidence_refs": [],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516-FW-001",
-      "notes": "Pitch runtime disposition is explicitly generated as classification-required because the current evidence does not yet justify a narrower verified, blocked, vendor-divergent, not-applicable, or not-yet-tested outcome. verification_method=shall; requirements skeleton; Top-level framework scope is now stated explicitly in the authored framework rules catalog",
+      "notes": "Pitch runtime disposition is explicitly generated as classification-required because the current evidence does not yet justify a narrower verified, blocked, vendor-divergent, not-applicable, or not-yet-tested outcome. verification_method=documentation hierarchy audit; Current hierarchy and reference docs explicitly separate the framework layer from the RTI-service and OMT standards.; Framework scope is now a narrow documentation-and-traceability requirement backed directly by the hierarchy and reference docs.",
       "pitch_disposition": "classification-required",
       "pitch_jpype_disposition": "classification-required",
       "pitch_jpype_evidence_refs": [],
@@ -435,7 +435,7 @@
       "python_runtime_status": "",
       "requirement_id": "HLA1516-FW-001",
       "section_ref": "IEEE 1516-2010 Framework concepts",
-      "title": "The repo shall treat IEEE 1516-2010 as the top-level framework and keep federate behavior"
+      "title": "The repo shall present IEEE 1516-2010 as the framework-level standard and keep that layer separated from IEEE 1516.1 RTI services and IEEE 1516.2 OMT structure in the authored hierarchy and reference docs."
     },
     {
       "applicability": "classification-required",
@@ -444,7 +444,7 @@
       "evidence_refs": [],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516-OBJ-001",
-      "notes": "Pitch runtime disposition is explicitly generated as classification-required because the current evidence does not yet justify a narrower verified, blocked, vendor-divergent, not-applicable, or not-yet-tested outcome. verification_method=requirements skeleton; Cross-links to the 1516.1 OM and 1516.2 OMT families are now explicit.",
+      "notes": "Pitch runtime disposition is explicitly generated as classification-required because the current evidence does not yet justify a narrower verified, blocked, vendor-divergent, not-applicable, or not-yet-tested outcome. verification_method=parser structure audit + hierarchy cross-link audit; Current parser evidence preserves distinct OMT object and interaction catalogs while the hierarchy docs cross-link those concepts into the 1516.1 and 1516.2 families.; Object-model scope is now a narrow parser-and-hierarchy requirement backed by direct OMT structure parsing plus cross-standard hierarchy links.",
       "pitch_disposition": "classification-required",
       "pitch_jpype_disposition": "classification-required",
       "pitch_jpype_evidence_refs": [],
@@ -454,7 +454,7 @@
       "python_runtime_status": "",
       "requirement_id": "HLA1516-OBJ-001",
       "section_ref": "IEEE 1516-2010 Object model concepts",
-      "title": "The repo shall distinguish object-model concepts from programming-language objects and map them to the 1516.1 object services and 1516.2 OMT structure"
+      "title": "The repo shall distinguish HLA object-model structures from programming-language objects by preserving separate OMT object-class and interaction-class catalogs and cross-linking them to the 1516.1 object-service and 1516.2 OMT families."
     },
     {
       "applicability": "classification-required",
@@ -2296,7 +2296,7 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-FM-4.10-EFF-001",
-      "notes": "verification_method=stateful integration test; The implementation performs a rich state transition, but only slices are asserted directly today.",
+      "notes": "verification_method=stateful integration test; Direct lifecycle witness now asserts resign removes federation membership deletes owned objects for the selected directive drops synchronization-point participation processes a blocked time advance and clears local declaration and region state.",
       "pitch_disposition": "verified",
       "pitch_jpype_disposition": "verified",
       "pitch_jpype_evidence_refs": [

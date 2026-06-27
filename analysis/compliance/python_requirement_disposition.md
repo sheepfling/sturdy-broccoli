@@ -6,12 +6,12 @@ This audit projects the shared HLA 2010 requirements matrix onto `python` so eve
 
 | Document clause | Total | Verified | Blocked | Vendor divergent | Not yet tested | Not applicable | Classification required |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| IEEE 1516-2010 unknown | 4 | 1 | 0 | 2 | 0 | 1 | 0 |
+| IEEE 1516-2010 unknown | 4 | 3 | 0 | 0 | 0 | 1 | 0 |
 | IEEE 1516-2010 §12 | 21 | 21 | 0 | 0 | 0 | 0 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §10 | 86 | 84 | 0 | 0 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §11 | 37 | 35 | 0 | 0 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 9 | 0 | 0 | 0 | 1 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §4 | 281 | 278 | 0 | 1 | 0 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §4 | 281 | 279 | 0 | 0 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §5 | 53 | 50 | 0 | 1 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §6 | 121 | 118 | 0 | 1 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §7 | 39 | 37 | 0 | 0 | 0 | 2 | 0 |
@@ -35,12 +35,9 @@ This audit projects the shared HLA 2010 requirements matrix onto `python` so eve
 
 | Document | Clause | Requirement | Disposition | Kind | Title |
 |---|---|---|---|---|---|
-| IEEE 1516-2010 | unknown | HLA1516-FW-001 | vendor-divergent | extracted-requirement | The repo shall treat IEEE 1516-2010 as the top-level framework and keep federate behavior |
-| IEEE 1516-2010 | unknown | HLA1516-OBJ-001 | vendor-divergent | extracted-requirement | The repo shall distinguish object-model concepts from programming-language objects and map them to the 1516.1 object services and 1516.2 OMT structure |
 | IEEE 1516-2010 | unknown | HLA1516-TIME-001 | not-applicable | extracted-requirement | The repo shall map time concepts to 1516.1 time services and grant/order semantics, including logical time and ordering relationships |
 | IEEE 1516.1-2010 (2010 edition) | 4 | AREA-1516.1-4 | not-applicable | section-area | Federation management |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-001 | not-applicable | curated-seed | The RTI shall implement federation-management services for create, join, resign, destroy, save, restore, synchronization, and related lifecycle behavior |
-| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.10-EFF-001 | vendor-divergent | extracted-requirement | Successful Resign Federation Execution shall remove the federate from federation membership, remove or divest owned objects as directed by the resign action, remove synchronization-point participation, refresh time advancement processing, and clear local publication and subscription state. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | AREA-1516.1-5 | not-applicable | section-area | Declaration management |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-001 | not-applicable | extracted-requirement | The RTI shall implement declaration-management services for publication, subscription, registration control, and the associated error and precondition behavior |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.1.6-001 | vendor-divergent | extracted-requirement | RTI shall support subscribing with update rate reduction where applicable. |

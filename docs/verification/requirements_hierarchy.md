@@ -91,9 +91,9 @@ status word.
 
 | L1 capability | L2 feature | L3 requirement scope | Test or proof anchor |
 | --- | --- | --- | --- |
-| Framework rules | Framework concepts | `HLA1516-FW-001` | `docs/verification/verification_plan.md` |
+| Framework rules | Framework concepts | `HLA1516-FW-001` | `tests/verification/test_framework_rule_docs_v1_0.py::test_framework_docs_capture_product_set_scope_and_source_policy` |
 | Framework rules | Federation and federate rules | `HLA1516-RULE-001` | Planned clause extraction from framework sources |
-| Framework rules | Object model concepts | `HLA1516-OBJ-001` | Cross-links into `HLA1516.1` object services and `HLA1516.2` OMT rows |
+| Framework rules | Object model concepts | `HLA1516-OBJ-001` | `tests/factories/test_fom_omt_parsing.py::test_parse_fom_xml_recognizes_standard_omt_component_tables_across_fom_som_and_mim` plus cross-links into `HLA1516.1` object services and `HLA1516.2` OMT rows |
 | Framework rules | Time concepts | `HLA1516-TIME-001` | Cross-links into `HLA1516.1-TM-*` rows |
 
 ## HLA1516.1

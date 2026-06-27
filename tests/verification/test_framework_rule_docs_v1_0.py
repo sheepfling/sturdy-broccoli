@@ -18,6 +18,9 @@ def test_framework_docs_capture_product_set_scope_and_source_policy():
     assert "IEEE 1516.1-2010`: RTI services and MOM behavior" in hierarchy
     assert "IEEE 1516.2-2010`: OMT schema language and FOM/MIM interchange" in hierarchy
     assert "| Framework rules | Framework concepts | `HLA1516-FW-001` |" in hierarchy
+    assert "test_framework_docs_capture_product_set_scope_and_source_policy" in hierarchy
+    assert "| Framework rules | Object model concepts | `HLA1516-OBJ-001` |" in hierarchy
+    assert "test_parse_fom_xml_recognizes_standard_omt_component_tables_across_fom_som_and_mim" in hierarchy
     assert "Canonical working source material for this repo lives under:" in reference
     assert "../../specs/ieee-1516-2010/" in reference
     assert "section anchors through `hla.spec.refs`" in source_policy

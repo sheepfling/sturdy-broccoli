@@ -25,14 +25,14 @@ The current `2010` proof shape is:
 
 - canonical backend-compliance packet:
   - `934` matrix rows
-  - `839` `pass`
+  - `842` `pass`
   - `40` `implemented-slice`
   - `1` `implemented-smoke`
-  - `54` `partial`
+  - `51` `partial`
 - Python runtime projection inside that packet:
-  - `850` `verified`
+  - `853` `verified`
   - `79` `not-applicable`
-  - `5` `vendor-divergent`
+  - `2` `vendor-divergent`
   - `0` `blocked`
   - `0` `not-yet-tested`
   - `0` `classification-required`
@@ -66,9 +66,9 @@ The Python-lane runtime-classification criteria are satisfied:
 
 | Goal item | Current evidence | Result |
 | --- | --- | --- |
-| No Python runtime rows remain in `blocked`, `not-yet-tested`, or `classification-required` | [requirements_matrix_2010.csv](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/analysis/compliance/requirements_matrix_2010.csv) currently counts `850 verified`, `79 not-applicable`, `5 vendor-divergent`, and `0` rows in the unresolved runtime states | Satisfied |
+| No Python runtime rows remain in `blocked`, `not-yet-tested`, or `classification-required` | [requirements_matrix_2010.csv](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/analysis/compliance/requirements_matrix_2010.csv) currently counts `853 verified`, `79 not-applicable`, `2 vendor-divergent`, and `0` rows in the unresolved runtime states | Satisfied |
 | Remaining Python non-verified runtime rows are intentional with explicit evidence and notes | The Python projection now contains only `vendor-divergent` and `not-applicable` residuals | Satisfied |
-| The canonical 2010 packet keeps bounded partials explicit instead of hiding them as Python failures | The same matrix currently keeps `54 partial` packet rows, with the bounded reading owned by [2010_python_rti_bounded_family_execution_worklist.md](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/docs/plans/2010_python_rti_bounded_family_execution_worklist.md) and [requirements_completion_audit.md](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/docs/plans/requirements_completion_audit.md) | Satisfied |
+| The canonical 2010 packet keeps bounded partials explicit instead of hiding them as Python failures | The same matrix currently keeps `51 partial` packet rows, with the bounded reading owned by [2010_python_rti_bounded_family_execution_worklist.md](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/docs/plans/2010_python_rti_bounded_family_execution_worklist.md) and [requirements_completion_audit.md](/Users/rick/Library/Mobile%20Documents/com~apple%20CloudDocs/GIT/hla-2010/docs/plans/requirements_completion_audit.md) | Satisfied |
 | Python disposition JSON and markdown stay in sync | The generated packet and markdown are guarded by repo tests for generated disposition consistency | Satisfied |
 | The canonical repo verification lane remains part of the proof basis | `./tools/python verify` remains part of the documented proof basis for the Python lane | Satisfied |
 
@@ -77,10 +77,8 @@ The Python-lane runtime-classification criteria are satisfied:
 The remaining Python non-verified runtime rows are all intentional
 classifications, not missing tests.
 
-The current `5` `vendor-divergent` rows break down as:
+The current `2` `vendor-divergent` rows break down as:
 
-- `1` federation-management effect-vector row
-- `2` framework or architecture rows
 - `2` supported-subset policy-parent rows
 
 These are not hidden backlog states.
@@ -89,10 +87,10 @@ They are explicit bounded or divergent readings in the current packet.
 There is a second residual surface that must stay separate from the runtime
 projection:
 
-- the canonical `2010` packet still keeps `54` rows at `partial`
-- those `54` rows currently split as:
+- the canonical `2010` packet still keeps `51` rows at `partial`
+- those `51` rows currently split as:
   - `36` rows where Python is already `verified`
-  - `5` rows where Python is `vendor-divergent`
+  - `2` rows where Python is `vendor-divergent`
   - `13` rows where Python is `not-applicable`
 
 That packet-level `partial` surface is why the repo still uses bounded-family,
@@ -132,7 +130,7 @@ still have no open runtime states:
 
 | Clause | Total | Verified | Vendor divergent | Not applicable | Open runtime states |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| IEEE 1516.1-2010 §4 | 281 | 275 | 4 | 2 | 0 |
+| IEEE 1516.1-2010 §4 | 281 | 279 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 §5 | 52 | 49 | 1 | 2 | 0 |
 | IEEE 1516.1-2010 §6 | 110 | 107 | 1 | 2 | 0 |
 | IEEE 1516.1-2010 §7 | 39 | 37 | 0 | 2 | 0 |
