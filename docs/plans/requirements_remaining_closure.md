@@ -137,8 +137,8 @@ The remaining `2010` truth shape is now:
 
 Exact current reading from the backend-compliance packet:
 
-- `48` `partial` rows total
-- `35` `partial` rows where Python is already `verified`
+- `25` `partial` rows total
+- `12` `partial` rows where Python is already `verified`
 - `0` `partial` rows where Python is still `vendor-divergent`
 - `13` `partial` rows where Python is `not-applicable`
 - only `3` requirement rows remain as direct mixed-backend clause tails:

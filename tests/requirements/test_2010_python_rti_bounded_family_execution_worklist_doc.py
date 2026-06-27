@@ -11,9 +11,9 @@ def test_2010_bounded_family_execution_worklist_lists_current_bounded_buckets() 
     text = DOC.read_text(encoding="utf-8")
 
     for token in (
-        "`934` matrix rows",
-        "`842` `pass`",
-        "`51` `partial`",
+        "`931` matrix rows",
+        "`865` `pass`",
+        "`25` `partial`",
         "`0` `planned`",
         "`40` `implemented-slice`",
         "mixed_backend_priority_boundaries.md",
@@ -30,8 +30,8 @@ def test_2010_bounded_family_execution_worklist_lists_current_bounded_buckets() 
 
     assert "`CAP-XML`: `364 partial`" in text
     assert "`CAP-SUP`: `129 partial`" in text
-    assert "`CAP-OM`: `98 partial`" in text
-    assert "`CAP-FM`: `109 partial`" in text
+    assert "`CAP-OM`: `102 partial`" in text
+    assert "`CAP-FM`: `79 partial`" in text
     assert "`CAP-OMT`: `2 partial`" in text
     assert "`20` `pass` OMT/XML area rows" in text
     assert "`3` `implemented-slice` OMT/XML execution witnesses" in text
@@ -71,11 +71,10 @@ def test_2010_bounded_family_execution_worklist_keeps_owner_and_tightening_rules
     assert "stable bounded tail of" in text
     assert "`19 PRE`, `19 EXC`, `19 EXC_API`, and `1 OVW` row" in text
     assert "keep the `CAP-FM` family as canonical `partial`" in text
-    assert "`43 ARG`, `23 EFF`, `17 CB_ORD`, `15 EXC`, and `11` residual bounded rows" in text
+    assert "`43 ARG`, `17 CB_ORD`, and a much smaller residual tail of bounded effect," in text
     assert "runtime connection-loss callback proof" in text
     assert "keep the `CAP-OM` family as canonical `partial`" in text
-    assert "`25 EFF`, `25 CB_ORD`, `17 CB_ORDER`, `16 EXC_API`, `13 EXC`," in text
-    assert "`6 FED_CB`, and `1 OVW` row" in text
+    assert "`25 CB_ORD`, `17 CB_ORDER`, and the remaining bounded effect and exception" in text
     assert "`updateAttributeValues` exception rows" in text
     assert "`requestAttributeValueUpdate`" in text
     assert "`InvalidObjectClassHandle`" in text

@@ -17,7 +17,7 @@ def test_requirements_remaining_closure_uses_current_2010_large_family_story() -
     assert "omt_xml_bounded_family.md" in text
     assert "There are also no remaining active `2010` closeout buckets in this note." in text
     assert "`0` `partial` rows where Python is still `vendor-divergent`" in text
-    assert "`35` `partial` rows where Python is already `verified`" in text
+    assert "`12` `partial` rows where Python is already `verified`" in text
     assert "`13` `partial` rows where Python is `not-applicable`" in text
     assert "`0` supported-subset policy parents" in text
     assert "hla1516_framework_detailed_reconciliation.csv" in text

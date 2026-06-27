@@ -9,10 +9,10 @@ but leadership should read it through two separate denominators:
 
 - canonical `2010` backend-compliance packet:
   - `931` rows
-  - `842` `pass`
+  - `865` `pass`
   - `40` `implemented-slice`
   - `1` `implemented-smoke`
-  - `48` `partial`
+  - `25` `partial`
 - Python runtime projection inside that packet:
   - `852` `verified`
   - `79` `not-applicable`

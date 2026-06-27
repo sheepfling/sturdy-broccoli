@@ -55,10 +55,10 @@ presentation packet.
 
 - backend-compliance packet denominator: `931` matrix rows
 - canonical status split in that packet:
-  - `842` `pass`
+  - `865` `pass`
   - `40` `implemented-slice`
   - `1` `implemented-smoke`
-  - `48` `partial`
+  - `25` `partial`
 - current Python runtime resolution in that packet:
   - `852` `verified`
   - `0` `vendor-divergent`
@@ -67,10 +67,10 @@ presentation packet.
   - `9` intentionally bounded broad partial parents
   - `23` passing supported-subset child proofs
 - exact `partial` shape inside the packet:
-  - `35` `partial` rows with Python already `verified`
+  - `12` `partial` rows with Python already `verified`
   - `0` `partial` rows with Python still `vendor-divergent`
   - `13` `partial` rows with Python `not-applicable`
-  - `4` of the `51` `partial` rows are section or area scaffolding rows with no standalone requirement ID
+  - `5` of the `25` `partial` rows are section or area scaffolding rows with no standalone requirement ID
 - current `vendor-divergent` composition inside the `2010` packet:
   - `0` supported-subset policy parents from `curated-clause5-6`
 

@@ -48,11 +48,11 @@ Use this snapshot when the question is:
 
 Current `analysis/compliance/requirements_matrix_2010.csv` totals:
 
-- `934` matrix rows
-- `842` `pass`
+- `931` matrix rows
+- `865` `pass`
 - `40` `implemented-slice`
 - `1` `implemented-smoke`
-- `51` `partial`
+- `25` `partial`
 
 Interpretation rule:
 
@@ -293,7 +293,8 @@ Decision:
 Reason:
 
 1. the reconciliation companion still shows a stable bounded tail of
-   `43 ARG`, `23 EFF`, `17 CB_ORD`, `15 EXC`, and `11` residual bounded rows
+   `43 ARG`, `17 CB_ORD`, and a much smaller residual tail of bounded effect,
+   callback, and exception rows
 2. the current federation-management shards are green, but the remaining
    packet rows still describe broader decomposition, callback-order, state
    vector, or connection-loss fault envelopes than the direct witnesses
@@ -328,8 +329,8 @@ Decision:
 Reason:
 
 1. the reconciliation companion now shows a stable bounded tail of
-   `25 EFF`, `25 CB_ORD`, `17 CB_ORDER`, `16 EXC_API`, `13 EXC`,
-   `6 FED_CB`, and `1 OVW` row
+   `25 CB_ORD`, `17 CB_ORDER`, and the remaining bounded effect and exception
+   tails that still overstate full transport and callback-order breadth
 2. the current Clause 6 shards are green, and the family already reflects the
    recent tightening where the `updateAttributeValues` exception rows and the
    object-instance overload exception row for `requestAttributeValueUpdate`
@@ -481,8 +482,8 @@ The current bounded-family tails called out by the closeout docs are:
 
 - `CAP-XML`: `364 partial`
 - `CAP-SUP`: `129 partial`
-- `CAP-OM`: `98 partial`
-- `CAP-FM`: `109 partial`
+- `CAP-OM`: `102 partial`
+- `CAP-FM`: `79 partial`
 - `CAP-TM`: `58 partial`
 - `CAP-FW`: `41 partial`
 - `CAP-OMT`: `2 partial`

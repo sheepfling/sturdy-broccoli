@@ -2589,7 +2589,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.11-EFF-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.11",
-      "title": "Successful Register Federation Synchronization Point processing shall update federation synchronization or save/restore state consistently for the participating federates."
+      "title": "Successful Register Federation Synchronization Point processing shall record the synchronization label targets and announcement state so the point becomes visible to subsequent synchronization callbacks."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -2909,7 +2909,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.12-EFF-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.12",
-      "title": "The Synchronization Point Registration callbacks callback shall expose the resulting federation synchronization or save/restore state transition to the affected federates."
+      "title": "Synchronization Point Registration callbacks shall report successful fresh-label registration and failed duplicate-label or invalid-target registration without mutating the established synchronization-point state."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -2949,7 +2949,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.12-EXC-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.12",
-      "title": "The triggering path for Synchronization Point Registration callbacks shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior."
+      "title": "Synchronization Point Registration callbacks shall distinguish successful registration from duplicate-label and invalid-target failure reasons through separate succeeded and failed callback payloads."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -3220,7 +3220,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.13-EFF-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.13",
-      "title": "The Announce Synchronization Point callback shall expose the resulting federation synchronization or save/restore state transition to the affected federates."
+      "title": "Announce Synchronization Point shall deliver the registered synchronization label and tag to late joiners before federation completion for open whole-federation synchronization points."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -3260,7 +3260,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.13-EXC-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.13",
-      "title": "The triggering path for Announce Synchronization Point shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior."
+      "title": "Announce Synchronization Point shall remain a distinct late-join synchronization callback that delivers the open label and tag before completion rather than collapsing into only the later federation-synchronized outcome."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -3540,7 +3540,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.14-EFF-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.14",
-      "title": "Successful Synchronization Point Achieved processing shall update federation synchronization or save/restore state consistently for the participating federates."
+      "title": "Successful Synchronization Point Achieved processing shall record achieved and failed federate participation for the announced label until federation synchronization completes."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -3891,7 +3891,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.15-EFF-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.15",
-      "title": "The Federation Synchronized callback shall expose the resulting federation synchronization or save/restore state transition to the affected federates."
+      "title": "Federation Synchronized shall deliver the synchronization label to participating federates once all targeted federates report achievement for that point."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -3931,7 +3931,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.15-EXC-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.15",
-      "title": "The triggering path for Federation Synchronized shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior."
+      "title": "Federation Synchronized shall surface unsuccessful participants in its failed-federate set instead of collapsing partial failure into an unlabeled success-only callback."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -4211,7 +4211,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.16-EFF-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.16",
-      "title": "Successful Request Federation Save processing shall update federation synchronization or save/restore state consistently for the participating federates."
+      "title": "Successful Request Federation Save processing shall set the active save label and move joined federates into the instructed-to-save lifecycle status."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -4504,7 +4504,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.17-EFF-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.17",
-      "title": "The Initiate Federate Save callback shall expose the resulting federation synchronization or save/restore state transition to the affected federates."
+      "title": "Initiate Federate Save shall deliver the requested save label to joined federates when a federation save begins."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -4553,7 +4553,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.17-EXC-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.17",
-      "title": "The triggering path for Initiate Federate Save shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior."
+      "title": "Initiate Federate Save shall remain a distinct save-start callback that carries the active save label instead of collapsing into only the later federation-saved or save-status-response callbacks."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -4797,7 +4797,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.18-EFF-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.18",
-      "title": "Successful Federate Save Begun processing shall update federation synchronization or save/restore state consistently for the participating federates."
+      "title": "Successful Federate Save Begun processing shall move the reporting federate into the FEDERATE_SAVING save-status phase while peers remain instructed to save until they also begin saving."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -5099,7 +5099,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.19-EFF-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.19",
-      "title": "Successful Federate Save Complete and Federate Save Not Complete processing shall update federation synchronization or save/restore state consistently for the participating federates."
+      "title": "Successful Federate Save Complete and Federate Save Not Complete processing shall record per-federate save outcomes and transition completed federates into waiting-for-federation-to-save or failure-cleared states."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -5658,7 +5658,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.20-EFF-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.20",
-      "title": "The Federation Saved and Federation Not Saved callback shall expose the resulting federation synchronization or save/restore state transition to the affected federates."
+      "title": "Federation Saved and Federation Not Saved callbacks shall report successful save completion or federate-reported save failure and clear active save state afterward."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -5707,7 +5707,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.20-EXC-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.20",
-      "title": "The triggering path for Federation Saved and Federation Not Saved shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior."
+      "title": "Federation Saved and Federation Not Saved shall distinguish successful completion federate-reported failure and aborted-save outcomes through distinct callback names and failure reasons."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -5969,7 +5969,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.21-EFF-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.21",
-      "title": "Successful Abort Federation Save processing shall update federation synchronization or save/restore state consistently for the participating federates."
+      "title": "Successful Abort Federation Save processing shall clear the active save label and report the standard SAVE_ABORTED outcome to joined federates."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -6217,7 +6217,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.22-EFF-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.22",
-      "title": "Successful Query Federation Save Status processing shall update federation synchronization or save/restore state consistently for the participating federates."
+      "title": "Successful Query Federation Save Status processing shall return federation save status pairs that reflect completed or cleared no-save-in-progress outcomes."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -6559,7 +6559,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.23-EXC-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.23",
-      "title": "The triggering path for Federation Save Status Response shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior."
+      "title": "Federation Save Status Response shall return structured per-federate save-status pairs for the current save lifecycle instead of collapsing save completion into an unlabeled generic acknowledgement."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -7199,7 +7199,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.25-EXC-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.25",
-      "title": "The triggering path for Request Federation Restore confirmation shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior."
+      "title": "Request Federation Restore confirmation shall distinguish missing-save-label failure from successful restore-request acceptance by using failed versus succeeded callbacks and by suppressing restore-status state on the failed path."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -7510,7 +7510,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.26-EXC-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.26",
-      "title": "The triggering path for Federation Restore Begun shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior."
+      "title": "Federation Restore Begun shall remain a distinct restore-start callback with no payload rather than collapsing into either the restore-status-response or initiate-federate-restore callbacks."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -7803,7 +7803,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.27-EXC-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.27",
-      "title": "The triggering path for Initiate Federate Restore shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior."
+      "title": "Initiate Federate Restore shall remain a distinct targeted restore callback that carries the save label federate name and pre-restore handle instead of collapsing into the restore-begun or status-response callbacks."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -8407,7 +8407,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.29-EXC-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.29",
-      "title": "The triggering path for Federation Restored and Federation Not Restored shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior."
+      "title": "Federation Restored and Federation Not Restored shall distinguish restore-failure outcomes such as federate-reported failure and restore-aborted through distinct failure reasons in the federationNotRestored callback."
     },
     {
       "applicability": "runtime-or-service-probe",
@@ -9561,7 +9561,7 @@
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-FM-4.32-EXC-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.32",
-      "title": "The triggering path for Federation Restore Status Response shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior."
+      "title": "Federation Restore Status Response shall distinguish pending restore from cleared no-restore-in-progress states across successful failed aborted and missing-save-label restore paths."
     },
     {
       "applicability": "runtime-or-service-probe",

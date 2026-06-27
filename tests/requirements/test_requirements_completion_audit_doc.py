@@ -29,7 +29,7 @@ def test_requirements_completion_audit_keeps_owner_vs_presentation_split_explici
     assert "current direct coverage on that active denominator: `645 / 645 = 100%`" in text
     assert "backend-compliance packet denominator: `931` matrix rows" in text
     assert "do not collapse those two denominators into one cross-edition completion" in text
-    assert "`48` `partial`" in text
+    assert "`25` `partial`" in text
     assert "`0` `partial` rows with Python still `vendor-divergent`" in text
     assert "the current count is `0`" in text
     assert "hla1516_framework_detailed_reconciliation.csv" in text

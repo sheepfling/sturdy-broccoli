@@ -4095,14 +4095,14 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.11-EFF-001",
       "negative_test_refs": [],
-      "notes": "verification_method=stateful integration test; Generated state-transition slice for clause 4.11; existing tests usually prove only part of the full effect vector.",
+      "notes": "verification_method=stateful integration test; Direct synchronization lifecycle witness now proves registration installs the label target set announced set and open-to-late-joiners state used by later synchronization callbacks.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_register_federation_synchronization_point_rejects_not_connected_and_not_joined"
+        "test_synchronization_lifecycle_states_are_visible_in_mom_summary"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -4110,8 +4110,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.11",
       "service_group": "FM/EFF",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "Successful Register Federation Synchronization Point processing shall update federation synchronization or save/restore state consistently for the participating federates.",
+      "status": "pass",
+      "title": "Successful Register Federation Synchronization Point processing shall record the synchronization label targets and announcement state so the point becomes visible to subsequent synchronization callbacks.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -4507,14 +4507,15 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.12-EFF-001",
       "negative_test_refs": [],
-      "notes": "verification_method=callback and integration test; Generated state-transition slice for clause 4.12; existing tests usually prove only part of the full effect vector.",
+      "notes": "verification_method=callback and integration test; Direct callback witnesses now prove fresh-label registration succeeds while duplicate-label and invalid-target attempts fail without replacing the already established synchronization point state.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_register_federation_synchronization_point_reports_duplicate_and_invalid_target_failures"
+        "test_register_federation_synchronization_point_reports_duplicate_and_invalid_target_failures",
+        "test_synchronization_lifecycle_states_are_visible_in_mom_summary"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -4522,8 +4523,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.12",
       "service_group": "FM/EFF",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "The Synchronization Point Registration callbacks callback shall expose the resulting federation synchronization or save/restore state transition to the affected federates.",
+      "status": "pass",
+      "title": "Synchronization Point Registration callbacks shall report successful fresh-label registration and failed duplicate-label or invalid-target registration without mutating the established synchronization-point state.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -4559,7 +4560,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.12-EXC-001",
       "negative_test_refs": [],
-      "notes": "verification_method=callback outcome matrix; Generated failure-category slice for clause 4.12 tied to current negative-path or callback-outcome coverage.",
+      "notes": "verification_method=callback outcome matrix; Direct callback-outcome witness now proves the repo surfaces succeeded callbacks separately from failed callbacks carrying label-not-unique and synchronization-set-member-not-joined reasons.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -4574,8 +4575,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.12",
       "service_group": "FM/EXC",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "The triggering path for Synchronization Point Registration callbacks shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior.",
+      "status": "pass",
+      "title": "Synchronization Point Registration callbacks shall distinguish successful registration from duplicate-label and invalid-target failure reasons through separate succeeded and failed callback payloads.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -4922,7 +4923,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.13-EFF-001",
       "negative_test_refs": [],
-      "notes": "verification_method=callback and integration test; Generated state-transition slice for clause 4.13; existing tests usually prove only part of the full effect vector.",
+      "notes": "verification_method=callback and integration test; Direct late-join synchronization witness now proves a joined-late federate receives the announced label and tag before the federation synchronized callback completes.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -4937,8 +4938,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.13",
       "service_group": "FM/EFF",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "The Announce Synchronization Point callback shall expose the resulting federation synchronization or save/restore state transition to the affected federates.",
+      "status": "pass",
+      "title": "Announce Synchronization Point shall deliver the registered synchronization label and tag to late joiners before federation completion for open whole-federation synchronization points.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -4973,7 +4974,7 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.13-EXC-001",
       "negative_test_refs": [],
-      "notes": "verification_method=callback outcome matrix; Generated failure-category slice for clause 4.13 tied to current negative-path or callback-outcome coverage.",
+      "notes": "verification_method=callback outcome matrix; Direct late-join synchronization witness now proves the late federate receives an announceSynchronizationPoint callback with the open label and tag before the later federationSynchronized completion callback.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
@@ -4988,8 +4989,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.13",
       "service_group": "FM/EXC",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "The triggering path for Announce Synchronization Point shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior.",
+      "status": "pass",
+      "title": "Announce Synchronization Point shall remain a distinct late-join synchronization callback that delivers the open label and tag before completion rather than collapsing into only the later federation-synchronized outcome.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -5332,14 +5333,14 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.14-EFF-001",
       "negative_test_refs": [],
-      "notes": "verification_method=stateful integration test; Generated state-transition slice for clause 4.14; existing tests usually prove only part of the full effect vector.",
+      "notes": "verification_method=stateful integration test; Direct synchronization lifecycle witness now proves achievement marks the reporting federate as achieved preserves non-reporting federates as pending and carries failed participants into the final synchronization outcome.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_synchronization_point_achieved_rejects_not_connected_not_joined_and_unknown_label"
+        "test_synchronization_lifecycle_states_are_visible_in_mom_summary"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -5347,8 +5348,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.14",
       "service_group": "FM/EFF",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "Successful Synchronization Point Achieved processing shall update federation synchronization or save/restore state consistently for the participating federates.",
+      "status": "pass",
+      "title": "Successful Synchronization Point Achieved processing shall record achieved and failed federate participation for the announced label until federation synchronization completes.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -5794,14 +5795,15 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.15-EFF-001",
       "negative_test_refs": [],
-      "notes": "verification_method=callback and integration test; Generated state-transition slice for clause 4.15; existing tests usually prove only part of the full effect vector.",
+      "notes": "verification_method=callback and integration test; Direct startup and lifecycle synchronization witnesses now prove all participating federates receive the completed synchronization label when the point closes.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_startup_helper_connects_joins_and_completes_ready_to_run_sync_point"
+        "test_startup_helper_connects_joins_and_completes_ready_to_run_sync_point",
+        "test_synchronization_lifecycle_states_are_visible_in_mom_summary"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -5809,8 +5811,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.15",
       "service_group": "FM/EFF",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "The Federation Synchronized callback shall expose the resulting federation synchronization or save/restore state transition to the affected federates.",
+      "status": "pass",
+      "title": "Federation Synchronized shall deliver the synchronization label to participating federates once all targeted federates report achievement for that point.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -5845,14 +5847,14 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.15-EXC-001",
       "negative_test_refs": [],
-      "notes": "verification_method=callback outcome matrix; Generated failure-category slice for clause 4.15 tied to current negative-path or callback-outcome coverage.",
+      "notes": "verification_method=callback outcome matrix; Direct synchronization lifecycle witness now proves the completed callback carries the failed federate handle set when one participant reports synchronization failure.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_startup_helper_connects_joins_and_completes_ready_to_run_sync_point"
+        "test_synchronization_lifecycle_states_are_visible_in_mom_summary"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -5860,8 +5862,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.15",
       "service_group": "FM/EXC",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "The triggering path for Federation Synchronized shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior.",
+      "status": "pass",
+      "title": "Federation Synchronized shall surface unsuccessful participants in its failed-federate set instead of collapsing partial failure into an unlabeled success-only callback.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -6202,14 +6204,14 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.16-EFF-001",
       "negative_test_refs": [],
-      "notes": "verification_method=stateful integration test; Generated state-transition slice for clause 4.16; existing tests usually prove only part of the full effect vector.",
+      "notes": "verification_method=stateful integration test; Direct save lifecycle witness now proves requestFederationSave records the active save label and marks joined federates as instructed to save before federate-side save work begins.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_request_federation_save_rejects_not_connected_and_not_joined"
+        "test_save_restore_lifecycle_states_are_visible_in_mom_summary"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -6217,8 +6219,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.16",
       "service_group": "FM/EFF",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "Successful Request Federation Save processing shall update federation synchronization or save/restore state consistently for the participating federates.",
+      "status": "pass",
+      "title": "Successful Request Federation Save processing shall set the active save label and move joined federates into the instructed-to-save lifecycle status.",
       "vendor_evidence_refs": [
         "../tests/verification/test_compliance_slice_v011.py",
         "../tests/verification/test_spec_traceability_and_extended_python_rti.py",
@@ -6600,14 +6602,15 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.17-EFF-001",
       "negative_test_refs": [],
-      "notes": "verification_method=callback and integration test; Generated state-transition slice for clause 4.17; existing tests usually prove only part of the full effect vector.",
+      "notes": "verification_method=callback and integration test; Direct save lifecycle witnesses now prove joined federates receive the expected initiateFederateSave callback carrying the active save label when the federation enters save processing.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_synchronization_points_and_save_status_callbacks"
+        "test_synchronization_points_and_save_status_callbacks",
+        "test_save_restore_lifecycle_states_are_visible_in_mom_summary"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -6615,8 +6618,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.17",
       "service_group": "FM/EFF",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "The Initiate Federate Save callback shall expose the resulting federation synchronization or save/restore state transition to the affected federates.",
+      "status": "pass",
+      "title": "Initiate Federate Save shall deliver the requested save label to joined federates when a federation save begins.",
       "vendor_evidence_refs": [
         "../tests/verification/test_compliance_slice_v011.py",
         "../tests/verification/test_spec_traceability_and_extended_python_rti.py",
@@ -6646,14 +6649,15 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.17-EXC-001",
       "negative_test_refs": [],
-      "notes": "verification_method=callback outcome matrix; Generated failure-category slice for clause 4.17 tied to current negative-path or callback-outcome coverage.",
+      "notes": "verification_method=callback outcome matrix; Direct save lifecycle witnesses now prove initiateFederateSave arrives as its own label-carrying callback before the later federationSaved and federationSaveStatusResponse callbacks.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_synchronization_points_and_save_status_callbacks"
+        "test_synchronization_points_and_save_status_callbacks",
+        "test_save_restore_lifecycle_states_are_visible_in_mom_summary"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -6661,8 +6665,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.17",
       "service_group": "FM/EXC",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "The triggering path for Initiate Federate Save shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior.",
+      "status": "pass",
+      "title": "Initiate Federate Save shall remain a distinct save-start callback that carries the active save label instead of collapsing into only the later federation-saved or save-status-response callbacks.",
       "vendor_evidence_refs": [
         "../tests/verification/test_compliance_slice_v011.py",
         "../tests/verification/test_spec_traceability_and_extended_python_rti.py",
@@ -6971,14 +6975,14 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.18-EFF-001",
       "negative_test_refs": [],
-      "notes": "verification_method=stateful integration test; Generated state-transition slice for clause 4.18; existing tests usually prove only part of the full effect vector.",
+      "notes": "verification_method=stateful integration test; Direct save lifecycle witness now proves federateSaveBegun advances only the reporting federate into the FEDERATE_SAVING phase and leaves peer save status unchanged until they begin.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_federate_save_begun_rejects_not_connected_not_joined_and_missing_save"
+        "test_save_restore_lifecycle_states_are_visible_in_mom_summary"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -6986,8 +6990,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.18",
       "service_group": "FM/EFF",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "Successful Federate Save Begun processing shall update federation synchronization or save/restore state consistently for the participating federates.",
+      "status": "pass",
+      "title": "Successful Federate Save Begun processing shall move the reporting federate into the FEDERATE_SAVING save-status phase while peers remain instructed to save until they also begin saving.",
       "vendor_evidence_refs": [
         "../tests/verification/test_compliance_slice_v011.py",
         "../tests/verification/test_spec_traceability_and_extended_python_rti.py",
@@ -7344,14 +7348,15 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.19-EFF-001",
       "negative_test_refs": [],
-      "notes": "verification_method=stateful integration test; Generated state-transition slice for clause 4.19; existing tests usually prove only part of the full effect vector.",
+      "notes": "verification_method=stateful integration test; Direct save lifecycle witnesses now prove save-complete advances the reporting federate into the waiting-for-federation-to-save phase and save-not-complete drives the failed-save clearing path.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_federate_save_complete_and_not_complete_reject_missing_save"
+        "test_save_restore_lifecycle_states_are_visible_in_mom_summary",
+        "test_save_failure_reports_federation_not_saved_and_clears_status"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -7359,8 +7364,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.19",
       "service_group": "FM/EFF",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "Successful Federate Save Complete and Federate Save Not Complete processing shall update federation synchronization or save/restore state consistently for the participating federates.",
+      "status": "pass",
+      "title": "Successful Federate Save Complete and Federate Save Not Complete processing shall record per-federate save outcomes and transition completed federates into waiting-for-federation-to-save or failure-cleared states.",
       "vendor_evidence_refs": [
         "../tests/verification/test_compliance_slice_v011.py",
         "../tests/verification/test_spec_traceability_and_extended_python_rti.py",
@@ -8071,13 +8076,14 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.20-EFF-001",
       "negative_test_refs": [],
-      "notes": "verification_method=callback and integration test; Generated state-transition slice for clause 4.20; existing tests usually prove only part of the full effect vector.",
+      "notes": "verification_method=callback and integration test; Direct save lifecycle witnesses now prove joined federates receive the successful federationSaved callback or the unsuccessful federationNotSaved callback and then return to the no-save-in-progress state.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
+        "test_save_restore_lifecycle_states_are_visible_in_mom_summary",
         "test_save_failure_reports_federation_not_saved_and_clears_status"
       ],
       "python_runtime_disposition": "verified",
@@ -8086,8 +8092,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.20",
       "service_group": "FM/EFF",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "The Federation Saved and Federation Not Saved callback shall expose the resulting federation synchronization or save/restore state transition to the affected federates.",
+      "status": "pass",
+      "title": "Federation Saved and Federation Not Saved callbacks shall report successful save completion or federate-reported save failure and clear active save state afterward.",
       "vendor_evidence_refs": [
         "../tests/verification/test_compliance_slice_v011.py",
         "../tests/verification/test_spec_traceability_and_extended_python_rti.py",
@@ -8122,14 +8128,15 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.20-EXC-001",
       "negative_test_refs": [],
-      "notes": "verification_method=callback outcome matrix; Generated failure-category slice for clause 4.20 tied to current negative-path or callback-outcome coverage.",
+      "notes": "verification_method=callback outcome matrix; Direct save outcome witnesses now prove the repo emits federationSaved for success and federationNotSaved with FEDERATE_REPORTED_FAILURE_DURING_SAVE or SAVE_ABORTED when save completion fails.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_save_failure_reports_federation_not_saved_and_clears_status"
+        "test_save_failure_reports_federation_not_saved_and_clears_status",
+        "test_abort_federation_save_reports_aborted_and_clears_status"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -8137,8 +8144,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.20",
       "service_group": "FM/EXC",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "The triggering path for Federation Saved and Federation Not Saved shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior.",
+      "status": "pass",
+      "title": "Federation Saved and Federation Not Saved shall distinguish successful completion federate-reported failure and aborted-save outcomes through distinct callback names and failure reasons.",
       "vendor_evidence_refs": [
         "../tests/verification/test_compliance_slice_v011.py",
         "../tests/verification/test_spec_traceability_and_extended_python_rti.py",
@@ -8475,14 +8482,14 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.21-EFF-001",
       "negative_test_refs": [],
-      "notes": "verification_method=stateful integration test; Generated state-transition slice for clause 4.21; existing tests usually prove only part of the full effect vector.",
+      "notes": "verification_method=stateful integration test; Direct save-abort witness now proves abortFederationSave clears the active save state and emits the standard SAVE_ABORTED unsuccessful-save outcome.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_abort_federation_save_requires_save_in_progress"
+        "test_abort_federation_save_reports_aborted_and_clears_status"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -8490,8 +8497,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.21",
       "service_group": "FM/EFF",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "Successful Abort Federation Save processing shall update federation synchronization or save/restore state consistently for the participating federates.",
+      "status": "pass",
+      "title": "Successful Abort Federation Save processing shall clear the active save label and report the standard SAVE_ABORTED outcome to joined federates.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -8862,14 +8869,16 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.22-EFF-001",
       "negative_test_refs": [],
-      "notes": "verification_method=stateful integration test; Generated state-transition slice for clause 4.22; existing tests usually prove only part of the full effect vector.",
+      "notes": "verification_method=stateful integration test; Direct save-status response witnesses now prove queryFederationSaveStatus reports no-save-in-progress after successful save completion unsuccessful save completion and aborted-save cleanup.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_query_federation_save_status_rejects_not_connected_and_not_joined"
+        "test_synchronization_points_and_save_status_callbacks",
+        "test_save_failure_reports_federation_not_saved_and_clears_status",
+        "test_abort_federation_save_reports_aborted_and_clears_status"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -8877,8 +8886,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.22",
       "service_group": "FM/EFF",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "Successful Query Federation Save Status processing shall update federation synchronization or save/restore state consistently for the participating federates.",
+      "status": "pass",
+      "title": "Successful Query Federation Save Status processing shall return federation save status pairs that reflect completed or cleared no-save-in-progress outcomes.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -9303,14 +9312,16 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.23-EXC-001",
       "negative_test_refs": [],
-      "notes": "verification_method=callback outcome matrix; Generated failure-category slice for clause 4.23 tied to current negative-path or callback-outcome coverage.",
+      "notes": "verification_method=callback outcome matrix; Direct save status witnesses now prove federationSaveStatusResponse returns per-federate status pairs and reports the no-save-in-progress state after successful failed and aborted save outcomes.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_synchronization_points_and_save_status_callbacks"
+        "test_synchronization_points_and_save_status_callbacks",
+        "test_save_failure_reports_federation_not_saved_and_clears_status",
+        "test_abort_federation_save_reports_aborted_and_clears_status"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -9318,8 +9329,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.23",
       "service_group": "FM/EXC",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "The triggering path for Federation Save Status Response shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior.",
+      "status": "pass",
+      "title": "Federation Save Status Response shall return structured per-federate save-status pairs for the current save lifecycle instead of collapsing save completion into an unlabeled generic acknowledgement.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -10075,14 +10086,15 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.25-EXC-001",
       "negative_test_refs": [],
-      "notes": "verification_method=callback outcome matrix; Generated failure-category slice for clause 4.25 tied to current negative-path or callback-outcome coverage.",
+      "notes": "verification_method=callback outcome matrix; Direct restore-request witnesses now prove missing-save requests emit requestFederationRestoreFailed without restore-status state while valid saved labels emit requestFederationRestoreSucceeded and start restore processing.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_request_federation_restore_failed_is_reported_for_unknown_save_label"
+        "test_request_federation_restore_failed_is_reported_for_unknown_save_label",
+        "test_restore_status_response_and_failure_callback_paths"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -10090,8 +10102,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.25",
       "service_group": "FM/EXC",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "The triggering path for Request Federation Restore confirmation shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior.",
+      "status": "pass",
+      "title": "Request Federation Restore confirmation shall distinguish missing-save-label failure from successful restore-request acceptance by using failed versus succeeded callbacks and by suppressing restore-status state on the failed path.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -10462,14 +10474,14 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.26-EXC-001",
       "negative_test_refs": [],
-      "notes": "verification_method=callback outcome matrix; Generated failure-category slice for clause 4.26 tied to current negative-path or callback-outcome coverage.",
+      "notes": "verification_method=callback outcome matrix; Direct restore lifecycle witness now proves federationRestoreBegun is emitted as its own no-argument callback alongside but distinct from the later restore status response and initiateFederateRestore callbacks.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_restore_status_response_and_failure_callback_paths"
+        "test_save_restore_lifecycle_states_are_visible_in_mom_summary"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -10477,8 +10489,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.26",
       "service_group": "FM/EXC",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "The triggering path for Federation Restore Begun shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior.",
+      "status": "pass",
+      "title": "Federation Restore Begun shall remain a distinct restore-start callback with no payload rather than collapsing into either the restore-status-response or initiate-federate-restore callbacks.",
       "vendor_evidence_refs": [
         "../tests/verification/test_spec_traceability_and_extended_python_rti.py",
         "../tests/vendors/test_pitch_real_backend_matrix.py"
@@ -10829,14 +10841,15 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.27-EXC-001",
       "negative_test_refs": [],
-      "notes": "verification_method=callback outcome matrix; Generated failure-category slice for clause 4.27 tied to current negative-path or callback-outcome coverage.",
+      "notes": "verification_method=callback outcome matrix; Direct restore lifecycle witnesses now prove initiateFederateRestore is a separate targeted callback carrying the save label federate name and pre-restore handle while federationRestoreBegun and federationRestoreStatusResponse remain separate callback surfaces.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_restore_status_response_and_failure_callback_paths"
+        "test_restore_status_response_and_failure_callback_paths",
+        "test_save_restore_lifecycle_states_are_visible_in_mom_summary"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -10844,8 +10857,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.27",
       "service_group": "FM/EXC",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "The triggering path for Initiate Federate Restore shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior.",
+      "status": "pass",
+      "title": "Initiate Federate Restore shall remain a distinct targeted restore callback that carries the save label federate name and pre-restore handle instead of collapsing into the restore-begun or status-response callbacks.",
       "vendor_evidence_refs": [
         "../tests/verification/test_compliance_slice_v011.py",
         "../tests/verification/test_spec_traceability_and_extended_python_rti.py",
@@ -11602,14 +11615,15 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.29-EXC-001",
       "negative_test_refs": [],
-      "notes": "verification_method=callback outcome matrix; Generated failure-category slice for clause 4.29 tied to current negative-path or callback-outcome coverage.",
+      "notes": "verification_method=callback outcome matrix; Direct restore outcome witnesses now prove federationNotRestored reports FEDERATE_REPORTED_FAILURE_DURING_RESTORE and RESTORE_ABORTED as distinct failure reasons rather than a single generic restore failure.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_restore_status_response_and_failure_callback_paths"
+        "test_restore_status_response_and_failure_callback_paths",
+        "test_abort_federation_restore_reports_aborted_and_clears_status"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -11617,8 +11631,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.29",
       "service_group": "FM/EXC",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "The triggering path for Federation Restored and Federation Not Restored shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior.",
+      "status": "pass",
+      "title": "Federation Restored and Federation Not Restored shall distinguish restore-failure outcomes such as federate-reported failure and restore-aborted through distinct failure reasons in the federationNotRestored callback.",
       "vendor_evidence_refs": [
         "../tests/verification/test_spec_traceability_and_extended_python_rti.py",
         "../tests/verification/test_compliance_slice_v011.py",
@@ -13111,14 +13125,16 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.32-EXC-001",
       "negative_test_refs": [],
-      "notes": "verification_method=callback outcome matrix; Generated failure-category slice for clause 4.32 tied to current negative-path or callback-outcome coverage.",
+      "notes": "verification_method=callback outcome matrix; Direct restore-status response witnesses now prove the callback reports pending restore entries during active restore processing and returns to no-restore-in-progress after failure abort or missing-save-label rejection.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_restore_status_response_and_failure_callback_paths"
+        "test_restore_status_response_and_failure_callback_paths",
+        "test_abort_federation_restore_reports_aborted_and_clears_status",
+        "test_request_federation_restore_failed_is_reported_for_unknown_save_label"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -13126,8 +13142,8 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.32",
       "service_group": "FM/EXC",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
-      "title": "The triggering path for Federation Restore Status Response shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior.",
+      "status": "pass",
+      "title": "Federation Restore Status Response shall distinguish pending restore from cleared no-restore-in-progress states across successful failed aborted and missing-save-label restore paths.",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_support_services.py",
         "../tests/backends/test_python_backend_federation_extended.py",
@@ -44070,8 +44086,8 @@
     "status_counts": {
       "implemented-slice": 40,
       "implemented-smoke": 1,
-      "partial": 48,
-      "pass": 842
+      "partial": 25,
+      "pass": 865
     },
     "version": "0.13.0"
   }
