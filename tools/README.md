@@ -36,7 +36,9 @@ Core operator entrypoints:
 - `./tools/fom-siso-pitch-micro-parity`
 - `./tools/fom-siso-runtime-launcher`
 - `./tools/federation-subscriber-api`
+- `./tools/federation-subscriber-cli`
 - `./tools/federate-service-api`
+- `./tools/ui-surface-screenshots`
 - `./tools/fom-siso-runtime-showcase`
 - `./tools/fom-siso-runtime-observer`
 - `./tools/fom-siso-showcase`
@@ -135,10 +137,18 @@ Shortest common paths:
 - auto-start one exact row on boot when needed: `./tools/fom-siso-runtime-observer --provider siso-runtime --scenario link16-rpr2-integrated-2010-micro-2`
   - the page now also exposes `backend override` and `target_radar_steps` controls for supported lanes
   - the default UI is now a generic federation subscriber with object/interaction inspectors plus optional Target/Radar, RPR, and Link 16 panels
+  - the same control plane can now late-join a real execution directly with `--provider live-federation --scenario live-federation` plus JSON options such as `{"edition":"2010","federation_name":"demo-fed","federate_name":"Observer1","fom_modules":["path/to/FOM.xml"]}`
+- drive the same shared observer core from the terminal: `./tools/federation-subscriber-cli catalog --json` or `./tools/federation-subscriber-cli observe --provider siso-runtime --scenario link16-rpr2-integrated-2010-micro-2`
 - stand up the bounded FastAPI federation subscriber service with typed control/state routes plus a richer browser surface: `./tools/federation-subscriber-api`
 - auto-start one exact row through the FastAPI surface when needed: `./tools/federation-subscriber-api --provider siso-runtime --scenario link16-rpr2-integrated-2010-micro-2`
   - exposes `/api/health`, `/api/catalog`, `/api/schema`, `/api/state`, `/api/events`, `/api/inspectors/*`, `/api/control/*`, and `/ws/events`
+  - `/api/state` now also carries retained `normalized_events`, `history_event_count`, `federate_roster`, and `fom_tree` fields so late subscribers can render current state plus prior history without replaying the UI
   - intended as the first real external integration surface for downstream dashboards and tools over the normalized observer contract
+- generate a deterministic screenshot packet for the major FOM workbench, federation visualizer, and federate-service contract views without standing up a live federation: `./tools/ui-surface-screenshots`
+  - writes a browsable index plus PNG captures under `artifacts/ui_surface_screenshots/`
+  - intended for quick operator review of hydrated panels and layout regressions
+  - add `--live-visualizer-url URL` and/or `--live-federate-service-url URL` to append captures from already running live surfaces into the same packet
+  - add `--live-only` when you want a packet built only from already running live surfaces
 - stand up the separate FastAPI federate-service contract with canonical `RTIambassador` method names and bounded invoke support: `./tools/federate-service-api`
   - exposes `/api/contract`, `/api/contract/RTIambassador/{method}`, `/api/sessions`, and `/api/sessions/{id}/invoke/{method}`
   - keeps the external federate-service contract separate from the Federation Studio subscriber/observer surface

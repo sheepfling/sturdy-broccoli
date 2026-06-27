@@ -11,6 +11,7 @@
     "packages/hla-bridge-java-common/src/hla/bridges/java/common",
     "packages/hla-bridge-java-jpype/src/hla/bridges/java/jpype",
     "packages/hla-bridge-java-py4j/src/hla/bridges/java/py4j",
+    "packages/hla-backend-python1516e/src/hla/backends/python1516e",
     "packages/hla-transport-common/src/hla/transports/common",
     "packages/hla-transport-rest/src/hla/transports/rest",
     "packages/hla-fom-target-radar/src/hla/foms/target_radar",

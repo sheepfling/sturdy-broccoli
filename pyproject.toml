@@ -30,7 +30,7 @@ pythonpath = [
   "packages/hla-fom-proto2025-time-mgmt-test/src",
   "packages/hla-verification/src",
 ]
-testpaths = ["tests"]
+testpaths = ["tests", "packages"]
 
 [tool.ruff]
 line-length = 160

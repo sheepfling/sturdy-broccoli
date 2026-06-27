@@ -11,7 +11,7 @@ from typing import Any, Callable
 import pytest
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parent
 TESTS_ROOT = REPO_ROOT / "tests"
 FIXTURES_ROOT = TESTS_ROOT / "fixtures"
 COMPLIANCE_ROOT = REPO_ROOT / "analysis" / "compliance"

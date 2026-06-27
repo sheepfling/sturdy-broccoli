@@ -51,7 +51,11 @@ Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
 - `./tools/fom-siso-pitch-2010-micro-strict` canonical six-row real-2010 Pitch-only SISO micro parity flow
 - `./tools/fom-siso-pitch-micro-parity` canonical Pitch-eligible SISO micro parity flow across the bounded 2010 and 2025 micro rows
 - `./tools/federation-subscriber-api` canonical bounded FastAPI federation subscriber service over the normalized runtime observer contract
+- `./tools/federation-subscriber-cli` canonical terminal observer client over the same shared runtime observer core
 - `./tools/federate-service-api` canonical separate FastAPI federate-service contract over canonical `RTIambassador` method names with bounded invoke support
+- `./tools/ui-surface-screenshots` canonical deterministic browser screenshot packet for the FOM workbench, federation visualizer, and federate-service contract surfaces
+  - optional `--live-visualizer-url` and `--live-federate-service-url` flags append screenshots from already running live surfaces into the same gallery packet
+  - optional `--live-only` skips the seeded local surfaces and captures only the supplied live URLs
 - `./tools/fom-siso-runtime-launcher` canonical larger-federation launcher-oriented runtime SISO packet flow
 - `./tools/fom-siso-runtime-observer` canonical live federation-subscriber control plane for SISO, two-federate, and target-radar runtime lanes
 - `./tools/fom-siso-runtime-showcase` canonical runtime-backed SISO showcase packet flow
