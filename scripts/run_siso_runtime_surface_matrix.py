@@ -30,7 +30,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--topology", action="append", dest="topologies", default=None)
     parser.add_argument("--scenario", action="append", dest="scenarios", default=None)
     parser.add_argument("--surface-profile", action="append", dest="surface_profiles", default=None)
-    parser.add_argument("--preset", action="append", dest="presets", default=None, help="Named row-selection preset such as micro-bridge-smoke, showcase-hydrated, or stress-mixed.")
+    parser.add_argument("--preset", action="append", dest="presets", default=None, help="Named row-selection preset such as micro-bridge-smoke, showcase-hydrated, heaviest-interesting, or stress-mixed.")
     parser.add_argument("--with-screenshots", action="store_true", help="Attempt visualizer and bridge screenshots when Playwright is available.")
     parser.add_argument("--fail-on-screenshot-errors", action="store_true", help="Fail instead of degrading when screenshots cannot be captured.")
     parser.add_argument(
@@ -55,6 +55,7 @@ def main(argv: list[str] | None = None) -> int:
     print(paths.summary_json)
     print(paths.results_csv)
     print(paths.manifest_json)
+    print(paths.index_html)
     print(paths.report_markdown)
     return 0
 

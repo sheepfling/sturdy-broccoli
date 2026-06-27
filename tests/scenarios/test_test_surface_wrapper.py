@@ -69,6 +69,7 @@ def test_tools_test_surface_inventory_json_lists_canonical_lanes() -> None:
         "unit-python-2025-core",
         "unit-transport-local",
         "unit-scenarios-light",
+        "unit-scenarios-visualizer",
         "python1516_2025-main",
         "python-routes",
         "python1516_2025-routes",

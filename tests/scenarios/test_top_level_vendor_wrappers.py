@@ -429,12 +429,13 @@ def test_package_deps_top_level_wrapper_bootstraps_source_checkout(tmp_path: Pat
     packages_dir = tmp_path / "packages"
     packages_dir.mkdir(parents=True, exist_ok=True)
     for package_dir in (ROOT / "packages").iterdir():
-        if not package_dir.is_dir():
+        pyproject_path = package_dir / "pyproject.toml"
+        if not package_dir.is_dir() or not pyproject_path.is_file():
             continue
         target = packages_dir / package_dir.name
         target.mkdir(parents=True, exist_ok=True)
         (target / "pyproject.toml").write_text(
-            (package_dir / "pyproject.toml").read_text(encoding="utf-8"),
+            pyproject_path.read_text(encoding="utf-8"),
             encoding="utf-8",
         )
     result = subprocess.run(

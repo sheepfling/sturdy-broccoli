@@ -43,6 +43,17 @@ def test_siso_runtime_surface_matrix_presets_select_expected_rows() -> None:
     assert {row["surface_profile"] for row in manifest["rows"]} == {"observer-visualizer"}
 
 
+def test_siso_runtime_surface_matrix_heaviest_preset_selects_constellation_rows() -> None:
+    manifest = build_siso_runtime_surface_matrix_manifest(presets=["heaviest-interesting"])
+
+    assert manifest["presets"] == ["heaviest-interesting"]
+    assert manifest["surface_profiles"] == ["observer-visualizer"]
+    assert manifest["scenario_count"] == 6
+    assert manifest["row_count"] == 6
+    assert {row["topology"] for row in manifest["rows"]} == {"constellation-10"}
+    assert {row["family"] for row in manifest["rows"]} == {"link16", "rpr", "space"}
+
+
 def test_siso_runtime_surface_matrix_artifacts_are_generated(tmp_path: Path) -> None:
     paths = write_siso_runtime_surface_matrix_artifacts(
         tmp_path / "surface-matrix",
@@ -59,6 +70,7 @@ def test_siso_runtime_surface_matrix_artifacts_are_generated(tmp_path: Path) -> 
     assert summary["selected_scenario_count"] == 1
     assert summary["selected_row_count"] == 2
     assert summary["screenshot_runtime_status"] == "not-requested"
+    assert paths.index_html.exists()
 
     with paths.results_csv.open(encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle))
@@ -100,6 +112,10 @@ def test_siso_runtime_surface_matrix_artifacts_are_generated(tmp_path: Path) -> 
     assert observer_state["scenario"] == "link16-rpr2-integrated-2010-micro-2"
     assert observer_state["summary_ready"] is True
     assert "artifacts" in observer_state
+    index_html = paths.index_html.read_text(encoding="utf-8")
+    assert "SISO Runtime Surface Matrix" in index_html
+    assert "link16-rpr2-integrated-2010-micro-2" in index_html
+    assert "Observer state" in index_html
 
 
 def test_siso_runtime_surface_matrix_wrapper_bootstraps_source_checkout(tmp_path: Path) -> None:

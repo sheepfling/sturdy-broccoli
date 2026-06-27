@@ -94,6 +94,7 @@ intent aliases:
 | `unit-python-2025-core` | `./tools/test-surface run unit-python-2025-core` | primary `python1516_2025` unit shard for direct runtime semantics and validation |
 | `unit-transport-local` | `./tools/test-surface run unit-transport-local` | hosted transport shard for gRPC and REST tests without vendor-runtime lanes |
 | `unit-scenarios-light` | `./tools/test-surface run unit-scenarios-light` | repo-owned backend and Target/Radar scenario-light shard |
+| `unit-scenarios-visualizer` | `./tools/test-surface run unit-scenarios-visualizer` | SISO observer, visualizer, bridge, and hydrated surface-artifact shard |
 | `python1516_2025-main` | `./tools/python verify-main-2025` | primary `python1516_2025` main-surface proof lane for package-boundary guards, raw support/decode plus callback-control proofs on the direct runtime surface, explicit federation/object/DDM runtime proofs, explicit support/ownership/MOM runtime proofs, the explicit Target/Radar time-window gauntlet and restore-window ladder, the explicit save/restore gauntlet and rollback ladder, broader direct runtime slices, and OMT evidence |
 | `python-routes` | `./tools/python verify-routes` | hosted 2010 Python RTI parity, transport-route semantics, and hosted example checks |
 | `python1516_2025-routes` | `./tools/python verify-routes-2025` | bounded `python1516_2025` plus hosted FedPro 2025 route checks, explicit hosted federation/object/DDM runtime proofs, explicit hosted support/ownership/MOM runtime proofs, explicit hosted Target/Radar time-window ladder replay, explicit hosted save/restore gauntlet and rollback replay, direct time-window, save/restore, ownership, callback, support-service, and MOM proofs, the checked-in 2025 finish-line bundle, and the README-advertised `python1516_2025` Target/Radar example path |
@@ -118,6 +119,7 @@ Use this table when you want one small rerun instead of `repo-green-units`.
 | direct `python1516_2025` runtime semantics or validation helpers | `./tools/test-surface run unit-python-2025-core` | `./tools/test-surface run python-2025` | main 2025 runtime unit view | direct 2025 runtime regression | onboarding/docs-only changes |
 | hosted gRPC/REST route plumbing without vendor runtime | `./tools/test-surface run unit-transport-local` | `./tools/test-surface run transport` | hosted route boundary checks | transport adapter or hosted route regression | direct runtime-only behavior |
 | Target/Radar or higher-level backend scenario behavior | `./tools/test-surface run unit-scenarios-light` | `./tools/test-surface run scenarios` | scenario-level signal before vendor lanes | scenario composition or backend integration regression | simple policy/docs failures |
+| hydrated SISO observer, visualizer, bridge, or screenshot artifact behavior | `./tools/test-surface run unit-scenarios-visualizer` | none | visualizer hydration and observer artifact coverage over the scenario matrix | observer API, visualizer rendering, bridge contract, or hydrated artifact regression | cheapest policy/docs failures |
 
 Current shape guidance:
 

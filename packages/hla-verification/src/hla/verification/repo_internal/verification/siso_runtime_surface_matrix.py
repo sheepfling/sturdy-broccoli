@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import csv
+import html
 import json
 import time
 from dataclasses import dataclass
@@ -66,6 +67,13 @@ SURFACE_MATRIX_PRESETS: dict[str, dict[str, Any]] = {
         "topologies": ["squad-5", "constellation-10"],
         "surface_profiles": ["observer-visualizer"],
     },
+    "heaviest-interesting": {
+        "description": "Heaviest interesting hydrated rows: Link16, RPR, and Space over the 10-federate constellation topology.",
+        "families": ["link16", "rpr", "space"],
+        "editions": ["2010", "2025"],
+        "topologies": ["constellation-10"],
+        "surface_profiles": ["observer-visualizer"],
+    },
     "stress-mixed": {
         "description": "Mixed runtime-only plus hydrated observer coverage over the larger showcase rows.",
         "families": ["link16", "rpr", "space"],
@@ -83,6 +91,7 @@ class SisoRuntimeSurfaceMatrixPaths:
     results_csv: Path
     manifest_json: Path
     report_markdown: Path
+    index_html: Path
     rows_root: Path
 
 
@@ -425,6 +434,85 @@ def _write_results_csv(path: Path, rows: Sequence[Mapping[str, Any]]) -> Path:
     return path
 
 
+def _write_index_html(path: Path, rows: Sequence[Mapping[str, Any]], summary: Mapping[str, Any]) -> Path:
+    cards = []
+    for row in rows:
+        screenshot_summary = row.get("screenshot_summary") or {}
+        detail_lines = [
+            f"<li><strong>Scenario</strong>: <code>{html.escape(str(row['scenario']))}</code></li>",
+            f"<li><strong>Family</strong>: <code>{html.escape(str(row['family']))}</code></li>",
+            f"<li><strong>Edition</strong>: <code>{html.escape(str(row['runtime_edition']))}</code></li>",
+            f"<li><strong>Topology</strong>: <code>{html.escape(str(row['topology']))}</code></li>",
+            f"<li><strong>Surface</strong>: <code>{html.escape(str(row['surface_profile']))}</code></li>",
+            f"<li><strong>Observer API</strong>: <code>{html.escape(str(row['observer_api_status']))}</code></li>",
+            f"<li><strong>Visualizer</strong>: <code>{html.escape(str(row['visualizer_status']))}</code></li>",
+            f"<li><strong>Bridge API</strong>: <code>{html.escape(str(row['bridge_api_status']))}</code></li>",
+            f"<li><strong>Screenshots</strong>: <code>{html.escape(str(row.get('screenshot_status', 'n/a')))}</code></li>",
+        ]
+        link_items = []
+        for label, key in (
+            ("Observer state", "observer_state_json"),
+            ("Observer schema", "observer_schema_json"),
+            ("Bridge contract", "bridge_contract_json"),
+            ("Listener summary", "listener_summary_json"),
+        ):
+            value = row.get(key)
+            if value:
+                link_items.append(
+                    f'<a href="{html.escape(Path(str(value)).resolve().as_uri())}">{html.escape(label)}</a>'
+                )
+        gallery_index = screenshot_summary.get("gallery_index_html")
+        if gallery_index:
+            link_items.append(
+                f'<a href="{html.escape(Path(str(gallery_index)).resolve().as_uri())}">Screenshot gallery</a>'
+            )
+        cards.append(
+            f"""
+            <article class="card">
+              <h2>{html.escape(str(row['scenario']))}</h2>
+              <p class="story">{html.escape(str(row.get('story', '')))}</p>
+              <ul>{''.join(detail_lines)}</ul>
+              <div class="links">{' | '.join(link_items) if link_items else '<span>no linked artifacts</span>'}</div>
+            </article>
+            """
+        )
+    body = f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SISO Runtime Surface Matrix</title>
+  <style>
+    body {{ margin: 0; font: 15px/1.55 "Avenir Next", "Segoe UI", sans-serif; color: #1d2a35; background: linear-gradient(180deg, #f2ebdf, #e7dece); }}
+    main {{ max-width: 1500px; margin: 0 auto; padding: 24px; }}
+    .hero {{ background: rgba(255,255,255,0.84); border: 1px solid rgba(0,0,0,0.08); border-radius: 18px; padding: 20px; margin-bottom: 20px; }}
+    .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 18px; }}
+    .card {{ background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.08); border-radius: 18px; padding: 16px; }}
+    h1, h2 {{ margin-top: 0; }}
+    ul {{ padding-left: 18px; }}
+    code {{ background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 6px; }}
+    .story {{ color: #596876; }}
+    .links {{ margin-top: 12px; word-break: break-word; }}
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <h1>SISO Runtime Surface Matrix</h1>
+      <p>Scenario-aware observer, visualizer, bridge, and screenshot artifact index.</p>
+      <p>Rows: <code>{html.escape(str(summary['selected_row_count']))}</code> | Scenarios: <code>{html.escape(str(summary['selected_scenario_count']))}</code> | Screenshot runtime: <code>{html.escape(str(summary['screenshot_runtime_status']))}</code></p>
+    </section>
+    <section class="grid">
+      {''.join(cards)}
+    </section>
+  </main>
+</body>
+</html>
+"""
+    path.write_text(body, encoding="utf-8")
+    return path
+
+
 def _render_markdown(summary: Mapping[str, Any], paths: SisoRuntimeSurfaceMatrixPaths) -> str:
     lines = [
         "# SISO Runtime Surface Matrix",
@@ -438,6 +526,7 @@ def _render_markdown(summary: Mapping[str, Any], paths: SisoRuntimeSurfaceMatrix
         f"- summary json: `{paths.summary_json}`",
         f"- results csv: `{paths.results_csv}`",
         f"- manifest json: `{paths.manifest_json}`",
+        f"- index html: `{paths.index_html}`",
         "",
         "## Matrix",
         "",
@@ -486,6 +575,7 @@ def write_siso_runtime_surface_matrix_artifacts(
         results_csv=out / "siso_runtime_surface_matrix_results.csv",
         manifest_json=out / "siso_runtime_surface_matrix_manifest.json",
         report_markdown=out / "siso_runtime_surface_matrix_report.md",
+        index_html=out / "siso_runtime_surface_matrix_index.html",
         rows_root=out / "rows",
     )
     manifest = build_siso_runtime_surface_matrix_manifest(
@@ -546,6 +636,7 @@ def write_siso_runtime_surface_matrix_artifacts(
     _write_json(paths.summary_json, summary)
     _write_json(paths.manifest_json, manifest)
     _write_results_csv(paths.results_csv, results)
+    _write_index_html(paths.index_html, results, summary)
     paths.report_markdown.write_text(_render_markdown(summary, paths), encoding="utf-8")
     return paths
 

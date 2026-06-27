@@ -23,9 +23,18 @@ Use this package when you need:
 - callback timeline capture and normalized summary shaping
 - shared artifact writer helpers that are not specific to one backend or one
   example package
+- observer, visualizer, bridge, and browser-screenshot verification helpers for
+  the hydrated runtime surface
 
 Import the canonical implementation from `hla.verification`.
 It does not own human operator entrypoints; those live under `./tools/`.
 Guard coverage for the shared harness boundary and thin-wrapper contract lives
 in `tests/test_verification_harness_split_package.py` and
 `tests/test_backend_wrapper_policy.py`.
+
+Testing note:
+
+- the `test` extra now includes `playwright` because the visualizer/surface
+  packet tests are part of this package's verification surface
+- browser binaries are still installed explicitly with
+  `python -m playwright install chromium`

@@ -420,6 +420,38 @@
       }
     },
     {
+      "id": "unit-scenarios-visualizer",
+      "title": "Unit scenario visualizer shard",
+      "description": "Repo-owned SISO observer, visualizer, bridge, and hydrated artifact shard for scenario-surface regressions.",
+      "owner_command": ["./tools/test-surface", "run", "unit-scenarios-visualizer"],
+      "commands": [
+        [
+          "./tools/test",
+          "tests/scenarios/test_siso_runtime_showcase.py",
+          "tests/scenarios/test_siso_runtime_showcase_launcher.py",
+          "tests/scenarios/test_runtime_observer_fastapi.py",
+          "tests/scenarios/test_runtime_observer_server.py",
+          "tests/scenarios/test_runtime_observer_cli.py",
+          "tests/scenarios/test_ui_surface_screenshot_packet.py",
+          "tests/scenarios/test_siso_runtime_surface_matrix.py"
+        ]
+      ],
+      "docs": [
+        "docs/test_surface.md",
+        "docs/verification/shard_registry.md",
+        "tools/README.md"
+      ],
+      "estimated_cost": "medium",
+      "audience": [
+        "user",
+        "agent"
+      ],
+      "preflight": {
+        "kind": "always-ready",
+        "reason": "Repo-owned observer and surface artifact shard."
+      }
+    },
+    {
       "id": "python1516_2025-main",
       "title": "Python 2025 main-surface lane",
       "description": "Primary python1516_2025 main-surface verification lane for direct runtime proofs across time, save/restore, ownership, callbacks, support services, MOM behavior, and OMT validation/parsing evidence.",

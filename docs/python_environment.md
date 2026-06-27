@@ -104,6 +104,7 @@ This gives you:
 
 - editable workspace install
 - pytest support
+- Playwright Python package for visualizer and screenshot-surface tests
 
 ### 2. Full local QA flow
 
@@ -114,6 +115,7 @@ HLA2010_BOOTSTRAP_EXTRAS=qa ./tools/bootstrap python
 This adds:
 
 - pytest
+- Playwright Python package
 - Ruff
 - Pyright
 - the JPype and Py4J bridge helper dependencies needed by the repo-green split-package suite
@@ -146,7 +148,14 @@ to an already-bootstrapped environment without reinstalling split packages:
 
 ```bash
 source .venv/bin/activate
-python -m pip install --no-build-isolation ruff pyright jpype1 py4j
+python -m pip install --no-build-isolation ruff pyright jpype1 py4j playwright
+```
+
+If you plan to capture browser screenshots for the federation visualizer or
+surface-matrix packets, also install the browser runtime once:
+
+```bash
+python -m playwright install chromium
 ```
 
 ## Install Order

@@ -89,6 +89,7 @@ These are the main independently runnable unit shards.
 | `unit-python-2025-core` | `./tools/test-surface run unit-python-2025-core` | `python-2025` | direct `python1516_2025` unit semantics and validation helpers | 2025 runtime-only regressions |
 | `unit-transport-local` | `./tools/test-surface run unit-transport-local` | `transport` | hosted gRPC/REST transport behavior without vendor runtime | route-wiring regressions |
 | `unit-scenarios-light` | `./tools/test-surface run unit-scenarios-light` | `scenarios` | Target/Radar and scenario-level backend integration | scenario composition regressions |
+| `unit-scenarios-visualizer` | `./tools/test-surface run unit-scenarios-visualizer` | none | SISO observer, visualizer, bridge, and hydrated artifact coverage | visualizer hydration or observer artifact regressions |
 
 ## Requirement-Oriented Shard Ownership
 
@@ -120,4 +121,3 @@ When a shard changes:
 - [`../repo_green_quickstart.md`](../repo_green_quickstart.md)
 - [`../junior_test_diagnosis_runbook.md`](../junior_test_diagnosis_runbook.md)
 - [`../plans/PLN-005_requirements_shards_views_and_verification_plan.md`](../plans/PLN-005_requirements_shards_views_and_verification_plan.md)
-

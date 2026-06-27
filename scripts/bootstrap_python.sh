@@ -105,10 +105,10 @@ helper_deps=()
 if [[ "$want_pytest" == "1" ]]; then
   helper_deps+=("pytest")
 fi
-helper_deps+=("PyYAML")
+helper_deps+=("PyYAML" "playwright")
 helper_deps+=("grpcio" "protobuf")
 if [[ "$want_qa" == "1" ]]; then
-  helper_deps+=("ruff" "pyright" "matplotlib" "lxml" "playwright")
+  helper_deps+=("ruff" "pyright" "matplotlib" "lxml")
 fi
 if [[ "$want_jpype" == "1" ]]; then
   helper_deps+=("jpype1")
@@ -288,3 +288,20 @@ done
 
 run_venv_python -c 'import sys, tomllib; from pathlib import Path; root = Path(sys.argv[1]); site_packages_dir = Path(sys.argv[2]); workspace_pth = site_packages_dir / "hla2010_workspace_roots.pth"; pyproject = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8")); pythonpath_entries = [str(root / rel) for rel in pyproject["tool"]["pytest"]["ini_options"]["pythonpath"]]; workspace_pth.write_text("\n".join(pythonpath_entries) + "\n", encoding="utf-8"); print(workspace_pth)' "$ROOT_DIR" "$site_packages_dir"
 hla2010_shell_log "wrote workspace roots file $site_packages_dir/hla2010_workspace_roots.pth"
+
+if [[ " ${helper_deps[*]} " == *" playwright "* ]]; then
+  chromium_ready="$(
+    run_venv_python -c 'from pathlib import Path
+try:
+    from playwright.sync_api import sync_playwright
+except Exception:
+    print("package-missing")
+    raise SystemExit(0)
+with sync_playwright() as playwright:
+    print("ready" if Path(playwright.chromium.executable_path).exists() else "missing")'
+  )"
+  if [[ "$chromium_ready" == "missing" ]]; then
+    hla2010_shell_warn "Playwright Python package is installed, but Chromium is not yet installed."
+    hla2010_shell_log "next step for visualizer/screenshot tests: source .venv/bin/activate && python -m playwright install chromium"
+  fi
+fi
