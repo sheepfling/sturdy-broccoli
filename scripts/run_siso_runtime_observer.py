@@ -24,7 +24,7 @@ from hla.verification.repo_internal.verification.runtime_observer_server import 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run the local runtime observer control server with JSON/SSE endpoints and browser UI.")
-    parser.add_argument("--provider", default="siso-runtime", choices=("siso-runtime", "two-federate", "target-radar"))
+    parser.add_argument("--provider", default="siso-runtime", choices=("siso-runtime", "two-federate", "target-radar", "live-federation"))
     parser.add_argument("--scenario", default=None, help="Optional initial scenario id to auto-start.")
     parser.add_argument("--output-dir", type=Path, default=Path.cwd() / "artifacts" / "runtime_observer")
     parser.add_argument("--host", default="127.0.0.1")

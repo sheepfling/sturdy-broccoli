@@ -6,9 +6,11 @@ from threading import Thread
 import time
 from urllib.request import urlopen
 
+from hla.verification.repo_internal.verification import runtime_observer_core as observer_core_module
 from hla.verification.repo_internal.verification import runtime_observer_server as observer_module
 from hla.verification.repo_internal.verification.runtime_observer_server import (
     RuntimeObserverControl,
+    LiveRuntimeObserverSession,
     RuntimeObserverSession,
     build_runtime_observer_event_schema,
     build_runtime_observer_catalog,
@@ -99,8 +101,8 @@ def test_runtime_observer_session_reports_live_state_from_listener_artifacts(tmp
         report.write_text("<html>listener report</html>\n", encoding="utf-8")
         return {"scenario": scenario, "execution_complete": True}
 
-    monkeypatch.setattr(observer_module, "run_siso_runtime_showcase_scenario", fake_run)
-    monkeypatch.setattr(observer_module.multiprocessing, "get_context", lambda name: _FakeContext())
+    monkeypatch.setattr(observer_core_module, "run_siso_runtime_showcase_scenario", fake_run)
+    monkeypatch.setattr(observer_core_module.multiprocessing, "get_context", lambda name: _FakeContext())
     session = RuntimeObserverSession(provider="siso-runtime", scenario=scenario, output_dir=tmp_path, backend="python1516e")
     session.start()
 
@@ -235,8 +237,8 @@ def test_runtime_observer_http_schema_and_state_support_non_ui_subscriber(tmp_pa
         (scenario_dir / "listener_report.html").write_text("<html>listener report</html>\n", encoding="utf-8")
         return {"scenario": scenario, "execution_complete": True}
 
-    monkeypatch.setattr(observer_module, "run_siso_runtime_showcase_scenario", fake_run)
-    monkeypatch.setattr(observer_module.multiprocessing, "get_context", lambda name: _FakeContext())
+    monkeypatch.setattr(observer_core_module, "run_siso_runtime_showcase_scenario", fake_run)
+    monkeypatch.setattr(observer_core_module.multiprocessing, "get_context", lambda name: _FakeContext())
     monkeypatch.setattr(observer_module, "ThreadingHTTPServer", _CapturingServer)
 
     thread = Thread(
@@ -282,7 +284,7 @@ def test_runtime_observer_catalog_and_control_support_multiple_providers(tmp_pat
     catalog = build_runtime_observer_catalog()
 
     providers = {row["provider"] for row in catalog["providers"]}
-    assert {"siso-runtime", "two-federate", "target-radar"} <= providers
+    assert {"siso-runtime", "two-federate", "target-radar", "live-federation"} <= providers
     by_provider = {row["provider"]: row for row in catalog["providers"]}
     assert by_provider["two-federate"]["scenarios"][0]["default_options"]["target_radar_steps"] == 4
 
@@ -424,7 +426,7 @@ def test_runtime_observer_html_includes_live_endpoints() -> None:
     assert "/api/control/stop" in html
     assert "/events" in html
     assert "target_radar_steps" in html
-    assert "Federation Subscriber" in html
+    assert "Federation Visualizer" in html
     assert "family-filter" in html
     assert "class-filter" in html
     assert "event-type-filter" in html
@@ -435,3 +437,158 @@ def test_runtime_observer_html_includes_live_endpoints() -> None:
     assert "Schema:" in html
     assert "RprFederate1" in html
     assert "BridgeObject" in html
+
+
+def test_live_runtime_observer_session_persists_history_and_builds_roster_and_fom_tree(tmp_path: Path, monkeypatch) -> None:
+    class _FakeSpec:
+        def __init__(self, full_name: str, parent_name: str | None, attributes: tuple[str, ...] = (), parameters: tuple[str, ...] = ()):
+            self.full_name = full_name
+            self.parent_name = parent_name
+            self.attributes = attributes
+            self.declared_attributes = attributes
+            self.parameters = parameters
+            self.declared_parameters = parameters
+
+    class _FakeCallbackRecord:
+        def __init__(self, method_name: str, *args):
+            self.method_name = method_name
+            self.args = args
+            self.kwargs = {}
+
+    class _FakeCallbacks:
+        def __init__(self) -> None:
+            self.records: list[_FakeCallbackRecord] = []
+
+    class _FakeRTI:
+        def getObjectClassName(self, handle):
+            return {
+                "class-radio": "HLAobjectRoot.EmbeddedSystem.RadioTransmitter",
+                "class-mom-fed": "HLAobjectRoot.HLAmanager.HLAfederation.HLAfederate",
+            }.get(handle, str(handle))
+
+        def getObjectInstanceName(self, handle):
+            return {"obj-radio": "Link16Radio-1", "obj-fed": "ObserverMomObject"}.get(handle, str(handle))
+
+        def getObjectClassHandle(self, class_name):
+            return {"HLAobjectRoot.HLAmanager.HLAfederation.HLAfederate": "class-mom-fed"}.get(class_name, class_name)
+
+        def getAttributeName(self, class_handle, attribute_handle):
+            return {"attr-fed-name": "HLAfederateName", "attr-frequency": "FrequencyMHz"}.get(attribute_handle, str(attribute_handle))
+
+        def getInteractionClassName(self, handle):
+            return {"int-jtids": "JTIDSMessageRadioSignal"}.get(handle, str(handle))
+
+        def getParameterName(self, interaction_handle, parameter_handle):
+            return {"param-net": "NetNumber"}.get(parameter_handle, str(parameter_handle))
+
+    class _FakeInteractiveFederateSession:
+        def __init__(self, config):
+            self.config = config
+            self.rti = _FakeRTI()
+            self.callbacks = _FakeCallbacks()
+            self.fom_catalog = None
+            self.state = type("State", (), {"object_instance_classes": {"Link16Radio-1": "HLAobjectRoot.EmbeddedSystem.RadioTransmitter"}})()
+            self._emitted = False
+
+        def connect(self):
+            return {"status": "ok"}
+
+        def join(self, **kwargs):
+            return {"status": "ok", **kwargs}
+
+        def _load_fom_catalog(self, modules):
+            self.fom_catalog = type(
+                "Catalog",
+                (),
+                {
+                    "object_classes": {
+                        "HLAobjectRoot.EmbeddedSystem.RadioTransmitter": _FakeSpec(
+                            "HLAobjectRoot.EmbeddedSystem.RadioTransmitter",
+                            "HLAobjectRoot.EmbeddedSystem",
+                            attributes=("FrequencyMHz",),
+                        ),
+                        "HLAobjectRoot.HLAmanager.HLAfederation.HLAfederate": _FakeSpec(
+                            "HLAobjectRoot.HLAmanager.HLAfederation.HLAfederate",
+                            "HLAobjectRoot.HLAmanager.HLAfederation",
+                            attributes=("HLAfederateName",),
+                        ),
+                    },
+                    "interaction_classes": {
+                        "JTIDSMessageRadioSignal": _FakeSpec(
+                            "JTIDSMessageRadioSignal",
+                            "HLAinteractionRoot",
+                            parameters=("NetNumber",),
+                        ),
+                    },
+                    "datatype_names": frozenset({"HLAunicodeString"}),
+                },
+            )()
+
+        def _ensure_fom_catalog(self):
+            return self.fom_catalog
+
+        def subscribe_object(self, class_name, attributes):
+            return {"status": "ok", "class_name": class_name, "attributes": attributes}
+
+        def subscribe_interaction(self, class_name):
+            return {"status": "ok", "class_name": class_name}
+
+        def evoke(self, minimum_seconds=0.0, maximum_seconds=0.0):
+            if not self._emitted:
+                self.callbacks.records.extend(
+                    [
+                        _FakeCallbackRecord("discoverObjectInstance", "obj-radio", "class-radio", "Link16Radio-1"),
+                        _FakeCallbackRecord("discoverObjectInstance", "obj-fed", "class-mom-fed", "MomFederate"),
+                        _FakeCallbackRecord("reflectAttributeValues", "obj-fed", {"attr-fed-name": b"OtherFederate\x00"}, b"MOM"),
+                        _FakeCallbackRecord("reflectAttributeValues", "obj-radio", {"attr-frequency": b"969.001\x00"}, b"TAG"),
+                        _FakeCallbackRecord("receiveInteraction", "int-jtids", {"param-net": b"12\x00"}, b"LINK16"),
+                    ]
+                )
+                self._emitted = True
+            return {"status": "ok"}
+
+        def close(self):
+            return None
+
+    class _FakeSessionConfig:
+        def __init__(self, **kwargs):
+            for key, value in kwargs.items():
+                setattr(self, key, value)
+
+    fake_module = type(
+        "FakeFederateCliModule",
+        (),
+        {
+            "SessionConfig": _FakeSessionConfig,
+            "InteractiveFederateSession": _FakeInteractiveFederateSession,
+        },
+    )()
+    monkeypatch.setattr(observer_core_module, "_load_federate_cli_module", lambda: fake_module)
+    session = LiveRuntimeObserverSession(
+        provider="live-federation",
+        scenario="live-federation",
+        output_dir=tmp_path,
+        options={
+            "edition": "2010",
+            "federation_name": "demo-fed",
+            "federate_name": "Observer1",
+            "fom_modules": ["DemoFOMmodule.xml"],
+            "poll_seconds": 0.01,
+        },
+    )
+    session.start()
+    time.sleep(0.05)
+    state = session.live_state()
+    session.stop()
+
+    assert state["status"] in {"running", "stopped"}
+    assert state["history_event_count"] >= 3
+    assert any(row["federate_name"] == "Observer1" for row in state["federate_roster"])
+    assert any(row["federate_name"] == "OtherFederate" for row in state["federate_roster"])
+    assert state["fom_tree"]["object_classes"][0]["kind"] == "object"
+    assert "HLAunicodeString" in state["fom_tree"]["datatypes"]
+    assert any(row["kind"] == "interaction" for row in state["fom_tree"]["search_index"])
+    assert state["loaded_fom_set"]["scenario_families"] == ["demo"]
+    assert state["loaded_fom_set"]["workbench_targets"][0]["fragment"] == "#family=demo"
+    assert (tmp_path / "observer_history.ndjson").exists()
+    assert (tmp_path / "live_observer_snapshot.json").exists()

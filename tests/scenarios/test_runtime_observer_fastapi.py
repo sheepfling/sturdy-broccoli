@@ -4,6 +4,7 @@ from pathlib import Path
 
 from fastapi.testclient import TestClient
 
+from hla.verification.repo_internal.verification import runtime_observer_core as observer_core_module
 from hla.verification.repo_internal.verification import runtime_observer_server as observer_module
 from hla.verification.repo_internal.verification.runtime_observer_fastapi import create_runtime_observer_fastapi_app
 from hla.verification.repo_internal.verification.runtime_observer_server import RuntimeObserverControl
@@ -69,15 +70,15 @@ def test_runtime_observer_fastapi_exposes_health_schema_and_bounded_control(tmp_
         (scenario_dir / "listener_report.html").write_text("<html>listener report</html>\n", encoding="utf-8")
         return {"scenario": scenario, "execution_complete": True}
 
-    monkeypatch.setattr(observer_module, "run_siso_runtime_showcase_scenario", fake_run)
-    monkeypatch.setattr(observer_module.multiprocessing, "get_context", lambda name: _FakeContext())
+    monkeypatch.setattr(observer_core_module, "run_siso_runtime_showcase_scenario", fake_run)
+    monkeypatch.setattr(observer_core_module.multiprocessing, "get_context", lambda name: _FakeContext())
     control = RuntimeObserverControl(output_dir=tmp_path, default_backend="python1516e")
     app = create_runtime_observer_fastapi_app(control)
     client = TestClient(app)
 
     health = client.get("/api/health")
     assert health.status_code == 200
-    assert health.json()["service"] == "federation-studio"
+    assert health.json()["service"] == "federation-visualizer"
 
     openapi = client.get("/openapi.json")
     assert openapi.status_code == 200
@@ -104,6 +105,8 @@ def test_runtime_observer_fastapi_exposes_health_schema_and_bounded_control(tmp_
     assert state["status"] == "complete"
     assert state["normalized_events"][0]["event_type"] == "object.discovered"
     assert state["inspectors"]["objects"][0]["object_handle_text"] == "ObjectInstanceHandle(101)"
+    assert state["loaded_fom_set"] is not None
+    assert state["loaded_fom_set"]["workbench_targets"]
 
     objects = client.get("/api/inspectors/objects")
     assert objects.status_code == 200
@@ -167,18 +170,37 @@ def test_runtime_observer_fastapi_frontend_and_websocket_surface(tmp_path: Path,
         )
         (out / "two_federate_suite_summary.json").write_text('{"status": "complete"}\n', encoding="utf-8")
 
-    monkeypatch.setattr(observer_module.multiprocessing, "get_context", lambda name: _FakeContext())
-    monkeypatch.setattr(observer_module, "_worker_main", fake_worker)
+    monkeypatch.setattr(observer_core_module.multiprocessing, "get_context", lambda name: _FakeContext())
+    monkeypatch.setattr(observer_core_module, "_worker_main", fake_worker)
     control = RuntimeObserverControl(output_dir=tmp_path)
     app = create_runtime_observer_fastapi_app(control)
     client = TestClient(app)
 
     html = client.get("/")
     assert html.status_code == 200
-    assert "Federation Studio" in html.text
+    assert "Federation Visualizer" in html.text
     assert "/api/schema" in html.text
     assert "/ws/events" in html.text
     assert "Object Instances" in html.text
+    assert "/workbench/fom_workbench.html" in html.text
+    assert "FOM Search" in html.text
+    assert 'params.set("symbol", row.name)' in html.text
+    assert "Pinned Symbol" in html.text
+    assert "FOM Tree Rows" in html.text
+    assert "pinFomSymbol(" in html.text
+    assert "clearPinnedFomSymbol()" in html.text
+    assert "direct instances:${directActivity.instances}" in html.text
+    assert "direct receives:${directActivity.receives}" in html.text
+    assert "if (selected && selected.class_name) pinFomSymbol" in html.text
+    assert "if (selected && selected.interaction_class) pinFomSymbol" in html.text
+    assert 'list-row${pinned ? " active" : ""}' in html.text
+    assert "rollup instances:${rollupActivity.instances}" in html.text
+    assert "rollup receives:${rollupActivity.receives}" in html.text
+    assert "toggleFomNode(" in html.text
+    assert "tree-toggle-button" in html.text
+    assert 'expanded ? "collapse" : "expand"' in html.text
+    assert "preview objects:${directActivity.instances}" in html.text
+    assert "preview receives:${directActivity.receives}" in html.text
 
     with client.websocket_connect("/ws/events") as websocket:
         control.start(provider="two-federate", scenario="workspace-two-federate", options={"target_radar_steps": 1})

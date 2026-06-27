@@ -22,4 +22,15 @@ Identity rules:
 - Interaction rows use `interaction_key` plus `interaction_class`.
 - `family` is derived generically from the observed class or carried through when the source already knows it.
 
+Snapshot/state surfaces built on top of the event schema:
+
+- `/api/state` includes `normalized_events` plus inspector-friendly derived
+  state.
+- `federate_roster` is a first-class derived panel sourced from the observer
+  federate itself and MOM `HLAfederate` objects when present.
+- `fom_tree` exposes loaded object classes, interaction classes, and datatype
+  names for the observer's current FOM catalog.
+- `history_event_count` tells late subscribers how much retained history is
+  available behind the current snapshot.
+
 This contract is intended for subscriber tools, dashboards, and downstream automation. Browser plugin panels remain optional overlays on top of this generic schema.

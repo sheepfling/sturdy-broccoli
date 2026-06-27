@@ -1,4 +1,4 @@
-"""FastAPI federation subscriber service over the runtime observer contract."""
+"""FastAPI federation visualizer service over the shared runtime observer core."""
 from __future__ import annotations
 
 import asyncio
@@ -8,11 +8,15 @@ from typing import Any, Mapping
 
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field
 
-from .runtime_observer_server import (
+from hla.verification.repo_internal.fom_workbench import write_fom_workbench_html
+
+from .runtime_observer_core import (
     RUNTIME_OBSERVER_EVENT_SCHEMA_VERSION,
     RuntimeObserverControl,
+    build_runtime_observer_catalog,
     build_runtime_observer_event_schema,
 )
 
@@ -159,6 +163,10 @@ def _html_escape(value: Any) -> str:
     )
 
 
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parents[6]
+
+
 def render_runtime_subscriber_app_html(state: Mapping[str, Any]) -> str:
     initial_state = json.dumps(state, sort_keys=True)
     return f"""<!doctype html>
@@ -166,7 +174,7 @@ def render_runtime_subscriber_app_html(state: Mapping[str, Any]) -> str:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Federation Studio</title>
+  <title>Federation Visualizer</title>
   <style>
     :root {{
       --sand: #efe4d2;
@@ -414,8 +422,8 @@ def render_runtime_subscriber_app_html(state: Mapping[str, Any]) -> str:
   <main>
     <section class="hero">
       <article class="card hero-card">
-        <h1>Federation Studio</h1>
-        <p class="lede">A bounded FastAPI subscriber surface for live HLA observation, operator control, and downstream tool integration over the normalized runtime observer contract.</p>
+        <h1>Federation Visualizer</h1>
+        <p class="lede">A generic observer surface for live HLA federation state, event history, object and interaction inspection, and semantic scenario panels over one shared observer core.</p>
         <div class="hero-meta">
           <div class="pill"><span class="label">Status</span><span class="value" id="status-chip">idle</span></div>
           <div class="pill"><span class="label">Provider</span><span class="value" id="provider-chip">n/a</span></div>
@@ -430,7 +438,7 @@ def render_runtime_subscriber_app_html(state: Mapping[str, Any]) -> str:
         </div>
         <div class="control-grid">
           <div>
-            <label for="scenario-select">Provider / Scenario</label>
+            <label for="scenario-select">Observer Lane</label>
             <select id="scenario-select"></select>
           </div>
           <div>
@@ -443,12 +451,12 @@ def render_runtime_subscriber_app_html(state: Mapping[str, Any]) -> str:
           </div>
           <div>
             <label for="options-input">Extra Options JSON</label>
-            <textarea id="options-input" placeholder='{{"target_radar_steps": 4}}'></textarea>
+            <textarea id="options-input" placeholder='{{"edition":"2010","federation_name":"demo-fed","federate_name":"Observer1","fom_modules":["/abs/path/FOM.xml"]}}'></textarea>
           </div>
         </div>
         <div class="control-grid" style="margin-top:12px">
-          <button id="start-btn" class="primary">Start Scenario</button>
-          <button id="stop-btn" class="secondary">Stop Scenario</button>
+          <button id="start-btn" class="primary">Start Observer</button>
+          <button id="stop-btn" class="secondary">Stop Observer</button>
         </div>
       </aside>
     </section>
@@ -498,6 +506,14 @@ def render_runtime_subscriber_app_html(state: Mapping[str, Any]) -> str:
 
         <article class="card section-card">
           <div class="section-head">
+            <h2>Federate Roster</h2>
+            <span class="section-note">Live roster from the observer session and MOM-style discoveries when available</span>
+          </div>
+          <div class="detail-pane mono" id="roster-detail"></div>
+        </article>
+
+        <article class="card section-card">
+          <div class="section-head">
             <h2>Event Timeline</h2>
             <span class="section-note">Live normalized feed</span>
           </div>
@@ -535,7 +551,15 @@ def render_runtime_subscriber_app_html(state: Mapping[str, Any]) -> str:
 
         <article class="card section-card">
           <div class="section-head">
-            <h2>Scenario Layer</h2>
+            <h2>FOM Tree</h2>
+            <span class="section-note">Loaded object and interaction class hierarchy plus datatype inventory</span>
+          </div>
+          <div class="detail-pane mono" id="fom-detail"></div>
+        </article>
+
+        <article class="card section-card">
+          <div class="section-head">
+            <h2>Semantic Panels</h2>
             <span class="section-note">Optional semantic overlay panels</span>
           </div>
           <div id="plugin-root"></div>
@@ -560,6 +584,8 @@ def render_runtime_subscriber_app_html(state: Mapping[str, Any]) -> str:
     const interactionsListEl = document.getElementById("interactions-list");
     const objectDetailEl = document.getElementById("object-detail");
     const interactionDetailEl = document.getElementById("interaction-detail");
+    const rosterDetailEl = document.getElementById("roster-detail");
+    const fomDetailEl = document.getElementById("fom-detail");
     const summaryPaneEl = document.getElementById("summary-pane");
     const pluginRootEl = document.getElementById("plugin-root");
     const statusChipEl = document.getElementById("status-chip");
@@ -570,6 +596,11 @@ def render_runtime_subscriber_app_html(state: Mapping[str, Any]) -> str:
     let state = initialState;
     let objectIndex = 0;
     let interactionIndex = 0;
+    let fomSearchFilter = "";
+    let fomKindFilter = "all";
+    let pinnedFomSymbol = null;
+    let pinnedFomKind = null;
+    let expandedFomNodes = new Set();
 
     function escapeHtml(value) {{
       return String(value ?? "")
@@ -613,6 +644,7 @@ def render_runtime_subscriber_app_html(state: Mapping[str, Any]) -> str:
       return ((payload.inspectors && payload.inspectors.objects) || []).filter((row) => {{
         if (filters.family !== "all" && (row.family || "generic") !== filters.family) return false;
         if (filters.className !== "all" && (row.class_name || "") !== filters.className) return false;
+        if (pinnedFomSymbol && (row.class_name || "") !== pinnedFomSymbol) return false;
         if (filters.eventType !== "all") {{
           const discovered = filters.eventType === "object.discovered" && (row.discovery_count || 0) > 0;
           const updated = filters.eventType === "object.updated" && (row.update_count || 0) > 0;
@@ -626,6 +658,7 @@ def render_runtime_subscriber_app_html(state: Mapping[str, Any]) -> str:
       return ((payload.inspectors && payload.inspectors.interactions) || []).filter((row) => {{
         if (filters.family !== "all" && (row.family || "generic") !== filters.family) return false;
         if (filters.className !== "all" && (row.interaction_class || "") !== filters.className) return false;
+        if (pinnedFomSymbol && (row.interaction_class || "") !== pinnedFomSymbol) return false;
         if (filters.eventType !== "all" && filters.eventType !== "interaction.received") return false;
         return true;
       }});
@@ -676,10 +709,21 @@ def render_runtime_subscriber_app_html(state: Mapping[str, Any]) -> str:
       for (const node of objectsListEl.querySelectorAll(".list-row[data-index]")) {{
         node.onclick = () => {{
           objectIndex = Number(node.dataset.index || "0");
+          const selected = rows[Math.min(objectIndex, rows.length - 1)];
+          if (selected && selected.class_name) pinFomSymbol(selected.class_name, "object");
           renderState();
         }};
       }}
-      objectDetailEl.textContent = rows.length ? JSON.stringify(rows[Math.min(objectIndex, rows.length - 1)], null, 2) : "No object selected.";
+      if (!rows.length) {{
+        objectDetailEl.textContent = "No object selected.";
+        return;
+      }}
+      const row = rows[Math.min(objectIndex, rows.length - 1)];
+      objectDetailEl.textContent = JSON.stringify({{
+        pinned_fom_symbol: pinnedFomSymbol,
+        pinned_fom_kind: pinnedFomKind,
+        row,
+      }}, null, 2);
     }}
 
     function renderInteractions(rows) {{
@@ -693,10 +737,21 @@ def render_runtime_subscriber_app_html(state: Mapping[str, Any]) -> str:
       for (const node of interactionsListEl.querySelectorAll(".list-row[data-index]")) {{
         node.onclick = () => {{
           interactionIndex = Number(node.dataset.index || "0");
+          const selected = rows[Math.min(interactionIndex, rows.length - 1)];
+          if (selected && selected.interaction_class) pinFomSymbol(selected.interaction_class, "interaction");
           renderState();
         }};
       }}
-      interactionDetailEl.textContent = rows.length ? JSON.stringify(rows[Math.min(interactionIndex, rows.length - 1)], null, 2) : "No interaction selected.";
+      if (!rows.length) {{
+        interactionDetailEl.textContent = "No interaction selected.";
+        return;
+      }}
+      const row = rows[Math.min(interactionIndex, rows.length - 1)];
+      interactionDetailEl.textContent = JSON.stringify({{
+        pinned_fom_symbol: pinnedFomSymbol,
+        pinned_fom_kind: pinnedFomKind,
+        row,
+      }}, null, 2);
     }}
 
     function renderPluginPanels(panels) {{
@@ -721,6 +776,276 @@ def render_runtime_subscriber_app_html(state: Mapping[str, Any]) -> str:
       `;
     }}
 
+    function renderRoster(rows) {{
+      rosterDetailEl.textContent = rows.length ? JSON.stringify(rows, null, 2) : "No federate roster entries observed yet.";
+    }}
+
+    function workbenchHref(target, row = null) {{
+      if (!target) return null;
+      const params = new URLSearchParams((target.fragment || "").replace(/^#/, ""));
+      if (row && row.name) params.set("symbol", row.name);
+      if (row && row.kind) params.set("kind", row.kind);
+      return `/workbench/fom_workbench.html#${{params.toString()}}`;
+    }}
+
+    function pinFomSymbol(symbol, kind) {{
+      pinnedFomSymbol = symbol || null;
+      pinnedFomKind = kind || null;
+      if (symbol && kind === "object") {{
+        classFilterEl.value = symbol;
+      }}
+      if (symbol && kind === "interaction") {{
+        classFilterEl.value = symbol;
+      }}
+      renderState();
+    }}
+
+    function clearPinnedFomSymbol() {{
+      pinnedFomSymbol = null;
+      pinnedFomKind = null;
+      renderState();
+    }}
+
+    function toggleFomNode(symbol) {{
+      if (!symbol) return;
+      if (expandedFomNodes.has(symbol)) expandedFomNodes.delete(symbol);
+      else expandedFomNodes.add(symbol);
+      renderState();
+    }}
+
+    function renderFomTree(payload) {{
+      const tree = payload.fom_tree || {{}};
+      const loaded = payload.loaded_fom_set || null;
+      const objectRowsLive = ((payload.inspectors && payload.inspectors.objects) || []);
+      const interactionRowsLive = ((payload.inspectors && payload.inspectors.interactions) || []);
+      const targets = loaded?.workbench_targets || [];
+      const targetMap = new Map(targets.map((target) => [target.target_name || target.label, target]));
+      const objectActivityCounts = new Map();
+      const interactionActivityCounts = new Map();
+      for (const row of objectRowsLive) {{
+        const className = row.class_name || "";
+        if (!className) continue;
+        const current = objectActivityCounts.get(className) || {{ instances: 0, updates: 0, discoveries: 0 }};
+        current.instances += 1;
+        current.updates += Number(row.update_count || 0);
+        current.discoveries += Number(row.discovery_count || 0);
+        objectActivityCounts.set(className, current);
+      }}
+      for (const row of interactionRowsLive) {{
+        const className = row.interaction_class || "";
+        if (!className) continue;
+        const current = interactionActivityCounts.get(className) || {{ receives: 0 }};
+        current.receives += 1;
+        interactionActivityCounts.set(className, current);
+      }}
+      const objectTreeRows = (tree.object_classes || []).map((row) => ({{ kind: "object", name: row.full_name, parent_name: row.parent_name, lineage: row.lineage || [], depth: row.depth || 0 }}));
+      const interactionTreeRows = (tree.interaction_classes || []).map((row) => ({{ kind: "interaction", name: row.full_name, parent_name: row.parent_name, lineage: row.lineage || [], depth: row.depth || 0 }}));
+      const objectChildren = new Map();
+      const interactionChildren = new Map();
+      for (const row of objectTreeRows) {{
+        if (!row.parent_name) continue;
+        const current = objectChildren.get(row.parent_name) || [];
+        current.push(row.name);
+        objectChildren.set(row.parent_name, current);
+      }}
+      for (const row of interactionTreeRows) {{
+        if (!row.parent_name) continue;
+        const current = interactionChildren.get(row.parent_name) || [];
+        current.push(row.name);
+        interactionChildren.set(row.parent_name, current);
+      }}
+      const objectRollupCounts = new Map();
+      const interactionRollupCounts = new Map();
+      for (const row of objectTreeRows) {{
+        const direct = objectActivityCounts.get(row.name) || {{ instances: 0, updates: 0, discoveries: 0 }};
+        for (const ancestor of (row.lineage || [])) {{
+          const current = objectRollupCounts.get(ancestor) || {{ instances: 0, updates: 0, discoveries: 0 }};
+          current.instances += direct.instances;
+          current.updates += direct.updates;
+          current.discoveries += direct.discoveries;
+          objectRollupCounts.set(ancestor, current);
+        }}
+      }}
+      for (const row of interactionTreeRows) {{
+        const direct = interactionActivityCounts.get(row.name) || {{ receives: 0 }};
+        for (const ancestor of (row.lineage || [])) {{
+          const current = interactionRollupCounts.get(ancestor) || {{ receives: 0 }};
+          current.receives += direct.receives;
+          interactionRollupCounts.set(ancestor, current);
+        }}
+      }}
+      const links = targets.map((target) => {{
+        const href = workbenchHref(target);
+        return `<div><a href="${{escapeHtml(href)}}" target="_blank" rel="noopener">${{escapeHtml(target.label || target.target_name || "Open in workbench")}}</a></div>`;
+      }}).join("");
+      const searchRows = Array.isArray(tree.search_index) ? tree.search_index : [];
+      const filteredRows = searchRows.filter((row) => {{
+        if (fomKindFilter !== "all" && (row.kind || "") !== fomKindFilter) return false;
+        if (pinnedFomSymbol && row.name !== pinnedFomSymbol) return false;
+        if (!fomSearchFilter) return true;
+        const haystack = [
+          row.name || "",
+          row.parent_name || "",
+          ...(row.lineage || []),
+          ...(row.edition_classes || []),
+          row.edition_scope || "",
+          row.load_mode || "",
+        ].join(" ").toLowerCase();
+        return haystack.includes(fomSearchFilter.toLowerCase());
+      }}).slice(0, 40);
+      const rawTreeRows = [
+        ...objectTreeRows,
+        ...interactionTreeRows,
+      ].filter((row) => {{
+        if (fomKindFilter !== "all" && row.kind !== fomKindFilter) return false;
+        if (pinnedFomSymbol && row.name !== pinnedFomSymbol) return false;
+        if (!fomSearchFilter) return true;
+        return [row.name, row.parent_name || "", ...(row.lineage || [])].join(" ").toLowerCase().includes(fomSearchFilter.toLowerCase());
+      }});
+      const treeRows = rawTreeRows.filter((row) => {{
+        if (row.depth <= 0) return true;
+        if (fomSearchFilter || pinnedFomSymbol) return true;
+        return (row.lineage || []).slice(0, -1).every((ancestor) => expandedFomNodes.has(ancestor));
+      }}).slice(0, 30);
+      const summary = loaded ? {{
+        scenario_families: loaded.scenario_families || [],
+        edition_classes: loaded.edition_classes || [],
+        edition_scope: loaded.edition_scope || null,
+        baseline_kinds: loaded.baseline_kinds || [],
+        load_modes: loaded.load_modes || [],
+        default_load_sets: loaded.default_load_sets || [],
+        record_ids: loaded.record_ids || [],
+        member_paths: loaded.member_paths || [],
+        tree_counts: {{
+          object_classes: (tree.object_classes || []).length,
+          interaction_classes: (tree.interaction_classes || []).length,
+          datatypes: (tree.datatypes || []).length,
+          search_rows: (tree.search_index || []).length,
+        }},
+      }} : tree;
+      const rowMarkup = filteredRows.map((row) => {{
+        const target = targetMap.get(row.source_name) || targets[0] || null;
+        const href = workbenchHref(target, row);
+        const pinned = pinnedFomSymbol && row.name === pinnedFomSymbol;
+        return `
+          <div class="list-row${{pinned ? " active" : ""}}">
+            <div>${{escapeHtml(row.kind || "")}}</div>
+            <div class="mono">${{escapeHtml(row.name || "")}}<br><span class="section-note">${{escapeHtml((row.lineage || []).join(" > "))}}</span></div>
+            <div>
+              <button type="button" class="symbol-pin-button" data-symbol="${{escapeHtml(row.name || "")}}" data-kind="${{escapeHtml(row.kind || "")}}">pin</button>
+              ${{href ? `<a href="${{escapeHtml(href)}}" target="_blank" rel="noopener">open</a>` : "<span class='section-note'>n/a</span>"}}
+            </div>
+          </div>
+        `;
+      }}).join("") || `<div class="list-row"><div>No matching FOM symbols.</div><div></div><div></div></div>`;
+      const treeMarkup = treeRows.map((row) => {{
+        const target = targets[0] || null;
+        const href = workbenchHref(target, row);
+        const indent = Math.max(0, Number(row.depth || 0)) * 14;
+        const childMap = row.kind === "object" ? objectChildren : interactionChildren;
+        const hasChildren = childMap.has(row.name);
+        const expanded = expandedFomNodes.has(row.name);
+        const directActivity = row.kind === "object"
+          ? (objectActivityCounts.get(row.name) || {{ instances: 0, updates: 0, discoveries: 0 }})
+          : (interactionActivityCounts.get(row.name) || {{ receives: 0 }});
+        const rollupActivity = row.kind === "object"
+          ? (objectRollupCounts.get(row.name) || {{ instances: 0, updates: 0, discoveries: 0 }})
+          : (interactionRollupCounts.get(row.name) || {{ receives: 0 }});
+        const directLabel = row.kind === "object"
+          ? `direct instances:${{directActivity.instances}} updates:${{directActivity.updates}} discoveries:${{directActivity.discoveries}}`
+          : `direct receives:${{directActivity.receives}}`;
+        const rollupLabel = row.kind === "object"
+          ? `rollup instances:${{rollupActivity.instances}} updates:${{rollupActivity.updates}} discoveries:${{rollupActivity.discoveries}}`
+          : `rollup receives:${{rollupActivity.receives}}`;
+        const previewLabel = row.kind === "object"
+          ? `preview objects:${{directActivity.instances}} descendants:${{Math.max(0, rollupActivity.instances - directActivity.instances)}}`
+          : `preview receives:${{directActivity.receives}} descendants:${{Math.max(0, rollupActivity.receives - directActivity.receives)}}`;
+        const pinned = pinnedFomSymbol && row.name === pinnedFomSymbol;
+        return `
+          <div class="list-row${{pinned ? " active" : ""}}">
+            <div>${{escapeHtml(row.kind)}}</div>
+            <div class="mono" style="padding-left:${{indent}}px">
+              <span>${{hasChildren ? `<button type="button" class="tree-toggle-button" data-symbol="${{escapeHtml(row.name)}}">${{expanded ? "collapse" : "expand"}}</button>` : "<span class='section-note'>leaf</span>"}}</span>
+              ${{escapeHtml(row.name)}}
+              <br><span class="section-note">${{escapeHtml((row.lineage || []).join(" > "))}}</span>
+              <br><span class="section-note">${{escapeHtml(directLabel)}}</span>
+              <br><span class="section-note">${{escapeHtml(rollupLabel)}}</span>
+              <br><span class="section-note">${{escapeHtml(previewLabel)}}</span>
+            </div>
+            <div>
+              <button type="button" class="tree-pin-button" data-symbol="${{escapeHtml(row.name)}}" data-kind="${{escapeHtml(row.kind)}}">pin</button>
+              ${{href ? `<a href="${{escapeHtml(href)}}" target="_blank" rel="noopener">open</a>` : "<span class='section-note'>n/a</span>"}}
+            </div>
+          </div>
+        `;
+      }}).join("") || `<div class="list-row"><div>No matching tree rows.</div><div></div><div></div></div>`;
+      fomDetailEl.innerHTML = `
+        <div style="margin-bottom:12px;">
+          <div class="section-note">Workbench Links</div>
+          ${{links || "<div class='mono'>No workbench links available for this run.</div>"}}
+        </div>
+        <div style="margin-bottom:12px;">
+          <div class="section-note">Pinned Symbol</div>
+          <div class="mono">${{pinnedFomSymbol ? escapeHtml(`${{pinnedFomKind || "symbol"}}: ${{pinnedFomSymbol}}`) : "none"}}</div>
+          <div style="margin-top:8px;"><button type="button" id="clear-fom-pin">clear pin</button></div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <div class="section-note">FOM Search</div>
+          <div style="display:grid;grid-template-columns:1fr 180px;gap:10px;margin-top:8px;">
+            <input id="fom-search-input" type="search" placeholder="Search classes, interactions, datatypes" value="${{escapeHtml(fomSearchFilter)}}">
+            <select id="fom-kind-filter">
+              <option value="all"${{fomKindFilter === "all" ? " selected" : ""}}>all kinds</option>
+              <option value="object"${{fomKindFilter === "object" ? " selected" : ""}}>objects</option>
+              <option value="interaction"${{fomKindFilter === "interaction" ? " selected" : ""}}>interactions</option>
+              <option value="datatype"${{fomKindFilter === "datatype" ? " selected" : ""}}>datatypes</option>
+            </select>
+          </div>
+          <div class="list-shell" style="margin-top:10px;">
+            <div class="list-head"><div>Kind</div><div>Symbol</div><div>Workbench</div></div>
+            <div id="fom-search-results">${{rowMarkup}}</div>
+          </div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <div class="section-note">FOM Tree Rows</div>
+          <div class="list-shell" style="margin-top:10px;">
+            <div class="list-head"><div>Kind</div><div>Hierarchy</div><div>Actions</div></div>
+            <div id="fom-tree-results">${{treeMarkup}}</div>
+          </div>
+        </div>
+        <div class="mono">${{escapeHtml(JSON.stringify(summary, null, 2))}}</div>
+      `;
+      const searchInput = document.getElementById("fom-search-input");
+      const kindSelect = document.getElementById("fom-kind-filter");
+      if (searchInput) {{
+        searchInput.addEventListener("input", (event) => {{
+          fomSearchFilter = event.target.value || "";
+          renderFomTree(payload);
+        }});
+      }}
+      if (kindSelect) {{
+        kindSelect.addEventListener("change", (event) => {{
+          fomKindFilter = event.target.value || "all";
+          renderFomTree(payload);
+        }});
+      }}
+      const clearPin = document.getElementById("clear-fom-pin");
+      if (clearPin) {{
+        clearPin.addEventListener("click", () => {{
+          clearPinnedFomSymbol();
+        }});
+      }}
+      fomDetailEl.querySelectorAll(".symbol-pin-button,.tree-pin-button").forEach((node) => {{
+        node.addEventListener("click", () => {{
+          pinFomSymbol(node.getAttribute("data-symbol") || "", node.getAttribute("data-kind") || "");
+        }});
+      }});
+      fomDetailEl.querySelectorAll(".tree-toggle-button").forEach((node) => {{
+        node.addEventListener("click", () => {{
+          toggleFomNode(node.getAttribute("data-symbol") || "");
+        }});
+      }});
+    }}
+
     function renderSummary(payload) {{
       const statusClass = payload.status ? `status-${{payload.status}}` : "";
       statusChipEl.className = `value ${{statusClass}}`;
@@ -735,6 +1060,7 @@ def render_runtime_subscriber_app_html(state: Mapping[str, Any]) -> str:
         options: payload.options,
         live_metrics: payload.live_metrics,
         artifacts: payload.artifacts,
+        history_event_count: payload.history_event_count,
       }}, null, 2);
     }}
 
@@ -742,6 +1068,8 @@ def render_runtime_subscriber_app_html(state: Mapping[str, Any]) -> str:
       const payload = state || {{ status: "idle", normalized_events: [] }};
       renderSummary(payload);
       renderParticipants(payload.participant_profiles || []);
+      renderRoster(payload.federate_roster || []);
+      renderFomTree(payload);
       const events = payload.normalized_events || [];
       fillSelect(familyFilterEl, uniqueSorted(events.map((row) => row.family || "generic")), familyFilterEl.value || "all");
       fillSelect(classFilterEl, uniqueSorted(events.map((row) => eventClassName(row))), classFilterEl.value || "all");
@@ -834,10 +1162,18 @@ def render_runtime_subscriber_app_html(state: Mapping[str, Any]) -> str:
 
 def create_runtime_observer_fastapi_app(control: RuntimeObserverControl) -> FastAPI:
     app = FastAPI(
-        title="Federation Studio API",
+        title="Federation Visualizer API",
         version=RUNTIME_OBSERVER_EVENT_SCHEMA_VERSION,
-        description="Bounded FastAPI observer and control surface for live HLA runtime showcase lanes.",
+        description="Generic FastAPI observer and control surface for live HLA federation visualization lanes.",
     )
+    workbench_root = _repo_root() / "artifacts" / "fom_workbench"
+    workbench_root.mkdir(parents=True, exist_ok=True)
+    if not (workbench_root / "fom_workbench.html").exists():
+        try:
+            write_fom_workbench_html(output_dir=workbench_root)
+        except Exception:
+            pass
+    app.mount("/workbench", StaticFiles(directory=str(workbench_root)), name="workbench")
 
     @app.get("/", response_class=HTMLResponse)
     async def index() -> str:
@@ -847,7 +1183,7 @@ def create_runtime_observer_fastapi_app(control: RuntimeObserverControl) -> Fast
     async def health() -> HealthResponse:
         session = control.current_session()
         return HealthResponse(
-            service="federation-studio",
+            service="federation-visualizer",
             status="ok",
             schema_version=RUNTIME_OBSERVER_EVENT_SCHEMA_VERSION,
             session_active=session is not None,
@@ -855,7 +1191,7 @@ def create_runtime_observer_fastapi_app(control: RuntimeObserverControl) -> Fast
 
     @app.get("/api/catalog")
     async def catalog() -> dict[str, Any]:
-        return control.catalog()
+        return build_runtime_observer_catalog()
 
     @app.get("/api/schema")
     async def schema() -> dict[str, Any]:

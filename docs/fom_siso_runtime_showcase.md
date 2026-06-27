@@ -137,6 +137,7 @@ That tool:
   - SISO runtime showcase rows
   - the workspace `two-federate` suite
   - the `target-radar` proof lane
+  - a true late-join `live-federation` observer federate that attaches to an already-running federation execution
 - exposes local JSON state at `/api/state`
 - exposes the stable normalized event schema at `/api/schema`
 - exposes the scenario catalog at `/api/catalog`
@@ -168,11 +169,26 @@ Current telemetry boundary:
   suite timeline recorder
 - `target-radar` now emits live phase plus target/radar/track progression
   events during execution
+- `live-federation` joins an existing execution directly, subscribes broadly
+  from the supplied FOM set, persists callback history locally, and rebuilds
+  current observer state from that retained history plus the latest snapshot
 
 The observer page now also exposes simple scenario option controls:
 
 - backend override
 - `target_radar_steps` for the `two-federate` and `target-radar` lanes
+- raw JSON options for late-join observer sessions such as:
+
+```json
+{
+  "edition": "2010",
+  "federation_name": "demo-fed",
+  "federate_name": "Observer1",
+  "fom_modules": [
+    "examples/foms/DemoFOMmodule.xml"
+  ]
+}
+```
 
 The page is now framed as a generic federation subscriber:
 
@@ -188,6 +204,9 @@ The page is now framed as a generic federation subscriber:
 - generic inspectors:
   - object inspector
   - interaction inspector
+- retained state panels:
+  - federate roster derived from the observer itself plus MOM federate objects when present
+  - FOM/class tree built from the supplied FOM catalog for object classes, interaction classes, and datatypes
 - generic filtering:
   - family filter
   - class filter
@@ -196,6 +215,15 @@ The page is now framed as a generic federation subscriber:
   - Target/Radar
   - RPR
   - Link 16
+
+Late-join persistence model:
+
+- raw callback and phase rows are retained in `observer_history.ndjson`
+- the latest synthesized observer state is retained in `live_observer_snapshot.json`
+- summary metadata is retained in `live_observer_summary.json`
+- `GET /api/state` includes both the retained history count and the current
+  roster/class-tree/object/interaction snapshot so a newly opened page can show
+  current federation state immediately instead of waiting for fresh callbacks
 
 ## Orchestration Model
 

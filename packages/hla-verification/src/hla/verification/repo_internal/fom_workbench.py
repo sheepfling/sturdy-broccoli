@@ -15,22 +15,14 @@ from typing import Any, Iterable, Mapping
 from hla.fom import FOMCatalog, FOMMergeError, FOMResolutionError, FOMResolver, merge_fom_modules
 from hla.verification.repo_internal.fom_inventory import FOMInventoryRecord, default_load_set_records, inventory_records
 from hla.verification.repo_internal.fom_corpus_classification import classify_edition_scope
+from hla.verification.repo_internal.fom_tree_search import (
+    FOMSearchRow as FOMWorkbenchSearchRow,
+    FOMTreeNode as FOMWorkbenchNode,
+    build_fom_search_rows,
+    build_fom_tree_nodes,
+)
 from hla.verification.repo_internal.fom_validate import write_fom_validation, write_fom_validation_html
 from hla.verification.repo_internal.siso_corpus import is_default_scope_record
-
-
-@dataclass(frozen=True, slots=True)
-class FOMWorkbenchNode:
-    kind: str
-    full_name: str
-    parent_name: str | None
-    declared_count: int
-    total_count: int
-    declared_names: tuple[str, ...]
-    total_names: tuple[str, ...]
-    datatype_hints: tuple[str, ...]
-    lineage: tuple[str, ...]
-    is_leaf: bool
 
 
 @dataclass(frozen=True, slots=True)
@@ -112,22 +104,6 @@ class FOMWorkbenchLoadSet:
     validation_issue_groups: tuple[dict[str, Any], ...] = ()
     datatype_normalizations: tuple[dict[str, str], ...] = ()
     resolved: tuple[Any, ...] = ()
-
-
-@dataclass(frozen=True, slots=True)
-class FOMWorkbenchSearchRow:
-    source_name: str
-    source_kind: str
-    kind: str
-    name: str
-    parent_name: str | None
-    lineage: tuple[str, ...]
-    is_leaf: bool
-    edition_classes: tuple[str, ...]
-    edition_scope: str
-    baseline_kinds: tuple[str, ...]
-    load_mode: str
-
 
 @dataclass(frozen=True, slots=True)
 class FOMWorkbenchDiff:
@@ -233,51 +209,8 @@ def _edition_scope_for_records(records: tuple[FOMInventoryRecord, ...]) -> str:
     return "cross-edition / ambiguous"
 
 
-def _spec_datatype_hints(spec: Any) -> tuple[str, ...]:
-    datatype_map = getattr(spec, "attribute_datatypes", None) or getattr(spec, "parameter_datatypes", None) or {}
-    hints: list[str] = []
-    for value in datatype_map.values():
-        if value and value not in hints:
-            hints.append(value)
-    return tuple(hints)
-
-
 def _node_rows(specs: Iterable[Any], *, kind: str) -> tuple[FOMWorkbenchNode, ...]:
-    specs = tuple(specs)
-    spec_map = {spec.full_name: spec for spec in specs}
-    child_counts: dict[str, int] = defaultdict(int)
-    for spec in specs:
-        if spec.parent_name:
-            child_counts[spec.parent_name] += 1
-
-    def lineage(name: str) -> tuple[str, ...]:
-        chain: list[str] = []
-        current = spec_map.get(name)
-        while current is not None:
-            chain.append(current.full_name)
-            current = spec_map.get(current.parent_name or "")
-        chain.reverse()
-        return tuple(chain)
-
-    rows: list[FOMWorkbenchNode] = []
-    for spec in sorted(specs, key=lambda item: item.full_name):
-        declared_names = tuple(getattr(spec, "declared_attributes", ()) or getattr(spec, "declared_parameters", ()))
-        total_names = tuple(getattr(spec, "attributes", ()) or getattr(spec, "parameters", ()))
-        rows.append(
-            FOMWorkbenchNode(
-                kind=kind,
-                full_name=spec.full_name,
-                parent_name=spec.parent_name,
-                declared_count=len(declared_names),
-                total_count=len(total_names),
-                declared_names=declared_names,
-                total_names=total_names,
-                datatype_hints=_spec_datatype_hints(spec),
-                lineage=lineage(spec.full_name),
-                is_leaf=child_counts.get(spec.full_name, 0) == 0,
-            )
-        )
-    return tuple(rows)
+    return tuple(build_fom_tree_nodes(specs, kind=kind))
 
 
 def _default_load_set(records: tuple[FOMInventoryRecord, ...]) -> tuple[FOMInventoryRecord, ...]:
@@ -788,103 +721,33 @@ def _search_rows(
 ) -> tuple[FOMWorkbenchSearchRow, ...]:
     rows: list[FOMWorkbenchSearchRow] = []
     for family in families:
-        for node in family.object_nodes:
-            rows.append(
-                FOMWorkbenchSearchRow(
-                    source_name=family.scenario_family,
-                    source_kind="family",
-                    kind="object",
-                    name=node.full_name,
-                    parent_name=node.parent_name,
-                    lineage=node.lineage,
-                    is_leaf=node.is_leaf,
-                    edition_classes=family.edition_classes,
-                    edition_scope=family.edition_scope,
-                    baseline_kinds=family.baseline_kinds,
-                    load_mode=family.load_mode,
-                )
+        rows.extend(
+            build_fom_search_rows(
+                source_name=family.scenario_family,
+                source_kind="family",
+                object_nodes=family.object_nodes,
+                interaction_nodes=family.interaction_nodes,
+                datatype_names=family.datatype_names,
+                edition_classes=family.edition_classes,
+                edition_scope=family.edition_scope,
+                baseline_kinds=family.baseline_kinds,
+                load_mode=family.load_mode,
             )
-        for node in family.interaction_nodes:
-            rows.append(
-                FOMWorkbenchSearchRow(
-                    source_name=family.scenario_family,
-                    source_kind="family",
-                    kind="interaction",
-                    name=node.full_name,
-                    parent_name=node.parent_name,
-                    lineage=node.lineage,
-                    is_leaf=node.is_leaf,
-                    edition_classes=family.edition_classes,
-                    edition_scope=family.edition_scope,
-                    baseline_kinds=family.baseline_kinds,
-                    load_mode=family.load_mode,
-                )
-            )
-        for name in family.datatype_names:
-            rows.append(
-                FOMWorkbenchSearchRow(
-                    source_name=family.scenario_family,
-                    source_kind="family",
-                    kind="datatype",
-                    name=name,
-                    parent_name=None,
-                    lineage=(name,),
-                    is_leaf=True,
-                    edition_classes=family.edition_classes,
-                    edition_scope=family.edition_scope,
-                    baseline_kinds=family.baseline_kinds,
-                    load_mode=family.load_mode,
-                )
-            )
+        )
     for load_set in custom_load_sets:
-        for node in load_set.object_nodes:
-            rows.append(
-                FOMWorkbenchSearchRow(
-                    source_name=load_set.name,
-                    source_kind="custom-load-set",
-                    kind="object",
-                    name=node.full_name,
-                    parent_name=node.parent_name,
-                    lineage=node.lineage,
-                    is_leaf=node.is_leaf,
-                    edition_classes=(),
-                    edition_scope=load_set.edition_scope,
-                    baseline_kinds=(),
-                    load_mode="custom",
-                )
+        rows.extend(
+            build_fom_search_rows(
+                source_name=load_set.name,
+                source_kind="custom-load-set",
+                object_nodes=load_set.object_nodes,
+                interaction_nodes=load_set.interaction_nodes,
+                datatype_names=load_set.datatype_names,
+                edition_classes=(),
+                edition_scope=load_set.edition_scope,
+                baseline_kinds=(),
+                load_mode="custom",
             )
-        for node in load_set.interaction_nodes:
-            rows.append(
-                FOMWorkbenchSearchRow(
-                    source_name=load_set.name,
-                    source_kind="custom-load-set",
-                    kind="interaction",
-                    name=node.full_name,
-                    parent_name=node.parent_name,
-                    lineage=node.lineage,
-                    is_leaf=node.is_leaf,
-                    edition_classes=(),
-                    edition_scope=load_set.edition_scope,
-                    baseline_kinds=(),
-                    load_mode="custom",
-                )
-            )
-        for name in load_set.datatype_names:
-            rows.append(
-                FOMWorkbenchSearchRow(
-                    source_name=load_set.name,
-                    source_kind="custom-load-set",
-                    kind="datatype",
-                    name=name,
-                    parent_name=None,
-                    lineage=(name,),
-                    is_leaf=True,
-                    edition_classes=(),
-                    edition_scope=load_set.edition_scope,
-                    baseline_kinds=(),
-                    load_mode="custom",
-                )
-            )
+        )
     return tuple(sorted(rows, key=lambda row: (row.source_name, row.kind, row.name)))
 
 
@@ -2534,6 +2397,55 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       return selectedNodeName || selectedSearchName || null;
     }}
 
+    function hashParams() {{
+      const raw = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : "";
+      return new URLSearchParams(raw);
+    }}
+
+    function updateDeepLinkHash() {{
+      const params = new URLSearchParams();
+      if (selectedCatalogKind === "custom-load-set" && selectedCatalogName) {{
+        params.set("load-set", selectedCatalogName);
+      }} else if (selectedCatalogName) {{
+        params.set("family", selectedCatalogName);
+      }}
+      if (currentWorkspaceMode && currentWorkspaceMode !== "overview") {{
+        params.set("workspace", currentWorkspaceMode);
+      }}
+      const symbol = activeSymbolLabel();
+      if (symbol) {{
+        params.set("symbol", symbol);
+      }}
+      const hash = params.toString();
+      history.replaceState(null, "", hash ? `#${{hash}}` : window.location.pathname + window.location.search);
+    }}
+
+    function applyInitialDeepLink() {{
+      const params = hashParams();
+      const family = params.get("family");
+      const loadSet = params.get("load-set");
+      const workspace = params.get("workspace");
+      const symbol = params.get("symbol");
+      const symbolKind = params.get("kind");
+      if (family && familyMap.has(family)) {{
+        selectedCatalogKind = "family";
+        selectedCatalogName = family;
+      }} else if (loadSet && customLoadSets().some((row) => row.name === loadSet)) {{
+        selectedCatalogKind = "custom-load-set";
+        selectedCatalogName = loadSet;
+      }}
+      if (workspace) {{
+        currentWorkspaceMode = workspace;
+      }}
+      if (symbol) {{
+        selectedNodeName = symbol;
+        selectedSearchName = symbol;
+      }}
+      if (symbolKind && (symbolKind === "object" || symbolKind === "interaction")) {{
+        document.getElementById("tree-kind").value = symbolKind;
+      }}
+    }}
+
     function renderWorkspaceMode() {{
       document.querySelectorAll(".workspace-tab").forEach((button) => {{
         button.classList.toggle("active", button.dataset.workspace === currentWorkspaceMode);
@@ -2620,6 +2532,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       renderSearch();
       syncDiffSelectionToCatalog();
       renderDiff();
+      updateDeepLinkHash();
     }}
 
     function renderCommandList(items, emptyMessage = "No command available.") {{
@@ -4103,6 +4016,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
         currentWorkspaceMode = button.dataset.workspace;
         renderWorkspaceMode();
         renderSelectionSummary();
+        updateDeepLinkHash();
       }});
     }});
     document.querySelectorAll(".focus-chip").forEach((button) => {{
@@ -4122,6 +4036,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
     renderBuilder();
     setDiffSelectors();
     renderFocusControls();
+    applyInitialDeepLink();
     refreshSelectionViews();
   </script>
 </body>
