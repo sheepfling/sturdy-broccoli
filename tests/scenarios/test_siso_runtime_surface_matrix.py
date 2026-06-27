@@ -32,6 +32,17 @@ def test_siso_runtime_surface_matrix_manifest_explicit() -> None:
     assert by_row["link16-rpr2-integrated-2010-micro-2::observer-visualizer-bridge"]["includes_federate_service_api"] is True
 
 
+def test_siso_runtime_surface_matrix_presets_select_expected_rows() -> None:
+    manifest = build_siso_runtime_surface_matrix_manifest(presets=["showcase-hydrated"])
+
+    assert manifest["presets"] == ["showcase-hydrated"]
+    assert manifest["surface_profiles"] == ["observer-visualizer"]
+    assert manifest["scenario_count"] == 12
+    assert manifest["row_count"] == 12
+    assert {row["topology"] for row in manifest["rows"]} == {"squad-5", "constellation-10"}
+    assert {row["surface_profile"] for row in manifest["rows"]} == {"observer-visualizer"}
+
+
 def test_siso_runtime_surface_matrix_artifacts_are_generated(tmp_path: Path) -> None:
     paths = write_siso_runtime_surface_matrix_artifacts(
         tmp_path / "surface-matrix",
@@ -119,3 +130,27 @@ def test_siso_runtime_surface_matrix_wrapper_bootstraps_source_checkout(tmp_path
     summary = json.loads((output_dir / "siso_runtime_surface_matrix_summary.json").read_text(encoding="utf-8"))
     assert summary["selected_scenario_count"] == 1
     assert summary["selected_row_count"] == 1
+
+
+def test_siso_runtime_surface_matrix_wrapper_accepts_presets(tmp_path: Path) -> None:
+    env = {"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")}
+    output_dir = tmp_path / "surface-matrix-preset"
+    result = subprocess.run(
+        [
+            str(ROOT / "tools" / "fom-siso-runtime-surface-matrix"),
+            "--preset",
+            "micro-bridge-smoke",
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=tmp_path,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    summary = json.loads((output_dir / "siso_runtime_surface_matrix_summary.json").read_text(encoding="utf-8"))
+    assert summary["selected_scenario_count"] >= 1
+    assert summary["selected_row_count"] >= 1
