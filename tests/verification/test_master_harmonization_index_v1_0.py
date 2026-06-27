@@ -44,7 +44,7 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
 
     statuses = Counter(row["harmonization_status"] for row in rows)
     assert statuses == Counter(
-        {"mapped": 2770, "partial": 1233}
+        {"mapped": 2776, "partial": 1227}
     )
 
     by_id = {row["master_requirement_id"]: row for row in rows}

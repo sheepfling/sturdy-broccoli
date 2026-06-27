@@ -114,7 +114,14 @@ def test_clause_6_packet_reconciliation_does_not_keep_stale_partial_precondition
 
     expected = {
         "HLA1516.1-OM-6_2-PRE-004": "test_reserve_object_instance_name_rejects_not_connected_not_joined_and_save_restore",
+        "HLA1516.1-OM-6_4-ARG-003": "test_name_release_and_query_interaction_transport_tail_reject_not_connected_not_joined_and_save_restore",
         "HLA1516.1-OM-6_4-PRE-004": "test_name_release_and_query_interaction_transport_tail_reject_not_connected_not_joined_and_save_restore",
+        "HLA1516.1-OM-6_4-EFF-005": "test_name_reservation_and_release_effects_manage_state_without_creating_objects",
+        "HLA1516.1-OM-6_4-EXC-006": "test_name_release_and_query_interaction_transport_tail_reject_not_connected_not_joined_and_save_restore",
+        "HLA1516.1-OM-6_7-ARG-003": "test_name_release_and_query_interaction_transport_tail_reject_not_connected_not_joined_and_save_restore",
+        "HLA1516.1-OM-6_7-PRE-004": "test_name_release_and_query_interaction_transport_tail_reject_not_connected_not_joined_and_save_restore",
+        "HLA1516.1-OM-6_7-EFF-005": "test_name_reservation_and_release_effects_manage_state_without_creating_objects",
+        "HLA1516.1-OM-6_7-EXC-006": "test_name_release_and_query_interaction_transport_tail_reject_not_connected_not_joined_and_save_restore",
         "HLA1516.1-OM-6_8-PRE-004": "test_clause_6_federate_initiated_services_validate_core_argument_shapes;test_register_object_instance_rejects_not_connected_not_joined_name_in_use_and_save_restore",
         "HLA1516.1-OM-6_8-EFF-005": "test_two_python_federates_share_in_memory_rti",
         "HLA1516.1-OM-6_8-EXC-006": "test_clause_6_federate_initiated_services_validate_core_argument_shapes;test_register_object_instance_rejects_not_connected_not_joined_name_in_use_and_save_restore;tests/backends/test_python_backend_time_ddm_extended.py::test_strict_publication_gates_registration_update_and_interaction_sends",

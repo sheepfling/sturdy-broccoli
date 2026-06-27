@@ -305,15 +305,15 @@
       "description": "Clause 6 packet-to-curated backlog for object-management services.",
       "family": "Object Management",
       "kinds": {
-        "ARG": 16,
-        "EFF": 14,
-        "EXC": 21,
-        "PRE": 14,
+        "ARG": 14,
+        "EFF": 12,
+        "EXC": 19,
+        "PRE": 13,
         "SEM": 6,
         "SVC": 8
       },
-      "open_row_count": 79,
-      "queue_item_count": 22,
+      "open_row_count": 72,
+      "queue_item_count": 20,
       "queue_items": [
         {
           "acceptance_tests": [
@@ -641,58 +641,6 @@
         },
         {
           "acceptance_tests": [
-            "test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore"
-          ],
-          "clause": "6.7",
-          "implementation_areas": [
-            "object_naming"
-          ],
-          "kinds": {
-            "ARG": 1,
-            "EFF": 1,
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 4,
-          "queue_item": "Release Multiple Object Instance Names",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_7-ARG-003",
-            "HLA1516.1-OM-6_7-PRE-004",
-            "HLA1516.1-OM-6_7-EFF-005",
-            "HLA1516.1-OM-6_7-EXC-006"
-          ],
-          "statuses": {
-            "partial": 4
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore"
-          ],
-          "clause": "6.4",
-          "implementation_areas": [
-            "object_naming"
-          ],
-          "kinds": {
-            "ARG": 1,
-            "EFF": 1,
-            "EXC": 1
-          },
-          "open_row_count": 3,
-          "queue_item": "Release Object Instance Name",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_4-ARG-003",
-            "HLA1516.1-OM-6_4-EFF-005",
-            "HLA1516.1-OM-6_4-EXC-006"
-          ],
-          "statuses": {
-            "partial": 3
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
             "test_delete_object_instance_notifies_known_federates_with_remove_object_instance"
           ],
           "clause": "6.15",
@@ -907,7 +855,7 @@
         }
       ],
       "statuses": {
-        "partial": 79
+        "partial": 72
       }
     },
     {
@@ -2949,13 +2897,13 @@
       "kinds": {
         "ARG": 4,
         "EFF": 9,
-        "EXC": 76,
-        "PRE": 96,
+        "EXC": 74,
+        "PRE": 95,
         "SEM": 2,
         "SVC": 8
       },
-      "open_row_count": 195,
-      "queue_item_count": 113,
+      "open_row_count": 192,
+      "queue_item_count": 111,
       "queue_items": [
         {
           "acceptance_tests": [
@@ -3234,50 +3182,6 @@
           "queue_item": "Reflect Attribute Values",
           "requirement_ids": [
             "HLA1516.1-OM-6_11-PRE-004"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore"
-          ],
-          "clause": "6.7",
-          "implementation_areas": [
-            "object_naming"
-          ],
-          "kinds": {
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "Release Multiple Object Instance Names",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_7-PRE-004",
-            "HLA1516.1-OM-6_7-EXC-006"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore"
-          ],
-          "clause": "6.4",
-          "implementation_areas": [
-            "object_naming"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Release Object Instance Name",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_4-EXC-006"
           ],
           "statuses": {
             "partial": 1
@@ -5656,11 +5560,11 @@
         }
       ],
       "statuses": {
-        "partial": 195
+        "partial": 192
       }
     }
   ],
   "generated_from": "harmonized requirements ledgers + imported HLA packet v1.0",
-  "total_open_rows": 447,
-  "total_queue_items": 226
+  "total_open_rows": 437,
+  "total_queue_items": 222
 }

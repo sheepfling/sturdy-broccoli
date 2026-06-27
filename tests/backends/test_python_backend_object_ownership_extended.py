@@ -2961,6 +2961,9 @@ def test_name_release_and_query_interaction_transport_tail_reject_not_connected_
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("release-query-interaction-negative-fed")
     interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
 
+    owner.release_object_instance_name("never-reserved")
+    owner.release_multiple_object_instance_name({"never-reserved-a", "never-reserved-b"})
+
     owner.request_federation_save("REL-QUERY-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
