@@ -8,6 +8,7 @@ from hla.rti1516e.enums import OrderType, ResignAction, ServiceGroup
 from hla.rti1516e.exceptions import (
     AttributeNotOwned,
     AttributeNotDefined,
+    FederateInternalError,
     FederateNotExecutionMember,
     FederateHandleNotKnown,
     InvalidAttributeHandle,
@@ -685,6 +686,69 @@ def test_discovery_uses_closest_subscribed_superclass_and_known_class_stays_stab
     publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     subscriber.resign_federation_execution(ResignAction.NO_ACTION)
     publisher.destroy_federation_execution("hierarchy-discovery-fed")
+
+
+def test_discovery_callback_validates_payload_context_and_wraps_callback_failures(tmp_path: Path):
+    fom_path = tmp_path / "hierarchy-discovery-contract-fom.xml"
+    _write_hierarchy_fom(fom_path)
+
+    engine = InMemoryRTIEngine()
+    publisher = rti_ambassador(engine=engine)
+    subscriber = rti_ambassador(engine=engine)
+    pub_fed = RecordingFederateAmbassador()
+    sub_fed = RecordingFederateAmbassador()
+
+    publisher.connect(pub_fed, CallbackModel.HLA_EVOKED)
+    subscriber.connect(sub_fed, CallbackModel.HLA_EVOKED)
+    publisher.create_federation_execution("hierarchy-discovery-contract-fed", str(fom_path))
+    pub_handle = publisher.join_federation_execution("pub", "type-pub", "hierarchy-discovery-contract-fed")
+    subscriber.join_federation_execution("sub", "type-sub", "hierarchy-discovery-contract-fed")
+
+    base = subscriber.get_object_class_handle("HLAobjectRoot.Base")
+    child = publisher.get_object_class_handle("HLAobjectRoot.Base.Child")
+    payload = subscriber.get_attribute_handle(base, "Payload")
+
+    subscriber.subscribe_object_class_attributes(base, {payload})
+    publisher.publish_object_class_attributes(child, {publisher.get_attribute_handle(child, "Payload")})
+    obj = publisher.register_object_instance(child, "Hierarchy-Contract-1")
+    drain(publisher, subscriber)
+
+    discovery = sub_fed.last_callback("discoverObjectInstance")
+    assert discovery is not None
+    assert discovery.args == (obj, base, "Hierarchy-Contract-1", pub_handle)
+    assert pub_fed.callbacks_named("discoverObjectInstance") == []
+    assert subscriber.get_known_object_class_handle(obj) == base
+
+    publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    subscriber.resign_federation_execution(ResignAction.NO_ACTION)
+    publisher.destroy_federation_execution("hierarchy-discovery-contract-fed")
+
+    class _FailingDiscoveryAmbassador(RecordingFederateAmbassador):
+        def on_discover_object_instance(self, *args, **kwargs):
+            raise RuntimeError("discover-object-instance-failed")
+
+    engine = InMemoryRTIEngine()
+    publisher = rti_ambassador(engine=engine)
+    subscriber = rti_ambassador(engine=engine)
+    publisher.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    subscriber.connect(_FailingDiscoveryAmbassador(), CallbackModel.HLA_IMMEDIATE)
+    publisher.create_federation_execution("hierarchy-discovery-failing-fed", str(fom_path))
+    publisher.join_federation_execution("pub", "type-pub", "hierarchy-discovery-failing-fed")
+    subscriber.join_federation_execution("sub", "type-sub", "hierarchy-discovery-failing-fed")
+
+    base = subscriber.get_object_class_handle("HLAobjectRoot.Base")
+    child = publisher.get_object_class_handle("HLAobjectRoot.Base.Child")
+    payload = subscriber.get_attribute_handle(base, "Payload")
+
+    subscriber.subscribe_object_class_attributes(base, {payload})
+    publisher.publish_object_class_attributes(child, {publisher.get_attribute_handle(child, "Payload")})
+
+    with pytest.raises(FederateInternalError):
+        publisher.register_object_instance(child, "Hierarchy-Failing-1")
+
+    publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    subscriber.resign_federation_execution(ResignAction.NO_ACTION)
+    publisher.destroy_federation_execution("hierarchy-discovery-failing-fed")
 
 
 def test_reflect_attributes_are_mapped_to_known_discovered_class_handles(tmp_path: Path):
