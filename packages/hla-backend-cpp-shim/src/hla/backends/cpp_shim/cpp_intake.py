@@ -6,6 +6,7 @@ strategy so the workspace can build a generated adapter capsule in a later step.
 """
 from __future__ import annotations
 
+import importlib
 import json
 import re
 import shutil
@@ -192,8 +193,7 @@ def _load_profile_mapping(path: Path) -> dict[str, Any]:
         payload = json.loads(text)
     else:
         try:
-            import yaml  # type: ignore
-
+            yaml = importlib.import_module("yaml")
             payload = yaml.safe_load(text)
         except ModuleNotFoundError:
             payload = _parse_simple_yaml(text)

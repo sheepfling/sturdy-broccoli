@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from importlib import import_module
 from typing import Any, Sequence, cast
 
 from hla.bridges.java.common import BackendUnavailableError
-from hla.bridges.java.common.java_common import JavaBridge, PythonFederateAmbassadorDispatcher
+from hla.bridges.java.common.java_bridge_base import JavaBridge
+from hla.bridges.java.common.java_callbacks import PythonFederateAmbassadorDispatcher
 from hla.bridges.java.common.java_runtime import ensure_java_home
 from hla.bridges.java.common.java_intake import JavaApiProfile
 from hla.backends.common.invocation import JavaInvocationResolverName
@@ -34,7 +36,7 @@ class JPypeBridge(JavaBridge):
         super().__init__(config.java_api_profile)
         ensure_java_home()
         try:
-            import jpype  # type: ignore
+            jpype = import_module("jpype")
         except Exception as exc:  # pragma: no cover - optional dependency
             raise BackendUnavailableError("JPype backend requested, but jpype is not installed") from exc
 
