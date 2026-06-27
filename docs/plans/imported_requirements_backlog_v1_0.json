@@ -305,14 +305,14 @@
       "description": "Clause 6 packet-to-curated backlog for object-management services.",
       "family": "Object Management",
       "kinds": {
-        "ARG": 2,
+        "ARG": 1,
         "EFF": 2,
-        "EXC": 3,
-        "PRE": 2,
+        "EXC": 2,
+        "PRE": 1,
         "SEM": 6
       },
-      "open_row_count": 15,
-      "queue_item_count": 4,
+      "open_row_count": 12,
+      "queue_item_count": 3,
       "queue_items": [
         {
           "acceptance_tests": [
@@ -350,31 +350,6 @@
             "partial": 6
           },
           "suggested_next_action": "Add focused runtime or state-transition evidence for the remaining behavioral slice."
-        },
-        {
-          "acceptance_tests": [
-            "test_two_python_federates_share_in_memory_rti"
-          ],
-          "clause": "6.13",
-          "implementation_areas": [
-            "interaction_delivery"
-          ],
-          "kinds": {
-            "ARG": 1,
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 3,
-          "queue_item": "Receive Interaction",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_13-ARG-003",
-            "HLA1516.1-OM-6_13-PRE-004",
-            "HLA1516.1-OM-6_13-EXC-006"
-          ],
-          "statuses": {
-            "partial": 3
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
         },
         {
           "acceptance_tests": [
@@ -428,7 +403,7 @@
         }
       ],
       "statuses": {
-        "partial": 15
+        "partial": 12
       }
     },
     {
@@ -2470,11 +2445,11 @@
       "kinds": {
         "EFF": 1,
         "EXC": 64,
-        "PRE": 84,
+        "PRE": 83,
         "SEM": 2
       },
-      "open_row_count": 151,
-      "queue_item_count": 95,
+      "open_row_count": 150,
+      "queue_item_count": 94,
       "queue_items": [
         {
           "acceptance_tests": [
@@ -2499,27 +2474,6 @@
           ],
           "statuses": {
             "partial": 2
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_two_python_federates_share_in_memory_rti"
-          ],
-          "clause": "6.13",
-          "implementation_areas": [
-            "interaction_delivery"
-          ],
-          "kinds": {
-            "PRE": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Receive Interaction",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_13-PRE-004"
-          ],
-          "statuses": {
-            "partial": 1
           },
           "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
         },
@@ -4737,11 +4691,11 @@
         }
       ],
       "statuses": {
-        "partial": 151
+        "partial": 150
       }
     }
   ],
   "generated_from": "harmonized requirements ledgers + imported HLA packet v1.0",
-  "total_open_rows": 339,
-  "total_queue_items": 190
+  "total_open_rows": 335,
+  "total_queue_items": 188
 }

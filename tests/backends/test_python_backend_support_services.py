@@ -997,6 +997,62 @@ def test_remove_object_instance_callback_validates_payload_context_and_wraps_cal
     owner.destroy_federation_execution("remove-object-failing-fed")
 
 
+def test_receive_interaction_callback_validates_payload_context_and_wraps_callback_failures():
+    _, owner, observer, owner_fed, observer_fed, owner_handle, _observer_handle = joined_pair(
+        "receive-interaction-contract-fed"
+    )
+    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    parameter = owner.get_parameter_handle(interaction, "TrackId")
+    reliable = owner.backend.engine.transportation_reliable
+
+    owner.publish_interaction_class(interaction)
+    observer.subscribe_interaction_class(interaction)
+    observer_fed.clear()
+
+    owner.send_interaction(interaction, {parameter: b"ri-contract"}, b"ri-tag")
+    drain(owner, observer)
+
+    received = observer_fed.last_callback("receiveInteraction")
+    assert received is not None
+    assert received.args[0] == interaction
+    assert received.args[1] == {parameter: b"ri-contract"}
+    assert received.args[2] == b"ri-tag"
+    assert received.args[3] == OrderType.RECEIVE
+    assert received.args[4] == reliable
+    info = received.args[5]
+    assert getattr(info, "producing_federate") == owner_handle
+    assert owner_fed.callbacks_named("receiveInteraction") == []
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("receive-interaction-contract-fed")
+
+    class _FailingReceiveInteractionAmbassador(RecordingFederateAmbassador):
+        def on_receive_interaction(self, *args, **kwargs):
+            raise RuntimeError("receive-interaction-failed")
+
+    engine = InMemoryRTIEngine()
+    owner = rti_ambassador(engine=engine)
+    observer = rti_ambassador(engine=engine)
+    owner.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    observer.connect(_FailingReceiveInteractionAmbassador(), CallbackModel.HLA_IMMEDIATE)
+    owner.create_federation_execution("receive-interaction-failing-fed", "TargetRadarFOMmodule.xml")
+    owner.join_federation_execution("owner", "type-owner", "receive-interaction-failing-fed")
+    observer.join_federation_execution("observer", "type-observer", "receive-interaction-failing-fed")
+
+    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    parameter = owner.get_parameter_handle(interaction, "TrackId")
+    owner.publish_interaction_class(interaction)
+    observer.subscribe_interaction_class(interaction)
+
+    with pytest.raises(FederateInternalError):
+        owner.send_interaction(interaction, {parameter: b"ri-failing"}, b"ri-tag")
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("receive-interaction-failing-fed")
+
+
 def test_update_rate_designator_throttles_timed_reflects(tmp_path: Path):
     fom_path = tmp_path / "update-rate-fom.xml"
     _write_update_rate_fom(fom_path)
