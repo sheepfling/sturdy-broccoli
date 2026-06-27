@@ -243,7 +243,7 @@ Operational effect:
 - the active execution queue should advance to `CAP-TM` instead of continuing
   to treat `CAP-DM` as unresolved wording debt
 
-The `CAP-TM` bounded family was also re-audited on `2026-06-26` against the
+The `CAP-TM` bounded family was also re-audited on `2026-06-27` against the
 current owner doc, reconciliation companion, reconciliation verifier, and the
 owning shard command for:
 
@@ -265,10 +265,18 @@ Reason:
 2. the current time-management shard is green, but the remaining packet rows
    still describe broader precondition, exception, or overview envelopes than
    the direct witnesses isolate
-3. no narrower direct claim was identified that would preserve the current
+3. the owner ledger and the Clause 8 companion ledger now name those bounded
+   envelopes explicitly instead of relying on a generic residual-note pattern:
+   - `PRE` rows now call out the exercised precondition surface directly
+   - `EXC` rows now call out the exercised standard exception surface directly
+   - `EXC_API` rows now state that the imported API wording stays broader than
+     the isolated negative-path proof
+   - the single overview row now points at the mixed-backend receive-order
+     conversion boundary explicitly
+4. no narrower direct claim was identified that would preserve the current
    Clause 8 row meanings without adding new isolated per-row negative or
    overview-decomposition proof
-4. the current owner doc already expresses the honest final reading for the
+5. the current owner doc already expresses the honest final reading for the
    present evidence
 
 Operational effect:

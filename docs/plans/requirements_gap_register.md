@@ -101,12 +101,14 @@ Latest investigated decision:
 - treat this bucket as maintained closeout documentation unless future Clause 5
   witnesses materially widen or materially contradict the current narrowed
   family disposition
-- on `2026-06-26`, the `2010 CAP-TM bounded family` was also re-audited and
+- on `2026-06-27`, the `2010 CAP-TM bounded family` was also re-audited and
   kept as an explicit bounded family surface
 - the current owner doc, reconciliation companion, reconciliation verifier,
   and owning shard command all support that reading
 - the current tail remains a stable bounded `19 PRE`, `19 EXC`, `19 EXC_API`,
   and `1 OVW` Clause 8 family envelope
+- the owner ledger and Clause 8 companion now encode those bounded envelopes
+  directly in the row notes instead of relying on one generic residual note
 - no narrower direct claim was identified that would preserve the current
   Clause 8 row meanings without adding new isolated per-row negative or
   overview-decomposition proof

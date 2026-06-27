@@ -219,7 +219,7 @@ Why:
 Use the support-services owner docs as maintained bounded documentation and
 advance to `P1` / `P2` above for the next actual closeout move.
 
-The `2010 CAP-TM bounded family` was also re-audited on `2026-06-26`.
+The `2010 CAP-TM bounded family` was also re-audited on `2026-06-27`.
 
 Result:
 
@@ -234,7 +234,10 @@ Why:
 3. the remaining tail is still a stable bounded `19 PRE`, `19 EXC`,
    `19 EXC_API`, and `1 OVW` envelope rather than a set of isolated direct
    per-row witnesses
-4. no narrower direct claim was identified that would preserve the current row
+4. the owner ledger and Clause 8 companion now state those bounded envelopes
+   explicitly at the row-note level instead of relying on one generic
+   residual explanation
+5. no narrower direct claim was identified that would preserve the current row
    meanings without adding new isolated negative or overview-decomposition
    proof
 

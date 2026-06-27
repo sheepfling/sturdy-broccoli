@@ -59,3 +59,29 @@ def test_tm_detailed_reconciliation_spot_checks_key_rows():
     )
     assert rows["HLA1516.1-TM-8_16-RTIAPI-001-RET"]["current_status"] == "mapped"
     assert rows["HLA1516.1-TM-8_16-RTIAPI-001-RET"]["reconciliation_kind"] == "RET"
+    assert "mixed-backend priority-resolution note" in rows["HLA1516.1-TM-OVERVIEW-009"]["notes"]
+    assert "applicable precondition surface" in rows["HLA1516.1-TM-8_2-ENABLETIMEREGULATION-PRE-001"]["notes"]
+    assert "invalid-lookahead" in rows["HLA1516.1-TM-8_2-ENABLETIMEREGULATION-PRE-001"]["notes"]
+    assert "standard exception surface" in rows["HLA1516.1-TM-8_8-TIMEADVANCEREQUEST-EXC-001"]["notes"]
+    assert "invalid-or-past logical time" in rows["HLA1516.1-TM-8_8-TIMEADVANCEREQUEST-EXC-001"]["notes"]
+    assert "imported API-exception row remains broader" in rows["HLA1516.1-TM-8_21-RTIAPI-001-EXC"]["notes"]
+    assert "message-retraction-handle validation" in rows["HLA1516.1-TM-8_21-RTIAPI-001-EXC"]["notes"]
+
+
+def test_tm_partial_rows_use_explicit_bounded_envelope_notes() -> None:
+    rows = _read_rows()
+    generic_note = (
+        "Repo-native time-management tests exercise related positive or negative behavior, "
+        "but this packet row is broader than the current direct evidence."
+    )
+
+    for row in rows:
+        if row["current_status"] != "partial":
+            continue
+        assert row["notes"] != generic_note
+        if row["reconciliation_kind"] == "PRE":
+            assert "applicable precondition surface" in row["notes"]
+        elif row["reconciliation_kind"] == "EXC":
+            assert "standard exception surface" in row["notes"]
+        elif row["reconciliation_kind"] == "EXC_API":
+            assert "imported API-exception row remains broader" in row["notes"]
