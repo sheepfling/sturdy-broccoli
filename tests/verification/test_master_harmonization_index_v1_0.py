@@ -43,9 +43,7 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
     }
 
     statuses = Counter(row["harmonization_status"] for row in rows)
-    assert statuses == Counter(
-        {"mapped": 2790, "partial": 1213}
-    )
+    assert statuses == Counter({"mapped": 2852, "partial": 1151})
 
     by_id = {row["master_requirement_id"]: row for row in rows}
     assert by_id["HLA1516.1-SUP-10_2-GETAUTOMATICRESIGNDIRECTIVE-TEST-001"][
@@ -87,6 +85,9 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
         by_id["HLA1516.1-OM-6_2-RTIAPI-001"]["harmonization_source_file"]
         == "hla1516_1_om_detailed_reconciliation.csv"
     )
+    assert by_id["HLA1516.1-OM-6_3-OBJECTINSTANCENAMERESERVATIONSUCCEEDED-CB_ORDER-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_6-MULTIPLEOBJECTINSTANCENAMERESERVATIONSUCCEEDED-CB_ORDER-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_9-DISCOVEROBJECTINSTANCE-CB_ORDER-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-ARG-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-ARG-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_5-RESERVEMULTIPLEOBJECTINSTANCENAME-ARG-001"]["harmonization_status"] == "mapped"
@@ -106,19 +107,37 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
         ]
         == "hla1516_1_om_detailed_reconciliation.csv"
     )
+    assert by_id["HLA1516.1-OM-6_11-FEDCB-001-ORD"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_11-REFLECTATTRIBUTEVALUES-CB_PAYLOAD-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_13-RECEIVEINTERACTION-CB-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_13-RECEIVEINTERACTION-CB_ORDER-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_13-RECEIVEINTERACTION-CB_PAYLOAD-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_15-REMOVEOBJECTINSTANCE-CB_ORDER-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_17-ATTRIBUTESINSCOPE-CB_ORDER-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_21-TURNUPDATESONFOROBJECTINSTANCE-CB_ORDER-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_22-TURNUPDATESOFFFOROBJECTINSTANCE-CB_ORDER-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_12-SENDINTERACTION-TEST-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-TEST-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_23-REQUESTATTRIBUTETRANSPORTATIONTYPECHANGE-SVC-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_23-REQUESTATTRIBUTETRANSPORTATIONTYPECHANGE-EFF-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_23-REQUESTATTRIBUTETRANSPORTATIONTYPECHANGE-EXC-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_24-CONFIRMATTRIBUTETRANSPORTATIONTYPECHANGE-CB_ORDER-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_23-REQUESTATTRIBUTETRANSPORTATIONTYPECHANGE-TEST-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-SVC-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-EFF-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-EXC-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_26-REPORTATTRIBUTETRANSPORTATIONTYPE-CB_ORDER-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-TEST-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_27-REQUESTINTERACTIONTRANSPORTATIONTYPECHANGE-SVC-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_27-REQUESTINTERACTIONTRANSPORTATIONTYPECHANGE-EFF-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_27-REQUESTINTERACTIONTRANSPORTATIONTYPECHANGE-EXC-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_28-CONFIRMINTERACTIONTRANSPORTATIONTYPECHANGE-CB_ORDER-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_27-REQUESTINTERACTIONTRANSPORTATIONTYPECHANGE-TEST-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-SVC-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-EFF-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-EXC-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-TEST-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_30-REPORTINTERACTIONTRANSPORTATIONTYPE-CB_ORDER-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-OVERVIEW-007"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-TM-OVERVIEW-009"]["harmonization_status"] == "partial"
     assert (
