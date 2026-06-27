@@ -50,9 +50,9 @@ register because they are now classified explicitly in
 [`2010_python_rti_bounded_family_execution_worklist.md`](2010_python_rti_bounded_family_execution_worklist.md)
 as:
 
-- `7` `pass` OMT area rows
-- `5` bounded `partial` OMT/XML area rows
-- `1` `implemented-slice` Annex E schema witness
+- `20` `pass` OMT/XML area rows
+- `3` `implemented-slice` OMT/XML execution witnesses
+- `0` remaining OMT/XML area partial placeholders
 
 Use that worklist when the question is whether to tighten those bounded rows
 further.

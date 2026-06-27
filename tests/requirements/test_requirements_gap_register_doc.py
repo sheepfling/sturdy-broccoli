@@ -24,9 +24,9 @@ def test_gap_register_and_queue_keep_owner_companion_split_explicit() -> None:
     assert "use `requirements_gap_register.md` for the exact owner doc, owner companion" in queue_text
     assert "There are no active `2010` open buckets in this register." in gap_text
     assert "The `2010` backend-compliance packet no longer carries any `planned`" in gap_text
-    assert "`7` `pass` OMT area rows" in gap_text
-    assert "`5` bounded `partial` OMT/XML area rows" in gap_text
-    assert "`1` `implemented-slice` Annex E schema witness" in gap_text
+    assert "`20` `pass` OMT/XML area rows" in gap_text
+    assert "`3` `implemented-slice` OMT/XML execution witnesses" in gap_text
+    assert "`0` remaining OMT/XML area partial placeholders" in gap_text
     assert "Use that worklist when the question is whether to tighten those bounded rows" in gap_text
     assert "There are no active `2025` open buckets in this register." in gap_text
     assert "Maintained optional scope-expansion candidates under the current honest-`100%`" in gap_text

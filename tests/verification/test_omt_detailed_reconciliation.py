@@ -39,6 +39,10 @@ def test_omt_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.2-OMT-OMT_CONFORMANCE_VERIFICATION-024"]["current_status"] == "mapped"
     assert rows["HLA1516.2-NORMALIZATION-030"]["current_status"] == "partial"
     assert rows["HLA1516.2-OMT-OMT_NORM_NORMALIZATION-027"]["current_status"] == "partial"
+    assert "assess_omt_conformance" in rows["HLA1516.2-NORMALIZATION-030"]["notes"]
+    assert "runtime DDM normalization semantics are not yet executed" in rows["HLA1516.2-NORMALIZATION-030"]["notes"]
+    assert "assess_omt_conformance" in rows["HLA1516.2-OMT-OMT_NORM_NORMALIZATION-027"]["notes"]
+    assert "runtime DDM normalization semantics are not yet executed" in rows["HLA1516.2-OMT-OMT_NORM_NORMALIZATION-027"]["notes"]
     assert rows["HLA1516.2-MERGE-PRINCIPLES-031"]["current_status"] == "mapped"
     assert rows["HLA1516.2-OMT-OMT_NORM_MERGING_PRINCIPLES-028"]["current_status"] == "mapped"
     assert rows["HLA1516.2-OMT-OMT_DIF-029"]["current_status"] == "mapped"

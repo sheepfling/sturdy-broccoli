@@ -12,8 +12,8 @@ def test_2010_bounded_family_execution_worklist_lists_current_bounded_buckets() 
 
     for token in (
         "`934` matrix rows",
-        "`808` `pass`",
-        "`85` `partial`",
+        "`835` `pass`",
+        "`58` `partial`",
         "`0` `planned`",
         "`40` `implemented-slice`",
         "mixed_backend_priority_boundaries.md",
@@ -30,12 +30,12 @@ def test_2010_bounded_family_execution_worklist_lists_current_bounded_buckets() 
 
     assert "`CAP-XML`: `364 partial`" in text
     assert "`CAP-SUP`: `129 partial`" in text
-    assert "`CAP-OM`: `103 partial`" in text
+    assert "`CAP-OM`: `98 partial`" in text
     assert "`CAP-FM`: `109 partial`" in text
     assert "`CAP-OMT`: `2 partial`" in text
-    assert "`7` `pass` OMT area rows" in text
-    assert "`5` bounded `partial` OMT/XML area rows" in text
-    assert "`1` `implemented-slice` schema-conformance row" in text
+    assert "`20` `pass` OMT/XML area rows" in text
+    assert "`3` `implemented-slice` OMT/XML execution witnesses" in text
+    assert "`0` remaining OMT/XML area partial placeholders" in text
 
     for token in (
         "`REQ-OMT-4_1-object_model_identification`",

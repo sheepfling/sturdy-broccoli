@@ -137,10 +137,10 @@ The remaining `2010` truth shape is now:
 
 Exact current reading from the backend-compliance packet:
 
-- `85` `partial` rows total
+- `58` `partial` rows total
 - `36` `partial` rows where Python is already `verified`
-- `23` `partial` rows where Python is still `vendor-divergent`
-- `26` `partial` rows where Python is `not-applicable`
+- `9` `partial` rows where Python is still `vendor-divergent`
+- `13` `partial` rows where Python is `not-applicable`
 - only `3` requirement rows remain as direct mixed-backend clause tails:
   - `HLA1516.1-FM-4.1.5-001`
   - `HLA1516.1-FM-4.1.5-002`
@@ -149,7 +149,6 @@ Exact current reading from the backend-compliance packet:
   - `12` bounded broad partial parents
   - `26` passing supported-subset child proofs
 - current `vendor-divergent` composition:
-  - `14` OMT or 1516.2 breadth rows from `requirements/2010/hla1516_2_omt.csv`
   - `4` federation-management effect-vector rows from `requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv`
   - `3` framework or architecture rows owned by `requirements/2010/hla1516_framework_detailed_reconciliation.csv`
   - `2` supported-subset policy parents from `curated-clause5-6`
@@ -161,7 +160,7 @@ are no longer active navigation or ownership gaps:
 
 - `CAP-XML`: `364 partial`
 - `CAP-SUP`: `129 partial`
-- `CAP-OM`: `103 partial`
+- `CAP-OM`: `98 partial`
 - `CAP-FM`: `109 partial`
 - `CAP-TM`: `58 partial`
 - `CAP-FW`: `41 partial`

@@ -23,9 +23,9 @@ The broader `2010` backend-compliance packet also no longer contains any
 The former OMT-area and schema-conformance placeholders are now settled
 explicitly as:
 
-- `7` `pass` OMT area rows
-- `5` bounded `partial` OMT/XML area rows
-- `1` `implemented-slice` schema-conformance row
+- `20` `pass` OMT/XML area rows
+- `3` `implemented-slice` OMT/XML execution witnesses
+- `0` remaining OMT/XML area partial placeholders
 
 The remaining `2010` truth shape is already explicit and bounded:
 
@@ -49,10 +49,10 @@ Use this snapshot when the question is:
 Current `analysis/compliance/requirements_matrix_2010.csv` totals:
 
 - `934` matrix rows
-- `808` `pass`
+- `835` `pass`
 - `40` `implemented-slice`
 - `1` `implemented-smoke`
-- `85` `partial`
+- `58` `partial`
 
 Interpretation rule:
 
@@ -481,7 +481,7 @@ The current bounded-family tails called out by the closeout docs are:
 
 - `CAP-XML`: `364 partial`
 - `CAP-SUP`: `129 partial`
-- `CAP-OM`: `103 partial`
+- `CAP-OM`: `98 partial`
 - `CAP-FM`: `109 partial`
 - `CAP-TM`: `58 partial`
 - `CAP-FW`: `41 partial`

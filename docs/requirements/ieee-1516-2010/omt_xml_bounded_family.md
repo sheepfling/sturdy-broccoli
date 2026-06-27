@@ -106,8 +106,10 @@ They are specifically about DDM normalization semantics:
 
 - the repo directly proves parser or schema recognition and preservation of
   normalization metadata
-- the repo does not yet claim full executable runtime normalization semantics
-  for DDM routing values
+- `packages/hla-rti-core/src/hla/fom/__init__.py` `assess_omt_conformance`
+  still classifies non-identity normalization as only partially conforming
+- the repo therefore does not yet claim full executable runtime normalization
+  semantics for DDM routing values
 
 ## What Is Already Proved
 

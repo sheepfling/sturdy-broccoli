@@ -47,6 +47,8 @@ def test_omt_xml_boundary_doc_records_current_family_shape() -> None:
     assert "`1 CLAUSE12_13_DETAIL`" in text
     assert "`58 mapped`" in text
     assert "`2 partial`" in text
+    assert "`assess_omt_conformance`" in text
+    assert "non-identity normalization as only partially conforming" in text
 
 
 def test_omt_and_xml_owner_surfaces_are_split_in_front_doors() -> None:

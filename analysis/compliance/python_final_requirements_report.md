@@ -25,14 +25,14 @@ The current `2010` proof shape is:
 
 - canonical backend-compliance packet:
   - `934` matrix rows
-  - `808` `pass`
+  - `835` `pass`
   - `40` `implemented-slice`
   - `1` `implemented-smoke`
-  - `85` `partial`
+  - `58` `partial`
 - Python runtime projection inside that packet:
-  - `832` `verified`
+  - `846` `verified`
   - `79` `not-applicable`
-  - `23` `vendor-divergent`
+  - `9` `vendor-divergent`
   - `0` `blocked`
   - `0` `not-yet-tested`
   - `0` `classification-required`
@@ -90,10 +90,10 @@ There is a second residual surface that must stay separate from the runtime
 projection:
 
 - the canonical `2010` packet still keeps `85` rows at `partial`
-- those `85` rows currently split as:
+- those `58` rows currently split as:
   - `36` rows where Python is already `verified`
-  - `23` rows where Python is `vendor-divergent`
-  - `26` rows where Python is `not-applicable`
+  - `9` rows where Python is `vendor-divergent`
+  - `13` rows where Python is `not-applicable`
 
 That packet-level `partial` surface is why the repo still uses bounded-family,
 mixed-backend, and defended-parent owner docs for `2010` closeout.

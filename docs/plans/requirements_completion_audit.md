@@ -55,24 +55,23 @@ presentation packet.
 
 - backend-compliance packet denominator: `934` matrix rows
 - canonical status split in that packet:
-  - `808` `pass`
+  - `835` `pass`
   - `40` `implemented-slice`
   - `1` `implemented-smoke`
-  - `85` `partial`
+  - `58` `partial`
 - current Python runtime resolution in that packet:
-  - `832` `verified`
-  - `23` `vendor-divergent`
+  - `846` `verified`
+  - `9` `vendor-divergent`
   - `79` `not-applicable`
 - defended policy-parent packet:
   - `12` intentionally bounded broad partial parents
   - `26` passing supported-subset child proofs
 - exact `partial` shape inside the packet:
   - `36` `partial` rows with Python already `verified`
-  - `23` `partial` rows with Python still `vendor-divergent`
-  - `26` `partial` rows with Python `not-applicable`
-  - `4` of the `85` `partial` rows are section or area scaffolding rows with no standalone requirement ID
+  - `9` `partial` rows with Python still `vendor-divergent`
+  - `13` `partial` rows with Python `not-applicable`
+  - `4` of the `58` `partial` rows are section or area scaffolding rows with no standalone requirement ID
 - current `vendor-divergent` composition inside the `2010` packet:
-  - `14` OMT or 1516.2 family breadth rows from `requirements/2010/hla1516_2_omt.csv`
   - `4` federation-management effect-vector rows from `requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv`
   - `3` framework or architecture rows owned by `requirements/2010/hla1516_framework_detailed_reconciliation.csv`
   - `2` supported-subset policy parents from `curated-clause5-6`
@@ -195,9 +194,9 @@ Current reading:
    - current evidence source:
      [`2010_python_rti_bounded_family_execution_worklist.md`](2010_python_rti_bounded_family_execution_worklist.md)
    - former packet placeholders are now settled explicitly as:
-     - `7` `pass` OMT area rows
-     - `5` bounded `partial` OMT/XML area rows
-     - `1` `implemented-slice` Annex E schema witness
+     - `20` `pass` OMT/XML area rows
+     - `3` `implemented-slice` OMT/XML execution witnesses
+     - `0` remaining OMT/XML area partial placeholders
    - this means the remaining 2010 work is no longer about clearing hidden
      planning placeholders
    - it is about whether the repo wants to tighten the remaining bounded
@@ -216,9 +215,7 @@ Current reading:
      recorded in
      [`2010_python_rti_bounded_family_execution_worklist.md`](2010_python_rti_bounded_family_execution_worklist.md)
 4. the remaining `2010` Python `vendor-divergent` packet rows are no longer one undifferentiated blocker class
-   - the `23` rows now fall into explicit owner buckets:
-     - `14` OMT or 1516.2 breadth rows already covered by
-       [`../../docs/requirements/ieee-1516-2010/omt_xml_bounded_family.md`](../../docs/requirements/ieee-1516-2010/omt_xml_bounded_family.md)
+   - the `9` rows now fall into explicit owner buckets:
      - `4` Clause 4 FM effect-vector rows already covered by
        [`../../docs/requirements/ieee-1516-2010/federation_management_bounded_family.md`](../../docs/requirements/ieee-1516-2010/federation_management_bounded_family.md)
      - `3` framework or architecture rows owned by
@@ -308,9 +305,9 @@ have explicit bounded owner readings.
 No separate `2010` `planned` inventory remains in the current packet.
 The former placeholder rows are now explicitly classified as:
 
-- `7` `pass` OMT area rows
-- `5` bounded `partial` OMT/XML area rows
-- `1` `implemented-slice` Annex E schema witness
+- `20` `pass` OMT/XML area rows
+- `3` `implemented-slice` OMT/XML execution witnesses
+- `0` remaining OMT/XML area partial placeholders
 
 It is not a fully `mapped` requirement-by-requirement edition, but it no longer
 has an active 2010 closeout ambiguity caused by missing ownership or vague

@@ -11,15 +11,17 @@ def test_requirements_remaining_closure_uses_current_2010_large_family_story() -
     text = DOC.read_text(encoding="utf-8")
 
     assert "`CAP-XML`: `364 partial`" in text
-    assert "`CAP-OM`: `103 partial`" in text
+    assert "`CAP-OM`: `98 partial`" in text
     assert "`CAP-OMT`: `2 partial`" in text
     assert "`CAP-API`: `394 partial`" not in text
     assert "omt_xml_bounded_family.md" in text
     assert "There are also no remaining active `2010` closeout buckets in this note." in text
-    assert "`23` `partial` rows where Python is still `vendor-divergent`" in text
+    assert "`9` `partial` rows where Python is still `vendor-divergent`" in text
     assert "`36` `partial` rows where Python is already `verified`" in text
-    assert "`26` `partial` rows where Python is `not-applicable`" in text
-    assert "`14` OMT or 1516.2 breadth rows" in text
+    assert "`13` `partial` rows where Python is `not-applicable`" in text
+    assert "`4` federation-management effect-vector rows" in text
+    assert "`3` framework or architecture rows" in text
+    assert "`2` supported-subset policy parents" in text
     assert "hla1516_framework_detailed_reconciliation.csv" in text
 
 
