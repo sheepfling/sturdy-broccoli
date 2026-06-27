@@ -146,6 +146,30 @@ def _parse_args() -> argparse.Namespace:
         default=5,
         help="Leaderboard length for best/worst/easy-win summaries.",
     )
+    parser.add_argument(
+        "--fail-under",
+        type=int,
+        default=None,
+        help="Exit nonzero if any package score falls below this threshold.",
+    )
+    parser.add_argument(
+        "--max-stringy",
+        type=int,
+        default=None,
+        help="Exit nonzero if any package exceeds this quoted-annotation count.",
+    )
+    parser.add_argument(
+        "--max-init-side-effects",
+        type=int,
+        default=None,
+        help="Exit nonzero if any package exceeds this __init__ side-effect count.",
+    )
+    parser.add_argument(
+        "--max-path-sniffing",
+        type=int,
+        default=None,
+        help="Exit nonzero if any package exceeds this path/env sniffing count.",
+    )
     return parser.parse_args()
 
 
@@ -606,6 +630,42 @@ def _print_scoreboards(reports: list[PackageReport], *, top: int) -> None:
     _section("Easy wins", easy_wins)
 
 
+def _policy_failures(
+    reports: list[PackageReport],
+    *,
+    fail_under: int | None,
+    max_stringy: int | None,
+    max_init_side_effects: int | None,
+    max_path_sniffing: int | None,
+) -> list[str]:
+    failures: list[str] = []
+    if fail_under is not None:
+        for report in reports:
+            if report.score < fail_under:
+                failures.append(
+                    f"{report.package}: score {report.score} < fail-under {fail_under}"
+                )
+    if max_stringy is not None:
+        for report in reports:
+            if report.quoted_annotation_count > max_stringy:
+                failures.append(
+                    f"{report.package}: stringy {report.quoted_annotation_count} > max-stringy {max_stringy}"
+                )
+    if max_init_side_effects is not None:
+        for report in reports:
+            if report.init_side_effect_count > max_init_side_effects:
+                failures.append(
+                    f"{report.package}: init-side-effects {report.init_side_effect_count} > max-init-side-effects {max_init_side_effects}"
+                )
+    if max_path_sniffing is not None:
+        for report in reports:
+            if report.path_sniffing_count > max_path_sniffing:
+                failures.append(
+                    f"{report.package}: path-sniffing {report.path_sniffing_count} > max-path-sniffing {max_path_sniffing}"
+                )
+    return failures
+
+
 def main() -> int:
     args = _parse_args()
     package_dirs = _discover_package_dirs(args.package)
@@ -619,6 +679,18 @@ def main() -> int:
     else:
         _print_scoreboards(reports, top=max(1, args.top))
         _print_table(reports)
+    failures = _policy_failures(
+        reports,
+        fail_under=args.fail_under,
+        max_stringy=args.max_stringy,
+        max_init_side_effects=args.max_init_side_effects,
+        max_path_sniffing=args.max_path_sniffing,
+    )
+    if failures:
+        print("\nPolicy failures:", file=sys.stderr)
+        for failure in failures:
+            print(f"- {failure}", file=sys.stderr)
+        return 1
     return 0
 
 

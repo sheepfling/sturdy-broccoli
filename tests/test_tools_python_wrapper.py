@@ -18,6 +18,7 @@ def test_tools_python_help_describes_example_smoke_commands() -> None:
 
     assert result.returncode == 0
     assert "./tools/python verify-smoke" in result.stdout
+    assert "./tools/python verify-gold" in result.stdout
     assert "./tools/python smoke-examples --edition 2010" in result.stdout
     assert "./tools/python smoke-examples --edition 2025" in result.stdout
     assert "./tools/python smoke-examples --all" in result.stdout
@@ -41,6 +42,65 @@ def test_tools_python_verify_smoke_delegate_is_supported(tmp_path: Path) -> None
 
     assert result.returncode == 0, result.stdout or result.stderr
     assert log_path.read_text(encoding="utf-8").strip() == "verify-smoke"
+
+
+def test_tools_python_verify_gold_delegate_is_supported(tmp_path: Path) -> None:
+    log_path = tmp_path / "verify-gold.log"
+    delegate = tmp_path / "delegate.sh"
+    delegate.write_text(f"#!/usr/bin/env bash\nprintf '%s\\n' verify-gold > '{log_path}'\n", encoding="utf-8")
+    delegate.chmod(0o755)
+
+    result = subprocess.run(
+        ["bash", "tools/python", "verify-gold"],
+        cwd=ROOT,
+        env={"PATH": str(Path("/usr/bin:/bin:/usr/sbin:/sbin")), "HLA2010_PYTHON_VERIFY_GOLD_DELEGATE": str(delegate)},
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout or result.stderr
+    assert log_path.read_text(encoding="utf-8").strip() == "verify-gold"
+
+
+def test_tools_python_verify_gold_uses_workspace_pythonpath(tmp_path: Path) -> None:
+    log_path = tmp_path / "python.log"
+    fake_python = tmp_path / "fake-python"
+    fake_python.write_text(
+        "\n".join(
+            [
+                "#!/usr/bin/env python3",
+                "from pathlib import Path",
+                "import os",
+                "import sys",
+                f"log_path = Path({str(log_path)!r})",
+                "with log_path.open('a', encoding='utf-8') as handle:",
+                "    handle.write(' '.join(sys.argv[1:]) + '\\n')",
+                "    handle.write(os.environ.get('PYTHONPATH', '') + '\\n')",
+                "sys.exit(0)",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    fake_python.chmod(0o755)
+
+    result = subprocess.run(
+        ["bash", "tools/python", "verify-gold"],
+        cwd=ROOT,
+        env={"PATH": str(Path("/usr/bin:/bin:/usr/sbin:/sbin")), "HLA2010_PYTHON_VERIFY_ROUTES_PYTHON": str(fake_python)},
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout or result.stderr
+    lines = [line.strip() for line in log_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    assert lines[0] == (
+        "scripts/package_hygiene_score.py --top 10 --fail-under 70 --max-stringy 0 "
+        "--max-init-side-effects 0 --max-path-sniffing 0"
+    )
+    assert str(ROOT / "packages/hla-rti1516-2025/src") in lines[1]
 
 
 def test_tools_python_verify_smoke_validates_manifest_before_pytest(tmp_path: Path) -> None:

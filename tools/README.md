@@ -106,6 +106,8 @@ Shortest common paths:
 - validate the named test-surface manifest without running tests: `./tools/test-surface validate`
 - run the fast-fail repo smoke lane before expensive depth: `./tools/python verify-smoke`
   - this lane auto-removes only hash-identical source-tree duplicate copies before the strict duplicate gate
+- run the higher-standard package hygiene gate on demand: `./tools/python verify-gold`
+  - this lane is intentionally artifact-free and fails on low package scores, stringified annotations, `__init__` side effects, and path/env sniffing
 - run the primary 2025 Python RTI main-surface lane, including package-boundary guards plus raw support/decode and callback-control proofs on the direct `python1516_2025` surface: `./tools/python verify-main-2025`
 - run Python direct-vs-gRPC parity: `./tools/python verify-routes`
 - run bounded hosted 2025 Python/FedPro route checks: `./tools/python verify-routes-2025`

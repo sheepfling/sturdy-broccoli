@@ -91,12 +91,13 @@ VERIFY_ROUTES_2025_COMMANDS = [
 def usage() -> str:
     return "\n".join(
         [
-            "usage: ./tools/python [verify|verify-smoke|verify-fast|verify-main-2025|verify-routes|verify-routes-2025|verify-routes-preflight|smoke-examples|test-examples|help]",
+            "usage: ./tools/python [verify|verify-smoke|verify-fast|verify-gold|verify-main-2025|verify-routes|verify-routes-2025|verify-routes-preflight|smoke-examples|test-examples|help]",
             "",
             "Canonical Python / repo-green operator flow:",
             "  ./tools/python verify                  # run the repo-green verification lane",
             "  ./tools/python verify-smoke            # run the fast-fail repo smoke lane before expensive integration depth",
             "  ./tools/python verify-fast             # run the low-cost operator/docs/Python-matrix lane",
+            "  ./tools/python verify-gold            # run the higher-standard package hygiene / typing smell gate",
             "  ./tools/python verify-main-2025        # run the primary 2025 Python RTI main-surface proof lane (python1516_2025)",
             "  ./tools/python verify-routes           # run 2010 Python direct-vs-gRPC route parity checks",
             "  ./tools/python verify-routes-2025      # run 2025 Python RTI / FedPro hosted-route checks",
@@ -204,6 +205,26 @@ def verify_fast(args: list[str]) -> int:
     return _run_workspace_python(_workspace_python_bin(), [*VERIFY_FAST_ARGS, *args])
 
 
+def verify_gold(args: list[str]) -> int:
+    delegate_status = _run_delegate("HLA2010_PYTHON_VERIFY_GOLD_DELEGATE", args)
+    if delegate_status is not None:
+        return delegate_status
+    default_args = [
+        "scripts/package_hygiene_score.py",
+        "--top",
+        "10",
+        "--fail-under",
+        "70",
+        "--max-stringy",
+        "0",
+        "--max-init-side-effects",
+        "0",
+        "--max-path-sniffing",
+        "0",
+    ]
+    return _run_workspace_python(_workspace_python_bin(), [*default_args, *args])
+
+
 def verify_main_2025(args: list[str]) -> int:
     delegate_status = _run_delegate("HLA2010_PYTHON_VERIFY_MAIN_2025_DELEGATE", args)
     if delegate_status is not None:
@@ -297,6 +318,8 @@ def main(argv: list[str]) -> int:
         return verify_smoke(tail)
     if command == "verify-fast":
         return verify_fast(tail)
+    if command == "verify-gold":
+        return verify_gold(tail)
     if command == "verify-main-2025":
         return verify_main_2025(tail)
     if command == "verify-routes":

@@ -15,6 +15,7 @@ fi
 # Contract anchors retained here for policy/audit tests:
 # - ./tools/python verify-smoke
 # - ./tools/python verify-fast
+# - ./tools/python verify-gold
 # - ./tools/python verify-main-2025
 # - ./tools/python verify-routes
 # - ./tools/python verify-routes-2025
