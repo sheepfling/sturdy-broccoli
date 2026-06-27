@@ -23,14 +23,15 @@ from hla.backends.common import (
     handle_type_from_java_class_name,
     handle_type_from_java_type_name,
 )
-from hla.backends.common.invocation import (
+from hla.backends.common.java_invocation_policy import (
     _JAVA_HANDLE_SET_TYPES,
     _JAVA_HANDLE_VALUE_MAP_TYPES,
 )
 from .java_binding_profile import PythonJavaBindingProfile
 
 if TYPE_CHECKING:
-    from .java_common import JavaBridge, JavaEncoderOracle
+    from .java_bridge_base import JavaBridge
+    from .java_encoding import JavaEncoderOracle
 
 
 def _maybe_call_noarg(obj: Any, *names: str) -> Any:
@@ -832,12 +833,3 @@ class HLAJavaValueAdapter(GenericJavaValueAdapter):
             hasProducingFederateValue=bool(has_producing),
             producingFederate=self.from_backend(producing, expected_type_name="FederateHandle") if producing is not None else None,
         )
-
-
-class JavaValueConverter(HLAJavaValueAdapter):
-    """Transitional compatibility facade.
-
-    New code should prefer `GenericJavaValueAdapter` or `HLAJavaValueAdapter`
-    explicitly. This facade remains only to keep existing imports stable during
-    the extraction and should not become the long-term primary API.
-    """

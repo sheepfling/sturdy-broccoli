@@ -27,8 +27,6 @@ from .conversion import (
     handle_type_from_java_type_name,
 )
 from .invocation import (
-    DeterministicJavaInvocationRouter,
-    DeterministicJavaRoute,
     JavaInvocationResolver,
     ResolvedJavaInvocation,
     get_deterministic_java_invocation_router,
@@ -43,6 +41,10 @@ from .invocation import (
     resolve_java_invocation_deterministic,
     resolve_java_invocation,
     set_java_invocation_resolver,
+)
+from .java_invocation_policy import (
+    DeterministicJavaInvocationRouter,
+    DeterministicJavaRoute,
 )
 from .plugin_api import (
     BACKEND_ENTRY_POINT_GROUP,

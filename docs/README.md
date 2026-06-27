@@ -13,6 +13,7 @@ Use this rule:
 
 If you are not sure where to start, use one of these first:
 
+- `Java bridge highlight`: [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md), [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md), [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md), [`reference/java_interface_spec_mapping.md`](reference/java_interface_spec_mapping.md)
 - `Testing`: [`repo_green_quickstart.md`](repo_green_quickstart.md), [`test_surface.md`](test_surface.md), [`local_verification_commands.md`](local_verification_commands.md), [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
 - `Testing ownership model`: [`verification/shard_registry.md`](verification/shard_registry.md), [`verification/view_registry.md`](verification/view_registry.md)
 - `Requirements`: [`requirements/ieee-1516-2010/README.md`](requirements/ieee-1516-2010/README.md), [`requirements/ieee-1516-2025/README.md`](requirements/ieee-1516-2025/README.md), [`verification/README.md`](verification/README.md), [`spec_reading_map.md`](spec_reading_map.md)
@@ -25,6 +26,7 @@ If you are not sure where to start, use one of these first:
 Practical routing rule:
 
 - use `Requirements` for claim ownership, bounded proof notes, and traceability
+- use `Java bridge highlight` when the question is JPype, Py4J, Java wrapping, overload routing, container conversion, or Java RTI adaptation ownership
 - use `Execution rules` when the question is join, resign, destroy, disconnect, or not-joined reserve/register/update/send/query behavior
 - use `Testing` for shard choice, reruns, and repo-green execution
 - use `Requirements exports` only for boss-facing CSV/XLSX handoff packets
@@ -41,6 +43,7 @@ Practical routing rule:
 | get a new machine or junior setup to repo-green | `Testing` -> [`repo_green_quickstart.md`](repo_green_quickstart.md) -> [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md) |
 | run the first pure-Python example | `2010 | 2025` -> [`first_run.md`](first_run.md) |
 | choose among backend, transport, and FOM lanes from one page | `Backend | Transport | FOM` -> [`backend_transport_fom_selection_guide.md`](backend_transport_fom_selection_guide.md) |
+| understand the repository's Java bridge story from a manager or new-maintainer angle | `Java bridge highlight` -> [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md) -> [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md) |
 | wrap a Java RTI with JPype or Py4J as lightly as possible | `Backend` -> [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md) |
 | inspect the full Java HLA interface-to-route mapping in one deterministic reference | `Backend` -> [`reference/java_interface_spec_mapping.md`](reference/java_interface_spec_mapping.md) |
 | inspect the canonical 2010 HLA service and callback contract table | `Backend` -> [`reference/hla_interface_contracts.md`](reference/hla_interface_contracts.md) |
@@ -81,6 +84,11 @@ Read [`requirements/ieee-1516-2010/README.md`](requirements/ieee-1516-2010/READM
 
 If you already know what you need, pick a lane:
 
+- `Java bridge highlight` -> shortest path into the repo's Java wrapping model:
+  [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md),
+  [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md),
+  [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md),
+  [`reference/java_interface_spec_mapping.md`](reference/java_interface_spec_mapping.md)
 - `Routing` -> choose among the three main work surfaces first:
   [`work_surfaces.md`](work_surfaces.md)
 - `Backend | Transport | FOM` -> choose backend, transport, and FOM together from one page:

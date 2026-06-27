@@ -65,6 +65,56 @@ def _all_tools_surface_references(text: str) -> set[str]:
     return set(re.findall(r"\./tools/([A-Za-z0-9_-]+)", text))
 
 
+def _java_value_converter_mentions() -> set[str]:
+    pattern = re.compile(r"\bJavaValueConverter\b")
+    allowed = {
+        "docs/evidence/hla2010_python_verification_evidence_v0_13/docs/backend_adapters.md",
+        "docs/evidence/hla2010_python_verification_evidence_v0_13/docs/python_rti_and_target_radar.md",
+        "docs/evidence/hla2010_python_verification_evidence_v0_13/docs/python_rti_fom_time_factories.md",
+        "docs/evidence/hla2010_python_verification_evidence_v0_13/docs/startup_sync_fom_java_translation_v0_9.md",
+        "docs/evidence/hla2010_python_verification_evidence_v0_13/tests/test_fom_time_factories.py",
+        "docs/evidence/hla2010_python_verification_evidence_v0_13/tests/test_startup_sync_fom_java_translation_v09.py",
+    }
+    mentions: set[str] = set()
+    for path in ROOT.rglob("*"):
+        if not path.is_file():
+            continue
+        rel = path.relative_to(ROOT).as_posix()
+        if rel.startswith((".git/", ".venv/", "__pycache__/")):
+            continue
+        if rel in allowed:
+            continue
+        try:
+            text = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            continue
+        if pattern.search(text):
+            mentions.add(rel)
+    return mentions
+
+
+def test_backend_common_invocation_module_stays_framework_only() -> None:
+    text = _read(ROOT / "packages" / "hla-backend-common" / "src" / "hla" / "backends" / "common" / "invocation.py")
+
+    forbidden_markers = {
+        "_JAVA_HANDLE_SET_TYPES",
+        "_JAVA_HANDLE_VALUE_MAP_TYPES",
+        "score_value_for_java_type",
+        "DeterministicJavaRoute(",
+        "_DETERMINISTIC_JAVA_ROUTES",
+        "_resolve_java_invocation_weighted",
+        "looks_like_time_factory_name",
+        "ordered_args_for_overload",
+    }
+
+    violations = sorted(marker for marker in forbidden_markers if marker in text)
+    assert not violations, (
+        "invocation.py must remain framework-only; Java-specific scoring and route policy belong in "
+        "java_invocation_metadata.py, java_invocation_scoring.py, or java_invocation_routes.py. "
+        f"Found forbidden markers: {violations}"
+    )
+
+
 def test_tools_readme_declares_canonical_operator_surface() -> None:
     text = _read(ROOT / "tools" / "README.md")
     assert "canonical home for human-facing operator entrypoints" in text
@@ -222,6 +272,10 @@ def test_operator_docs_keep_verify_main_and_routes_2025_on_python2025_main_lane(
     assert "`hla-backend-shim` remains only as compatibility-wrapper/import-compatibility code" in normalized_tools
     assert "run the primary 2025 python rti main-surface lane" in normalized_tools
     assert "run bounded hosted 2025 python/fedpro route checks" in normalized_tools
+
+
+def test_java_value_converter_name_is_retired_outside_frozen_evidence_snapshots() -> None:
+    assert _java_value_converter_mentions() == set()
 
 
 def test_vendor_parity_doc_uses_tools_surface() -> None:

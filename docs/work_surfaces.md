@@ -36,6 +36,10 @@ Use this when the question is:
 - how do I minimally wrap a Java RTI?
 - where do JPype and Py4J fit?
 
+This is one of the main highlight surfaces of the repository. If somebody wants
+to understand what is distinctive here, this is one of the first places they
+should look.
+
 Start here:
 
 - [`backend_transport_fom_selection_guide.md`](backend_transport_fom_selection_guide.md)
@@ -60,6 +64,10 @@ Practical rule:
 - JPype is the primary in-process Java wrapping path
 - Py4J is the process-separated Java wrapping path
 - both should preserve the same normalized Python-facing ambassador contract
+- start management or onboarding explanations with
+  [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md)
+- start implementation or debugging work with
+  [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md)
 
 ## Surface 2: Transport Options
 

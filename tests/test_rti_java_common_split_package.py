@@ -9,6 +9,7 @@ def test_split_java_common_package_exports_shared_java_support_surface():
     assert resolve_java_arguments.__module__ in {
         "hla.bridges.java.common.java_common",
         "hla.backends.common.invocation",
+        "hla.backends.common.java_invocation_policy",
     }
 
 

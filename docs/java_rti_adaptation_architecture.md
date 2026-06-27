@@ -119,7 +119,46 @@ The edition changes the binding profile and Java class names.
 
 The route changes the bridge mechanics.
 
+## Maintainer Routing
+
+When extending or debugging the Java-to-Python bridge, use this ownership map:
+
+| Change area | Primary module | Notes |
+| --- | --- | --- |
+| route-neutral Java bridge primitive behavior | `java_bridge_base.py` | base Java object helpers and shared bridge hooks |
+| generic Java conversion | `java_value_adapter.py` | `GenericJavaValueAdapter` owns generic containers, bytes, and enums |
+| HLA semantic conversion | `java_value_adapter.py` | `HLAJavaValueAdapter` owns handles, logical time, auth/config, and typed HLA containers |
+| callback wrapping and callback parameter expectations | `java_callbacks.py` | shared for both JPype and Py4J |
+| encoder-factory and vendor encoding behavior | `java_encoding.py` | separate from generic/HLA value adaptation on purpose |
+| backend composition and exception translation | `java_common.py` | `JavaRTIBackend` lives here |
+| JPype route mechanics | `packages/hla-bridge-java-jpype/.../runtime.py` | in-process JVM route |
+| Py4J route mechanics | `packages/hla-bridge-java-py4j/.../runtime.py` | gateway-backed route |
+| overload routing policy | `packages/hla-backend-common/.../invocation.py` | weighted and deterministic resolvers |
+
 The adaptation contract stays the same.
+
+## Troubleshooting Summary
+
+Use this one-page routing table when somebody reports "the Java bridge is
+wrong" but has not yet isolated the layer.
+
+| Reported problem | Primary owner | Next check |
+| --- | --- | --- |
+| wrong RTI method overload or ambiguous call path | `invocation.py` | `java_bridge_overload_resolution.md` |
+| wrong Python-to-Java container materialization | `java_value_adapter.py` via `GenericJavaValueAdapter` | `java_bridge_overload_resolution.md` |
+| wrong HLA handle/time/auth/config wrapping | `java_value_adapter.py` via `HLAJavaValueAdapter` | `java_binding_profile.py` |
+| wrong callback signature, callback argument shape, or callback normalization | `java_callbacks.py` | route runtime module |
+| bytes or encoder outputs differ between JPype and Py4J | `java_encoding.py` | `java_bridge_encoding_and_bytes.md` |
+| JPype-only behavior differs | `packages/hla-bridge-java-jpype/.../runtime.py` | `java_bridge_base.py` |
+| Py4J-only behavior differs | `packages/hla-bridge-java-py4j/.../runtime.py` | `java_bridge_base.py` |
+| backend composition, exception mapping, or Java RTI backend behavior differs | `java_common.py` | `java_bridge_base.py` |
+
+Management reading rule:
+
+- shared-layer problems affect both routes and are usually cheaper to fix once
+- route-local problems are narrower and should stay narrow
+- the repo is structured so generic conversion, HLA conversion, callback
+  dispatch, and route mechanics can be debugged independently
 
 ## The Main Entry Points
 
@@ -161,7 +200,7 @@ DelegatingRTIAmbassador
     ->
 Java RTI backend adapter
     ->
-JavaBridge + JavaValueConverter
+JavaBridge + HLAJavaValueAdapter
     ->
 JPypeBridge or Py4JBridge
     ->
@@ -193,6 +232,7 @@ Instead, the shared layer resolves the Java call in Python first:
 The main files behind that policy are:
 
 - `packages/hla-backend-common/src/hla/backends/common/invocation.py`
+- `packages/hla-backend-common/src/hla/backends/common/java_invocation_policy.py`
 - `packages/hla-bridge-java-common/src/hla/bridges/java/common/java_common.py`
 - `packages/hla-bridge-java-common/src/hla/bridges/java/common/java_binding_profile.py`
 
@@ -205,6 +245,257 @@ for the concrete JPype versus Py4J comparison at that boundary.
 
 Read [`java_bridge_encoding_and_bytes.md`](java_bridge_encoding_and_bytes.md)
 for the byte-preservation and Java encoder proof story across both routes.
+
+## Target Package Boundaries
+
+The current package split is already much better than a monolithic Java
+adapter, but the intended long-term boundary is more specific than "Java stuff
+over here."
+
+The correct reusable split is:
+
+1. HLA spec surfaces
+2. backend/runtime-neutral support
+3. generic Java bridge runtime support
+4. HLA-on-Java adaptation
+5. route mechanics
+6. vendor overlays
+
+That gives the repo two kinds of reuse:
+
+- reuse across JPype and Py4J
+- reuse across multiple HLA Java RTIs
+
+It also keeps a third reuse option open:
+
+- reuse of the generic Java bridge layer for non-HLA Java integration work
+
+### Package Ownership Model
+
+| Package family | Owns | Should not own |
+| --- | --- | --- |
+| `hla-rti1516e` and `hla-rti1516_2025` | strict Python HLA spec surfaces, value types, exceptions, and edition-local API metadata | bridge mechanics, backend execution, vendor quirks |
+| `hla-backend-common` | backend-neutral invocation model, plugin contracts, general conversion helpers, and backend support interfaces | JPype/Py4J runtime logic, Java RTI vendor logic, HLA Java binding specifics where avoidable |
+| `hla-bridge-java-common` | shared Java bridge support, Java object helpers, shared Java callback plumbing, shared container/encoding helpers, shared HLA-on-Java adaptation | vendor launch policy, route-specific JVM/gateway lifecycle, Python RTI semantics |
+| `hla-bridge-java-jpype` | JPype-only runtime mechanics | generic Java adaptation policy, vendor policy |
+| `hla-bridge-java-py4j` | Py4J-only gateway/proxy mechanics | generic Java adaptation policy, vendor policy |
+| `hla-vendor-*` | vendor discovery, classpath/runtime defaults, launch policy, vendor quirks, vendor packaging | re-owning generic bridge logic or shared HLA adaptation logic |
+
+### What Should Stay Generic
+
+These pieces should remain reusable across vendors and across both Java bridge
+routes:
+
+- Java bridge primitives in `java_bridge_base.py`
+- route-local mechanics in `jpype/runtime.py` and `py4j/runtime.py`
+- generic Python container to Java container conversion
+- generic Java collection and map inspection
+- generic `byte[]` round-trip helpers
+- resolver hook infrastructure that allows overload routing to be swapped
+
+If a maintainer could plausibly reuse the code for a non-HLA Java API, it is
+probably in the generic layer.
+
+### What Should Stay HLA-Specific
+
+These pieces should remain clearly HLA-specific:
+
+- HLA handle conversion
+- logical-time and logical-time-interval conversion
+- HLA callback signature expectations
+- HLA binding-profile selection for `rti1516e` versus `rti1516_2025`
+- HLA authentication and configuration composition
+- HLA encoder-factory conventions
+- HLA deterministic route tables for ambiguous standard Java API families
+
+Those are adaptation concerns, not general Java bridge concerns.
+
+### Recommended Internal Split
+
+Even without creating another distribution, maintainers should think in three
+internal layers inside the Java bridge family:
+
+```text
+generic Java bridge
+  -> HLA Java adaptation
+  -> JPype | Py4J route mechanics
+```
+
+Mapped to current modules, that means:
+
+| Layer | Current modules |
+| --- | --- |
+| generic Java bridge | `java_bridge_base.py`, generic parts of `java_value_adapter.py`, route runtime modules |
+| HLA Java adaptation | `java_binding_profile.py`, HLA parts of `java_value_adapter.py`, `java_callbacks.py`, `java_encoding.py`, `java_common.py` |
+| route mechanics | `jpype/runtime.py`, `jpype/factory.py`, `py4j/runtime.py`, `py4j/factory.py` |
+
+This is the right mental model even where the code is still physically adjacent
+inside one package.
+
+### One Boundary Still Worth Tightening
+
+The main remaining blur is overload resolution ownership.
+
+Today, the active Java invocation hook lives in:
+
+- `packages/hla-backend-common/src/hla/backends/common/invocation.py`
+
+The Java-specific route policy now lives in:
+
+- `packages/hla-backend-common/src/hla/backends/common/java_invocation_policy.py`
+
+That policy is now internally split into:
+
+- `packages/hla-backend-common/src/hla/backends/common/java_invocation_metadata.py`
+- `packages/hla-backend-common/src/hla/backends/common/java_invocation_scoring.py`
+- `packages/hla-backend-common/src/hla/backends/common/java_invocation_routes.py`
+
+That is much cleaner than the earlier monolith, but there are still two ideas
+to keep separate:
+
+- backend-neutral invocation plumbing
+- Java-specific, HLA-shaped overload policy
+
+The cleaner target boundary is:
+
+- keep `Invocation`, resolver interfaces, and generic swappable hook mechanics
+  in `hla-backend-common`
+- move Java overload parsing, Java type scoring, and Java deterministic route
+  tables toward the Java bridge layer over time
+
+That would make the ownership line easier to explain:
+
+- backend-common owns the invocation framework
+- Java bridge owns Java overload policy
+
+### Practical Rule For Reusability
+
+When deciding where a new helper belongs, ask:
+
+1. could this helper work for both JPype and Py4J?
+2. could this helper work for more than one Java RTI vendor?
+3. could this helper work outside HLA entirely?
+
+Route it like this:
+
+- yes to 3 -> generic Java bridge layer
+- yes to 1 and 2 but no to 3 -> HLA Java adaptation layer
+- no to 1 -> route-local package
+- vendor-only -> vendor package
+
+That rule is stricter and more reusable than treating every Java-related helper
+as one undifferentiated bridge concern.
+
+### Refactor Checklist For Invocation Ownership
+
+Use this checklist when the team is ready to tighten the remaining boundary
+around Java invocation resolution.
+
+#### Keep In `hla-backend-common`
+
+These pieces are still appropriately backend-common:
+
+- `Invocation`
+- `ResolvedJavaInvocation`
+- `JavaInvocationResolver`
+- `JavaInvocationResolverName`
+- `get_java_invocation_resolver(...)`
+- `set_java_invocation_resolver(...)`
+- `reset_java_invocation_resolver()`
+- `java_invocation_resolver_name(...)`
+
+Reason:
+
+- these are framework-level invocation and resolver-hook concepts
+- they are useful even if the concrete resolver policy changes
+
+#### Candidate To Move Toward The Java Bridge Layer
+
+These pieces are Java-policy-heavy and are the best candidates to migrate over
+time:
+
+- Java overload parameter parsing helpers
+  - `_split_java_params(...)`
+  - `_param_name(...)`
+  - `_param_type(...)`
+  - `_parsed_java_params(...)`
+  - `java_parameter_names(...)`
+  - `java_parameter_types(...)`
+- Java overload argument ordering helpers
+  - `_keyword_matches(...)`
+  - `_ordered_args_for_overload(...)`
+- Java type-shape scoring helpers
+  - `_looks_like_time_factory_name(...)`
+  - `_is_mapping(...)`
+  - `_is_sequence_not_text(...)`
+  - `_looks_like_python_data_element(...)`
+  - `_score_value_for_java_type(...)`
+- Java deterministic route policy
+  - `DeterministicJavaRoute`
+  - `DeterministicJavaInvocationRouter`
+  - `_DETERMINISTIC_JAVA_ROUTES`
+  - `get_deterministic_java_invocation_router()`
+  - `resolve_java_invocation_deterministic(...)`
+  - `install_deterministic_java_invocation_router()`
+- Java weighted resolver implementation
+  - `_resolve_java_invocation_weighted(...)`
+  - `resolve_java_invocation(...)`
+  - `resolve_java_arguments(...)`
+  - `java_invocation_resolver(...)`
+
+Reason:
+
+- these are not generic invocation concepts
+- these are Java overload and HLA Java route-policy concepts
+
+#### Recommended Target Homes
+
+If the team performs the split, the target shape should look like this:
+
+| Concern | Recommended home |
+| --- | --- |
+| resolver hook types and current-resolver registration | `hla.backends.common.invocation` |
+| Java overload metadata parsing | `hla.backends.common.java_invocation_policy` today, then `hla.bridges.java.common` if package boundaries are tightened further |
+| Java type-shape scoring | `hla.backends.common.java_invocation_policy` today, then `hla.bridges.java.common` if package boundaries are tightened further |
+| deterministic HLA Java route table | `hla.backends.common.java_invocation_policy` today, then `hla.bridges.java.common` if package boundaries are tightened further |
+| weighted Java resolver implementation | `hla.backends.common.java_invocation_policy` today, then `hla.bridges.java.common` if package boundaries are tightened further |
+
+Suggested module naming if the split gets deeper:
+
+- `java_invocation_policy.py`
+- `java_overload_metadata.py`
+- `java_overload_routes.py`
+
+The exact filenames matter less than keeping backend-common free of
+Java-specific route policy.
+
+#### Safe Execution Order
+
+Do the cleanup in this order so JPype and Py4J stay stable:
+
+1. keep the public resolver-hook API names stable
+2. extract Java overload parsing helpers first
+3. extract Java scoring helpers second
+4. extract deterministic route tables third
+5. move weighted Java resolver implementation last
+6. leave thin compatibility imports behind until all callers are updated
+
+Practical rule:
+
+- move internals first
+- preserve public import surfaces until tests, docs, and factories are all cut over
+
+#### Stop Conditions
+
+Do not move code just because it mentions Java.
+
+Leave it where it is if:
+
+- it is truly backend-framework API rather than Java policy
+- moving it would create circular imports between backend-common and bridge packages
+- the extracted layer would become thinner but less understandable
+
+The goal is cleaner ownership, not motion for its own sake.
 
 ## Where Edition Selection Happens
 
@@ -278,7 +569,7 @@ JPypeBridge
     v
 Java RTIambassador
     ^
-    | 7. wrap in DelegatingRTIAmbassador + JavaValueConverter
+    | 7. wrap in DelegatingRTIAmbassador + HLAJavaValueAdapter
     |
 DelegatingRTIAmbassador
     |
@@ -299,7 +590,7 @@ The same basic sequence holds for service calls in the other direction:
 
 1. Python calls a normalized RTI method
 2. the delegating wrapper resolves the Java invocation
-3. `JavaValueConverter` converts Python values to Java values
+3. `HLAJavaValueAdapter` converts Python values to Java values
 4. the bridge invokes the Java method
 5. results or exceptions are converted back to the Python binding surface
 
@@ -403,7 +694,7 @@ Those rules live primarily in:
 
 The central object is:
 
-- `JavaValueConverter`
+- `HLAJavaValueAdapter`
 
 ### What changes by edition
 
@@ -572,7 +863,7 @@ the bridge.
 
 ## Value Conversion
 
-The conversion rules are centralized in `JavaValueConverter`.
+The conversion rules are centralized in `HLAJavaValueAdapter`.
 
 Examples of what it handles:
 
