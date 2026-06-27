@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Mapping
+from typing import TYPE_CHECKING, Any, Mapping, Protocol
 
 from hla.rti1516e.enums import OrderType
 from hla.rti1516e.exceptions import InteractionClassNotPublished
@@ -12,8 +12,62 @@ from hla.rti1516e.datatypes import MessageRetractionReturn
 from .object_delivery_attributes import PythonRTIObjectAttributeDeliveryMixin
 from .state import CallbackEvent, SupplementalReceiveInfo
 
+if TYPE_CHECKING:
+    from .state import FederateState, FederationState, PythonRTIConfig
 
-class PythonRTIObjectInteractionDeliveryMixin(PythonRTIObjectAttributeDeliveryMixin):
+
+class _ObjectInteractionDeliveryContext(Protocol):
+    state: "FederateState"
+    config: "PythonRTIConfig"
+
+    def _require_joined(self) -> "FederationState": ...
+
+    def _handle_mom_interaction(self, interaction_name: str, parameters: Mapping[ParameterHandle, bytes], tag: bytes) -> bool: ...
+
+    def _validate_user_supplied_tag(self, federation: "FederationState", category: str, user_supplied_tag: bytes) -> None: ...
+
+    def _extract_timestamp(self, args: tuple[Any, ...]) -> Any | None: ...
+
+    def _transportation_type_for_interaction(self, interaction: InteractionClassHandle) -> Any: ...
+
+    def _validate_tso_send_time(self, timestamp: Any) -> None: ...
+
+    def _make_retraction_return(self, timestamp: Any) -> MessageRetractionReturn: ...
+
+    def _interaction_matches_subscription(
+        self,
+        actual_class: InteractionClassHandle,
+        subscribed_class: InteractionClassHandle,
+    ) -> bool: ...
+
+    def _queue_or_deliver_tso(
+        self,
+        federation: "FederationState",
+        target: "FederateState",
+        timestamp: Any | None,
+        event: CallbackEvent,
+        *,
+        retraction_handle: Any,
+        producing_federate: Any,
+        post_deliver_cleanup: Any | None = None,
+    ) -> None: ...
+
+    def _deliver(self, target: "FederateState", method_name: str, *args: Any) -> None: ...
+
+    def _refresh_mom_federate_object(self, federation: "FederationState", federate: "FederateState", *, notify: bool = True) -> None: ...
+
+    def _process_time_advances(self, federation: "FederationState") -> None: ...
+
+
+if TYPE_CHECKING:
+    class _ObjectInteractionDeliveryMixinBase(PythonRTIObjectAttributeDeliveryMixin, _ObjectInteractionDeliveryContext):
+        pass
+else:
+    class _ObjectInteractionDeliveryMixinBase(PythonRTIObjectAttributeDeliveryMixin):
+        pass
+
+
+class PythonRTIObjectInteractionDeliveryMixin(_ObjectInteractionDeliveryMixinBase):
     """Interaction send services."""
 
     def _svc_sendInteraction(

@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import heapq
-from typing import Any
+from typing import TYPE_CHECKING, Any, Protocol
 
 from hla.rti1516e.enums import OrderType
 from hla.rti1516e.handles import FederateHandle, MessageRetractionHandle
@@ -11,8 +11,22 @@ from hla.backends.common import time_management as tm
 from .state import CallbackEvent, FederateState, FederationState, QueuedTimeMessage
 from .time_queue_grants import PythonRTITimeQueueGrantMixin, _time_lt, _time_value
 
+if TYPE_CHECKING:
+    class _TimeQueueDeliveryContext(Protocol):
+        def _time_le(self, a: Any, b: Any) -> bool: ...
 
-class PythonRTITimeQueueDeliveryMixin(PythonRTITimeQueueGrantMixin):
+        def _refresh_mom_attribute_values(self, federation: FederationState) -> None: ...
+
+
+if TYPE_CHECKING:
+    class _TimeQueueDeliveryMixinBase(PythonRTITimeQueueGrantMixin, _TimeQueueDeliveryContext):
+        pass
+else:
+    class _TimeQueueDeliveryMixinBase(PythonRTITimeQueueGrantMixin):
+        pass
+
+
+class PythonRTITimeQueueDeliveryMixin(_TimeQueueDeliveryMixinBase):
     """Queued message delivery, draining, and local grant-attempt helpers."""
 
     def _queue_or_deliver_message(

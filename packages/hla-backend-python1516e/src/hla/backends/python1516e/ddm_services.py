@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Iterable, Mapping
+from typing import TYPE_CHECKING, Any, Iterable, Mapping, Protocol
 
 import hla.fom.mom as hla_mom
 from hla.rti1516e.enums import OrderType
@@ -33,8 +33,118 @@ from hla.rti1516e.datatypes import MessageRetractionReturn, RangeBounds
 from .ddm_regions import PythonRTIDdmRegionMixin
 from .state import CallbackEvent, SupplementalReceiveInfo
 
+if TYPE_CHECKING:
+    from .state import FederateState, FederationState, ObjectInstance, PythonRTIConfig
 
-class PythonRTIDdmServicesMixin(PythonRTIDdmRegionMixin):
+
+class _DdmServicesContext(Protocol):
+    state: "FederateState"
+    config: "PythonRTIConfig"
+
+    def _ensure_no_save_or_restore_in_progress(self, federation: "FederationState") -> None: ...
+
+    def _reconcile_scope_for_all_known_objects(self, subscriber: "FederateState") -> None: ...
+
+    def _reconcile_all_scopes_for_known_object(self, instance: "ObjectInstance") -> None: ...
+
+    def _svc_subscribeObjectClassAttributes(
+        self,
+        theClass: Any,
+        attributeList: Iterable[AttributeHandle],
+        *unused: Any,
+    ) -> None: ...
+
+    def _svc_unsubscribeObjectClassAttributes(
+        self,
+        theClass: Any,
+        attributeList: Iterable[AttributeHandle],
+    ) -> None: ...
+
+    def _svc_unsubscribeObjectClass(self, theClass: Any) -> None: ...
+
+    def _is_service_invocation_report_handle(self, handle: InteractionClassHandle) -> bool: ...
+
+    def _svc_subscribeInteractionClass(self, theClass: InteractionClassHandle, *unused: Any) -> None: ...
+
+    def _svc_unsubscribeInteractionClass(self, theClass: InteractionClassHandle) -> None: ...
+
+    def _svc_registerObjectInstance(
+        self,
+        theClass: Any,
+        theObjectName: str | None = None,
+    ) -> ObjectInstanceHandle: ...
+
+    def _find_object(self, theObject: ObjectInstanceHandle) -> tuple["FederationState", "ObjectInstance"]: ...
+
+    def _validate_user_supplied_tag(
+        self,
+        federation: "FederationState",
+        category: str,
+        user_supplied_tag: bytes,
+    ) -> None: ...
+
+    def _handle_mom_interaction(
+        self,
+        interaction_name: str,
+        parameters: Mapping[ParameterHandle, bytes],
+        tag: bytes,
+    ) -> bool: ...
+
+    def _extract_timestamp(self, args: tuple[Any, ...]) -> Any | None: ...
+
+    def _transportation_type_for_interaction(self, interaction: InteractionClassHandle) -> Any: ...
+
+    def _validate_tso_send_time(self, timestamp: Any) -> None: ...
+
+    def _make_retraction_return(self, timestamp: Any) -> MessageRetractionReturn: ...
+
+    def _interaction_matches_subscription(
+        self,
+        actual_class: InteractionClassHandle,
+        subscribed_class: InteractionClassHandle,
+    ) -> bool: ...
+
+    def _queue_or_deliver_tso(
+        self,
+        federation: "FederationState",
+        target: "FederateState",
+        timestamp: Any | None,
+        event: CallbackEvent,
+        *,
+        retraction_handle: Any,
+        producing_federate: Any,
+        post_deliver_cleanup: Any | None = None,
+    ) -> None: ...
+
+    def _deliver(self, target: "FederateState", method_name: str, *args: Any) -> None: ...
+
+    def _refresh_mom_federate_object(
+        self,
+        federation: "FederationState",
+        federate: "FederateState",
+        *,
+        notify: bool = True,
+    ) -> None: ...
+
+    def _process_time_advances(self, federation: "FederationState") -> None: ...
+
+    def _svc_requestAttributeValueUpdate(
+        self,
+        target: Any,
+        attributes: set[AttributeHandle],
+        userSuppliedTag: bytes = b"",
+    ) -> None: ...
+
+
+if TYPE_CHECKING:
+    class _DdmServicesMixinBase(PythonRTIDdmRegionMixin, _DdmServicesContext):
+        pass
+else:
+    class _DdmServicesMixinBase(PythonRTIDdmRegionMixin):
+        pass
+
+
+class PythonRTIDdmServicesMixin(_DdmServicesMixinBase):
     """DDM region lifecycle, subscription, update, and send services."""
 
     def _svc_createRegion(self, dimensions: Iterable[DimensionHandle]) -> RegionHandle:

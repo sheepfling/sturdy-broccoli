@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Mapping
+from typing import TYPE_CHECKING, Any, Mapping, Protocol, cast
 
 import hla.fom.mom as hla_mom
 from hla.rti1516e.enums import OrderType, ResignAction
@@ -25,8 +25,34 @@ from hla.rti1516e.handles import (
 
 from . import mom_catalog as mom_table
 
+if TYPE_CHECKING:
+    from .engine import InMemoryRTIEngine
+    from .state import FederateState, FederationState, PythonRTIConfig
 
-class PythonRTIMomParameterDecodingMixin:
+
+class _MomParameterDecodingContext(Protocol):
+    engine: "InMemoryRTIEngine"
+    config: "PythonRTIConfig"
+    state: "FederateState"
+
+    def _mom_exposure_model(self, federation: "FederationState") -> Any: ...
+
+    def _send_mom_report(self, federation: "FederationState", report_name: str, values: Mapping[str, Any]) -> None: ...
+
+    def _require_joined(self) -> "FederationState": ...
+
+    def _mom_interaction_rule(self, federation: "FederationState", interaction_name: str) -> Any: ...
+
+
+if TYPE_CHECKING:
+    class _MomParameterDecodingMixinBase(_MomParameterDecodingContext):
+        pass
+else:
+    class _MomParameterDecodingMixinBase:
+        pass
+
+
+class PythonRTIMomParameterDecodingMixin(_MomParameterDecodingMixinBase):
     """MOM exception reporting plus parameter decoding and validation helpers."""
 
     def _send_mom_exception(
@@ -337,7 +363,7 @@ class PythonRTIMomParameterDecodingMixin:
             return None
         data = bytes(value)
         try:
-            return FederateHandle.decode(data)
+            return cast(FederateHandle, FederateHandle.decode(data))
         except Exception:
             text = self._decode_mom_text(data, "").strip()
             if text:

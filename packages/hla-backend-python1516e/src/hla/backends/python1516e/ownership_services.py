@@ -1,7 +1,7 @@
 """Ownership-management service entrypoints for the in-memory Python RTI backend."""
 from __future__ import annotations
 
-from typing import Iterable
+from typing import TYPE_CHECKING, Any, Iterable, Protocol
 
 from hla.rti1516e import handles as hla_handles
 from hla.rti1516e.exceptions import (
@@ -20,8 +20,40 @@ from hla.rti1516e.handles import AttributeHandle, ObjectInstanceHandle
 from .ownership_core import PythonRTIOwnershipCoreMixin
 from .state import RTI_FEDERATE_HANDLE
 
+if TYPE_CHECKING:
+    from .engine import InMemoryRTIEngine
+    from .state import FederateState, FederationState, ObjectInstance, PythonRTIConfig
 
-class PythonRTIOwnershipServicesMixin(PythonRTIOwnershipCoreMixin):
+
+class _OwnershipServicesContext(Protocol):
+    engine: "InMemoryRTIEngine"
+    state: "FederateState"
+    config: "PythonRTIConfig"
+
+    def _find_object(self, theObject: ObjectInstanceHandle) -> tuple["FederationState", "ObjectInstance"]: ...
+
+    def _ensure_no_save_or_restore_in_progress(self, federation: "FederationState") -> None: ...
+
+    def _deliver(self, target: "FederateState", method_name: str, *args: Any) -> None: ...
+
+    def _deliver_to_federate_handle(
+        self,
+        federation: "FederationState",
+        federate_handle: Any,
+        method_name: str,
+        *args: Any,
+    ) -> None: ...
+
+
+if TYPE_CHECKING:
+    class _OwnershipServicesMixinBase(PythonRTIOwnershipCoreMixin, _OwnershipServicesContext):
+        pass
+else:
+    class _OwnershipServicesMixinBase(PythonRTIOwnershipCoreMixin):
+        pass
+
+
+class PythonRTIOwnershipServicesMixin(_OwnershipServicesMixinBase):
     """Public ownership-management services."""
 
     def _svc_unconditionalAttributeOwnershipDivestiture(

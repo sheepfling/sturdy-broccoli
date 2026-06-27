@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import replace
-from typing import Any, Iterable
+from typing import TYPE_CHECKING, Any, Iterable, Protocol
 
 from hla.rti1516e.exceptions import (
     CouldNotCreateLogicalTimeFactory,
@@ -18,8 +18,30 @@ from hla.fom import FOMCatalog, FOMMergeError, FOMModule, FOMResolutionError, me
 from hla.rti1516e.time import LogicalTimeFactory
 from .state import FederationState
 
+if TYPE_CHECKING:
+    from .engine import InMemoryRTIEngine
+    from .state import PythonRTIConfig
 
-class PythonRTIFomMixin:
+
+class _FomContext(Protocol):
+    engine: "InMemoryRTIEngine"
+    config: "PythonRTIConfig"
+    fom_resolver: Any
+
+    def _require_joined(self) -> FederationState: ...
+
+    def _time_factory(self) -> LogicalTimeFactory[Any, Any]: ...
+
+
+if TYPE_CHECKING:
+    class _FomMixinBase(_FomContext):
+        pass
+else:
+    class _FomMixinBase:
+        pass
+
+
+class PythonRTIFomMixin(_FomMixinBase):
     """FOM resolution, merge, and summary helpers."""
 
     def _resolve_fom_modules(

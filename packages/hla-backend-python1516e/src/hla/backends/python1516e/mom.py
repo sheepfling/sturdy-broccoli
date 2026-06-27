@@ -1,7 +1,7 @@
 """MOM/MIM object-state helpers for the in-memory Python RTI backend."""
 from __future__ import annotations
 
-from typing import Any, Mapping
+from typing import TYPE_CHECKING, Any, Mapping, Protocol
 
 import hla.fom.mom as hla_mom
 from hla.rti1516e.enums import OrderType
@@ -19,6 +19,44 @@ from .state import (
     ObjectInstance,
     SupplementalReflectInfo,
 )
+
+if TYPE_CHECKING:
+    from .engine import InMemoryRTIEngine
+    from .state import FederateState, PythonRTIConfig
+
+
+class _MomContext(Protocol):
+    engine: "InMemoryRTIEngine"
+    config: "PythonRTIConfig"
+
+    def _object_matches_subscription(self, actual_class: object, subscribed_class: object) -> bool: ...
+
+    def _deliver(self, target: "FederateState", method_name: str, *args: Any) -> None: ...
+
+    def _attribute_subscription_intersection(
+        self,
+        federate: "FederateState",
+        object_class: object,
+        attributes: Mapping[AttributeHandle, bytes],
+        instance: ObjectInstance | None = None,
+        sent_regions_by_attribute: Mapping[AttributeHandle, set[Any]] | None = None,
+    ) -> dict[AttributeHandle, bytes]: ...
+
+    def _require_joined(self) -> FederationState: ...
+
+    def _svc_getHLAversion(self) -> str: ...
+
+    def _compute_galt(self, federation: FederationState, federate: Any) -> Any: ...
+
+    def _compute_lits(self, federation: FederationState, federate: Any) -> Any: ...
+
+
+if TYPE_CHECKING:
+    class _MomMixinBase(PythonRTIMomActionsMixin, PythonRTIMomReportingMixin, _MomContext):
+        pass
+else:
+    class _MomMixinBase(PythonRTIMomActionsMixin, PythonRTIMomReportingMixin):
+        pass
 
 
 def _as_mom_bytes(value: Any) -> bytes:
@@ -44,7 +82,7 @@ def _time_value(value: Any) -> float | int:
     return tm.time_value(value)
 
 
-class PythonRTIMomMixin(PythonRTIMomActionsMixin, PythonRTIMomReportingMixin):
+class PythonRTIMomMixin(_MomMixinBase):
     """HLA MOM/MIM refresh, object state, report exposure, and dispatch helpers."""
 
     def _class_handle_by_name(self, name: str) -> ObjectClassHandle:

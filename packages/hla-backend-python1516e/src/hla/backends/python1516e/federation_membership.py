@@ -1,7 +1,7 @@
 """Federation join and resign lifecycle services."""
 from __future__ import annotations
 
-from typing import Any, Iterable
+from typing import TYPE_CHECKING, Any, Iterable, Protocol
 
 from hla.rti1516e.enums import ResignAction
 from hla.rti1516e.exceptions import (
@@ -14,6 +14,61 @@ from hla.rti1516e.exceptions import (
 from hla.rti1516e.handles import FederateHandle
 
 from . import mom_catalog as mom_table
+
+if TYPE_CHECKING:
+    from .engine import InMemoryRTIEngine
+    from .state import FederateState, FederationState, PythonRTIConfig
+
+
+class _FederationMembershipContext(Protocol):
+    engine: "InMemoryRTIEngine"
+    state: "FederateState"
+    config: "PythonRTIConfig"
+
+    def _require_connected(self) -> None: ...
+
+    def _require_joined(self) -> "FederationState": ...
+
+    def _ensure_no_save_or_restore_in_progress(self, federation: "FederationState") -> None: ...
+
+    def _resolve_fom_modules(self, sources: Iterable[Any], *, require_non_empty: bool = False, mim: bool = False) -> tuple[Any, ...]: ...
+
+    def _combine_fom_catalog(self, modules: Iterable[Any], *, mim_module: Any | None = None, base_catalog: Any | None = None) -> Any: ...
+
+    def _choose_time_factory(self, requested_name: str | None, modules: Iterable[Any]) -> Any: ...
+
+    def _ensure_service_report_file(self, federation: "FederationState", federate: "FederateState") -> str: ...
+
+    def _ensure_mom_federation_object(self, federation: "FederationState") -> None: ...
+
+    def _ensure_mom_federate_object(self, federation: "FederationState", federate: "FederateState") -> None: ...
+
+    def _refresh_all_mom_objects(self, federation: "FederationState", *, notify: bool = True) -> None: ...
+
+    def _announce_open_synchronization_points_to_joiner(self, federation: "FederationState", handle: FederateHandle) -> None: ...
+
+    def _process_time_advances(self, federation: "FederationState") -> None: ...
+
+    def _enum_name(self, value: Any) -> str: ...
+
+    def _remove_object(
+        self,
+        instance: Any,
+        tag: bytes,
+        *,
+        timestamp: Any | None = None,
+        retraction_handle: Any | None = None,
+    ) -> None: ...
+
+    def _remove_federate_from_synchronization_points(self, federation: "FederationState", handle: FederateHandle) -> None: ...
+
+
+if TYPE_CHECKING:
+    class _FederationMembershipMixinBase(_FederationMembershipContext):
+        pass
+else:
+    class _FederationMembershipMixinBase:
+        pass
 
 
 def _is_non_string_sequence(value: Any) -> bool:
@@ -50,7 +105,7 @@ def _parse_join_args(args: tuple[Any, ...]) -> tuple[str, str, str, tuple[Any, .
     raise RTIinternalError(f"Bad joinFederationExecution arguments: {args!r}")
 
 
-class PythonRTIFederationMembershipMixin:
+class PythonRTIFederationMembershipMixin(_FederationMembershipMixinBase):
     """Federation join/resign services."""
 
     def _svc_joinFederationExecution(self, *args: Any) -> FederateHandle:

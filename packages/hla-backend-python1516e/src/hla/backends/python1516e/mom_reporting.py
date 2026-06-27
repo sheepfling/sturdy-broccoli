@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import TYPE_CHECKING, Any, Mapping, Protocol, Sequence
 
 import hla.fom.mom as hla_mom
 from hla.rti1516e.enums import OrderType
@@ -13,8 +13,61 @@ from hla.spec.refs import method_reference
 from .service_reporting import ServiceReportRecord
 from .state import CallbackEvent, FederateState, FederationState, SupplementalReceiveInfo
 
+if TYPE_CHECKING:
+    from .engine import InMemoryRTIEngine
+    from .state import PythonRTIConfig
 
-class PythonRTIMomReportingMixin:
+
+class _MomReportingContext(Protocol):
+    engine: "InMemoryRTIEngine"
+    config: "PythonRTIConfig"
+    state: FederateState
+    service_report_files: Any
+    service_report_sink: Any
+
+    def _refresh_mom_attribute_values(self, federation: FederationState) -> None: ...
+
+    def _mom_exposure_model(self, federation: FederationState) -> Any: ...
+
+    def _mom_interaction_rule(self, federation: FederationState, interaction_name: str) -> Any: ...
+
+    def _mom_parameter_handle(self, interaction_name: str, parameter_name: str) -> Any: ...
+
+    def _queue_or_deliver_message(
+        self,
+        target: FederateState,
+        callback: CallbackEvent,
+        *,
+        sent_order: OrderType,
+        timestamp: Any | None,
+        sender: Any,
+        service_name: str,
+        retraction_handle: Any | None = None,
+        post_deliver_cleanup: Any | None = None,
+    ) -> None: ...
+
+    def _target_federate_from_mom_params(self, federation: FederationState, params: Mapping[str, bytes]) -> FederateState: ...
+
+    def _all_fom_module_data(self, federation: FederationState) -> Sequence[Any]: ...
+
+    def _module_xml_or_uri(self, module: Any) -> bytes: ...
+
+    def _decode_mom_object_instance_handle(self, value: bytes | None) -> Any: ...
+
+    def _is_subscribed_to_service_invocation_report(self, federate: FederateState) -> bool: ...
+
+    def _send_mom_exception(self, federation: FederationState, interaction_name: str, exception_name: str, parameter_error: str = "", *, federate: Any | None = None) -> None: ...
+
+
+if TYPE_CHECKING:
+    class _MomReportingMixinBase(_MomReportingContext):
+        pass
+else:
+    class _MomReportingMixinBase:
+        pass
+
+
+class PythonRTIMomReportingMixin(_MomReportingMixinBase):
     """Service-report file and MOM report emission helpers."""
 
     def _reporting_context(self) -> tuple[FederationState | None, Any, str | None]:
@@ -30,7 +83,7 @@ class PythonRTIMomReportingMixin:
         self.service_report_files.ensure_file(federation, federate)
         if not federate.service_report_initial_record_written:
             self._write_service_report_initial_record(federation, federate)
-        return federate.service_report_file
+        return federate.service_report_file or ""
 
     def _json_safe(self, value: Any) -> Any:
         return self.service_report_files.json_safe(value)

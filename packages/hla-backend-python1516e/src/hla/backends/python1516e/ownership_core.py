@@ -1,7 +1,7 @@
 """Core ownership-transfer helpers for the in-memory Python RTI backend."""
 from __future__ import annotations
 
-from typing import Any, Iterable
+from typing import TYPE_CHECKING, Any, Iterable, Protocol
 
 from hla.rti1516e import handles as hla_handles
 from hla.rti1516e.exceptions import (
@@ -13,8 +13,27 @@ from hla.rti1516e.handles import AttributeHandle, FederateHandle
 
 from .state import FederationState, ObjectInstance
 
+if TYPE_CHECKING:
+    from .engine import InMemoryRTIEngine
+    from .state import FederateState
 
-class PythonRTIOwnershipCoreMixin:
+
+class _OwnershipCoreContext(Protocol):
+    engine: "InMemoryRTIEngine"
+    state: "FederateState"
+
+    def _deliver(self, target: "FederateState", method_name: str, *args: Any) -> None: ...
+
+
+if TYPE_CHECKING:
+    class _OwnershipCoreMixinBase(_OwnershipCoreContext):
+        pass
+else:
+    class _OwnershipCoreMixinBase:
+        pass
+
+
+class PythonRTIOwnershipCoreMixin(_OwnershipCoreMixinBase):
     """Ownership validation, candidate tracking, and transfer helpers."""
 
     def _owned_attributes_or_raise(

@@ -1,15 +1,43 @@
 """Federation synchronization-point helpers and services."""
 from __future__ import annotations
 
-from typing import Iterable
+from typing import TYPE_CHECKING, Iterable, Protocol
 
 from hla.rti1516e import handles as hla_handles
 from hla.rti1516e.enums import SynchronizationPointFailureReason
 from hla.rti1516e.handles import FederateHandle
 from .state import FederationState, SynchronizationPointState
 
+if TYPE_CHECKING:
+    from .state import FederateState
 
-class PythonRTIFederationSyncMixin:
+
+class _FederationSyncContext(Protocol):
+    state: "FederateState"
+
+    def _deliver(self, target: "FederateState", method_name: str, *args: object) -> None: ...
+
+    def _require_joined(self) -> FederationState: ...
+
+    def _ensure_no_save_or_restore_in_progress(self, federation: FederationState) -> None: ...
+
+    def _validate_user_supplied_tag(
+        self,
+        federation: FederationState,
+        category: str,
+        user_supplied_tag: bytes,
+    ) -> None: ...
+
+
+if TYPE_CHECKING:
+    class _FederationSyncMixinBase(_FederationSyncContext):
+        pass
+else:
+    class _FederationSyncMixinBase:
+        pass
+
+
+class PythonRTIFederationSyncMixin(_FederationSyncMixinBase):
     """Synchronization-point helpers and public sync services."""
 
     def _announce_synchronization_point(

@@ -1,14 +1,55 @@
 """Declaration-management services for the in-memory Python RTI backend."""
 from __future__ import annotations
 
-from typing import Any, Iterable
+from typing import TYPE_CHECKING, Any, Iterable, Protocol
 
 from hla.rti1516e.exceptions import FederateServiceInvocationsAreBeingReportedViaMOM, InvalidUpdateRateDesignator
 from hla.rti1516e.handles import AttributeHandle, InteractionClassHandle, ObjectClassHandle
 from .state import FederateState
 
+if TYPE_CHECKING:
+    from .engine import InMemoryRTIEngine
+    from .state import FederationState
 
-class PythonRTIDeclarationMixin:
+
+class _DeclarationContext(Protocol):
+    engine: "InMemoryRTIEngine"
+    state: FederateState
+
+    def _deliver(self, target: FederateState, method_name: str, *args: Any) -> None: ...
+
+    def _require_joined(self) -> "FederationState": ...
+
+    def _ensure_no_save_or_restore_in_progress(self, federation: "FederationState") -> None: ...
+
+    def _object_matches_subscription(self, actual_class: object, subscribed_class: object) -> bool: ...
+
+    def _interaction_matches_subscription(
+        self,
+        actual_class: InteractionClassHandle,
+        subscribed_class: InteractionClassHandle,
+    ) -> bool: ...
+
+    def _discover_existing_objects(self, subscriber: FederateState, object_class: ObjectClassHandle) -> None: ...
+
+    def _reconcile_scope_for_all_known_objects(self, subscriber: FederateState) -> None: ...
+
+    def _reconcile_update_interest_for_owned_objects(
+        self,
+        publisher: FederateState,
+        object_class: ObjectClassHandle | None = None,
+    ) -> None: ...
+
+
+if TYPE_CHECKING:
+    class _DeclarationMixinBase(_DeclarationContext):
+        pass
+else:
+    class _DeclarationMixinBase:
+        pass
+
+
+class PythonRTIDeclarationMixin(_DeclarationMixinBase):
     """HLA publication, subscription, and advisory declaration services."""
 
     def _current_registration_interest_classes(self, publisher: FederateState) -> set[ObjectClassHandle]:

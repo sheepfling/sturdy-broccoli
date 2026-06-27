@@ -2,15 +2,68 @@
 from __future__ import annotations
 
 import copy
-from typing import Any
+from typing import TYPE_CHECKING, Any, Protocol
 
 from hla.rti1516e.enums import RestoreFailureReason, RestoreStatus, SaveFailureReason, SaveStatus
 from hla.rti1516e.exceptions import LogicalTimeAlreadyPassed, RestoreInProgress, SaveInProgress
 
 from .state import FederateState, FederationState
 
+if TYPE_CHECKING:
+    from .state import PythonRTIConfig, TimeAdvanceRequestState, TimedMessage
 
-class PythonRTISaveRestoreStateMixin:
+
+class _SaveRestoreStateContext(Protocol):
+    config: "PythonRTIConfig"
+    state: FederateState
+
+    def _deliver(self, target: FederateState, method_name: str, *args: Any) -> None: ...
+
+    def _coerce_time(self, value: Any) -> Any: ...
+
+    def _time_le(self, a: Any, b: Any) -> bool: ...
+
+    def _queued_tso_messages(
+        self,
+        federation: FederationState,
+        fed: FederateState,
+    ) -> list["TimedMessage"]: ...
+
+    def _compute_grant_decision(
+        self,
+        federation: FederationState,
+        fed: FederateState,
+        request: "TimeAdvanceRequestState",
+        *,
+        enforce_galt: bool,
+        nrg_enabled: bool,
+        factory: Any,
+    ) -> Any: ...
+
+    def _scheduled_save_time_reached(
+        self,
+        fed: FederateState,
+        save_time: Any,
+        *,
+        next_grant_time: Any | None = None,
+    ) -> bool: ...
+
+    def _require_joined(self) -> FederationState: ...
+
+    def _refresh_all_mom_objects(self, federation: FederationState, *, notify: bool = True) -> None: ...
+
+    def _current_in_scope_attributes(self, subscriber: FederateState, instance: Any) -> set[Any]: ...
+
+
+if TYPE_CHECKING:
+    class _SaveRestoreStateMixinBase(_SaveRestoreStateContext):
+        pass
+else:
+    class _SaveRestoreStateMixinBase:
+        pass
+
+
+class PythonRTISaveRestoreStateMixin(_SaveRestoreStateMixinBase):
     """Snapshot helpers plus internal save/restore completion logic."""
 
     def _ensure_no_save_or_restore_in_progress(self, federation: FederationState) -> None:

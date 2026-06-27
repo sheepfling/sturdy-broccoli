@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Any, Iterable, Mapping
+from typing import TYPE_CHECKING, Any, Iterable, Mapping, Protocol
 
 from hla.rti1516e.enums import OrderType
 from hla.rti1516e.exceptions import (
@@ -22,8 +22,62 @@ from hla.rti1516e.datatypes import MessageRetractionReturn
 from .object_delivery_transport import PythonRTIObjectTransportMixin
 from .state import CallbackEvent, ObjectInstance, SupplementalReflectInfo
 
+if TYPE_CHECKING:
+    from .state import FederateState, FederationState, PythonRTIConfig
 
-class PythonRTIObjectAttributeDeliveryMixin(PythonRTIObjectTransportMixin):
+
+class _ObjectAttributeDeliveryContext(Protocol):
+    state: "FederateState"
+    config: "PythonRTIConfig"
+
+    def _find_object(self, theObject: ObjectInstanceHandle) -> tuple["FederationState", ObjectInstance]: ...
+
+    def _ensure_no_save_or_restore_in_progress(self, federation: "FederationState") -> None: ...
+
+    def _validate_user_supplied_tag(self, federation: "FederationState", category: str, user_supplied_tag: bytes) -> None: ...
+
+    def _extract_timestamp(self, args: tuple[Any, ...]) -> Any | None: ...
+
+    def _validate_tso_send_time(self, timestamp: Any) -> None: ...
+
+    def _make_retraction_return(self, timestamp: Any) -> MessageRetractionReturn: ...
+
+    def _queue_or_deliver_tso(
+        self,
+        federation: "FederationState",
+        target: "FederateState",
+        timestamp: Any | None,
+        event: CallbackEvent,
+        *,
+        retraction_handle: Any,
+        producing_federate: Any,
+        post_deliver_cleanup: Any | None = None,
+    ) -> None: ...
+
+    def _deliver(self, target: "FederateState", method_name: str, *args: Any) -> None: ...
+
+    def _refresh_mom_federate_object(self, federation: "FederationState", federate: "FederateState", *, notify: bool = True) -> None: ...
+
+    def _process_time_advances(self, federation: "FederationState") -> None: ...
+
+    def _require_joined(self) -> "FederationState": ...
+
+    def _is_mom_object_instance(self, federation: "FederationState", instance: ObjectInstance) -> bool: ...
+
+    def _deliver_mom_attribute_update(self, instance: ObjectInstance, attrs: set[AttributeHandle], tag: bytes) -> None: ...
+
+    def _object_matches_subscription(self, actual_class: object, subscribed_class: object) -> bool: ...
+
+
+if TYPE_CHECKING:
+    class _ObjectAttributeDeliveryMixinBase(PythonRTIObjectTransportMixin, _ObjectAttributeDeliveryContext):
+        pass
+else:
+    class _ObjectAttributeDeliveryMixinBase(PythonRTIObjectTransportMixin):
+        pass
+
+
+class PythonRTIObjectAttributeDeliveryMixin(_ObjectAttributeDeliveryMixinBase):
     """Attribute update, request, and provide services."""
 
     def _svc_updateAttributeValues(

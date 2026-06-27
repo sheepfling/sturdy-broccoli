@@ -1,15 +1,43 @@
 """Object registration and name-management domain root."""
 from __future__ import annotations
 
-from typing import Any, Iterable
+from typing import TYPE_CHECKING, Any, Iterable, Protocol
 
 from hla.rti1516e.exceptions import ObjectInstanceNameInUse
 from hla.rti1516e.handles import ObjectClassHandle, ObjectInstanceHandle
 from .object_delivery import PythonRTIObjectDeliveryMixin
 from .state import ObjectInstance
 
+if TYPE_CHECKING:
+    from .state import FederateState, FederationState
 
-class PythonRTIObjectMixin(PythonRTIObjectDeliveryMixin):
+
+class _ObjectContext(Protocol):
+    state: "FederateState"
+    engine: Any
+
+    def _require_joined(self) -> "FederationState": ...
+
+    def _ensure_no_save_or_restore_in_progress(self, federation: "FederationState") -> None: ...
+
+    def _deliver(self, target: "FederateState", method_name: str, *args: Any) -> None: ...
+
+    def _ensure_known_object(self, subscriber: "FederateState", instance: ObjectInstance) -> ObjectClassHandle | None: ...
+
+    def _subscriber_has_region_scoped_object_interest(self, subscriber: "FederateState", instance: ObjectInstance) -> bool: ...
+
+    def _reconcile_object_attribute_scope(self, subscriber: "FederateState", instance: ObjectInstance) -> None: ...
+
+
+if TYPE_CHECKING:
+    class _ObjectMixinBase(PythonRTIObjectDeliveryMixin, _ObjectContext):
+        pass
+else:
+    class _ObjectMixinBase(PythonRTIObjectDeliveryMixin):
+        pass
+
+
+class PythonRTIObjectMixin(_ObjectMixinBase):
     """HLA object naming/registration services plus delivery helpers."""
 
     def _svc_reserveObjectInstanceName(self, theObjectInstanceName: str) -> None:

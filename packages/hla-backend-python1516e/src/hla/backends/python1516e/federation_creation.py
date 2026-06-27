@@ -1,7 +1,7 @@
 """Connection and federation create/destroy services."""
 from __future__ import annotations
 
-from typing import Any, Iterable
+from typing import TYPE_CHECKING, Any, Iterable, Protocol
 
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.exceptions import (
@@ -19,6 +19,42 @@ from hla.rti1516e.datatypes import FederationExecutionInformation
 
 from . import mom_catalog as mom_table
 from .state import FederationState
+
+if TYPE_CHECKING:
+    from .engine import InMemoryRTIEngine
+    from .state import FederateState, PythonRTIConfig
+
+
+class _FederationCreationContext(Protocol):
+    engine: "InMemoryRTIEngine"
+    state: "FederateState"
+    config: "PythonRTIConfig"
+
+    def _require_connected(self) -> None: ...
+
+    def _deliver(self, target: "FederateState", method_name: str, *args: Any) -> None: ...
+
+    def _resolve_fom_modules(
+        self,
+        sources: Iterable[Any],
+        *,
+        require_non_empty: bool = False,
+        mim: bool = False,
+    ) -> tuple[Any, ...]: ...
+
+    def _combine_fom_catalog(self, modules: Iterable[Any], *, mim_module: Any | None = None, base_catalog: Any | None = None) -> Any: ...
+
+    def _choose_time_factory(self, requested_name: str | None, modules: Iterable[Any]) -> Any: ...
+
+    def _ensure_mom_federation_object(self, federation: FederationState) -> None: ...
+
+
+if TYPE_CHECKING:
+    class _FederationCreationMixinBase(_FederationCreationContext):
+        pass
+else:
+    class _FederationCreationMixinBase:
+        pass
 
 
 def _is_non_string_sequence(value: Any) -> bool:
@@ -72,7 +108,7 @@ def _parse_create_federation_args(
     return args, None, time_name
 
 
-class PythonRTIFederationCreationMixin:
+class PythonRTIFederationCreationMixin(_FederationCreationMixinBase):
     """Connection and federation creation/destruction services."""
 
     def _svc_connect(

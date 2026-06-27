@@ -1,7 +1,7 @@
 """Grant, GALT, and eligibility helpers for time-queue processing."""
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any, Protocol
 
 from hla.rti1516e.enums import OrderType
 from hla.rti1516e.handles import FederateHandle, MessageRetractionHandle
@@ -9,6 +9,58 @@ from hla.rti1516e.datatypes import MessageRetractionReturn, TimeQueryReturn
 from hla.backends.common import time_management as tm
 
 from .state import CallbackEvent, FederateState, FederationState, TimeAdvanceRequestState, TimedMessage
+
+if TYPE_CHECKING:
+    from .engine import InMemoryRTIEngine
+    from .state import PythonRTIConfig
+
+
+class _TimeQueueGrantContext(Protocol):
+    engine: "InMemoryRTIEngine"
+    state: FederateState
+    config: "PythonRTIConfig"
+
+    def _queue_or_deliver_message(
+        self,
+        target: FederateState,
+        callback: CallbackEvent,
+        *,
+        sent_order: OrderType,
+        timestamp: Any | None,
+        sender: FederateHandle | None,
+        service_name: str,
+        retraction_handle: MessageRetractionHandle | None,
+        post_deliver_cleanup: Any | None = None,
+    ) -> None: ...
+
+    def _deliver_time_message(self, target: FederateState, msg: Any) -> None: ...
+
+    def _deliver(self, target: FederateState, method_name: str, *args: Any) -> None: ...
+
+    def _refresh_mom_federate_object(
+        self,
+        federation: FederationState,
+        federate: FederateState,
+        *,
+        notify: bool = True,
+    ) -> None: ...
+
+    def _refresh_mom_federation_object(
+        self,
+        federation: FederationState,
+        *,
+        notify: bool = True,
+    ) -> None: ...
+
+    def _process_scheduled_saves(self, federation: FederationState) -> None: ...
+
+
+if TYPE_CHECKING:
+    class _TimeQueueGrantMixinBase(_TimeQueueGrantContext):
+        pass
+else:
+    class _TimeQueueGrantMixinBase:
+        pass
 
 
 def _time_value(value: Any) -> float | int:
@@ -23,7 +75,7 @@ def _time_lt(left: Any, right: Any) -> bool:
     return tm.time_lt(left, right)
 
 
-class PythonRTITimeQueueGrantMixin:
+class PythonRTITimeQueueGrantMixin(_TimeQueueGrantMixinBase):
     """Grant and eligibility helpers for queued time messages."""
 
     def _queued_tso_for(

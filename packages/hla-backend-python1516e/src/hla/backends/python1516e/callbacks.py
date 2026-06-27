@@ -1,7 +1,7 @@
 """Callback control and asynchronous-delivery services for the Python RTI backend."""
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any, Protocol
 
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.exceptions import (
@@ -12,8 +12,39 @@ from hla.rti1516e.exceptions import (
 )
 from .state import CallbackEvent, FederateState, FederationState
 
+if TYPE_CHECKING:
+    from .state import PythonRTIConfig
 
-class PythonRTICallbacksMixin:
+
+class _CallbacksContext(Protocol):
+    config: "PythonRTIConfig"
+    state: FederateState
+    delivered_callback_count: int
+
+    def _require_connected(self) -> None: ...
+
+    def _require_joined(self) -> FederationState: ...
+
+    def _ensure_no_save_or_restore_in_progress(self, federation: FederationState) -> None: ...
+
+    def _refresh_mom_federate_object(
+        self,
+        federation: FederationState,
+        federate: FederateState,
+        *,
+        notify: bool,
+    ) -> None: ...
+
+
+if TYPE_CHECKING:
+    class _CallbacksMixinBase(_CallbacksContext):
+        pass
+else:
+    class _CallbacksMixinBase:
+        pass
+
+
+class PythonRTICallbacksMixin(_CallbacksMixinBase):
     def _deliver(self, target: FederateState, method_name: str, *args: Any) -> None:
         if target.ambassador is None:
             return

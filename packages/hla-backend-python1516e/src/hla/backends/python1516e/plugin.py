@@ -1,7 +1,7 @@
 """Entry point descriptor for the split pure Python RTI backend package."""
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Mapping, cast
 
 from hla.backends.common import BackendInfo, RTIBackendPlugin
 from hla.rti.plugin_api import BackendRequest
@@ -10,7 +10,8 @@ from . import PythonRTIConfig, create_python_backend
 
 
 def _create_backend(request: BackendRequest):
-    options: dict[str, Any] = dict(request.options if hasattr(request, "options") else request)
+    raw_options = request.options if hasattr(request, "options") else request
+    options = dict(cast(Mapping[str, Any], raw_options))
     engine = options.pop("engine", None)
     config = options.pop("config", None)
     if options:

@@ -1,7 +1,7 @@
 """Public save/restore service entrypoints."""
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any, Protocol
 
 from hla.rti1516e.enums import RestoreFailureReason, RestoreStatus, SaveFailureReason, SaveStatus
 from hla.rti1516e.exceptions import LogicalTimeAlreadyPassed
@@ -9,8 +9,56 @@ from hla.rti1516e.datatypes import FederateHandleSaveStatusPair, FederateRestore
 
 from .save_restore_state import PythonRTISaveRestoreStateMixin
 
+if TYPE_CHECKING:
+    from .state import FederationState
 
-class PythonRTISaveRestoreServicesMixin(PythonRTISaveRestoreStateMixin):
+
+class _SaveRestoreServicesContext(Protocol):
+    state: Any
+
+    def _require_joined(self) -> "FederationState": ...
+
+    def _deliver(self, target: Any, method_name: str, *args: Any) -> None: ...
+
+    def _coerce_time(self, value: Any) -> Any: ...
+
+    def _time_lt(self, a: Any, b: Any) -> bool: ...
+
+    def _ensure_no_save_or_restore_in_progress(self, federation: "FederationState") -> None: ...
+
+    def _process_scheduled_saves(self, federation: "FederationState") -> None: ...
+
+    def _refresh_all_mom_objects(self, federation: "FederationState", *, notify: bool = True) -> None: ...
+
+    def _refresh_mom_federate_object(
+        self,
+        federation: "FederationState",
+        federate: Any,
+        *,
+        notify: bool = True,
+    ) -> None: ...
+
+    def _start_federation_save(
+        self,
+        federation: "FederationState",
+        label: str,
+        theTime: Any | None = None,
+    ) -> None: ...
+
+    def _complete_save(self, *, success: bool) -> None: ...
+
+    def _complete_restore(self, *, success: bool) -> None: ...
+
+
+if TYPE_CHECKING:
+    class _SaveRestoreServicesMixinBase(PythonRTISaveRestoreStateMixin, _SaveRestoreServicesContext):
+        pass
+else:
+    class _SaveRestoreServicesMixinBase(PythonRTISaveRestoreStateMixin):
+        pass
+
+
+class PythonRTISaveRestoreServicesMixin(_SaveRestoreServicesMixinBase):
     """Public save/restore service methods."""
 
     def _svc_requestFederationSave(self, label: str, theTime: Any | None = None) -> None:

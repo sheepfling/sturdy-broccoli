@@ -2,14 +2,40 @@
 
 from __future__ import annotations
 
-from typing import Any, Mapping, cast
+from typing import TYPE_CHECKING, Any, Mapping, Protocol, cast
 
 from hla.rti1516e.exceptions import InvalidInteractionClassHandle, InvalidObjectClassHandle
 from hla.rti1516e.handles import AttributeHandle, InteractionClassHandle, ObjectClassHandle, RegionHandle
 from .state import RTI_FEDERATE_HANDLE, FederateState, ObjectInstance
 
+if TYPE_CHECKING:
+    from .engine import InMemoryRTIEngine
 
-class PythonRTISubscriptionMixin:
+
+class _SubscriptionContext(Protocol):
+    engine: "InMemoryRTIEngine"
+    state: FederateState
+
+    def _deliver(self, target: FederateState, method_name: str, *args: Any) -> None: ...
+
+    def _region_sets_overlap(
+        self,
+        source_federate: FederateState,
+        source_regions: set[RegionHandle],
+        target_federate: FederateState,
+        target_regions: set[RegionHandle],
+    ) -> bool: ...
+
+
+if TYPE_CHECKING:
+    class _SubscriptionMixinBase(_SubscriptionContext):
+        pass
+else:
+    class _SubscriptionMixinBase:
+        pass
+
+
+class PythonRTISubscriptionMixin(_SubscriptionMixinBase):
     """Object/interaction subscription matching and region overlap helpers."""
 
     def _object_matches_subscription(self, actual_class: object, subscribed_class: object) -> bool:
@@ -301,6 +327,7 @@ class PythonRTISubscriptionMixin:
         for handle, value in attributes.items():
             mapped_handle = handle
             if known_class is not None:
+                assert instance is not None
                 attr_name = self.engine.attribute_name(instance.class_handle, handle)
                 mapped_handle = self.engine.object_class_for_handle(known_class).attributes_by_name.get(attr_name)
                 if mapped_handle is None:
