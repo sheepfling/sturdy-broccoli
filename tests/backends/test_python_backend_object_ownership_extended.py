@@ -2793,6 +2793,65 @@ def test_name_reservation_and_release_effects_manage_state_without_creating_obje
     owner.destroy_federation_execution("name-effect-fed")
 
 
+def test_name_reservation_callbacks_validate_payload_context_and_wrap_callback_failures():
+    _, owner, observer, owner_fed, observer_fed, _h1, _h2 = joined_pair("name-callback-contract-fed")
+
+    owner.reserve_object_instance_name("Callback-Single")
+    drain(owner, observer)
+    assert owner_fed.last_callback("objectInstanceNameReservationSucceeded").args == ("Callback-Single",)
+
+    observer.reserve_object_instance_name("Callback-Single")
+    drain(owner, observer)
+    assert observer_fed.last_callback("objectInstanceNameReservationFailed").args == ("Callback-Single",)
+
+    names = {"Callback-Multi-A", "Callback-Multi-B"}
+    owner.reserve_multiple_object_instance_name(names)
+    drain(owner, observer)
+    assert set(owner_fed.last_callback("multipleObjectInstanceNameReservationSucceeded").args[0]) == names
+
+    observer.reserve_multiple_object_instance_name(names)
+    drain(owner, observer)
+    assert set(observer_fed.last_callback("multipleObjectInstanceNameReservationFailed").args[0]) == names
+
+    owner.reserve_multiple_object_instance_name(set())
+    drain(owner, observer)
+    assert set(owner_fed.last_callback("multipleObjectInstanceNameReservationFailed").args[0]) == set()
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("name-callback-contract-fed")
+
+    class _FailingNameReservationAmbassador(RecordingFederateAmbassador):
+        def objectInstanceNameReservationSucceeded(self, *args, **kwargs):
+            raise RuntimeError("single-reservation-succeeded-failed")
+
+        def objectInstanceNameReservationFailed(self, *args, **kwargs):
+            raise RuntimeError("single-reservation-failed-failed")
+
+        def multipleObjectInstanceNameReservationSucceeded(self, *args, **kwargs):
+            raise RuntimeError("multi-reservation-succeeded-failed")
+
+        def multipleObjectInstanceNameReservationFailed(self, *args, **kwargs):
+            raise RuntimeError("multi-reservation-failed-failed")
+
+    failing = rti_ambassador(engine=InMemoryRTIEngine())
+    failing.connect(_FailingNameReservationAmbassador(), CallbackModel.HLA_IMMEDIATE)
+    failing.create_federation_execution("name-callback-failing-fed", "TargetRadarFOMmodule.xml")
+    failing.join_federation_execution("alpha", "type-a", "name-callback-failing-fed")
+
+    with pytest.raises(FederateInternalError):
+        failing.reserve_object_instance_name("Failing-Single")
+    with pytest.raises(FederateInternalError):
+        failing.reserve_object_instance_name("Failing-Single")
+    with pytest.raises(FederateInternalError):
+        failing.reserve_multiple_object_instance_name({"Failing-Multi-A", "Failing-Multi-B"})
+    with pytest.raises(FederateInternalError):
+        failing.reserve_multiple_object_instance_name(set())
+
+    failing.resign_federation_execution(ResignAction.NO_ACTION)
+    failing.destroy_federation_execution("name-callback-failing-fed")
+
+
 def test_request_interaction_transportation_type_change_rejects_not_connected_not_joined_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):

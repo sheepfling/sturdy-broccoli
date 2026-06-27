@@ -305,15 +305,15 @@
       "description": "Clause 6 packet-to-curated backlog for object-management services.",
       "family": "Object Management",
       "kinds": {
-        "ARG": 12,
+        "ARG": 10,
         "EFF": 10,
-        "EXC": 17,
-        "PRE": 12,
+        "EXC": 15,
+        "PRE": 10,
         "SEM": 6,
         "SVC": 8
       },
-      "open_row_count": 65,
-      "queue_item_count": 18,
+      "open_row_count": 59,
+      "queue_item_count": 16,
       "queue_items": [
         {
           "acceptance_tests": [
@@ -442,56 +442,6 @@
             "HLA1516.1-OM-6_9-ARG-003",
             "HLA1516.1-OM-6_9-PRE-004",
             "HLA1516.1-OM-6_9-EXC-006"
-          ],
-          "statuses": {
-            "partial": 3
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_name_reservation_callbacks_report_success_and_failure"
-          ],
-          "clause": "6.6",
-          "implementation_areas": [
-            "object_naming_callback"
-          ],
-          "kinds": {
-            "ARG": 1,
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 3,
-          "queue_item": "Multiple Object Instance Names Reserved",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_6-ARG-003",
-            "HLA1516.1-OM-6_6-PRE-004",
-            "HLA1516.1-OM-6_6-EXC-006"
-          ],
-          "statuses": {
-            "partial": 3
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_name_reservation_callbacks_report_success_and_failure"
-          ],
-          "clause": "6.3",
-          "implementation_areas": [
-            "object_naming_callback"
-          ],
-          "kinds": {
-            "ARG": 1,
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 3,
-          "queue_item": "Object Instance Name Reserved",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_3-ARG-003",
-            "HLA1516.1-OM-6_3-PRE-004",
-            "HLA1516.1-OM-6_3-EXC-006"
           ],
           "statuses": {
             "partial": 3
@@ -803,7 +753,7 @@
         }
       ],
       "statuses": {
-        "partial": 65
+        "partial": 59
       }
     },
     {
@@ -2846,12 +2796,12 @@
         "ARG": 4,
         "EFF": 9,
         "EXC": 72,
-        "PRE": 94,
+        "PRE": 92,
         "SEM": 2,
         "SVC": 8
       },
-      "open_row_count": 189,
-      "queue_item_count": 109,
+      "open_row_count": 187,
+      "queue_item_count": 107,
       "queue_items": [
         {
           "acceptance_tests": [
@@ -2968,48 +2918,6 @@
           "queue_item": "Discover Object Instance",
           "requirement_ids": [
             "HLA1516.1-OM-6_9-PRE-004"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_name_reservation_callbacks_report_success_and_failure"
-          ],
-          "clause": "6.6",
-          "implementation_areas": [
-            "object_naming_callback"
-          ],
-          "kinds": {
-            "PRE": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Multiple Object Instance Names Reserved",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_6-PRE-004"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_name_reservation_callbacks_report_success_and_failure"
-          ],
-          "clause": "6.3",
-          "implementation_areas": [
-            "object_naming_callback"
-          ],
-          "kinds": {
-            "PRE": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Object Instance Name Reserved",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_3-PRE-004"
           ],
           "statuses": {
             "partial": 1
@@ -5464,11 +5372,11 @@
         }
       ],
       "statuses": {
-        "partial": 189
+        "partial": 187
       }
     }
   ],
   "generated_from": "harmonized requirements ledgers + imported HLA packet v1.0",
-  "total_open_rows": 427,
-  "total_queue_items": 218
+  "total_open_rows": 419,
+  "total_queue_items": 214
 }
