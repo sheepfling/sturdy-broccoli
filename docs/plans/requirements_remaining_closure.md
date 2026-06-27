@@ -137,9 +137,9 @@ The remaining `2010` truth shape is now:
 
 Exact current reading from the backend-compliance packet:
 
-- `58` `partial` rows total
+- `54` `partial` rows total
 - `36` `partial` rows where Python is already `verified`
-- `9` `partial` rows where Python is still `vendor-divergent`
+- `5` `partial` rows where Python is still `vendor-divergent`
 - `13` `partial` rows where Python is `not-applicable`
 - only `3` requirement rows remain as direct mixed-backend clause tails:
   - `HLA1516.1-FM-4.1.5-001`
@@ -149,8 +149,8 @@ Exact current reading from the backend-compliance packet:
   - `12` bounded broad partial parents
   - `26` passing supported-subset child proofs
 - current `vendor-divergent` composition:
-  - `4` federation-management effect-vector rows from `requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv`
-  - `3` framework or architecture rows owned by `requirements/2010/hla1516_framework_detailed_reconciliation.csv`
+  - `1` federation-management effect-vector row from `requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv`
+  - `2` framework or architecture rows owned by `requirements/2010/hla1516_framework_detailed_reconciliation.csv`
   - `2` supported-subset policy parents from `curated-clause5-6`
 
 ### 2010 Largest Partial Families

@@ -28,6 +28,31 @@ from hla.rti1516e.exceptions import (
 from hla.rti1516e.handles import FederateHandleSet
 from hla.spec.refs import method_label, method_reference
 
+
+def _write_minimal_fom_module(tmp_path, stem: str, model_name: str, object_name: str, *, time_type: str = "HLAinteger64BE"):
+    path = tmp_path / f"{stem}.xml"
+    path.write_text(
+        f"""<?xml version="1.0" encoding="UTF-8"?>
+<objectModel>
+  <modelIdentification><name>{model_name}</name><type>FDD</type></modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>{object_name}</name>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <time>
+    <timeStamp><dataType>{time_type}</dataType></timeStamp>
+  </time>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+    return path
+
+
 def test_spec_references_link_services_to_clause_numbers():
     assert method_reference("connect").section == "4.2"
     assert method_reference("createFederationExecution").section == "4.5"
@@ -181,10 +206,11 @@ def test_connect_create_and_join_apply_positive_lifecycle_effects():
 
     creator = rti_ambassador(engine=engine)
     creator_fed = RecordingFederateAmbassador()
-    creator.connect(creator_fed, CallbackModel.HLA_EVOKED)
+    creator.connect(creator_fed, CallbackModel.HLA_EVOKED, "crcHost=localhost")
 
     assert creator.backend.state.connected is True
     assert creator.backend.state.callback_model is CallbackModel.HLA_EVOKED
+    assert creator.backend.state.local_settings_designator == "crcHost=localhost"
     assert creator.backend.state.handle is None
 
     creator.create_federation_execution("fm-positive-lifecycle-fed", "TargetRadarFOMmodule.xml")
@@ -203,6 +229,66 @@ def test_connect_create_and_join_apply_positive_lifecycle_effects():
 
     joiner.resign_federation_execution(ResignAction.NO_ACTION)
     creator.destroy_federation_execution("fm-positive-lifecycle-fed")
+    creator.disconnect()
+    joiner.disconnect()
+
+
+def test_create_federation_execution_applies_full_effect_vector(tmp_path):
+    engine = InMemoryRTIEngine()
+    creator = rti_ambassador(engine=engine)
+    creator.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+
+    first = _write_minimal_fom_module(tmp_path, "create-alpha", "CreateAlphaModel", "CreateAlphaObject")
+    second = _write_minimal_fom_module(tmp_path, "create-bravo", "CreateBravoModel", "CreateBravoObject")
+
+    creator.create_federation_execution("create-effects-fed", [first, second])
+    federation = engine.federations["create-effects-fed"]
+
+    assert federation.name == "create-effects-fed"
+    assert {module.path.name for module in federation.fom_modules if module.path is not None} == {
+        first.name,
+        second.name,
+    }
+    assert federation.mim_module is not None
+    assert federation.mim_module.is_mim is True
+    assert federation.time_factory.get_name() == "HLAinteger64Time"
+
+    handle = creator.join_federation_execution("creator", "type-create", "create-effects-fed")
+    assert handle in federation.federates
+
+    creator.resign_federation_execution(ResignAction.NO_ACTION)
+    creator.destroy_federation_execution("create-effects-fed")
+    creator.disconnect()
+
+
+def test_join_federation_execution_applies_full_effect_vector(tmp_path):
+    engine = InMemoryRTIEngine()
+    creator = rti_ambassador(engine=engine)
+    creator.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+
+    base = _write_minimal_fom_module(tmp_path, "join-base", "JoinBaseModel", "JoinBaseObject")
+    extra = _write_minimal_fom_module(tmp_path, "join-extra", "JoinExtraModel", "JoinExtraObject")
+    creator.create_federation_execution("join-effects-fed", [base])
+
+    joiner = rti_ambassador(engine=engine)
+    joiner.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    handle = joiner.join_federation_execution("alpha", "type-a", "join-effects-fed", [extra])
+    federation = engine.federations["join-effects-fed"]
+
+    assert handle == joiner.backend.state.handle
+    assert joiner.backend.state.name == "alpha"
+    assert joiner.backend.state.federate_type == "type-a"
+    assert joiner.backend.state.federation is federation
+    assert joiner.backend.state.current_time == federation.time_factory.make_initial()
+    assert joiner.backend.state.lookahead == federation.time_factory.make_zero()
+    assert federation.federates[handle] is joiner.backend.state
+    assert {module.path.name for module in federation.fom_modules if module.path is not None} == {
+        base.name,
+        extra.name,
+    }
+
+    joiner.resign_federation_execution(ResignAction.NO_ACTION)
+    creator.destroy_federation_execution("join-effects-fed")
     creator.disconnect()
     joiner.disconnect()
 

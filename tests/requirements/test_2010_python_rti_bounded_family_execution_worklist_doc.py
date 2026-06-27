@@ -12,8 +12,8 @@ def test_2010_bounded_family_execution_worklist_lists_current_bounded_buckets() 
 
     for token in (
         "`934` matrix rows",
-        "`835` `pass`",
-        "`58` `partial`",
+        "`839` `pass`",
+        "`54` `partial`",
         "`0` `planned`",
         "`40` `implemented-slice`",
         "mixed_backend_priority_boundaries.md",

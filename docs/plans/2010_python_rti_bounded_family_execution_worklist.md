@@ -49,10 +49,10 @@ Use this snapshot when the question is:
 Current `analysis/compliance/requirements_matrix_2010.csv` totals:
 
 - `934` matrix rows
-- `835` `pass`
+- `839` `pass`
 - `40` `implemented-slice`
 - `1` `implemented-smoke`
-- `58` `partial`
+- `54` `partial`
 
 Interpretation rule:
 

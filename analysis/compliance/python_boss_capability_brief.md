@@ -9,14 +9,14 @@ but leadership should read it through two separate denominators:
 
 - canonical `2010` backend-compliance packet:
   - `934` rows
-  - `835` `pass`
+  - `839` `pass`
   - `40` `implemented-slice`
   - `1` `implemented-smoke`
-  - `58` `partial`
+  - `54` `partial`
 - Python runtime projection inside that packet:
-  - `846` `verified`
+  - `850` `verified`
   - `79` `not-applicable`
-  - `9` `vendor-divergent`
+  - `5` `vendor-divergent`
   - `0` `blocked`
   - `0` `not-yet-tested`
   - `0` `classification-required`
@@ -46,7 +46,7 @@ That is not the same as saying:
 - every `2010` packet row is already a standalone all-passed witness
 - every applicable requirement is perfectly spec-identical
 
-The remaining `9` residuals are intentional `vendor-divergent`
+The remaining `5` residuals are intentional `vendor-divergent`
 classifications, not open test debt, and the canonical packet still keeps
 bounded `partial` rows explicit.
 
@@ -67,7 +67,7 @@ Then keep the distinction clear:
 - `not-applicable` means intentionally out of scope
 - `vendor-divergent` means intentionally different or only partially modeled by policy, not unfinished work
 
-Do not present the residual `9` as bugs unless the discussion is specifically
+Do not present the residual `5` as bugs unless the discussion is specifically
 about strict spec parity.
 
 Put the divergent rows in an appendix or a secondary "intentional residuals" slide, not on the main success slide.

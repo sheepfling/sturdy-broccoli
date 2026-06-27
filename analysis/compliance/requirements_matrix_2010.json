@@ -1188,33 +1188,38 @@
     {
       "artifact_refs": [
         "analysis/compliance/requirements_matrix_2010.csv",
+        "requirements/2010/hla1516_framework_detailed_reconciliation.csv",
         "requirements/2010/hla1516_framework_rules.csv"
       ],
       "certi_runtime_disposition": "not-applicable",
       "certi_runtime_status": "",
       "document": "IEEE 1516-2010",
       "implementation_refs": [
-        "hla2010/backends/python/federation_lifecycle.py"
+        "packages/hla-backend-python1516e/src/hla/backends/python1516e/federation_creation.py",
+        "packages/hla-backend-python1516e/src/hla/backends/python1516e/federation_membership.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
       "linked_methods": [],
       "matrix_id": "HLA1516-RULE-001",
       "negative_test_refs": [],
-      "notes": "verification_method=requirements skeleton; This rule row now names the lifecycle/state-transition scope directly.; Architectural rule scope is now stated explicitly in the authored framework rules catalog",
+      "notes": "verification_method=requirements skeleton; This rule row now names the lifecycle/state-transition scope directly.; Framework rule 1 is now backed directly by the authored framework reconciliation plus explicit create/join lifecycle witnesses that prove the federation FOM contract and membership-state transitions.",
       "pitch_jpype_runtime_disposition": "classification-required",
       "pitch_py4j_runtime_disposition": "classification-required",
       "pitch_runtime_disposition": "classification-required",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
-      "positive_test_refs": [],
-      "python_runtime_disposition": "vendor-divergent",
+      "positive_test_refs": [
+        "tests/backends/test_python_backend_federation_extended.py::test_create_federation_execution_applies_full_effect_vector",
+        "tests/backends/test_python_backend_federation_extended.py::test_join_federation_execution_applies_full_effect_vector"
+      ],
+      "python_runtime_disposition": "verified",
       "python_runtime_status": "",
       "requirement_id": "HLA1516-RULE-001",
       "section_ref": "IEEE 1516-2010 Federation and federate rules",
       "service_group": "Federation/federate rules",
       "source": "requirements/2010/hla1516_framework_rules.csv",
-      "status": "partial",
+      "status": "pass",
       "title": "The repo shall map federation-level architectural rules to RTI lifecycle behavior and federation-state transitions",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -7702,22 +7707,22 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.2-EFF-001",
       "negative_test_refs": [],
-      "notes": "verification_method=stateful service test; Positive connected-state assertions are still mostly indirect.",
+      "notes": "verification_method=stateful service test; Direct lifecycle witness now asserts bound ambassador state selected callback model persisted local settings designator and connected state before any join occurs.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_connect_adapts_python_federate_ambassador"
+        "tests/backends/test_python_backend_federation_extended.py::test_connect_create_and_join_apply_positive_lifecycle_effects"
       ],
-      "python_runtime_disposition": "vendor-divergent",
+      "python_runtime_disposition": "verified",
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-FM-4.2-EFF-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.2",
       "service_group": "FM/EFF",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
+      "status": "pass",
       "title": "Successful Connect shall bind the ambassador, persist the selected callback model, persist the optional local settings designator, and mark the ambassador connected.",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -13432,22 +13437,22 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.5-EFF-001",
       "negative_test_refs": [],
-      "notes": "verification_method=stateful integration test; The current suite proves several effect slices but not the whole state vector in one test.",
+      "notes": "verification_method=stateful integration test; Direct lifecycle witness now asserts federation installation merged FOM-module retention automatic MIM selection and logical-time-factory selection before a federate joins.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_create_federation_execution_with_explicit_mim_uses_requested_module"
+        "tests/backends/test_python_backend_federation_extended.py::test_create_federation_execution_applies_full_effect_vector"
       ],
-      "python_runtime_disposition": "vendor-divergent",
+      "python_runtime_disposition": "verified",
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-FM-4.5-EFF-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.5",
       "service_group": "FM/EFF",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
+      "status": "pass",
       "title": "Successful Create Federation Execution shall install the federation, resolve and merge the supplied FOM modules, supply the standard MIM by default when needed, and choose a logical time factory compatible with the merged model.",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -14114,22 +14119,22 @@
       ],
       "matrix_id": "HLA1516.1-FM-4.9-EFF-001",
       "negative_test_refs": [],
-      "notes": "verification_method=stateful integration test; Several effect slices are proven, but this full state transition is not yet asserted in one place.",
+      "notes": "verification_method=stateful integration test; Direct lifecycle witness now asserts joined handle allocation federation binding initial logical time and lookahead additional FOM-module merge and federation membership registration.",
       "pitch_jpype_runtime_disposition": "verified",
       "pitch_py4j_runtime_disposition": "verified",
       "pitch_runtime_disposition": "verified",
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "test_join_federation_execution_with_additional_modules_updates_catalog"
+        "tests/backends/test_python_backend_federation_extended.py::test_join_federation_execution_applies_full_effect_vector"
       ],
-      "python_runtime_disposition": "vendor-divergent",
+      "python_runtime_disposition": "verified",
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-FM-4.9-EFF-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.9",
       "service_group": "FM/EFF",
       "source": "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
-      "status": "partial",
+      "status": "pass",
       "title": "Successful Join Federation Execution shall allocate a federate handle, bind the federate to the target federation, initialize logical time and lookahead state, merge any accepted additional FOM modules, and register the federate in the federation state.",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -44273,15 +44278,15 @@
     },
     "python_runtime_disposition_counts": {
       "not-applicable": 79,
-      "vendor-divergent": 9,
-      "verified": 846
+      "vendor-divergent": 5,
+      "verified": 850
     },
     "row_count": 934,
     "status_counts": {
       "implemented-slice": 40,
       "implemented-smoke": 1,
-      "partial": 58,
-      "pass": 835
+      "partial": 54,
+      "pass": 839
     },
     "version": "0.13.0"
   }

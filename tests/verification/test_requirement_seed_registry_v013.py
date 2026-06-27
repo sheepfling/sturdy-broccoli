@@ -6,7 +6,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 REQUIREMENTS_DIR = REPO_ROOT / "requirements"
-REFERENCE_DIR = REQUIREMENTS_DIR
+REFERENCE_DIR = REQUIREMENTS_DIR / "2010"
 
 
 def _rows(path: Path) -> list[dict[str, str]]:
@@ -24,7 +24,7 @@ def test_requirement_seed_files_exist_and_have_seed_rows():
         "clause6_1516_1": REFERENCE_DIR / "hla1516_1_clause_6_object_management.csv",
         "omt": REFERENCE_DIR / "hla1516_2_omt.csv",
         "priority_1516_2": REFERENCE_DIR / "hla1516_2_priority_omt.csv",
-        "traceability": REQUIREMENTS_DIR / "traceability_matrix.csv",
+        "traceability": REFERENCE_DIR / "traceability_matrix.csv",
     }
     for path in files.values():
         assert path.exists(), path
@@ -61,6 +61,7 @@ def test_requirement_seed_files_exist_and_have_seed_rows():
     assert any(row["requirement_id"] == "HLA1516.2-XML-ANNEX-005" for row in priority_omt_rows)
     assert any(row["requirement_id"] == "HLA1516.2-OMT-E-001" for row in priority_omt_rows)
     assert any(row["current_artifact_id"] == "REQ-MOM-OBSERVER-001" for row in trace_rows)
+    assert any(row["requirement_id"] == "HLA1516-RULE-001" and row["status"] == "mapped" for row in trace_rows)
     assert any(row["requirement_id"] == "HLA1516.1-MOM-11.5-001" and row["status"] == "mapped" for row in trace_rows)
     assert any(row["requirement_id"] == "HLA1516.2-OMT-7-001" and row["status"] == "mapped" for row in trace_rows)
     assert any(row["requirement_id"] == "HLA1516.2-SYNC-4.9-001" and row["status"] == "mapped" for row in trace_rows)
@@ -68,7 +69,7 @@ def test_requirement_seed_files_exist_and_have_seed_rows():
 
 
 def test_requirement_registry_declares_three_standard_sources():
-    registry = (REQUIREMENTS_DIR / "requirement_id_registry.yaml").read_text(encoding="utf-8")
+    registry = (REFERENCE_DIR / "requirement_id_registry.yaml").read_text(encoding="utf-8")
     assert "source_id: HLA1516" in registry
     assert "source_id: HLA1516.1" in registry
     assert "source_id: HLA1516.2" in registry

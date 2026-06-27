@@ -279,9 +279,9 @@
       "evidence_refs": [],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516-RULE-001",
-      "notes": "verification_method=requirements skeleton; This rule row now names the lifecycle/state-transition scope directly.; Architectural rule scope is now stated explicitly in the authored framework rules catalog",
+      "notes": "verification_method=requirements skeleton; This rule row now names the lifecycle/state-transition scope directly.; Framework rule 1 is now backed directly by the authored framework reconciliation plus explicit create/join lifecycle witnesses that prove the federation FOM contract and membership-state transitions.",
       "requirement_id": "HLA1516-RULE-001",
-      "runtime_disposition": "vendor-divergent",
+      "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516-2010 Federation and federate rules",
       "title": "The repo shall map federation-level architectural rules to RTI lifecycle behavior and federation-state transitions"
@@ -2684,9 +2684,9 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-FM-4.2-EFF-001",
-      "notes": "verification_method=stateful service test; Positive connected-state assertions are still mostly indirect.",
+      "notes": "verification_method=stateful service test; Direct lifecycle witness now asserts bound ambassador state selected callback model persisted local settings designator and connected state before any join occurs.",
       "requirement_id": "HLA1516.1-FM-4.2-EFF-001",
-      "runtime_disposition": "vendor-divergent",
+      "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.2",
       "title": "Successful Connect shall bind the ambassador, persist the selected callback model, persist the optional local settings designator, and mark the ambassador connected."
@@ -4766,9 +4766,9 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-FM-4.5-EFF-001",
-      "notes": "verification_method=stateful integration test; The current suite proves several effect slices but not the whole state vector in one test.",
+      "notes": "verification_method=stateful integration test; Direct lifecycle witness now asserts federation installation merged FOM-module retention automatic MIM selection and logical-time-factory selection before a federate joins.",
       "requirement_id": "HLA1516.1-FM-4.5-EFF-001",
-      "runtime_disposition": "vendor-divergent",
+      "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.5",
       "title": "Successful Create Federation Execution shall install the federation, resolve and merge the supplied FOM modules, supply the standard MIM by default when needed, and choose a logical time factory compatible with the merged model."
@@ -5026,9 +5026,9 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-FM-4.9-EFF-001",
-      "notes": "verification_method=stateful integration test; Several effect slices are proven, but this full state transition is not yet asserted in one place.",
+      "notes": "verification_method=stateful integration test; Direct lifecycle witness now asserts joined handle allocation federation binding initial logical time and lookahead additional FOM-module merge and federation membership registration.",
       "requirement_id": "HLA1516.1-FM-4.9-EFF-001",
-      "runtime_disposition": "vendor-divergent",
+      "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.9",
       "title": "Successful Join Federation Execution shall allocate a federate handle, bind the federate to the target federation, initialize logical time and lookahead state, merge any accepted additional FOM modules, and register the federate in the federation state."
@@ -14142,7 +14142,8 @@
       "IEEE 1516-2010 unknown": {
         "not-applicable": 1,
         "total": 4,
-        "vendor-divergent": 3
+        "vendor-divergent": 2,
+        "verified": 1
       },
       "IEEE 1516-2010 \u00a712": {
         "total": 21,
@@ -14166,8 +14167,8 @@
       "IEEE 1516.1-2010 (2010 edition) \u00a74": {
         "not-applicable": 2,
         "total": 281,
-        "vendor-divergent": 4,
-        "verified": 275
+        "vendor-divergent": 1,
+        "verified": 278
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a75": {
         "not-applicable": 2,
@@ -14256,8 +14257,8 @@
     },
     "disposition_counts": {
       "not-applicable": 79,
-      "vendor-divergent": 9,
-      "verified": 846
+      "vendor-divergent": 5,
+      "verified": 850
     },
     "row_count": 934,
     "source_artifact": "analysis/compliance/requirements_matrix_2010.json"

@@ -8690,7 +8690,7 @@
       "evidence_tests": [],
       "priority": "P4",
       "priority_rank": 4,
-      "rationale": "Pitch runtime disposition is explicitly generated as classification-required because the current evidence does not yet justify a narrower verified, blocked, vendor-divergent, not-applicable, or not-yet-tested outcome. verification_method=requirements skeleton; This rule row now names the lifecycle/state-transition scope directly.; Architectural rule scope is now stated explicitly in the authored framework rules catalog",
+      "rationale": "Pitch runtime disposition is explicitly generated as classification-required because the current evidence does not yet justify a narrower verified, blocked, vendor-divergent, not-applicable, or not-yet-tested outcome. verification_method=requirements skeleton; This rule row now names the lifecycle/state-transition scope directly.; Framework rule 1 is now backed directly by the authored framework reconciliation plus explicit create/join lifecycle witnesses that prove the federation FOM contract and membership-state transitions.",
       "recommended_next_action": "classify backend applicability/disposition",
       "requirement_id": "HLA1516-RULE-001",
       "row_kind": "pitch-requirement-disposition-row",

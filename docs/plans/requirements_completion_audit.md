@@ -55,25 +55,25 @@ presentation packet.
 
 - backend-compliance packet denominator: `934` matrix rows
 - canonical status split in that packet:
-  - `835` `pass`
+  - `839` `pass`
   - `40` `implemented-slice`
   - `1` `implemented-smoke`
-  - `58` `partial`
+  - `54` `partial`
 - current Python runtime resolution in that packet:
-  - `846` `verified`
-  - `9` `vendor-divergent`
+  - `850` `verified`
+  - `5` `vendor-divergent`
   - `79` `not-applicable`
 - defended policy-parent packet:
   - `12` intentionally bounded broad partial parents
   - `26` passing supported-subset child proofs
 - exact `partial` shape inside the packet:
   - `36` `partial` rows with Python already `verified`
-  - `9` `partial` rows with Python still `vendor-divergent`
+  - `5` `partial` rows with Python still `vendor-divergent`
   - `13` `partial` rows with Python `not-applicable`
-  - `4` of the `58` `partial` rows are section or area scaffolding rows with no standalone requirement ID
+  - `4` of the `54` `partial` rows are section or area scaffolding rows with no standalone requirement ID
 - current `vendor-divergent` composition inside the `2010` packet:
-  - `4` federation-management effect-vector rows from `requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv`
-  - `3` framework or architecture rows owned by `requirements/2010/hla1516_framework_detailed_reconciliation.csv`
+  - `1` federation-management effect-vector row from `requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv`
+  - `2` framework or architecture rows owned by `requirements/2010/hla1516_framework_detailed_reconciliation.csv`
   - `2` supported-subset policy parents from `curated-clause5-6`
 
 Interpretation rule:
@@ -215,10 +215,10 @@ Current reading:
      recorded in
      [`2010_python_rti_bounded_family_execution_worklist.md`](2010_python_rti_bounded_family_execution_worklist.md)
 4. the remaining `2010` Python `vendor-divergent` packet rows are no longer one undifferentiated blocker class
-   - the `9` rows now fall into explicit owner buckets:
-     - `4` Clause 4 FM effect-vector rows already covered by
+   - the `5` rows now fall into explicit owner buckets:
+     - `1` Clause 4 FM effect-vector row already covered by
        [`../../docs/requirements/ieee-1516-2010/federation_management_bounded_family.md`](../../docs/requirements/ieee-1516-2010/federation_management_bounded_family.md)
-     - `3` framework or architecture rows owned by
+     - `2` framework or architecture rows owned by
        [`../../requirements/2010/hla1516_framework_detailed_reconciliation.csv`](../../requirements/2010/hla1516_framework_detailed_reconciliation.csv)
      - `2` supported-subset policy parents already exposed in the `policy_parents` export
    - that means the remaining `vendor-divergent` label is mostly an ownership classification fact, not a sign of unresolved documentation ambiguity

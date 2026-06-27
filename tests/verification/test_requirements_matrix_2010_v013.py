@@ -52,6 +52,10 @@ def test_requirements_matrix_2010_covers_section_areas_service_rows_and_verifica
     assert by_id["HLA1516.1-TM-8.2-003"]["positive_test_refs"] == []
     assert by_id["HLA1516.1-TM-8.8-003"]["positive_test_refs"] == []
     assert by_id["HLA1516.1-FM-4.25-001"]["positive_test_refs"]
+    assert by_id["HLA1516-RULE-001"]["status"] == "pass"
+    assert by_id["HLA1516.1-FM-4.2-EFF-001"]["status"] == "pass"
+    assert by_id["HLA1516.1-FM-4.5-EFF-001"]["status"] == "pass"
+    assert by_id["HLA1516.1-FM-4.9-EFF-001"]["status"] == "pass"
     assert by_id["HLA1516.1-FM-4.15-002"]["status"] == "pass"
     assert by_id["HLA1516.1-FM-4.15-002"]["positive_test_refs"] == []
     assert by_id["HLA1516.1-FM-4.15-002"]["negative_test_refs"]

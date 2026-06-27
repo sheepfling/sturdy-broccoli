@@ -23,7 +23,7 @@ def test_fm_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 632
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 523, "partial": 109}
+        {"mapped": 528, "partial": 104}
     )
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
@@ -96,11 +96,42 @@ def test_fm_save_restore_effect_rows_use_direct_positive_state_witnesses():
 def test_fm_core_lifecycle_effect_and_return_rows_use_direct_runtime_witnesses():
     rows = {row["packet_requirement_id"]: row for row in _read_rows()}
 
-    connect_create_join_rows = {
+    connect_rows = {
         "HLA1516.1-FM-4_2-EFF-001",
         "HLA1516.1-FM-4_2-RTIAPI-001-EFF",
         "HLA1516.1-FM-4_2-RTIAPI-002-EFF",
+    }
+    connect_test = (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_connect_create_and_join_apply_positive_lifecycle_effects"
+    )
+
+    for packet_id in connect_rows:
+        row = rows[packet_id]
+        assert row["current_status"] == "mapped"
+        assert row["current_test_id"] == connect_test
+        assert row["notes"].startswith("Direct ")
+
+    create_rows = {
         "HLA1516.1-FM-4_5-EFF-001",
+        "HLA1516.1-FM-4_5-RTIAPI-001-EFF",
+        "HLA1516.1-FM-4_5-RTIAPI-002-EFF",
+        "HLA1516.1-FM-4_5-RTIAPI-003-EFF",
+        "HLA1516.1-FM-4_5-RTIAPI-004-EFF",
+        "HLA1516.1-FM-4_5-RTIAPI-005-EFF",
+    }
+    create_test = (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_create_federation_execution_applies_full_effect_vector"
+    )
+
+    for packet_id in create_rows:
+        row = rows[packet_id]
+        assert row["current_status"] == "mapped"
+        assert row["current_test_id"] == create_test
+        assert row["notes"].startswith("Direct ")
+
+    join_rows = {
         "HLA1516.1-FM-4_9-EFF-001",
         "HLA1516.1-FM-4_9-RET-001",
         "HLA1516.1-FM-4_9-RTIAPI-001-RET",
@@ -108,15 +139,15 @@ def test_fm_core_lifecycle_effect_and_return_rows_use_direct_runtime_witnesses()
         "HLA1516.1-FM-4_9-RTIAPI-003-RET",
         "HLA1516.1-FM-4_9-RTIAPI-004-RET",
     }
-    connect_create_join_test = (
+    join_test = (
         "tests/backends/test_python_backend_federation_extended.py::"
-        "test_connect_create_and_join_apply_positive_lifecycle_effects"
+        "test_join_federation_execution_applies_full_effect_vector"
     )
 
-    for packet_id in connect_create_join_rows:
+    for packet_id in join_rows:
         row = rows[packet_id]
         assert row["current_status"] == "mapped"
-        assert row["current_test_id"] == connect_create_join_test
+        assert row["current_test_id"] == join_test
         assert row["notes"].startswith("Direct ")
 
     resign_rows = {

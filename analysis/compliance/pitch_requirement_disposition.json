@@ -406,7 +406,7 @@
       "evidence_refs": [],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516-RULE-001",
-      "notes": "Pitch runtime disposition is explicitly generated as classification-required because the current evidence does not yet justify a narrower verified, blocked, vendor-divergent, not-applicable, or not-yet-tested outcome. verification_method=requirements skeleton; This rule row now names the lifecycle/state-transition scope directly.; Architectural rule scope is now stated explicitly in the authored framework rules catalog",
+      "notes": "Pitch runtime disposition is explicitly generated as classification-required because the current evidence does not yet justify a narrower verified, blocked, vendor-divergent, not-applicable, or not-yet-tested outcome. verification_method=requirements skeleton; This rule row now names the lifecycle/state-transition scope directly.; Framework rule 1 is now backed directly by the authored framework reconciliation plus explicit create/join lifecycle witnesses that prove the federation FOM contract and membership-state transitions.",
       "pitch_disposition": "classification-required",
       "pitch_jpype_disposition": "classification-required",
       "pitch_jpype_evidence_refs": [],
@@ -5365,7 +5365,7 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-FM-4.2-EFF-001",
-      "notes": "verification_method=stateful service test; Positive connected-state assertions are still mostly indirect.",
+      "notes": "verification_method=stateful service test; Direct lifecycle witness now asserts bound ambassador state selected callback model persisted local settings designator and connected state before any join occurs.",
       "pitch_disposition": "verified",
       "pitch_jpype_disposition": "verified",
       "pitch_jpype_evidence_refs": [
@@ -9814,7 +9814,7 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-FM-4.5-EFF-001",
-      "notes": "verification_method=stateful integration test; The current suite proves several effect slices but not the whole state vector in one test.",
+      "notes": "verification_method=stateful integration test; Direct lifecycle witness now asserts federation installation merged FOM-module retention automatic MIM selection and logical-time-factory selection before a federate joins.",
       "pitch_disposition": "verified",
       "pitch_jpype_disposition": "verified",
       "pitch_jpype_evidence_refs": [
@@ -10328,7 +10328,7 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-FM-4.9-EFF-001",
-      "notes": "verification_method=stateful integration test; Several effect slices are proven, but this full state transition is not yet asserted in one place.",
+      "notes": "verification_method=stateful integration test; Direct lifecycle witness now asserts joined handle allocation federation binding initial logical time and lookahead additional FOM-module merge and federation membership registration.",
       "pitch_disposition": "verified",
       "pitch_jpype_disposition": "verified",
       "pitch_jpype_evidence_refs": [
