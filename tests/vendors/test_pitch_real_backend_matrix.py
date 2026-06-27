@@ -37,7 +37,7 @@ from hla.rti1516e.exceptions import (
     SaveInProgress,
 )
 from hla.runtime.factory import create_rti_ambassador
-from hla.bridges.java.common import JavaValueConverter, PythonFederateAmbassadorDispatcher
+from hla.bridges.java.common import HLAJavaValueAdapter, PythonFederateAmbassadorDispatcher
 from hla.bridges.java.common.java_shim_backend import ShimJavaBridge
 from hla.verification import (
     DeclarationManagementScenarioConfig,
@@ -541,7 +541,7 @@ def test_pitch_backend_connection_lost_callback_matrix(kind: str, profile: str):
     federate = RecordingFederateAmbassador()
     dispatcher = PythonFederateAmbassadorDispatcher(
         federate,
-        JavaValueConverter(ShimJavaBridge(profile)),
+        HLAJavaValueAdapter(ShimJavaBridge(profile)),
     )
     summary = run_connection_lost_callback_scenario(
         dispatcher.connectionLost,
@@ -559,7 +559,7 @@ def test_pitch_backend_discovery_metadata_callback_matrix(kind: str, profile: st
     federate = RecordingFederateAmbassador()
     dispatcher = PythonFederateAmbassadorDispatcher(
         federate,
-        JavaValueConverter(ShimJavaBridge(profile)),
+        HLAJavaValueAdapter(ShimJavaBridge(profile)),
     )
     summary = run_discovery_metadata_callback_scenario(
         dispatcher.discoverObjectInstance,
@@ -606,7 +606,7 @@ def test_pitch_attribute_ownership_query_callback_matrix(kind: str, profile: str
     federate = RecordingFederateAmbassador()
     dispatcher = PythonFederateAmbassadorDispatcher(
         federate,
-        JavaValueConverter(ShimJavaBridge(profile)),
+        HLAJavaValueAdapter(ShimJavaBridge(profile)),
     )
     summary = run_attribute_ownership_query_callback_scenario(
         dispatcher.informAttributeOwnership,
@@ -846,7 +846,7 @@ def test_pitch_backend_update_advisory_callback_matrix(kind: str, profile: str):
     federate = RecordingFederateAmbassador()
     dispatcher = PythonFederateAmbassadorDispatcher(
         federate,
-        JavaValueConverter(ShimJavaBridge(profile)),
+        HLAJavaValueAdapter(ShimJavaBridge(profile)),
     )
     summary = run_update_advisory_callback_scenario(
         dispatcher.attributesInScope,

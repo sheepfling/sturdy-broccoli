@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 from hla.backends.common import RecordingFederateAmbassador
-from hla.bridges.java.common import JavaValueConverter
+from hla.bridges.java.common import HLAJavaValueAdapter
 from hla.backends.python1516e import InMemoryRTIEngine, PythonRTIConfig
 from hla.rti1516e.enums import CallbackModel, RestoreStatus, SaveStatus
 from hla.rti1516e.exceptions import NameNotFound
@@ -125,7 +125,7 @@ def test_startup_helper_connects_joins_and_completes_ready_to_run_sync_point():
 
 
 def test_java_converter_recognizes_vendor_handle_impl_names_and_typed_maps_sets():
-    converter = JavaValueConverter(ShimJavaBridge("jpype"))
+    converter = HLAJavaValueAdapter(ShimJavaBridge("jpype"))
 
     native_obj = JavaLikeObject("VendorObjectInstanceHandleImpl", 101)
     obj = converter.from_backend(native_obj)
@@ -225,7 +225,7 @@ def test_java_callback_dispatcher_uses_callback_metadata_for_typed_failed_set():
     from hla.bridges.java.common import PythonFederateAmbassadorDispatcher
 
     fed = RecordingFederateAmbassador()
-    converter = JavaValueConverter(ShimJavaBridge("py4j"))
+    converter = HLAJavaValueAdapter(ShimJavaBridge("py4j"))
     dispatcher = PythonFederateAmbassadorDispatcher(fed, converter)
 
     dispatcher.federationSynchronized(
@@ -241,7 +241,7 @@ def test_java_callback_dispatcher_uses_callback_metadata_for_typed_failed_set():
 
 
 def test_java_converter_round_trips_range_bounds():
-    converter = JavaValueConverter(ShimJavaBridge("jpype"))
+    converter = HLAJavaValueAdapter(ShimJavaBridge("jpype"))
 
     native = converter.to_backend(RangeBounds(10, 20))
     assert isinstance(native, JavaRangeBounds)
@@ -252,7 +252,7 @@ def test_java_converter_round_trips_range_bounds():
 
 
 def test_java_converter_normalizes_public_datatype_return_shapes():
-    converter = JavaValueConverter(ShimJavaBridge("jpype"))
+    converter = HLAJavaValueAdapter(ShimJavaBridge("jpype"))
 
     time_query = JavaLikeObject("TimeQueryReturn")
     time_query.timeIsValid = True
