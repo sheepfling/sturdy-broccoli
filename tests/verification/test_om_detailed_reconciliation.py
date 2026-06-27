@@ -23,7 +23,7 @@ def test_om_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 391
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 315, "partial": 76}
+        {"mapped": 321, "partial": 70}
     )
     assert Counter((row["reconciliation_kind"], row["current_status"]) for row in rows) == Counter(
         {
@@ -31,24 +31,24 @@ def test_om_detailed_reconciliation_has_expected_shape():
             ("SIG", "mapped"): 38,
             ("CB", "mapped"): 32,
             ("SVC", "mapped"): 28,
-            ("EFF", "partial"): 12,
+            ("EFF", "partial"): 10,
             ("CB_ORD", "partial"): 25,
             ("ARG", "mapped"): 19,
             ("RTI_API", "mapped"): 19,
             ("MOM_TRACE", "mapped"): 19,
             ("FED_CB", "mapped"): 19,
-            ("EXC_API", "partial"): 8,
+            ("EXC_API", "partial"): 6,
             ("CB_ORDER", "partial"): 17,
             ("CB_PAYLOAD", "mapped"): 17,
             ("MOM", "mapped"): 14,
             ("TEST", "mapped"): 14,
-            ("EXC", "partial"): 7,
+            ("EXC", "partial"): 5,
             ("FED_CB", "partial"): 6,
             ("RET", "mapped"): 5,
             ("PRE", "mapped"): 14,
-            ("EFF", "mapped"): 16,
-            ("EXC_API", "mapped"): 11,
-            ("EXC", "mapped"): 7,
+            ("EFF", "mapped"): 18,
+            ("EXC_API", "mapped"): 13,
+            ("EXC", "mapped"): 9,
             ("OVW", "mapped"): 1,
             ("OVW", "partial"): 1,
         }
@@ -69,10 +69,12 @@ def test_om_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-OM-6_3-FEDCB-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_3-FEDCB-001-ORD"]["current_status"] == "partial"
     assert rows["HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-ARG-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-EXC-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-ARG-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-PRE-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-EXC-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_5-RESERVEMULTIPLEOBJECTINSTANCENAME-ARG-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OM-6_5-RESERVEMULTIPLEOBJECTINSTANCENAME-EXC-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_7-RELEASEMULTIPLEOBJECTINSTANCENAME-ARG-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_7-RELEASEMULTIPLEOBJECTINSTANCENAME-EXC-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_11-REFLECTATTRIBUTEVALUES-CB-001"]["current_status"] == "mapped"
@@ -134,11 +136,11 @@ def test_clause_6_nearby_exception_rows_now_point_at_real_bounded_witnesses() ->
     expected = {
         "HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-EXC-001": (
             "test_reserve_object_instance_name_rejects_not_connected_not_joined_and_save_restore",
-            "IllegalName",
+            "SaveInProgress",
         ),
         "HLA1516.1-OM-6_2-RTIAPI-001-EXC": (
             "test_reserve_object_instance_name_rejects_not_connected_not_joined_and_save_restore",
-            "IllegalName",
+            "SaveInProgress",
         ),
         "HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-EXC-001": (
             "test_name_release_and_query_interaction_transport_tail_reject_not_connected_not_joined_and_save_restore",
@@ -150,11 +152,11 @@ def test_clause_6_nearby_exception_rows_now_point_at_real_bounded_witnesses() ->
         ),
         "HLA1516.1-OM-6_5-RESERVEMULTIPLEOBJECTINSTANCENAME-EXC-001": (
             "test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore",
-            "NameSetWasEmpty",
+            "SaveInProgress",
         ),
         "HLA1516.1-OM-6_5-RTIAPI-001-EXC": (
             "test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore",
-            "NameSetWasEmpty",
+            "SaveInProgress",
         ),
         "HLA1516.1-OM-6_7-RELEASEMULTIPLEOBJECTINSTANCENAME-EXC-001": (
             "test_name_release_and_query_interaction_transport_tail_reject_not_connected_not_joined_and_save_restore",
@@ -192,7 +194,7 @@ def test_clause_6_nearby_exception_rows_now_point_at_real_bounded_witnesses() ->
 
     for packet_id, (test_id, note_token) in expected.items():
         row = rows[packet_id]
-        expected_status = "mapped" if packet_id.startswith(("HLA1516.1-OM-6_4-","HLA1516.1-OM-6_7-","HLA1516.1-OM-6_8-")) else "partial"
+        expected_status = "mapped" if packet_id.startswith(("HLA1516.1-OM-6_2-","HLA1516.1-OM-6_4-","HLA1516.1-OM-6_5-","HLA1516.1-OM-6_7-","HLA1516.1-OM-6_8-")) else "partial"
         assert row["current_status"] == expected_status
         assert test_id in row["current_test_id"]
         assert note_token in row["notes"] or note_token in row["requirement_text"]

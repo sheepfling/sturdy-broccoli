@@ -81,16 +81,16 @@ keep describing `CAP-OM` as vague or structurally unfinished.
 
 The current owner ledger has `391` object-management packet rows:
 
-- `315 mapped`
-- `76 partial`
+- `321 mapped`
+- `70 partial`
 
-The remaining `76 partial` rows cluster into stable categories:
+The remaining `70 partial` rows cluster into stable categories:
 
-- `12 EFF`
+- `10 EFF`
 - `25 CB_ORD`
-- `8 EXC_API`
+- `6 EXC_API`
 - `17 CB_ORDER`
-- `7 EXC`
+- `5 EXC`
 - `6 FED_CB`
 - `1 OVW`
 
@@ -98,7 +98,7 @@ The remaining `76 partial` rows cluster into stable categories:
 
 ### State-vector breadth tail
 
-The `12 EFF` rows usually describe a broader postcondition vector than the
+The `10 EFF` rows usually describe a broader postcondition vector than the
 current direct proof asserts in one place.
 
 Typical pattern:
@@ -122,7 +122,7 @@ They are rows where:
 
 ### Exception and precondition breadth tail
 
-The `8 EXC_API` and `7 EXC` rows usually keep a broader negative
+The `6 EXC_API` and `5 EXC` rows usually keep a broader negative
 envelope than the current tests isolate directly.
 
 Typical pattern:
@@ -149,6 +149,11 @@ Recent tightening examples:
 - the `reserveObjectInstanceName` precondition row no longer lives in this
   partial tail because direct negative-path witnesses now isolate the
   applicable connection-state, membership, and save or restore guard surface
+- the `reserveObjectInstanceName` effect and exception rows no longer live in
+  this partial tail because direct naming-state and negative-path witnesses
+  now isolate the supported reservation success/failure effect plus the
+  exercised membership, connection, and save/restore failures, while
+  intentionally excluding unimplemented `IllegalName` throwing
 - the `registerObjectInstance` precondition row no longer lives in this partial
   tail because direct negative-path witnesses now isolate the applicable
   connection-state, membership, duplicate-name, and save or restore guard
@@ -190,12 +195,18 @@ Recent tightening examples:
   pending-acquisition, ownership, object-knownness, membership, connection,
   and save/restore failures
 - the multiple-name reservation and release precondition rows no longer live in
- - the `releaseMultipleObjectInstanceName` effect and exception rows no longer
+- the `releaseMultipleObjectInstanceName` effect and exception rows no longer
   live in this partial tail because direct naming-state and negative-path
   witnesses now isolate the supported reservation-release-set effect plus the
   exercised membership, connection, and save/restore failures, while
   intentionally excluding unimplemented `ObjectInstanceNameNotReserved`
   throwing
+- the `reserveMultipleObjectInstanceName` effect and exception rows no longer
+  live in this partial tail because direct naming-state and negative-path
+  witnesses now isolate the supported coordinated reservation effect plus the
+  exercised membership, connection, and save/restore failures, while
+  intentionally excluding unimplemented `IllegalName`, `NameSetWasEmpty`, and
+  `RTIinternalError` throwing
 - the multiple-name reservation and release precondition rows no longer live in
   this partial tail because direct negative-path witnesses now isolate the
   applicable connection-state, membership, and save/restore guard surface for

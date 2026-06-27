@@ -130,8 +130,8 @@ Latest investigated decision:
   kept as an explicit bounded family surface
 - the current owner doc, reconciliation companion, reconciliation verifier,
   and owning shard commands all support that reading
-- the current tail now remains a stable bounded `12 EFF`, `25 CB_ORD`,
-  `17 CB_ORDER`, `8 EXC_API`, `7 EXC`, `6 FED_CB`, and
+- the current tail now remains a stable bounded `10 EFF`, `25 CB_ORD`,
+  `17 CB_ORDER`, `6 EXC_API`, `5 EXC`, `6 FED_CB`, and
   `1 OVW` Clause 6 family envelope
 - the recent `updateAttributeValues` exception rows and the object-instance
   overload exception row for `requestAttributeValueUpdate` are no longer part
@@ -143,6 +143,12 @@ Latest investigated decision:
 - the `reserveObjectInstanceName` precondition row is also no longer part of
   that bounded tail because the current direct negative-path witnesses now
   isolate the applicable connection, membership, and save or restore guards
+- the `reserveObjectInstanceName` effect and exception rows are also no longer
+  part of that bounded tail because the current direct naming-state and
+  negative-path witnesses now isolate the supported reservation
+  success-or-failure effect plus the exercised membership, connection, and
+  save/restore failures while intentionally excluding unimplemented
+  `IllegalName` throwing
 - the `registerObjectInstance` precondition row is also no longer part of that
   bounded tail because the current direct negative-path witnesses now isolate
   the applicable connection, membership, duplicate-name, and save or restore
@@ -188,6 +194,12 @@ Latest investigated decision:
   longer part of that bounded tail because the current direct negative-path
   witnesses now isolate the applicable connection, membership, and
   save/restore guards
+- the `reserveMultipleObjectInstanceName` effect and exception rows are also
+  no longer part of that bounded tail because the current direct naming-state
+  and negative-path witnesses now isolate the supported coordinated
+  reservation effect plus the exercised membership, connection, and
+  save/restore failures while intentionally excluding unimplemented
+  `IllegalName`, `NameSetWasEmpty`, and `RTIinternalError` throwing
 - the `releaseMultipleObjectInstanceName` effect and exception rows are also
   no longer part of that bounded tail because the current direct naming-state
   and negative-path witnesses now isolate the supported reservation-release-set

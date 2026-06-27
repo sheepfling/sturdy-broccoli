@@ -113,11 +113,18 @@ def test_clause_6_packet_reconciliation_does_not_keep_stale_partial_precondition
     }
 
     expected = {
+        "HLA1516.1-OM-6_2-ARG-003": "test_reserve_object_instance_name_rejects_not_connected_not_joined_and_save_restore",
         "HLA1516.1-OM-6_2-PRE-004": "test_reserve_object_instance_name_rejects_not_connected_not_joined_and_save_restore",
+        "HLA1516.1-OM-6_2-EFF-005": "test_name_reservation_and_release_effects_manage_state_without_creating_objects",
+        "HLA1516.1-OM-6_2-EXC-006": "test_reserve_object_instance_name_rejects_not_connected_not_joined_and_save_restore",
         "HLA1516.1-OM-6_4-ARG-003": "test_name_release_and_query_interaction_transport_tail_reject_not_connected_not_joined_and_save_restore",
         "HLA1516.1-OM-6_4-PRE-004": "test_name_release_and_query_interaction_transport_tail_reject_not_connected_not_joined_and_save_restore",
         "HLA1516.1-OM-6_4-EFF-005": "test_name_reservation_and_release_effects_manage_state_without_creating_objects",
         "HLA1516.1-OM-6_4-EXC-006": "test_name_release_and_query_interaction_transport_tail_reject_not_connected_not_joined_and_save_restore",
+        "HLA1516.1-OM-6_5-ARG-003": "test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore",
+        "HLA1516.1-OM-6_5-PRE-004": "test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore",
+        "HLA1516.1-OM-6_5-EFF-005": "test_name_reservation_and_release_effects_manage_state_without_creating_objects",
+        "HLA1516.1-OM-6_5-EXC-006": "test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore",
         "HLA1516.1-OM-6_7-ARG-003": "test_name_release_and_query_interaction_transport_tail_reject_not_connected_not_joined_and_save_restore",
         "HLA1516.1-OM-6_7-PRE-004": "test_name_release_and_query_interaction_transport_tail_reject_not_connected_not_joined_and_save_restore",
         "HLA1516.1-OM-6_7-EFF-005": "test_name_reservation_and_release_effects_manage_state_without_creating_objects",

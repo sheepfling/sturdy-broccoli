@@ -94,10 +94,17 @@ def test_imported_hla_backlog_does_not_queue_clause6_precondition_rows_already_c
 
     for requirement_id in (
         "HLA1516.1-OM-6_2-PRE-004",
+        "HLA1516.1-OM-6_2-ARG-003",
+        "HLA1516.1-OM-6_2-EFF-005",
+        "HLA1516.1-OM-6_2-EXC-006",
         "HLA1516.1-OM-6_4-ARG-003",
         "HLA1516.1-OM-6_4-PRE-004",
         "HLA1516.1-OM-6_4-EFF-005",
         "HLA1516.1-OM-6_4-EXC-006",
+        "HLA1516.1-OM-6_5-ARG-003",
+        "HLA1516.1-OM-6_5-PRE-004",
+        "HLA1516.1-OM-6_5-EFF-005",
+        "HLA1516.1-OM-6_5-EXC-006",
         "HLA1516.1-OM-6_7-ARG-003",
         "HLA1516.1-OM-6_7-PRE-004",
         "HLA1516.1-OM-6_7-EFF-005",

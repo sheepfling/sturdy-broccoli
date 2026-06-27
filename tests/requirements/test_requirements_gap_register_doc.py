@@ -44,9 +44,10 @@ def test_gap_register_and_queue_keep_owner_companion_split_explicit() -> None:
     assert "stable bounded `43 ARG`, `23 EFF`, `17 CB_ORD`," in gap_text
     assert "`15 EXC`, and `11` residual Clause 4 family envelope" in gap_text
     assert "2010 CAP-OM bounded family" in gap_text
-    assert "stable bounded `12 EFF`, `25 CB_ORD`," in gap_text
-    assert "`17 CB_ORDER`, `8 EXC_API`, `7 EXC`, `6 FED_CB`, and" in gap_text
+    assert "stable bounded `10 EFF`, `25 CB_ORD`," in gap_text
+    assert "`17 CB_ORDER`, `6 EXC_API`, `5 EXC`, `6 FED_CB`, and" in gap_text
     assert "`reserveObjectInstanceName` precondition row is also no longer part of that bounded tail" in normalized_gap_text
+    assert "`reserveObjectInstanceName` effect and exception rows are also no longer part of that bounded tail" in normalized_gap_text
     assert "`registerObjectInstance` precondition row is also no longer part of that bounded tail" in normalized_gap_text
     assert "`registerObjectInstance` effect and exception rows are also no longer part of that bounded tail" in normalized_gap_text
     assert "`releaseObjectInstanceName` precondition row is also no longer part of that bounded tail" in normalized_gap_text
@@ -58,6 +59,7 @@ def test_gap_register_and_queue_keep_owner_companion_split_explicit() -> None:
     assert "`localDeleteObjectInstance` precondition row is also no longer part of that bounded tail" in normalized_gap_text
     assert "`localDeleteObjectInstance` effect and exception rows are also no longer part of that bounded tail" in normalized_gap_text
     assert "multiple-name reservation and release precondition rows are also no longer part of that bounded tail" in normalized_gap_text
+    assert "`reserveMultipleObjectInstanceName` effect and exception rows are also no longer part of that bounded tail" in normalized_gap_text
     assert "`releaseMultipleObjectInstanceName` effect and exception rows are also no longer part of that bounded tail" in normalized_gap_text
     assert "`requestAttributeValueUpdate` precondition row is also no longer part of that bounded tail" in normalized_gap_text
     assert "`1 OVW` Clause 6 family envelope" in gap_text

@@ -2781,6 +2781,10 @@ def test_name_reservation_and_release_effects_manage_state_without_creating_obje
     ]
     assert names in multi_successes
 
+    owner.reserve_multiple_object_instance_name(set())
+    drain(owner, observer)
+    assert set(owner_fed.last_callback("multipleObjectInstanceNameReservationFailed").args[0]) == set()
+
     assert owner_fed.callbacks_named("discoverObjectInstance") == []
     assert observer_fed.callbacks_named("discoverObjectInstance") == []
 
