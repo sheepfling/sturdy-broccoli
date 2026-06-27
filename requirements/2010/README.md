@@ -49,7 +49,7 @@ Treat this as the single source-side list for the 2010 edition:
 - `hla1516_2_omt.csv`: OMT family ledger
 - `hla1516_2_priority_omt.csv`: priority OMT tranche
 - `hla1516_2_omt_detailed_reconciliation.csv`: OMT family reconciliation
-- `hla1516_2_omt_xml_detailed_reconciliation.csv`: OMT clause-detail and OMT/XML bridge reconciliation
+- `hla1516_2_omt_xml_detailed_reconciliation.csv`: legacy OMT/XML bridge reconciliation artifact
 - `hla1516_xml_detailed_reconciliation.csv`: XML family reconciliation
 - `hla_1516_master_harmonization_index_v1_0.csv`: imported-master harmonization index
 - `hla_1516_packet_hookup_status_v1_0.csv`: packet hookup status ledger
@@ -82,8 +82,8 @@ bucket families:
 | MOM/MIM | `hla1516_1_mom_detailed_reconciliation.csv` |
 | API binding and Clause 13 conformance | `hla1516_1_conf_detailed_reconciliation.csv` |
 | OMT family | `hla1516_2_omt_detailed_reconciliation.csv` |
-| OMT clause-detail and OMT/XML bridge | `hla1516_2_omt_xml_detailed_reconciliation.csv` |
 | XML family | `hla1516_xml_detailed_reconciliation.csv` |
+| legacy OMT/XML bridge artifact | `hla1516_2_omt_xml_detailed_reconciliation.csv` |
 | broad status bridge | `traceability_matrix.csv` |
 | bounded mixed-backend runtime split for priority rows | `hla1516_1_priority_backend_resolution.csv` |
 

@@ -67,8 +67,8 @@ Treat these as the canonical 2010 owner surfaces behind the hierarchy view:
 | MOM/MIM | `requirements/2010/hla1516_1_mom_detailed_reconciliation.csv` |
 | API binding and Clause 13 conformance | `requirements/2010/hla1516_1_conf_detailed_reconciliation.csv` |
 | OMT family | `requirements/2010/hla1516_2_omt_detailed_reconciliation.csv` |
-| OMT clause-detail and OMT/XML bridge | `requirements/2010/hla1516_2_omt_xml_detailed_reconciliation.csv` |
 | XML family | `requirements/2010/hla1516_xml_detailed_reconciliation.csv` |
+| legacy OMT/XML bridge artifact | `requirements/2010/hla1516_2_omt_xml_detailed_reconciliation.csv` |
 | broad bridge and status rollup | `requirements/2010/traceability_matrix.csv` |
 
 Use this page as a reader-facing hierarchy, but update the canonical owner row

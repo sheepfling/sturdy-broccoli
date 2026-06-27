@@ -227,8 +227,8 @@ Use this index when the question is "which single document or ledger owns this
 | MOM/MIM clause and family rows | `../../../requirements/2010/hla1516_1_mom_detailed_reconciliation.csv` | `unit-python-core` | `2010-core`, `time` |
 | API-binding and Clause 13 conformance rows | `../../../requirements/2010/hla1516_1_conf_detailed_reconciliation.csv` | `unit-shim-tooling` | `2010-core`, `java-shim`, `cpp-shim` |
 | OMT family reconciliation rows | `../../../requirements/2010/hla1516_2_omt_detailed_reconciliation.csv` | `unit-fom-tooling` | `2010-core`, `fom-omt` |
-| OMT clause-detail and OMT/XML bridge rows | `../../../requirements/2010/hla1516_2_omt_xml_detailed_reconciliation.csv` | `unit-fom-tooling` | `2010-core`, `fom-omt` |
 | XML family reconciliation rows | `../../../requirements/2010/hla1516_xml_detailed_reconciliation.csv` | `unit-fom-tooling` | `2010-core`, `fom-omt` |
+| legacy OMT/XML bridge artifact | `../../../requirements/2010/hla1516_2_omt_xml_detailed_reconciliation.csv` | `unit-fom-tooling` | `2010-core`, `fom-omt` |
 | OMT/XML bounded partial-family reading | `omt_xml_bounded_family.md` | `unit-fom-tooling` | `2010-core`, `fom-omt` |
 | imported-master and broad bridge status | `../../../requirements/2010/traceability_matrix.csv` | `unit-foundation` | `2010-core`, `setup-preflight` |
 | bounded mixed-backend priority-row runtime split | `../../../requirements/2010/hla1516_1_priority_backend_resolution.csv` | `unit-scenarios-light` or `unit-python-core` by row | `2010-core`, `scenarios`, `time` |

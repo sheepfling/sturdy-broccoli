@@ -134,7 +134,7 @@ Examples:
 - `requirements/2010/hla1516_1_conf_detailed_reconciliation.csv`
 - `requirements/2010/hla1516_xml_detailed_reconciliation.csv`
 - `requirements/2010/hla1516_2_omt_detailed_reconciliation.csv`
-- `requirements/2010/hla1516_2_omt_xml_detailed_reconciliation.csv`
+- `requirements/2010/hla1516_2_omt_xml_detailed_reconciliation.csv` legacy bridge artifact
 - `requirements/2010/hla1516_framework_detailed_reconciliation.csv`
 
 This is the real working center of gravity.

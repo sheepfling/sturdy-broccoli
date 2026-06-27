@@ -31,9 +31,8 @@ def test_omt_partial_tail_is_only_annex_b_normalization() -> None:
     partial_rows = [row for row in rows if row["current_status"] == "partial"]
 
     assert len(partial_rows) == 2
-    assert Counter(row["implementation_area"] for row in partial_rows) == {
-        "omt.normalization": 1,
-        "ddm/normalization": 1,
+    assert Counter(row["reconciliation_kind"] for row in partial_rows) == {
+        "OMT_CLAUSE_DETAIL": 2,
     }
 
 
@@ -58,12 +57,12 @@ def test_omt_and_xml_owner_surfaces_are_split_in_front_doors() -> None:
 
     for text in (front_door, source_readme, hierarchy):
         assert "OMT family" in text
-        assert "OMT clause-detail and OMT/XML bridge" in text
+        assert "legacy OMT/XML bridge artifact" in text
         assert "XML family" in text
 
     assert "hla1516_2_omt_detailed_reconciliation.csv" in front_door
-    assert "hla1516_2_omt_xml_detailed_reconciliation.csv" in front_door
     assert "hla1516_xml_detailed_reconciliation.csv" in front_door
+    assert "hla1516_2_omt_xml_detailed_reconciliation.csv" in front_door
     assert "bounded `partial` rows" in (ROOT / "requirements/README.md").read_text(encoding="utf-8")
 
 
