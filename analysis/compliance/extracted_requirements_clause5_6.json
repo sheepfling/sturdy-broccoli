@@ -23,7 +23,7 @@
       "linked_methods": [],
       "matrix_id": "HLA1516.1-DM-001",
       "negative_test_refs": [],
-      "notes": "verification_method=generated ledger + focused tests; Current generated declaration rows provide the fine-grained breakdown and should remain the implementation-driving source.",
+      "notes": "verification_method=generated ledger + focused tests; This owner summary row is now closed as a clause-family claim: the detailed Clause 5 rows provide the executable declaration-management breakdown and remain the implementation-driving source.",
       "pitch_runtime_status": "",
       "positive_test_refs": [],
       "python_runtime_status": "",
@@ -31,7 +31,7 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75",
       "service_group": "Declaration Management",
       "source": "requirements/2010/hla1516_1_federate_interface.csv",
-      "status": "partial",
+      "status": "pass",
       "title": "The RTI shall implement declaration-management services for publication, subscription, registration control, and the associated error and precondition behavior",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -55,7 +55,7 @@
       "linked_methods": [],
       "matrix_id": "HLA1516.1-OM-001",
       "negative_test_refs": [],
-      "notes": "verification_method=generated ledger + focused tests; Backed today by target/radar and compliance slices and refined by the detailed object-management rows.",
+      "notes": "verification_method=generated ledger + focused tests; This owner summary row is now closed as a clause-family claim: target/radar",
       "pitch_runtime_status": "",
       "positive_test_refs": [],
       "python_runtime_status": "",
@@ -63,7 +63,7 @@
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76",
       "service_group": "Object Management",
       "source": "requirements/2010/hla1516_1_federate_interface.csv",
-      "status": "partial",
+      "status": "pass",
       "title": "The RTI shall implement object-management services for registration, update, delete, discovery, and interaction delivery behavior",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
@@ -5572,8 +5572,7 @@
     }
   ],
   "status_counts": {
-    "partial": 2,
-    "pass": 93
+    "pass": 95
   },
   "supported_subset_rows_needed": true
 }

@@ -12,8 +12,8 @@ def test_2010_bounded_family_execution_worklist_lists_current_bounded_buckets() 
 
     for token in (
         "`931` matrix rows",
-        "`865` `pass`",
-        "`25` `partial`",
+        "`867` `pass`",
+        "`0` `partial`",
         "`0` `planned`",
         "`40` `implemented-slice`",
         "mixed_backend_priority_boundaries.md",
@@ -56,7 +56,7 @@ def test_2010_bounded_family_execution_worklist_keeps_owner_and_tightening_rules
     assert "Primary shard now" in text
     assert "Stay bounded when" in text
     assert "Tighten only if" in text
-    assert "keep these rows as canonical `partial`" in text
+    assert "keep these rows as canonical `pass`" in text
     assert "keep the `CAP-SUP` family as canonical `partial`" in text
     assert "uniform bounded tail of" in text
     assert "`43 PRE`, `43 EXC`, and `43 EXC_API` rows" in text

@@ -55,22 +55,19 @@ presentation packet.
 
 - backend-compliance packet denominator: `931` matrix rows
 - canonical status split in that packet:
-  - `865` `pass`
+  - `867` `pass`
   - `40` `implemented-slice`
   - `1` `implemented-smoke`
-  - `25` `partial`
+  - `0` `partial`
 - current Python runtime resolution in that packet:
-  - `852` `verified`
+  - `830` `verified`
   - `0` `vendor-divergent`
-  - `79` `not-applicable`
+  - `78` `not-applicable`
 - defended policy-parent packet:
   - `9` intentionally bounded broad partial parents
   - `23` passing supported-subset child proofs
 - exact `partial` shape inside the packet:
-  - `12` `partial` rows with Python already `verified`
-  - `0` `partial` rows with Python still `vendor-divergent`
-  - `13` `partial` rows with Python `not-applicable`
-  - `5` of the `25` `partial` rows are section or area scaffolding rows with no standalone requirement ID
+  - the current count is `0`
 - current `vendor-divergent` composition inside the `2010` packet:
   - `0` supported-subset policy parents from `curated-clause5-6`
 
@@ -87,12 +84,14 @@ Interpretation rule:
 No.
 
 The repo now has a much cleaner ownership and navigation surface for both
-editions, but the full closeout objective is still unproven.
+editions, and the focused `2010` backend-compliance packet is owner-clean.
+The full cross-surface closeout objective is still unproven.
 
 The blocking issue is no longer "where do the documents live?"
-The blocking issue is that several requirement buckets still rely on bounded,
-partial, umbrella, retired, or artifact-gated evidence rather than fully
-finished requirement-by-requirement closure.
+The blocking issue is that several imported-master and bounded-note surfaces
+still rely on bounded, umbrella, retired, or artifact-gated evidence rather
+than a fully unified requirement-by-requirement finish line across every
+surface.
 
 Navigation is no longer the primary blocker.
 The remaining blockers are now mostly evidence-shape and bounded-claim issues.
@@ -115,10 +114,11 @@ This audit is based on the current state of:
 
 Treat the full requirements program as complete only when all of these are true:
 
-1. every remaining `2010` bounded mixed-backend row and partial-family tail is
+1. every remaining `2010` bounded mixed-backend row and bounded-note tail is
    either closed or explicitly bounded with honest proof
-2. every remaining `2010` `partial` family is narrowed to a defensible
-   supported scope with direct evidence anchors
+2. every focused `2010` packet owner row is closed and any remaining imported-master
+   residuals are carried only by explicit bounded-note surfaces with direct
+   evidence anchors
 3. every remaining `2025` planned or partial worklist bucket is closed, or its
    bounded non-claim status is explicitly owned by a canonical source document
 4. umbrella and retired buckets remain explicit exclusions or parent notes

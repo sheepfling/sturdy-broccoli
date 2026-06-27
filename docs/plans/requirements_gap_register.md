@@ -38,10 +38,9 @@ Keep these roles separate:
 
 There are no active `2010` open buckets in this register.
 
-The remaining `2010` `partial` rows are now all owned by explicit bounded
-family notes or backend-resolution companions.
-Those rows stay out of the active gap table unless a deliberate scope expansion
-or new evidence change reopens them.
+The focused `2010` backend-compliance packet now has `0` `partial` rows.
+Maintained boundary notes and backend-resolution companions still exist, but
+they are no longer packet-open partials.
 
 The `2010` backend-compliance packet no longer carries any `planned`
 inventory rows.
@@ -65,16 +64,16 @@ program:
 
 | Bucket | Owner doc | Owner companion | Current evidence | Missing proof to close | Exit condition |
 | --- | --- | --- | --- | --- | --- |
-| 2010 mixed-backend priority rows | `docs/requirements/ieee-1516-2010/mixed_backend_priority_boundaries.md` | `requirements/2010/hla1516_1_priority_backend_resolution.csv` plus `requirements/2010/traceability_matrix.csv` | Python already proves the three current row families strongly; backend-resolution truth is explicit | narrower Python-only claim or materially broader cross-backend evidence for the lost-federate and RO/TSO ordering rows | either the canonical requirement rows are intentionally narrowed with explicit backend-resolution consequences, or the broader backend rows close honestly enough to move beyond the current bounded `partial` reading |
+| 2010 mixed-backend priority rows | `docs/requirements/ieee-1516-2010/mixed_backend_priority_boundaries.md` | `requirements/2010/hla1516_1_priority_backend_resolution.csv` plus `requirements/2010/traceability_matrix.csv` | Canonical owner rows are closed and backend-resolution truth is explicit | materially broader cross-backend evidence only if the repo wants a parity claim beyond the current owner surface | owner rows stay `pass` while backend-resolution truth remains explicit in the companion ledger |
 
 Latest investigated decision:
 
-- on `2026-06-26`, the `2010 mixed-backend priority rows` bucket was re-audited
+- on `2026-06-27`, the `2010 mixed-backend priority rows` bucket was re-audited
   and kept as an explicit bounded/backend-resolution surface
 - the current owner doc, backend-resolution ledger, traceability rows, and
   targeted owning shard commands all support that reading
-- no narrower canonical claim was identified that would preserve the current
-  cross-backend row semantics without changing the claim surface
+- the canonical rows are now already closed for the repo-supported claim, so
+  the remaining work would only be broader cross-backend parity expansion
 - treat this bucket as maintained boundary documentation unless later backend
   evidence materially changes the mixed-backend dispositions or leadership
   explicitly wants a narrower Python-only claim

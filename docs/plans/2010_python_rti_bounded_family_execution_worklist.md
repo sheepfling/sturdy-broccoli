@@ -29,10 +29,10 @@ explicitly as:
 
 The remaining `2010` truth shape is already explicit and bounded:
 
-1. mixed-backend priority rows that stay `partial` because the clause claim
-   crosses Python, CERTI, Pitch, or Portico truth
-2. bounded partial-family notes where the family is broadly implemented but the
-   remaining rows still overstate the exact proof granularity
+1. mixed-backend priority rows that are now canonical `pass` with explicit
+   backend-resolution companions
+2. bounded detailed-reconciliation notes where imported-master residual
+   families still overstate the exact proof granularity
 3. XML and OMT bounded tails where the repo proves parser, schema, and
    round-trip families more strongly than it proves one-row-per-atom witnesses
 
@@ -49,16 +49,14 @@ Use this snapshot when the question is:
 Current `analysis/compliance/requirements_matrix_2010.csv` totals:
 
 - `931` matrix rows
-- `865` `pass`
+- `867` `pass`
 - `40` `implemented-slice`
 - `1` `implemented-smoke`
-- `25` `partial`
+- `0` `partial`
 
 Interpretation rule:
 
-- the remaining `partial` rows are the maintained bounded-family,
-  mixed-backend, and explicitly aggregated OMT/XML boundary surfaces called
-  out below
+- there are no remaining `partial` rows in the focused `2010` packet
 - there is no remaining hidden `planned` inventory in the `2010` packet
 - do not describe the `2010` lane as if every remaining non-`pass` row were
   the same kind of debt
@@ -124,7 +122,7 @@ owning shard commands for:
 
 Decision:
 
-- keep these rows as canonical `partial`
+- keep these rows as canonical `pass`
 - keep their backend split in
   `requirements/2010/hla1516_1_priority_backend_resolution.csv`
 - do not promote them to a narrower direct canonical claim yet

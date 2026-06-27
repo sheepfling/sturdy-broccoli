@@ -107,9 +107,8 @@ Example shape:
 ## 2010 Remaining Closure
 
 The `2010` surface is structurally linked and collected.
-The remaining `2010` `partial` rows are now all owned by maintained bounded
-family notes or backend-resolution companions rather than active closeout
-buckets.
+The focused `2010` backend-compliance packet now has no remaining `partial`
+rows.
 
 Current imported-master status from
 [`../../requirements/2010/hla_1516_master_harmonization_index_v1_0.csv`](../../requirements/2010/hla_1516_master_harmonization_index_v1_0.csv):
@@ -127,21 +126,20 @@ There are also no remaining active `2010` closeout buckets in this note.
 
 The remaining `2010` truth shape is now:
 
-1. maintained bounded mixed-backend rows owned by
-   `hla1516_1_priority_backend_resolution.csv` plus
-   `mixed_backend_priority_boundaries.md`
-2. maintained bounded partial-family notes for `CAP-FM`, `CAP-DM`, `CAP-SUP`,
-   `CAP-OM`, `CAP-OWN`, `CAP-TM`, and `CAP-DDM`
+1. closed owner-summary rows plus explicit backend-resolution companions where
+   vendor truth still differs
+2. maintained bounded detailed-reconciliation notes that explain imported-master
+   residual families without reopening the focused packet
 3. the maintained bounded `CAP-XML` plus narrow `CAP-OMT` owner note in
    `omt_xml_bounded_family.md`
 
 Exact current reading from the backend-compliance packet:
 
-- `25` `partial` rows total
-- `12` `partial` rows where Python is already `verified`
-- `0` `partial` rows where Python is still `vendor-divergent`
-- `13` `partial` rows where Python is `not-applicable`
-- only `3` requirement rows remain as direct mixed-backend clause tails:
+- `0` `partial` rows total
+- `830` rows where Python is `verified`
+- `78` rows where Python is `not-applicable`
+- the former mixed-backend clause tails are now closed owner rows with explicit
+  backend-resolution companions:
   - `HLA1516.1-FM-4.1.5-001`
   - `HLA1516.1-FM-4.1.5-002`
   - `HLA1516.1-TM-8.1.2-003`
@@ -175,8 +173,7 @@ Practical reading:
 - these `2010` partials now live behind explicit bounded owner notes rather
   than in an active open-bucket queue
 - use the `policy_parents` export surface when the question is whether a `2010`
-  partial row is a defended supported-subset boundary versus an unresolved
-  Python execution gap
+  row is a defended supported-subset boundary versus a closed owner-summary row
 - use the family owner notes and framework reconciliation companion when the
   question is which `vendor-divergent` rows are still true closeout blockers
   versus already-settled bounded owner surfaces

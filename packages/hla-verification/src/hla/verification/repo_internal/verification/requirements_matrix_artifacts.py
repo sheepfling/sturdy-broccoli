@@ -342,7 +342,18 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
     for row in rows:
         if row["kind"] == "section-area":
             section = row["section_ref"].split("§", 1)[1].strip()
-            row["status"] = _aggregate_status(section_area_inputs.get(section, []))
+            supporting_rows = [
+                item for item in rows
+                if item["matrix_id"] != row["matrix_id"]
+                and item.get("document") == row["document"]
+                and (
+                    item.get("section_ref") == row["section_ref"]
+                    or str(item.get("section_ref", "")).startswith(f"{row['section_ref']}.")
+                )
+            ]
+            row["status"] = _aggregate_status(
+                [item["status"] for item in supporting_rows] or section_area_inputs.get(section, [])
+            )
         elif row["kind"] == "omt-area":
             section = row["section_ref"].split("§", 1)[1].strip()
             source_key = row["source"]

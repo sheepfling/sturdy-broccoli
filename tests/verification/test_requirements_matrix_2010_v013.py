@@ -154,20 +154,31 @@ def test_repo_does_not_keep_stale_duplicate_2010_direct_matrix_artifact() -> Non
     assert not (project_root / "analysis" / "compliance" / "requirements_matrix_2010.direct.csv").exists()
 
 
-def test_requirements_matrix_2010_keeps_bounded_family_summary_rows_partial() -> None:
+def test_requirements_matrix_2010_closes_family_summary_rows_after_owner_narrowing() -> None:
     project_root = Path(__file__).resolve().parents[2]
     matrix = build_requirements_matrix_2010(project_root, version="0.13.0")
     by_id = {row["matrix_id"]: row for row in matrix["rows"]}
 
     for requirement_id in (
+        "HLA1516-TIME-001",
         "HLA1516.1-FM-001",
+        "HLA1516.1-DM-001",
+        "HLA1516.1-OM-001",
         "HLA1516.1-TM-001",
         "HLA1516.1-DDM-001",
         "HLA1516.1-OWN-001",
         "HLA1516.1-SUP-001",
         "HLA1516.1-MOM-001",
     ):
-        assert by_id[requirement_id]["status"] == "partial"
+        assert by_id[requirement_id]["status"] == "pass"
+
+    for requirement_id in (
+        "AREA-1516.1-4",
+        "AREA-1516.1-5",
+        "AREA-1516.1-6",
+        "AREA-1516.1-8",
+    ):
+        assert by_id[requirement_id]["status"] == "pass"
 
 
 def test_clause4_requirements_matrix_rows_use_shared_harness_backing_refs() -> None:

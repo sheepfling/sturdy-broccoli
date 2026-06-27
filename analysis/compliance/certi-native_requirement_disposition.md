@@ -82,7 +82,7 @@ This profile currently inherits the CERTI family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_8-reportFederationExecutions | classification-required | service-requirement | Report Federation Executions service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_9-joinFederationExecution | classification-required | service-requirement | Join Federation Execution service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | AREA-1516.1-4 | not-applicable | section-area | Federation management |
-| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-001 | not-applicable | curated-seed | The RTI shall implement federation-management services for create, join, resign, destroy, save, restore, synchronization, and related lifecycle behavior |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-001 | not-applicable | extracted-requirement | The RTI shall implement federation-management services for create, join, resign, destroy, save, restore, synchronization, and related lifecycle behavior |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1-001 | classification-required | extracted-requirement | RTI shall support federate connection federation creation federation joining resignation and disconnection as distinct lifecycle states |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1-002 | classification-required | extracted-requirement | A federate shall connect before creating or joining a federation execution |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1-003 | classification-required | extracted-requirement | A federate shall disconnect when it has resigned and has no further intent to create or join federation executions |

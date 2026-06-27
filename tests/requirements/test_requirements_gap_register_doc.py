@@ -89,7 +89,7 @@ def test_gap_register_and_queue_keep_owner_companion_split_explicit() -> None:
     assert "2025 framework umbrella slice" in queue_text
     assert "do not spend the next closeout slice trying to relabel it as direct `covered`" in queue_text
     assert "2010 mixed-backend priority rows" in queue_text
-    assert "keep the canonical rows `partial`" in queue_text
+    assert "keep the canonical rows `pass`" in queue_text
     assert "2010 CAP-SUP bounded family" in queue_text
     assert "2010 CAP-DM bounded family" in queue_text
     assert "2010 CAP-TM bounded family" in queue_text
@@ -98,7 +98,6 @@ def test_gap_register_and_queue_keep_owner_companion_split_explicit() -> None:
     assert "2010 CAP-OWN bounded family" in queue_text
     assert "2010 CAP-DDM bounded family" in queue_text
     assert "2010 CAP-XML / CAP-OMT bounded family" in queue_text
-    assert "| `P1` | 2010 mixed-backend priority rows |" in queue_text
     assert "There are no active queue entries at this phase." in queue_text
     assert "do not spend the next closeout slice trying to relabel it as direct support" in queue_text
     assert "support-services owner docs as maintained bounded documentation" in queue_text

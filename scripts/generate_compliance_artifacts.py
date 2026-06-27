@@ -3728,6 +3728,7 @@ _PITCH_REQUIREMENT_EVIDENCE["REQ-OM-TRANSPORT-SCOPE-001"] = (
 
 _SEED_ROW_NOT_APPLICABLE_NOTES: dict[str, str] = {
     "HLA1516-TIME-001": "Time-concept seed row is a planning umbrella for the detailed time-management slices, not an executable Python backend requirement.",
+    "HLA1516.1-FM-001": "Federation-management seed row is a planning umbrella for the detailed Clause 4 service rows, not an executable backend parity requirement.",
     "HLA1516.1-DM-001": "Declaration-management seed row is a planning umbrella for the detailed Clause 5 service rows, not an executable backend parity requirement.",
     "HLA1516.1-OM-001": "Object-management seed row is a planning umbrella for the detailed Clause 6 service and callback rows, not an executable backend parity requirement.",
     "HLA1516.1-OWN-001": "Ownership-management seed row is a planning umbrella for the detailed Clause 7 service rows, not an executable backend parity requirement.",

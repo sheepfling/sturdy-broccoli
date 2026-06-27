@@ -29,12 +29,9 @@ Use this prioritization logic:
 
 ## Phase 1: Cheapest Truthful Wins
 
-These are the smallest deliberate scope-expansion slices that could move real
-rows without pretending the current bounded-owner notes are ambiguous.
-
-| Priority | Bucket | Why now | First command | Owner pair |
-| --- | --- | --- | --- | --- |
-| `P1` | 2010 mixed-backend priority rows | this is now the only remaining revisit surface on the 2010 lane, and it should be touched only if backend-resolution truth materially changes or leadership explicitly wants a narrower Python-only claim | `python3 -m pytest tests/scenarios/test_federation_management_backend_matrix.py -q -k 'test_python_connection_lost_callback_matrix or test_python_backend_lost_federate_mom_matrix'` or `python3 -m pytest tests/time/test_section8_backend_matrix.py -q -k test_section8_backend_matrix_order_override_services` | `mixed_backend_priority_boundaries.md` plus `hla1516_1_priority_backend_resolution.csv` |
+There are no active queue entries at this phase.
+The focused `2010` packet is now owner-clean and has no remaining `partial`
+rows.
 
 ## Phase 2: Large Partial Family Tightening
 
@@ -85,23 +82,23 @@ Use the callback-control owner doc as maintained boundary documentation and
 advance to `P1` / `P2` above for the next actual closeout move.
 
 The `2010 mixed-backend priority rows` bucket was also re-audited on
-`2026-06-26`.
+`2026-06-27`.
 
 Result:
 
-- keep the canonical rows `partial`
+- keep the canonical rows `pass`
 - keep the backend split in
   `requirements/2010/hla1516_1_priority_backend_resolution.csv`
-- do not spend the next closeout slice trying to relabel those cross-backend
-  rows as direct canonical claims
+- do not spend the next closeout slice trying to broaden those cross-backend
+  rows into false backend parity claims
 
 Why:
 
-1. the current row text is intentionally cross-backend
+1. the current owner rows are already closed for the repo-supported claim
 2. Python proof is strong, but the mixed-backend dispositions remain real and
    material
-3. a narrower canonical claim would change the row meaning rather than simply
-   tighten evidence wording
+3. backend-resolution truth still belongs in the companion ledger rather than
+   in one overloaded status cell
 4. the owner doc already expresses the honest final reading for the current
    evidence
 
