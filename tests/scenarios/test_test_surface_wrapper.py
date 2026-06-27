@@ -251,6 +251,7 @@ def test_tools_test_surface_run_unit_vendor_onboarding_emits_live_progress_to_st
 
     assert result.returncode == 0, result.stdout or result.stderr
     assert "unit-vendor-onboarding: passed" in result.stdout
+    assert "warning: lane unit-vendor-onboarding is using command override via HLA2010_TEST_SURFACE_UNIT_VENDOR_ONBOARDING_CMD" in result.stderr
     assert "[test-surface] lane unit-vendor-onboarding: running sh -c :" in result.stderr
     assert "[test-surface] lane unit-vendor-onboarding: sh -c : -> passed" in result.stderr
 

@@ -56,6 +56,25 @@ Use these repo lanes and treat lower-level scripts as implementation detail:
 9. `./tools/vendor-green matrix`
 10. `./tools/test-surface run matrix`
 
+## Final Merge Gate
+
+Use this rule literally:
+
+- `./tools/python verify` is the supported local final merge gate
+- `./tools/test-surface run repo-green-units` is only the composite unit shard sweep
+- a passing `repo-green-units` run does not claim lint, pyright, broader integration, matrix refresh, or the full repo-green sequence
+- `HLA2010_TEST_SURFACE_*_CMD` environment overrides are debug/test hooks only and should never be present for final merge verification
+
+Practical operator order:
+
+1. `./tools/python verify-smoke`
+2. `./tools/test-surface run repo-green-units`
+3. `./tools/python verify`
+
+If you need a restartable or focused rerun, use `./tools/test-surface run <lane>`
+or `./tools/test-focus run <target>`, then return to `./tools/python verify`
+before merge.
+
 The matching discovery commands are:
 
 ```bash

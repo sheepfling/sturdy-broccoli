@@ -8,6 +8,8 @@ import sys
 import tomllib
 from pathlib import Path
 
+from test_surface import active_lane_command_overrides
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -94,7 +96,7 @@ def usage() -> str:
             "usage: ./tools/python [verify|verify-smoke|verify-fast|verify-gold|verify-main-2025|verify-routes|verify-routes-2025|verify-routes-preflight|smoke-examples|test-examples|help]",
             "",
             "Canonical Python / repo-green operator flow:",
-            "  ./tools/python verify                  # run the repo-green verification lane",
+            "  ./tools/python verify                  # final merge gate; run the full repo-green verification lane",
             "  ./tools/python verify-smoke            # run the fast-fail repo smoke lane before expensive integration depth",
             "  ./tools/python verify-fast             # run the low-cost operator/docs/Python-matrix lane",
             "  ./tools/python verify-fast --with-gold # run verify-fast, then chain the higher-standard hygiene gate",
@@ -109,6 +111,11 @@ def usage() -> str:
             "  ./tools/python test-examples           # run focused Python example tests",
             "  ./tools/test-focus inventory           # list named focused targets by package/theme",
             "  ./tools/test-focus resume python-2025-runtime",
+            "",
+            "Final merge rule:",
+            "  `./tools/python verify` is the only supported local final merge gate.",
+            "  `./tools/test-surface run repo-green-units` is a unit composite, not full repo green.",
+            "  `HLA2010_TEST_SURFACE_*_CMD` overrides are for debug/tests only and are rejected by `verify`.",
             "",
             "This is the human-facing wrapper over the Python-backed repo-green lane in",
             "`./scripts/ci/repo_green.py`, with `./scripts/ci/repo_green.sh` retained as a",
@@ -309,7 +316,25 @@ def test_examples(args: list[str]) -> int:
     return _run_or_print_workspace_python(dry_run, _workspace_python_bin(), ["-m", "pytest", "-q", "tests/test_python_route_examples.py"])
 
 
+def _guard_verify_environment() -> None:
+    overrides = active_lane_command_overrides()
+    if not overrides:
+        return
+    formatted = "\n".join(f"- {name}" for name in overrides)
+    raise SystemExit(
+        "\n".join(
+            [
+                "error: ./tools/python verify refuses to run while test-surface command overrides are active.",
+                "Unset these debug-only variables before treating the run as final merge verification:",
+                formatted,
+                "Use ./tools/test-surface run <lane> directly if you intentionally need an overridden local debug lane.",
+            ]
+        )
+    )
+
+
 def verify(args: list[str]) -> int:
+    _guard_verify_environment()
     runner = _path_python_bin()
     return _run([runner, str(ROOT / "scripts" / "ci" / "repo_green.py"), *args])
 

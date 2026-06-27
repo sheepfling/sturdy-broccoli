@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import subprocess
 from pathlib import Path
 
@@ -18,12 +19,14 @@ def test_tools_python_help_describes_example_smoke_commands() -> None:
 
     assert result.returncode == 0
     assert "./tools/python verify-smoke" in result.stdout
+    assert "./tools/python verify                  # final merge gate; run the full repo-green verification lane" in result.stdout
     assert "./tools/python verify-gold" in result.stdout
     assert "./tools/python verify-fast --with-gold" in result.stdout
     assert "./tools/python smoke-examples --edition 2010" in result.stdout
     assert "./tools/python smoke-examples --edition 2025" in result.stdout
     assert "./tools/python smoke-examples --all" in result.stdout
     assert "./tools/python test-examples" in result.stdout
+    assert "`./tools/test-surface run repo-green-units` is a unit composite, not full repo green." in result.stdout
 
 
 def test_tools_python_verify_smoke_delegate_is_supported(tmp_path: Path) -> None:
@@ -246,3 +249,22 @@ def test_tools_python_test_examples_dry_run_targets_focused_test_file() -> None:
     assert result.returncode == 0, result.stdout or result.stderr
     lines = [line.strip() for line in result.stdout.splitlines() if line.strip()]
     assert lines == ["+ hla2010_shell_run_workspace_python python3 -m pytest -q tests/test_python_route_examples.py"]
+
+
+def test_tools_python_verify_refuses_active_test_surface_overrides() -> None:
+    result = subprocess.run(
+        ["bash", "tools/python", "verify"],
+        cwd=ROOT,
+        env={
+            "PATH": os.environ.get("PATH", ""),
+            "HOME": os.environ.get("HOME", ""),
+            "HLA2010_TEST_SURFACE_UNIT_FOUNDATION_CMD": ":",
+        },
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 1
+    assert "error: ./tools/python verify refuses to run while test-surface command overrides are active." in result.stderr
+    assert "- HLA2010_TEST_SURFACE_UNIT_FOUNDATION_CMD" in result.stderr

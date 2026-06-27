@@ -34,6 +34,8 @@ LANE_ALIASES = {
     "transport": "unit-transport-local",
     "scenarios": "unit-scenarios-light",
 }
+_LANE_OVERRIDE_ENV_PREFIX = "HLA2010_TEST_SURFACE_"
+_LANE_OVERRIDE_ENV_SUFFIX = "_CMD"
 
 
 @dataclass(frozen=True)
@@ -352,6 +354,19 @@ def _progress(message: str, *, enabled: bool) -> None:
         sys.stderr.flush()
 
 
+def lane_override_env_name(lane_id: str) -> str:
+    return f"{_LANE_OVERRIDE_ENV_PREFIX}{lane_id.upper().replace('-', '_')}{_LANE_OVERRIDE_ENV_SUFFIX}"
+
+
+def active_lane_command_overrides(*, env: dict[str, str] | None = None) -> list[str]:
+    selected_env = env or os.environ
+    return sorted(
+        name
+        for name, value in selected_env.items()
+        if name.startswith(_LANE_OVERRIDE_ENV_PREFIX) and name.endswith(_LANE_OVERRIDE_ENV_SUFFIX) and value.strip()
+    )
+
+
 def command_inventory(*, as_json: bool) -> int:
     lanes = load_manifest()
     payload = {
@@ -414,10 +429,12 @@ def command_run(*, lane_id: str, as_json: bool, dry_run: bool, emit_output: bool
 
     def run_lane(current_lane: Lane) -> bool:
         nonlocal status
-        lane_override = os.environ.get(
-            f"HLA2010_TEST_SURFACE_{current_lane.lane_id.upper().replace('-', '_')}_CMD"
-        )
+        lane_override = os.environ.get(lane_override_env_name(current_lane.lane_id))
         if lane_override:
+            _progress(
+                f"[test-surface] warning: lane {current_lane.lane_id} is using command override via {lane_override_env_name(current_lane.lane_id)}; do not treat this run as merge-grade verification",
+                enabled=progress_enabled,
+            )
             commands = (("sh", "-c", lane_override),)
         elif current_lane.include_lanes:
             commands = ()
