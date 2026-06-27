@@ -42,6 +42,9 @@ class PackageReport:
     noqa_count: int
     quoted_annotation_count: int
     bare_except_count: int
+    init_reexport_count: int
+    init_side_effect_count: int
+    path_sniffing_count: int
     tests_present: bool
     pyright_ok: bool | None
     pyright_returncode: int | None
@@ -204,6 +207,112 @@ def _count_quoted_annotations(tree: ast.AST) -> int:
     return count
 
 
+def _is_type_checking_guard(test: ast.expr) -> bool:
+    if isinstance(test, ast.Name):
+        return test.id == "TYPE_CHECKING"
+    if isinstance(test, ast.Attribute):
+        return isinstance(test.value, ast.Name) and test.value.id == "typing" and test.attr == "TYPE_CHECKING"
+    return False
+
+
+def _is_main_guard(test: ast.expr) -> bool:
+    if not isinstance(test, ast.Compare):
+        return False
+    if len(test.ops) != 1 or len(test.comparators) != 1:
+        return False
+    if not isinstance(test.ops[0], ast.Eq):
+        return False
+    left = test.left
+    right = test.comparators[0]
+    return (
+        isinstance(left, ast.Name)
+        and left.id == "__name__"
+        and isinstance(right, ast.Constant)
+        and right.value == "__main__"
+    )
+
+
+def _is_simple_all_assignment(statement: ast.stmt) -> bool:
+    if isinstance(statement, ast.Assign):
+        targets = statement.targets
+        if len(targets) != 1 or not isinstance(targets[0], ast.Name) or targets[0].id != "__all__":
+            return False
+        return isinstance(statement.value, (ast.List, ast.Tuple))
+    if isinstance(statement, ast.AnnAssign):
+        return (
+            isinstance(statement.target, ast.Name)
+            and statement.target.id == "__all__"
+            and isinstance(statement.value, (ast.List, ast.Tuple))
+        )
+    return False
+
+
+def _count_init_reexports(tree: ast.Module) -> int:
+    reexports = 0
+    for statement in tree.body:
+        if isinstance(statement, ast.ImportFrom):
+            if statement.module == "__future__":
+                continue
+            reexports += len(statement.names)
+    return reexports
+
+
+def _count_init_side_effects(tree: ast.Module) -> int:
+    side_effects = 0
+    for statement in tree.body:
+        if isinstance(statement, ast.Expr) and isinstance(statement.value, ast.Constant) and isinstance(statement.value.value, str):
+            continue
+        if isinstance(statement, ast.ImportFrom) and statement.module == "__future__":
+            continue
+        if isinstance(statement, (ast.Import, ast.ImportFrom)):
+            continue
+        if _is_simple_all_assignment(statement):
+            continue
+        if isinstance(statement, (ast.Assign, ast.AnnAssign)) and isinstance(getattr(statement, "value", None), ast.Constant):
+            continue
+        if isinstance(statement, ast.If) and (_is_type_checking_guard(statement.test) or _is_main_guard(statement.test)):
+            continue
+        side_effects += 1
+    return side_effects
+
+
+class _PathSniffingVisitor(ast.NodeVisitor):
+    def __init__(self) -> None:
+        self.count = 0
+
+    def visit_Name(self, node: ast.Name) -> None:
+        if node.id == "__file__":
+            self.count += 1
+        self.generic_visit(node)
+
+    def visit_Subscript(self, node: ast.Subscript) -> None:
+        if isinstance(node.value, ast.Attribute):
+            if isinstance(node.value.value, ast.Name) and node.value.value.id == "os" and node.value.attr == "environ":
+                self.count += 1
+        self.generic_visit(node)
+
+    def visit_Call(self, node: ast.Call) -> None:
+        func = node.func
+        if isinstance(func, ast.Attribute):
+            owner = func.value
+            if isinstance(owner, ast.Name) and owner.id == "os" and func.attr in {"getcwd", "chdir", "getenv"}:
+                self.count += 1
+            elif isinstance(owner, ast.Name) and owner.id == "sys" and func.attr == "path":
+                self.count += 1
+            elif isinstance(owner, ast.Attribute):
+                if isinstance(owner.value, ast.Name) and owner.value.id == "sys" and owner.attr == "path" and func.attr in {"append", "insert", "extend", "remove"}:
+                    self.count += 1
+            elif isinstance(owner, ast.Name) and owner.id == "Path" and func.attr in {"cwd", "home"}:
+                self.count += 1
+        self.generic_visit(node)
+
+
+def _count_path_sniffing(tree: ast.AST) -> int:
+    visitor = _PathSniffingVisitor()
+    visitor.visit(tree)
+    return visitor.count
+
+
 def _scan_sources(source_roots: tuple[Path, ...]) -> dict[str, Any]:
     python_files = 0
     loc = 0
@@ -218,6 +327,9 @@ def _scan_sources(source_roots: tuple[Path, ...]) -> dict[str, Any]:
     noqa_count = 0
     quoted_annotation_count = 0
     bare_except_count = 0
+    init_reexport_count = 0
+    init_side_effect_count = 0
+    path_sniffing_count = 0
 
     for source_root in source_roots:
         for path in sorted(source_root.rglob("*.py")):
@@ -249,6 +361,10 @@ def _scan_sources(source_roots: tuple[Path, ...]) -> dict[str, Any]:
             cast_count += visitor.cast_count
             bare_except_count += visitor.bare_except_count
             quoted_annotation_count += _count_quoted_annotations(tree)
+            path_sniffing_count += _count_path_sniffing(tree)
+            if path.name == "__init__.py":
+                init_reexport_count += _count_init_reexports(tree)
+                init_side_effect_count += _count_init_side_effects(tree)
 
     return {
         "python_files": python_files,
@@ -264,6 +380,9 @@ def _scan_sources(source_roots: tuple[Path, ...]) -> dict[str, Any]:
         "noqa_count": noqa_count,
         "quoted_annotation_count": quoted_annotation_count,
         "bare_except_count": bare_except_count,
+        "init_reexport_count": init_reexport_count,
+        "init_side_effect_count": init_side_effect_count,
+        "path_sniffing_count": path_sniffing_count,
     }
 
 
@@ -305,9 +424,12 @@ def _score_report(metrics: dict[str, Any], *, pyright_ok: bool | None, ruff_ok: 
     score -= min(float(metrics["cast_count"]) * 0.35, 14.0)
     score -= min(float(metrics["type_ignore_count"]) * 1.5, 20.0)
     score -= min(float(metrics["pyright_ignore_count"]) * 2.0, 16.0)
-    score -= min(float(metrics["quoted_annotation_count"]) * 0.5, 10.0)
+    score -= min(float(metrics["quoted_annotation_count"]) * 0.8, 14.0)
     score -= min(float(metrics["bare_except_count"]) * 2.5, 10.0)
     score -= min(float(metrics["noqa_count"]) * 0.2, 6.0)
+    score -= min(float(metrics["init_reexport_count"]) * 0.25, 8.0)
+    score -= min(float(metrics["init_side_effect_count"]) * 2.0, 14.0)
+    score -= min(float(metrics["path_sniffing_count"]) * 0.5, 12.0)
 
     if pyright_ok is False:
         score -= 15.0
@@ -340,8 +462,11 @@ def _remediation_points(metrics: dict[str, Any], *, pyright_ok: bool | None, ruf
     points += float(metrics["pyright_ignore_count"]) * 4.0
     points += float(metrics["bare_except_count"]) * 3.0
     points += float(metrics["cast_count"]) * 1.5
-    points += float(metrics["quoted_annotation_count"]) * 0.75
+    points += float(metrics["quoted_annotation_count"]) * 1.25
     points += float(metrics["noqa_count"]) * 0.5
+    points += float(metrics["init_reexport_count"]) * 0.75
+    points += float(metrics["init_side_effect_count"]) * 2.5
+    points += float(metrics["path_sniffing_count"]) * 1.0
     points += float(metrics["any_count"]) * 0.05
     if pyright_ok is False:
         points += 8.0
@@ -379,6 +504,9 @@ def _build_report(package_dir: Path, *, run_pyright: bool, run_ruff: bool) -> Pa
         noqa_count=int(metrics["noqa_count"]),
         quoted_annotation_count=int(metrics["quoted_annotation_count"]),
         bare_except_count=int(metrics["bare_except_count"]),
+        init_reexport_count=int(metrics["init_reexport_count"]),
+        init_side_effect_count=int(metrics["init_side_effect_count"]),
+        path_sniffing_count=int(metrics["path_sniffing_count"]),
         tests_present=_test_file_count(package_dir) > 0,
         pyright_ok=pyright_ok,
         pyright_returncode=pyright_returncode,
@@ -415,7 +543,10 @@ def _print_table(reports: list[PackageReport]) -> None:
         + " cast"
         + " ign"
         + " pyi"
-        + " qann"
+        + " str"
+        + " initx"
+        + " initfx"
+        + " path"
         + " ruff"
         + " pyright"
     )
@@ -437,6 +568,9 @@ def _print_table(reports: list[PackageReport]) -> None:
             + f"{report.type_ignore_count:5d}"
             + f"{report.pyright_ignore_count:5d}"
             + f"{report.quoted_annotation_count:6d}"
+            + f"{report.init_reexport_count:7d}"
+            + f"{report.init_side_effect_count:8d}"
+            + f"{report.path_sniffing_count:6d}"
             + f"{_check_mark(report.ruff_ok):>6}"
             + f"{_check_mark(report.pyright_ok):>9}"
         )
@@ -461,7 +595,9 @@ def _print_scoreboards(reports: list[PackageReport], *, top: int) -> None:
                 f"  {index}. {report.package} "
                 f"(score={report.score}, grade={report.grade}, remediation={report.remediation_points}, "
                 f"files={report.python_files}, typed_fn={typed_percent}, future={future_percent}, "
-                f"Any={report.any_count}, cast={report.cast_count}, ignore={report.type_ignore_count + report.pyright_ignore_count})"
+                f"Any={report.any_count}, cast={report.cast_count}, stringy={report.quoted_annotation_count}, "
+                f"initfx={report.init_side_effect_count}, path={report.path_sniffing_count}, "
+                f"ignore={report.type_ignore_count + report.pyright_ignore_count})"
             )
         print()
 
