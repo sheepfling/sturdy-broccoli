@@ -128,6 +128,12 @@ def test_imported_hla_backlog_does_not_queue_clause6_precondition_rows_already_c
         "HLA1516.1-OM-6_16-EFF-005",
         "HLA1516.1-OM-6_16-PRE-004",
         "HLA1516.1-OM-6_16-EXC-006",
+        "HLA1516.1-OM-6_17-ARG-003",
+        "HLA1516.1-OM-6_17-PRE-004",
+        "HLA1516.1-OM-6_17-EXC-006",
+        "HLA1516.1-OM-6_18-ARG-003",
+        "HLA1516.1-OM-6_18-PRE-004",
+        "HLA1516.1-OM-6_18-EXC-006",
         "HLA1516.1-OM-6_19-EXC-006",
         "HLA1516.1-OM-6_19-PRE-004",
     ):

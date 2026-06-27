@@ -305,66 +305,16 @@
       "description": "Clause 6 packet-to-curated backlog for object-management services.",
       "family": "Object Management",
       "kinds": {
-        "ARG": 10,
+        "ARG": 8,
         "EFF": 10,
-        "EXC": 15,
-        "PRE": 10,
+        "EXC": 13,
+        "PRE": 8,
         "SEM": 6,
         "SVC": 8
       },
-      "open_row_count": 59,
-      "queue_item_count": 16,
+      "open_row_count": 53,
+      "queue_item_count": 14,
       "queue_items": [
-        {
-          "acceptance_tests": [
-            "test_attributes_in_scope_and_out_of_scope_callbacks_track_region_scope_transitions"
-          ],
-          "clause": "6.17",
-          "implementation_areas": [
-            "object_scope"
-          ],
-          "kinds": {
-            "ARG": 1,
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 3,
-          "queue_item": "Attributes In Scope",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_17-ARG-003",
-            "HLA1516.1-OM-6_17-PRE-004",
-            "HLA1516.1-OM-6_17-EXC-006"
-          ],
-          "statuses": {
-            "partial": 3
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_attributes_in_scope_and_out_of_scope_callbacks_track_region_scope_transitions"
-          ],
-          "clause": "6.18",
-          "implementation_areas": [
-            "object_scope"
-          ],
-          "kinds": {
-            "ARG": 1,
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 3,
-          "queue_item": "Attributes Out Of Scope",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_18-ARG-003",
-            "HLA1516.1-OM-6_18-PRE-004",
-            "HLA1516.1-OM-6_18-EXC-006"
-          ],
-          "statuses": {
-            "partial": 3
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
         {
           "acceptance_tests": [
             "test_transportation_type_services_emit_confirm_and_report_callbacks"
@@ -753,7 +703,7 @@
         }
       ],
       "statuses": {
-        "partial": 59
+        "partial": 53
       }
     },
     {
@@ -2796,55 +2746,13 @@
         "ARG": 4,
         "EFF": 9,
         "EXC": 72,
-        "PRE": 92,
+        "PRE": 90,
         "SEM": 2,
         "SVC": 8
       },
-      "open_row_count": 187,
-      "queue_item_count": 107,
+      "open_row_count": 185,
+      "queue_item_count": 105,
       "queue_items": [
-        {
-          "acceptance_tests": [
-            "test_attributes_in_scope_and_out_of_scope_callbacks_track_region_scope_transitions"
-          ],
-          "clause": "6.17",
-          "implementation_areas": [
-            "object_scope"
-          ],
-          "kinds": {
-            "PRE": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Attributes In Scope",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_17-PRE-004"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_attributes_in_scope_and_out_of_scope_callbacks_track_region_scope_transitions"
-          ],
-          "clause": "6.18",
-          "implementation_areas": [
-            "object_scope"
-          ],
-          "kinds": {
-            "PRE": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Attributes Out Of Scope",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_18-PRE-004"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
         {
           "acceptance_tests": [
             "test_transportation_type_services_emit_confirm_and_report_callbacks"
@@ -5372,11 +5280,11 @@
         }
       ],
       "statuses": {
-        "partial": 187
+        "partial": 185
       }
     }
   ],
   "generated_from": "harmonized requirements ledgers + imported HLA packet v1.0",
-  "total_open_rows": 419,
-  "total_queue_items": 214
+  "total_open_rows": 411,
+  "total_queue_items": 210
 }

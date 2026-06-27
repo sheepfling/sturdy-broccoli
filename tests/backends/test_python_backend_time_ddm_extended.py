@@ -8,6 +8,7 @@ from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
 from hla.rti1516e.exceptions import (
     AttributeNotDefined,
     AttributeNotPublished,
+    FederateInternalError,
     FederateServiceInvocationsAreBeingReportedViaMOM,
     FederateNotExecutionMember,
     InTimeAdvancingState,
@@ -587,6 +588,115 @@ def test_attributes_in_scope_and_out_of_scope_callbacks_track_region_scope_trans
     tx.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     rx.resign_federation_execution(ResignAction.NO_ACTION)
     tx.destroy_federation_execution("ddm-scope-callbacks-fed")
+
+
+def test_attributes_in_scope_and_out_of_scope_callbacks_validate_payload_context_and_wrap_callback_failures():
+    engine = InMemoryRTIEngine()
+    tx = rti_ambassador(engine=engine)
+    rx = rti_ambassador(engine=engine)
+    tx_fed = RecordingFederateAmbassador()
+    rx_fed = RecordingFederateAmbassador()
+    tx.connect(tx_fed, CallbackModel.HLA_EVOKED)
+    rx.connect(rx_fed, CallbackModel.HLA_EVOKED)
+    tx.create_federation_execution("ddm-scope-callback-contract-fed", "TargetRadarFOMmodule.xml")
+    tx.join_federation_execution("alpha", "type-a", "ddm-scope-callback-contract-fed")
+    rx.join_federation_execution("bravo", "type-b", "ddm-scope-callback-contract-fed")
+
+    cls = tx.get_object_class_handle("HLAobjectRoot.Target")
+    attr = tx.get_attribute_handle(cls, "Position")
+    dim = tx.get_dimension_handle("HLAdefaultRoutingSpace")
+
+    tx_region = tx.create_region({dim})
+    rx_region = rx.create_region({dim})
+    tx.set_range_bounds(tx_region, dim, RangeBounds(0, 10))
+    rx.set_range_bounds(rx_region, dim, RangeBounds(90, 100))
+    tx.commit_region_modifications({tx_region})
+    rx.commit_region_modifications({rx_region})
+
+    tx.publish_object_class_attributes(cls, {attr})
+    rx.enable_attribute_scope_advisory_switch()
+    rx.subscribe_object_class_attributes_with_regions(
+        cls,
+        [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({rx_region}))],
+    )
+    obj = tx.register_object_instance_with_regions(
+        cls,
+        [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({tx_region}))],
+        "DDM-Scope-Contract-Object",
+    )
+    drain(tx, rx)
+
+    assert rx_fed.last_callback("discoverObjectInstance") is not None
+    assert not rx_fed.callbacks_named("attributesInScope")
+    assert not rx_fed.callbacks_named("attributesOutOfScope")
+
+    rx.set_range_bounds(rx_region, dim, RangeBounds(5, 15))
+    rx.commit_region_modifications({rx_region})
+    drain(tx, rx)
+    gained = rx_fed.last_callback("attributesInScope")
+    assert gained is not None
+    assert gained.args == (obj, {attr})
+
+    rx.set_range_bounds(rx_region, dim, RangeBounds(50, 60))
+    rx.commit_region_modifications({rx_region})
+    drain(tx, rx)
+    lost = rx_fed.last_callback("attributesOutOfScope")
+    assert lost is not None
+    assert lost.args == (obj, {attr})
+
+    tx.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    rx.resign_federation_execution(ResignAction.NO_ACTION)
+    tx.destroy_federation_execution("ddm-scope-callback-contract-fed")
+
+    class _FailingScopeAmbassador(RecordingFederateAmbassador):
+        def on_attributes_in_scope(self, *args, **kwargs):
+            raise RuntimeError("attributes-in-scope-failed")
+
+        def on_attributes_out_of_scope(self, *args, **kwargs):
+            raise RuntimeError("attributes-out-of-scope-failed")
+
+    engine = InMemoryRTIEngine()
+    tx = rti_ambassador(engine=engine)
+    rx = rti_ambassador(engine=engine)
+    tx.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    rx.connect(_FailingScopeAmbassador(), CallbackModel.HLA_IMMEDIATE)
+    tx.create_federation_execution("ddm-scope-callback-failing-fed", "TargetRadarFOMmodule.xml")
+    tx.join_federation_execution("alpha", "type-a", "ddm-scope-callback-failing-fed")
+    rx.join_federation_execution("bravo", "type-b", "ddm-scope-callback-failing-fed")
+
+    cls = tx.get_object_class_handle("HLAobjectRoot.Target")
+    attr = tx.get_attribute_handle(cls, "Position")
+    dim = tx.get_dimension_handle("HLAdefaultRoutingSpace")
+    tx_region = tx.create_region({dim})
+    rx_region = rx.create_region({dim})
+    tx.set_range_bounds(tx_region, dim, RangeBounds(0, 10))
+    rx.set_range_bounds(rx_region, dim, RangeBounds(90, 100))
+    tx.commit_region_modifications({tx_region})
+    rx.commit_region_modifications({rx_region})
+    tx.publish_object_class_attributes(cls, {attr})
+    rx.enable_attribute_scope_advisory_switch()
+    rx.subscribe_object_class_attributes_with_regions(
+        cls,
+        [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({rx_region}))],
+    )
+    tx.register_object_instance_with_regions(
+        cls,
+        [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({tx_region}))],
+        "DDM-Scope-Failing-Object",
+    )
+    drain(tx, rx)
+
+    rx.set_range_bounds(rx_region, dim, RangeBounds(5, 15))
+    with pytest.raises(FederateInternalError):
+        rx.commit_region_modifications({rx_region})
+
+    rx.set_range_bounds(rx_region, dim, RangeBounds(50, 60))
+    with pytest.raises(FederateInternalError):
+        rx.commit_region_modifications({rx_region})
+
+    tx.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    rx.resign_federation_execution(ResignAction.NO_ACTION)
+    tx.destroy_federation_execution("ddm-scope-callback-failing-fed")
 
 
 def test_request_attribute_value_update_routes_only_to_relevant_object_owners():

@@ -148,6 +148,12 @@ def test_clause_6_packet_reconciliation_does_not_keep_stale_partial_precondition
         "HLA1516.1-OM-6_16-PRE-004": "test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore",
         "HLA1516.1-OM-6_16-EFF-005": "test_local_delete_clears_only_local_knowledge_and_object_can_be_rediscovered",
         "HLA1516.1-OM-6_16-EXC-006": "test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore",
+        "HLA1516.1-OM-6_17-ARG-003": "test_attributes_in_scope_and_out_of_scope_callbacks_validate_payload_context_and_wrap_callback_failures",
+        "HLA1516.1-OM-6_17-PRE-004": "test_attributes_in_scope_and_out_of_scope_callbacks_validate_payload_context_and_wrap_callback_failures",
+        "HLA1516.1-OM-6_17-EXC-006": "test_attributes_in_scope_and_out_of_scope_callbacks_validate_payload_context_and_wrap_callback_failures",
+        "HLA1516.1-OM-6_18-ARG-003": "test_attributes_in_scope_and_out_of_scope_callbacks_validate_payload_context_and_wrap_callback_failures",
+        "HLA1516.1-OM-6_18-PRE-004": "test_attributes_in_scope_and_out_of_scope_callbacks_validate_payload_context_and_wrap_callback_failures",
+        "HLA1516.1-OM-6_18-EXC-006": "test_attributes_in_scope_and_out_of_scope_callbacks_validate_payload_context_and_wrap_callback_failures",
         "HLA1516.1-OM-6_19-EXC-006": "test_clause_6_federate_initiated_services_validate_core_argument_shapes;test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore",
         "HLA1516.1-OM-6_19-PRE-004": "test_clause_6_federate_initiated_services_validate_core_argument_shapes;test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore",
     }

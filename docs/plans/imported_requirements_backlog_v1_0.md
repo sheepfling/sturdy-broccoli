@@ -3,8 +3,8 @@
 This generated backlog turns the harmonized open requirements rows into repo-native implementation queues.
 Some rows intentionally appear in multiple queues, especially `MOM/MIM` and `Transports`, because those are cross-cutting execution backlogs rather than mutually exclusive taxonomies.
 
-- Total open rows: 419
-- Total queue items: 214
+- Total open rows: 411
+- Total queue items: 210
 - Families: 11
 
 ## Queue Summary
@@ -13,7 +13,7 @@ Some rows intentionally appear in multiple queues, especially `MOM/MIM` and `Tra
 |---|---:|---:|---|---|
 | Federation Management | 0 | 0 | - | - |
 | Declaration Management | 24 | 12 | partial:24 | EXC:12, PRE:12 |
-| Object Management | 59 | 16 | partial:59 | EXC:15, ARG:10, EFF:10 |
+| Object Management | 53 | 14 | partial:53 | EXC:13, EFF:10, ARG:8 |
 | Ownership Management | 19 | 11 | partial:19 | EXC:11, PRE:8 |
 | Time Management | 38 | 19 | partial:38 | EXC:19, PRE:19 |
 | Data Distribution Management | 6 | 6 | partial:6 | EXC:6 |
@@ -21,7 +21,7 @@ Some rows intentionally appear in multiple queues, especially `MOM/MIM` and `Tra
 | MOM/MIM | 0 | 0 | - | - |
 | OMT | 0 | 0 | - | - |
 | XML | 0 | 0 | - | - |
-| Transports | 187 | 107 | partial:187 | PRE:92, EXC:72, EFF:9 |
+| Transports | 185 | 105 | partial:185 | PRE:90, EXC:72, EFF:9 |
 
 ## Federation Management
 
@@ -63,15 +63,13 @@ Clause 5 packet-to-curated backlog for declaration services.
 
 Clause 6 packet-to-curated backlog for object-management services.
 
-- Open rows: 59
-- Queue items: 16
-- Statuses: partial:59
-- Kinds: ARG:10, EFF:10, EXC:15, PRE:10, SEM:6, SVC:8
+- Open rows: 53
+- Queue items: 14
+- Statuses: partial:53
+- Kinds: ARG:8, EFF:10, EXC:13, PRE:8, SEM:6, SVC:8
 
 | Queue item | Clause | Open rows | Kinds | Requirement IDs | Acceptance tests | Next action |
 |---|---|---:|---|---|---|---|
-| Attributes In Scope | 6.17 | 3 | ARG:1, EXC:1, PRE:1 | HLA1516.1-OM-6_17-ARG-003, HLA1516.1-OM-6_17-PRE-004, HLA1516.1-OM-6_17-EXC-006 | test_attributes_in_scope_and_out_of_scope_callbacks_track_region_scope_transitions | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
-| Attributes Out Of Scope | 6.18 | 3 | ARG:1, EXC:1, PRE:1 | HLA1516.1-OM-6_18-ARG-003, HLA1516.1-OM-6_18-PRE-004, HLA1516.1-OM-6_18-EXC-006 | test_attributes_in_scope_and_out_of_scope_callbacks_track_region_scope_transitions | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 | Confirm Attribute Transportation Type Change | 6.24 | 5 | ARG:1, EFF:1, EXC:1, PRE:1, SVC:1 | HLA1516.1-OM-6_24-SVC-001, HLA1516.1-OM-6_24-ARG-003, HLA1516.1-OM-6_24-PRE-004 (+2 more) | test_transportation_type_services_emit_confirm_and_report_callbacks | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 | Confirm Interaction Transportation Type Change | 6.28 | 5 | ARG:1, EFF:1, EXC:1, PRE:1, SVC:1 | HLA1516.1-OM-6_28-SVC-001, HLA1516.1-OM-6_28-ARG-003, HLA1516.1-OM-6_28-PRE-004 (+2 more) | test_transportation_type_services_emit_confirm_and_report_callbacks | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 | Discover Object Instance | 6.9 | 3 | ARG:1, EXC:1, PRE:1 | HLA1516.1-OM-6_9-ARG-003, HLA1516.1-OM-6_9-PRE-004, HLA1516.1-OM-6_9-EXC-006 | test_discovery_uses_closest_subscribed_superclass_and_known_class_stays_stable | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
@@ -254,15 +252,13 @@ Open IEEE 1516.2 XML and schema-conformance backlog rows.
 
 Cross-cutting native/gRPC/REST transport-equivalence and transportation-type backlog rows.
 
-- Open rows: 187
-- Queue items: 107
-- Statuses: partial:187
-- Kinds: ARG:4, EFF:9, EXC:72, PRE:92, SEM:2, SVC:8
+- Open rows: 185
+- Queue items: 105
+- Statuses: partial:185
+- Kinds: ARG:4, EFF:9, EXC:72, PRE:90, SEM:2, SVC:8
 
 | Queue item | Clause | Open rows | Kinds | Requirement IDs | Acceptance tests | Next action |
 |---|---|---:|---|---|---|---|
-| Attributes In Scope | 6.17 | 1 | PRE:1 | HLA1516.1-OM-6_17-PRE-004 | test_attributes_in_scope_and_out_of_scope_callbacks_track_region_scope_transitions | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| Attributes Out Of Scope | 6.18 | 1 | PRE:1 | HLA1516.1-OM-6_18-PRE-004 | test_attributes_in_scope_and_out_of_scope_callbacks_track_region_scope_transitions | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Confirm Attribute Transportation Type Change | 6.24 | 5 | ARG:1, EFF:1, EXC:1, PRE:1, SVC:1 | HLA1516.1-OM-6_24-SVC-001, HLA1516.1-OM-6_24-ARG-003, HLA1516.1-OM-6_24-PRE-004 (+2 more) | test_transportation_type_services_emit_confirm_and_report_callbacks | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Confirm Interaction Transportation Type Change | 6.28 | 5 | ARG:1, EFF:1, EXC:1, PRE:1, SVC:1 | HLA1516.1-OM-6_28-SVC-001, HLA1516.1-OM-6_28-ARG-003, HLA1516.1-OM-6_28-PRE-004 (+2 more) | test_transportation_type_services_emit_confirm_and_report_callbacks | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Discover Object Instance | 6.9 | 1 | PRE:1 | HLA1516.1-OM-6_9-PRE-004 | test_discovery_uses_closest_subscribed_superclass_and_known_class_stays_stable | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
