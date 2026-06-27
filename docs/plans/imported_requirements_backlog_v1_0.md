@@ -3,8 +3,8 @@
 This generated backlog turns the harmonized open requirements rows into repo-native implementation queues.
 Some rows intentionally appear in multiple queues, especially `MOM/MIM` and `Transports`, because those are cross-cutting execution backlogs rather than mutually exclusive taxonomies.
 
-- Total open rows: 335
-- Total queue items: 188
+- Total open rows: 318
+- Total queue items: 182
 - Families: 11
 
 ## Queue Summary
@@ -13,7 +13,7 @@ Some rows intentionally appear in multiple queues, especially `MOM/MIM` and `Tra
 |---|---:|---:|---|---|
 | Federation Management | 0 | 0 | - | - |
 | Declaration Management | 24 | 12 | partial:24 | EXC:12, PRE:12 |
-| Object Management | 12 | 3 | partial:12 | SEM:6, EFF:2, EXC:2 |
+| Object Management | 0 | 0 | - | - |
 | Ownership Management | 19 | 11 | partial:19 | EXC:11, PRE:8 |
 | Time Management | 38 | 19 | partial:38 | EXC:19, PRE:19 |
 | Data Distribution Management | 6 | 6 | partial:6 | EXC:6 |
@@ -21,7 +21,7 @@ Some rows intentionally appear in multiple queues, especially `MOM/MIM` and `Tra
 | MOM/MIM | 0 | 0 | - | - |
 | OMT | 0 | 0 | - | - |
 | XML | 0 | 0 | - | - |
-| Transports | 150 | 94 | partial:150 | PRE:83, EXC:64, SEM:2 |
+| Transports | 145 | 91 | partial:145 | PRE:82, EXC:63 |
 
 ## Federation Management
 
@@ -63,16 +63,13 @@ Clause 5 packet-to-curated backlog for declaration services.
 
 Clause 6 packet-to-curated backlog for object-management services.
 
-- Open rows: 12
-- Queue items: 3
-- Statuses: partial:12
-- Kinds: ARG:1, EFF:2, EXC:2, PRE:1, SEM:6
+- Open rows: 0
+- Queue items: 0
+- Statuses: -
+- Kinds: -
 
 | Queue item | Clause | Open rows | Kinds | Requirement IDs | Acceptance tests | Next action |
 |---|---|---:|---|---|---|---|
-| Object Management semantic overview | 6.1 | 6 | SEM:6 | HLA1516.1-OM-6_1-SEM-004, HLA1516.1-OM-6_1-SEM-005, HLA1516.1-OM-6_1-SEM-006 (+3 more) | test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions, test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates, test_timestamp_order_attribute_updates_are_released_in_time_order (+5 more) | Add focused runtime or state-transition evidence for the remaining behavioral slice. |
-| Reflect Attribute Values | 6.11 | 4 | ARG:1, EFF:1, EXC:1, PRE:1 | HLA1516.1-OM-6_11-ARG-003, HLA1516.1-OM-6_11-PRE-004, HLA1516.1-OM-6_11-EFF-005 (+1 more) | test_two_python_federates_share_in_memory_rti | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
-| Send Interaction | 6.12 | 2 | EFF:1, EXC:1 | HLA1516.1-OM-6_12-EFF-005, HLA1516.1-OM-6_12-EXC-006 | test_two_python_federates_share_in_memory_rti | Tighten negative-path coverage until the supported precondition and exception envelope is explicit. |
 
 ## Ownership Management
 
@@ -241,16 +238,13 @@ Open IEEE 1516.2 XML and schema-conformance backlog rows.
 
 Cross-cutting native/gRPC/REST transport-equivalence and transportation-type backlog rows.
 
-- Open rows: 150
-- Queue items: 94
-- Statuses: partial:150
-- Kinds: EFF:1, EXC:64, PRE:83, SEM:2
+- Open rows: 145
+- Queue items: 91
+- Statuses: partial:145
+- Kinds: EXC:63, PRE:82
 
 | Queue item | Clause | Open rows | Kinds | Requirement IDs | Acceptance tests | Next action |
 |---|---|---:|---|---|---|---|
-| Object Management semantic overview | 6.1 | 2 | SEM:2 | HLA1516.1-OM-6_1-SEM-004, HLA1516.1-OM-6_1-SEM-005 | test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions, test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates, test_timestamp_order_attribute_updates_are_released_in_time_order (+1 more) | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| Reflect Attribute Values | 6.11 | 1 | PRE:1 | HLA1516.1-OM-6_11-PRE-004 | test_two_python_federates_share_in_memory_rti | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| Send Interaction | 6.12 | 2 | EFF:1, EXC:1 | HLA1516.1-OM-6_12-EFF-005, HLA1516.1-OM-6_12-EXC-006 | test_two_python_federates_share_in_memory_rti | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | attributeOwnershipAcquisition | 7.8 | 2 | EXC:1, PRE:1 | HLA1516.1-OWN-7_8-ATTRIBUTEOWNERSHIPACQUISITION-EXC-001, HLA1516.1-OWN-7_8-ATTRIBUTEOWNERSHIPACQUISITION-PRE-001 | test_python_rti_acquisition_if_available_reports_unavailable_without_transfer | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | attributeOwnershipAcquisitionIfAvailable | 7.9 | 2 | EXC:1, PRE:1 | HLA1516.1-OWN-7_9-ATTRIBUTEOWNERSHIPACQUISITIONIFAVAILABLE-EXC-001, HLA1516.1-OWN-7_9-ATTRIBUTEOWNERSHIPACQUISITIONIFAVAILABLE-PRE-001 | test_python_rti_negotiated_ownership_tracks_divesting_and_candidate_flows, test_python_rti_acquisition_if_available_reports_unavailable_without_transfer | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | attributeOwnershipDivestitureIfWanted | 7.13 | 2 | EXC:1, PRE:1 | HLA1516.1-OWN-7_13-ATTRIBUTEOWNERSHIPDIVESTITUREIFWANTED-EXC-001, HLA1516.1-OWN-7_13-ATTRIBUTEOWNERSHIPDIVESTITUREIFWANTED-PRE-001 | test_name_reservation_ddm_regions_ownership_and_time_support | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |

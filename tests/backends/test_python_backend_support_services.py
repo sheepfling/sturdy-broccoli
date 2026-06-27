@@ -540,7 +540,7 @@ def test_support_set_range_bounds_rejects_foreign_region_owner():
     with pytest.raises(RegionNotCreatedByThisFederate):
         acquirer.set_range_bounds(owner_region, acquirer_dim, RangeBounds(0, 10))
 
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     acquirer.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("support-foreign-region-fed")
 
@@ -903,7 +903,7 @@ def test_orphan_object_lifecycle_supports_late_discovery_local_delete_and_global
     with pytest.raises(ObjectInstanceNotKnown):
         late.get_object_instance_handle("Orphan-Lifecycle-1")
 
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     late.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("orphan-lifecycle-fed")
@@ -933,7 +933,7 @@ def test_delete_object_instance_notifies_known_federates_with_remove_object_inst
     with pytest.raises(ObjectInstanceNotKnown):
         observer.get_known_object_class_handle(obj)
 
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("remove-object-callback-fed")
 
@@ -965,7 +965,7 @@ def test_remove_object_instance_callback_validates_payload_context_and_wraps_cal
     with pytest.raises(ObjectInstanceNotKnown):
         observer.get_object_instance_handle("Remove-Contract-1")
 
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("remove-object-contract-fed")
 
@@ -992,7 +992,7 @@ def test_remove_object_instance_callback_validates_payload_context_and_wraps_cal
     with pytest.raises(FederateInternalError):
         owner.delete_object_instance(obj, b"remove-failing-tag")
 
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("remove-object-failing-fed")
 
@@ -1023,7 +1023,7 @@ def test_receive_interaction_callback_validates_payload_context_and_wraps_callba
     assert getattr(info, "producing_federate") == owner_handle
     assert owner_fed.callbacks_named("receiveInteraction") == []
 
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("receive-interaction-contract-fed")
 
@@ -1051,6 +1051,67 @@ def test_receive_interaction_callback_validates_payload_context_and_wraps_callba
     owner.resign_federation_execution(ResignAction.NO_ACTION)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("receive-interaction-failing-fed")
+
+
+def test_reflect_attribute_values_callback_validates_payload_context_and_wraps_callback_failures():
+    _, owner, observer, owner_fed, observer_fed, owner_handle, _observer_handle = joined_pair(
+        "reflect-attributes-contract-fed"
+    )
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+    reliable = owner.backend.engine.transportation_reliable
+
+    owner.publish_object_class_attributes(cls, {attr})
+    observer.subscribe_object_class_attributes(cls, {attr})
+    obj = owner.register_object_instance(cls, "Reflect-Contract-1")
+    drain(owner, observer)
+    observer_fed.clear()
+
+    owner.update_attribute_values(obj, {attr: b"reflect-contract"}, b"reflect-tag")
+    drain(owner, observer)
+
+    reflected = observer_fed.last_callback("reflectAttributeValues")
+    assert reflected is not None
+    assert reflected.args[0] == obj
+    assert reflected.args[1] == {attr: b"reflect-contract"}
+    assert reflected.args[2] == b"reflect-tag"
+    assert reflected.args[3] == OrderType.RECEIVE
+    assert reflected.args[4] == reliable
+    info = reflected.args[5]
+    assert getattr(info, "producing_federate") == owner_handle
+    assert getattr(info, "sent_regions") == frozenset()
+    assert owner_fed.callbacks_named("reflectAttributeValues") == []
+
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("reflect-attributes-contract-fed")
+
+    class _FailingReflectAmbassador(RecordingFederateAmbassador):
+        def on_reflect_attribute_values(self, *args, **kwargs):
+            raise RuntimeError("reflect-attributes-failed")
+
+    engine = InMemoryRTIEngine()
+    owner = rti_ambassador(engine=engine)
+    observer = rti_ambassador(engine=engine)
+    owner.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    observer.connect(_FailingReflectAmbassador(), CallbackModel.HLA_IMMEDIATE)
+    owner.create_federation_execution("reflect-attributes-failing-fed", "TargetRadarFOMmodule.xml")
+    owner.join_federation_execution("owner", "type-owner", "reflect-attributes-failing-fed")
+    observer.join_federation_execution("observer", "type-observer", "reflect-attributes-failing-fed")
+
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+    owner.publish_object_class_attributes(cls, {attr})
+    observer.subscribe_object_class_attributes(cls, {attr})
+    obj = owner.register_object_instance(cls, "Reflect-Failing-1")
+    drain(owner, observer)
+
+    with pytest.raises(FederateInternalError):
+        owner.update_attribute_values(obj, {attr: b"reflect-failing"}, b"reflect-tag")
+
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("reflect-attributes-failing-fed")
 
 
 def test_update_rate_designator_throttles_timed_reflects(tmp_path: Path):

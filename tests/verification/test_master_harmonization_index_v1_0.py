@@ -44,7 +44,7 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
 
     statuses = Counter(row["harmonization_status"] for row in rows)
     assert statuses == Counter(
-        {"mapped": 2782, "partial": 1221}
+        {"mapped": 2790, "partial": 1213}
     )
 
     by_id = {row["master_requirement_id"]: row for row in rows}
@@ -119,7 +119,7 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
     assert by_id["HLA1516.1-OM-6_27-REQUESTINTERACTIONTRANSPORTATIONTYPECHANGE-TEST-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-SVC-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-TEST-001"]["harmonization_status"] == "mapped"
-    assert by_id["HLA1516.1-OM-OVERVIEW-007"]["harmonization_status"] == "partial"
+    assert by_id["HLA1516.1-OM-OVERVIEW-007"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-TM-OVERVIEW-009"]["harmonization_status"] == "partial"
     assert (
         by_id["HLA1516.1-TM-OVERVIEW-009"]["harmonization_source_file"]

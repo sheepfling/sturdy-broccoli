@@ -23,7 +23,7 @@ def test_om_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 391
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 321, "partial": 70}
+        {"mapped": 329, "partial": 62}
     )
     assert Counter((row["reconciliation_kind"], row["current_status"]) for row in rows) == Counter(
         {
@@ -31,26 +31,26 @@ def test_om_detailed_reconciliation_has_expected_shape():
             ("SIG", "mapped"): 38,
             ("CB", "mapped"): 32,
             ("SVC", "mapped"): 28,
-            ("EFF", "partial"): 10,
             ("CB_ORD", "partial"): 25,
+            ("FED_CB", "mapped"): 20,
             ("ARG", "mapped"): 19,
             ("RTI_API", "mapped"): 19,
             ("MOM_TRACE", "mapped"): 19,
-            ("FED_CB", "mapped"): 19,
-            ("EXC_API", "partial"): 6,
-            ("CB_ORDER", "partial"): 17,
             ("CB_PAYLOAD", "mapped"): 17,
+            ("CB_ORDER", "partial"): 16,
+            ("CB_ORDER", "mapped"): 1,
             ("MOM", "mapped"): 14,
             ("TEST", "mapped"): 14,
-            ("EXC", "partial"): 5,
-            ("FED_CB", "partial"): 6,
+            ("FED_CB", "partial"): 5,
             ("RET", "mapped"): 5,
             ("PRE", "mapped"): 14,
-            ("EFF", "mapped"): 18,
-            ("EXC_API", "mapped"): 13,
-            ("EXC", "mapped"): 9,
-            ("OVW", "mapped"): 1,
-            ("OVW", "partial"): 1,
+            ("EFF", "mapped"): 20,
+            ("EFF", "partial"): 8,
+            ("EXC_API", "mapped"): 15,
+            ("EXC_API", "partial"): 4,
+            ("EXC", "mapped"): 10,
+            ("EXC", "partial"): 4,
+            ("OVW", "mapped"): 2,
         }
     )
     assert {row["source_packet_file"] for row in rows} == {
@@ -62,7 +62,7 @@ def test_om_detailed_reconciliation_spot_checks_key_rows():
     rows = {row["packet_requirement_id"]: row for row in _read_rows()}
 
     assert rows["HLA1516.1-OM-OVERVIEW-006"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-OVERVIEW-007"]["current_status"] == "partial"
+    assert rows["HLA1516.1-OM-OVERVIEW-007"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_2-RTIAPI-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_2-RTIAPI-001-MOM"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-PRE-001"]["current_status"] == "mapped"
@@ -179,12 +179,12 @@ def test_clause_6_nearby_exception_rows_now_point_at_real_bounded_witnesses() ->
             "ObjectInstanceNameInUse",
         ),
         "HLA1516.1-OM-6_12-SENDINTERACTION-EXC-001": (
-            "test_send_interaction_rejects_not_connected_not_joined_invalid_inputs_and_invalid_time",
-            "InteractionClassNotDefined",
+            "test_receive_interaction_callback_validates_payload_context_and_wraps_callback_failures",
+            "FederateInternalError",
         ),
         "HLA1516.1-OM-6_12-RTIAPI-001-EXC": (
-            "test_send_interaction_rejects_not_connected_not_joined_invalid_inputs_and_invalid_time",
-            "InvalidInteractionClassHandle",
+            "test_receive_interaction_callback_validates_payload_context_and_wraps_callback_failures",
+            "FederateInternalError",
         ),
         "HLA1516.1-OM-6_12-RTIAPI-002-EXC": (
             "test_send_interaction_rejects_not_connected_not_joined_invalid_inputs_and_invalid_time",
@@ -194,7 +194,7 @@ def test_clause_6_nearby_exception_rows_now_point_at_real_bounded_witnesses() ->
 
     for packet_id, (test_id, note_token) in expected.items():
         row = rows[packet_id]
-        expected_status = "mapped" if packet_id.startswith(("HLA1516.1-OM-6_2-","HLA1516.1-OM-6_4-","HLA1516.1-OM-6_5-","HLA1516.1-OM-6_7-","HLA1516.1-OM-6_8-")) else "partial"
+        expected_status = "mapped"
         assert row["current_status"] == expected_status
         assert test_id in row["current_test_id"]
         assert note_token in row["notes"] or note_token in row["requirement_text"]

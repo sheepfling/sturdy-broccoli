@@ -304,107 +304,11 @@
     {
       "description": "Clause 6 packet-to-curated backlog for object-management services.",
       "family": "Object Management",
-      "kinds": {
-        "ARG": 1,
-        "EFF": 2,
-        "EXC": 2,
-        "PRE": 1,
-        "SEM": 6
-      },
-      "open_row_count": 12,
-      "queue_item_count": 3,
-      "queue_items": [
-        {
-          "acceptance_tests": [
-            "test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions",
-            "test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates",
-            "test_timestamp_order_attribute_updates_are_released_in_time_order",
-            "test_two_python_federates_share_in_memory_rti",
-            "test_strict_publication_gates_registration_update_and_interaction_sends",
-            "test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore",
-            "test_delete_object_instance_notifies_known_federates_with_remove_object_instance",
-            "test_local_delete_clears_only_local_knowledge_and_object_can_be_rediscovered"
-          ],
-          "clause": "6.1",
-          "implementation_areas": [
-            "object_delivery",
-            "interaction_delivery plus declaration_management",
-            "object_update",
-            "local_object_knowledge",
-            "object_update and time_management"
-          ],
-          "kinds": {
-            "SEM": 6
-          },
-          "open_row_count": 6,
-          "queue_item": "Object Management semantic overview",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_1-SEM-004",
-            "HLA1516.1-OM-6_1-SEM-005",
-            "HLA1516.1-OM-6_1-SEM-006",
-            "HLA1516.1-OM-6_1-SEM-008",
-            "HLA1516.1-OM-6_1-SEM-010",
-            "HLA1516.1-OM-6_1-SEM-011"
-          ],
-          "statuses": {
-            "partial": 6
-          },
-          "suggested_next_action": "Add focused runtime or state-transition evidence for the remaining behavioral slice."
-        },
-        {
-          "acceptance_tests": [
-            "test_two_python_federates_share_in_memory_rti"
-          ],
-          "clause": "6.11",
-          "implementation_areas": [
-            "object_delivery"
-          ],
-          "kinds": {
-            "ARG": 1,
-            "EFF": 1,
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 4,
-          "queue_item": "Reflect Attribute Values",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_11-ARG-003",
-            "HLA1516.1-OM-6_11-PRE-004",
-            "HLA1516.1-OM-6_11-EFF-005",
-            "HLA1516.1-OM-6_11-EXC-006"
-          ],
-          "statuses": {
-            "partial": 4
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_two_python_federates_share_in_memory_rti"
-          ],
-          "clause": "6.12",
-          "implementation_areas": [
-            "interaction_delivery"
-          ],
-          "kinds": {
-            "EFF": 1,
-            "EXC": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "Send Interaction",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_12-EFF-005",
-            "HLA1516.1-OM-6_12-EXC-006"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        }
-      ],
-      "statuses": {
-        "partial": 12
-      }
+      "kinds": {},
+      "open_row_count": 0,
+      "queue_item_count": 0,
+      "queue_items": [],
+      "statuses": {}
     },
     {
       "description": "Clause 7 packet-to-curated backlog for ownership-management services.",
@@ -2443,84 +2347,12 @@
       "description": "Cross-cutting native/gRPC/REST transport-equivalence and transportation-type backlog rows.",
       "family": "Transports",
       "kinds": {
-        "EFF": 1,
-        "EXC": 64,
-        "PRE": 83,
-        "SEM": 2
+        "EXC": 63,
+        "PRE": 82
       },
-      "open_row_count": 150,
-      "queue_item_count": 94,
+      "open_row_count": 145,
+      "queue_item_count": 91,
       "queue_items": [
-        {
-          "acceptance_tests": [
-            "test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions",
-            "test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates",
-            "test_timestamp_order_attribute_updates_are_released_in_time_order",
-            "test_two_python_federates_share_in_memory_rti"
-          ],
-          "clause": "6.1",
-          "implementation_areas": [
-            "object_delivery",
-            "interaction_delivery plus declaration_management"
-          ],
-          "kinds": {
-            "SEM": 2
-          },
-          "open_row_count": 2,
-          "queue_item": "Object Management semantic overview",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_1-SEM-004",
-            "HLA1516.1-OM-6_1-SEM-005"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_two_python_federates_share_in_memory_rti"
-          ],
-          "clause": "6.11",
-          "implementation_areas": [
-            "object_delivery"
-          ],
-          "kinds": {
-            "PRE": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Reflect Attribute Values",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_11-PRE-004"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_two_python_federates_share_in_memory_rti"
-          ],
-          "clause": "6.12",
-          "implementation_areas": [
-            "interaction_delivery"
-          ],
-          "kinds": {
-            "EFF": 1,
-            "EXC": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "Send Interaction",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_12-EFF-005",
-            "HLA1516.1-OM-6_12-EXC-006"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
         {
           "acceptance_tests": [
             "test_python_rti_acquisition_if_available_reports_unavailable_without_transfer"
@@ -4691,11 +4523,11 @@
         }
       ],
       "statuses": {
-        "partial": 150
+        "partial": 145
       }
     }
   ],
   "generated_from": "harmonized requirements ledgers + imported HLA packet v1.0",
-  "total_open_rows": 335,
-  "total_queue_items": 188
+  "total_open_rows": 318,
+  "total_queue_items": 182
 }
