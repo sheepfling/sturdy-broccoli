@@ -77,12 +77,14 @@ Latest investigated decision:
 - treat this bucket as maintained boundary documentation unless later backend
   evidence materially changes the mixed-backend dispositions or leadership
   explicitly wants a narrower Python-only claim
-- on `2026-06-26`, the `2010 CAP-SUP bounded family` was also re-audited and
+- on `2026-06-27`, the `2010 CAP-SUP bounded family` was also re-audited and
   kept as an explicit bounded family surface
 - the current owner doc, reconciliation companion, reconciliation verifier,
   and owning shard command all support that reading
 - the current tail remains a uniform bounded `43 PRE`, `43 EXC`, and
   `43 EXC_API` negative-envelope family
+- the owner ledger and Clause 10 companion now encode those bounded envelopes
+  directly in the row notes instead of relying on one generic residual note
 - no narrower direct claim was identified that would preserve the current
   Clause 10 row meanings without adding new exhaustive per-service
   negative-matrix proof

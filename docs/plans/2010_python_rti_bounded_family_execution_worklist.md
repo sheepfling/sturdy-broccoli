@@ -167,7 +167,7 @@ Operational effect:
 - the active execution queue should advance to the next real tightening bucket
   instead of treating these rows as unresolved wording debt
 
-The `CAP-SUP` bounded family was also re-audited on `2026-06-26` against the
+The `CAP-SUP` bounded family was also re-audited on `2026-06-27` against the
 current owner doc, reconciliation companion, reconciliation verifier, and the
 owning shard command for:
 
@@ -188,7 +188,14 @@ Reason:
    `43 PRE`, `43 EXC`, and `43 EXC_API` rows
 2. the current support-service shard is green, but the remaining packet rows
    still describe broader negative envelopes than the direct witnesses
-3. the previously confusing factory-helper rows are no longer part of the live
+3. the owner ledger and Clause 10 companion ledger now name those bounded
+   envelopes explicitly instead of relying on one generic residual-note
+   pattern:
+   - `PRE` rows now call out the exercised helper precondition surface directly
+   - `EXC` rows now call out the exercised standard exception surface directly
+   - `EXC_API` rows now state that the imported API wording stays broader than
+     the isolated negative-path proof
+4. the previously confusing factory-helper rows are no longer part of the live
    Python residual set:
    - `REQ-RTI-SS-10_44-getMessageRetractionHandleFactory`
    - `REQ-RTI-SS-10_44-getRegionHandleFactory`
@@ -196,10 +203,10 @@ Reason:
      `analysis/compliance/requirements_matrix_2010.csv`
    - that confirms the remaining `CAP-SUP` debt is the broad negative-path
      envelope, not missing positive-path helper coverage
-4. no narrower direct claim was identified that would preserve the current
+5. no narrower direct claim was identified that would preserve the current
    Clause 10 row meanings without adding new exhaustive per-service
    negative-matrix proof
-5. the current owner doc already expresses the honest final reading for the
+6. the current owner doc already expresses the honest final reading for the
    present evidence
 
 Operational effect:

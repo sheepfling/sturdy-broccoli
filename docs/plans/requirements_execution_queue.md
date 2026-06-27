@@ -198,7 +198,7 @@ Use the callback/configuration/binding owner doc as maintained boundary
 documentation and advance to `P1` / `P2` above for the next actual closeout
 move.
 
-The `2010 CAP-SUP bounded family` was also re-audited on `2026-06-26`.
+The `2010 CAP-SUP bounded family` was also re-audited on `2026-06-27`.
 
 Result:
 
@@ -213,7 +213,10 @@ Why:
 3. the remaining tail is still a uniform bounded `43 PRE`, `43 EXC`, and
    `43 EXC_API` envelope rather than a set of isolated direct per-service
    witnesses
-4. no narrower direct claim was identified that would preserve the current row
+4. the owner ledger and Clause 10 companion now state those bounded envelopes
+   explicitly at the row-note level instead of relying on one generic
+   residual explanation
+5. no narrower direct claim was identified that would preserve the current row
    meanings without adding new exhaustive per-service negative-matrix proof
 
 Use the support-services owner docs as maintained bounded documentation and

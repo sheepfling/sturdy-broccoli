@@ -7,6 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 LEDGER = ROOT / "requirements/2010/hla1516_1_sup_detailed_reconciliation.csv"
+CLAUSE10_LEDGER = ROOT / "requirements/2010/hla1516_1_clause_10_sup_detailed_reconciliation.csv"
 BOUNDARY_DOC = ROOT / "docs/requirements/ieee-1516-2010/support_services_bounded_family.md"
 
 
@@ -39,3 +40,26 @@ def test_support_services_boundary_doc_records_current_family_shape() -> None:
     assert "`python_runtime_disposition=verified`" in text
     assert "`./tools/test-focus run backends`" in text
     assert "`./tools/test-surface run unit-scenarios-light`" in text
+
+
+def test_support_services_clause10_tail_uses_explicit_pre_and_exception_notes() -> None:
+    rows = list(csv.DictReader(CLAUSE10_LEDGER.open(newline="", encoding="utf-8")))
+    partial_rows = [row for row in rows if row["current_status"] == "partial"]
+
+    assert len(partial_rows) == 86
+    for row in partial_rows:
+        if row["reconciliation_kind"] == "PRE":
+            assert "applicable precondition surface" in row["notes"]
+        elif row["reconciliation_kind"] == "EXC":
+            assert "standard exception surface" in row["notes"]
+
+    by_id = {row["packet_requirement_id"]: row for row in partial_rows}
+    assert "resign-action helper guards" in by_id[
+        "HLA1516.1-SUP-10_3-SETAUTOMATICRESIGNDIRECTIVE-PRE-001"
+    ]["notes"]
+    assert "duplicate-switch-state" in by_id[
+        "HLA1516.1-SUP-10_39-ENABLEINTERACTIONRELEVANCEADVISORYSWITCH-PRE-001"
+    ]["notes"]
+    assert "CallNotAllowedFromWithinCallback" in by_id[
+        "HLA1516.1-SUP-10_41-EVOKECALLBACK-EXC-001"
+    ]["notes"]
