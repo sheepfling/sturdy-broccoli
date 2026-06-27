@@ -305,14 +305,14 @@
       "description": "Clause 6 packet-to-curated backlog for object-management services.",
       "family": "Object Management",
       "kinds": {
-        "ARG": 3,
+        "ARG": 2,
         "EFF": 2,
-        "EXC": 4,
-        "PRE": 3,
+        "EXC": 3,
+        "PRE": 2,
         "SEM": 6
       },
-      "open_row_count": 18,
-      "queue_item_count": 5,
+      "open_row_count": 15,
+      "queue_item_count": 4,
       "queue_items": [
         {
           "acceptance_tests": [
@@ -405,31 +405,6 @@
         },
         {
           "acceptance_tests": [
-            "test_delete_object_instance_notifies_known_federates_with_remove_object_instance"
-          ],
-          "clause": "6.15",
-          "implementation_areas": [
-            "object_deletion and discovery"
-          ],
-          "kinds": {
-            "ARG": 1,
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 3,
-          "queue_item": "Remove Object Instance",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_15-ARG-003",
-            "HLA1516.1-OM-6_15-PRE-004",
-            "HLA1516.1-OM-6_15-EXC-006"
-          ],
-          "statuses": {
-            "partial": 3
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
             "test_two_python_federates_share_in_memory_rti"
           ],
           "clause": "6.12",
@@ -453,7 +428,7 @@
         }
       ],
       "statuses": {
-        "partial": 18
+        "partial": 15
       }
     },
     {
@@ -2495,11 +2470,11 @@
       "kinds": {
         "EFF": 1,
         "EXC": 64,
-        "PRE": 85,
+        "PRE": 84,
         "SEM": 2
       },
-      "open_row_count": 152,
-      "queue_item_count": 96,
+      "open_row_count": 151,
+      "queue_item_count": 95,
       "queue_items": [
         {
           "acceptance_tests": [
@@ -2563,27 +2538,6 @@
           "queue_item": "Reflect Attribute Values",
           "requirement_ids": [
             "HLA1516.1-OM-6_11-PRE-004"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_delete_object_instance_notifies_known_federates_with_remove_object_instance"
-          ],
-          "clause": "6.15",
-          "implementation_areas": [
-            "object_deletion and discovery"
-          ],
-          "kinds": {
-            "PRE": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Remove Object Instance",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_15-PRE-004"
           ],
           "statuses": {
             "partial": 1
@@ -4783,11 +4737,11 @@
         }
       ],
       "statuses": {
-        "partial": 152
+        "partial": 151
       }
     }
   ],
   "generated_from": "harmonized requirements ledgers + imported HLA packet v1.0",
-  "total_open_rows": 343,
-  "total_queue_items": 192
+  "total_open_rows": 339,
+  "total_queue_items": 190
 }

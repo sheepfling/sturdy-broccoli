@@ -938,6 +938,65 @@ def test_delete_object_instance_notifies_known_federates_with_remove_object_inst
     owner.destroy_federation_execution("remove-object-callback-fed")
 
 
+def test_remove_object_instance_callback_validates_payload_context_and_wraps_callback_failures():
+    _, owner, observer, owner_fed, observer_fed, owner_handle, _observer_handle = joined_pair(
+        "remove-object-contract-fed"
+    )
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+
+    owner.publish_object_class_attributes(cls, {attr})
+    observer.subscribe_object_class_attributes(cls, {attr})
+    obj = owner.register_object_instance(cls, "Remove-Contract-1")
+    drain(owner, observer)
+    observer_fed.clear()
+
+    owner.delete_object_instance(obj, b"remove-contract-tag")
+    drain(owner, observer)
+
+    removed = observer_fed.last_callback("removeObjectInstance")
+    assert removed is not None
+    assert removed.args[0] == obj
+    assert removed.args[1] == b"remove-contract-tag"
+    assert removed.args[2] == OrderType.RECEIVE
+    info = removed.args[3]
+    assert getattr(info, "producing_federate") == owner_handle
+    assert owner_fed.callbacks_named("removeObjectInstance") == []
+    with pytest.raises(ObjectInstanceNotKnown):
+        observer.get_object_instance_handle("Remove-Contract-1")
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("remove-object-contract-fed")
+
+    class _FailingRemoveAmbassador(RecordingFederateAmbassador):
+        def on_remove_object_instance(self, *args, **kwargs):
+            raise RuntimeError("remove-object-instance-failed")
+
+    engine = InMemoryRTIEngine()
+    owner = rti_ambassador(engine=engine)
+    observer = rti_ambassador(engine=engine)
+    owner.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    observer.connect(_FailingRemoveAmbassador(), CallbackModel.HLA_IMMEDIATE)
+    owner.create_federation_execution("remove-object-failing-fed", "TargetRadarFOMmodule.xml")
+    owner.join_federation_execution("owner", "type-owner", "remove-object-failing-fed")
+    observer.join_federation_execution("observer", "type-observer", "remove-object-failing-fed")
+
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+    owner.publish_object_class_attributes(cls, {attr})
+    observer.subscribe_object_class_attributes(cls, {attr})
+    obj = owner.register_object_instance(cls, "Remove-Failing-1")
+    drain(owner, observer)
+
+    with pytest.raises(FederateInternalError):
+        owner.delete_object_instance(obj, b"remove-failing-tag")
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("remove-object-failing-fed")
+
+
 def test_update_rate_designator_throttles_timed_reflects(tmp_path: Path):
     fom_path = tmp_path / "update-rate-fom.xml"
     _write_update_rate_fom(fom_path)
