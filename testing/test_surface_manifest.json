@@ -598,6 +598,18 @@
           "generate"
         ],
         [
+          "./tools/fom-siso-runtime-surface-matrix",
+          "--preset",
+          "micro-bridge-smoke",
+          "--with-screenshots"
+        ],
+        [
+          "./tools/fom-siso-runtime-surface-matrix",
+          "--preset",
+          "showcase-hydrated",
+          "--with-screenshots"
+        ],
+        [
           "python3",
           "scripts/run_spec2025_finish_line.py"
         ],

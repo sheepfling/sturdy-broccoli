@@ -138,6 +138,7 @@ Shortest common paths:
 - generate the scenario x surface matrix for runtime-only, observer/visualizer, and observer/visualizer/bridge rows: `./tools/fom-siso-runtime-surface-matrix`
   - writes per-row API snapshots and optional screenshot galleries under `artifacts/siso_runtime_surface_matrix/`
   - use `--with-screenshots` to attempt visualizer and bridge docs screenshots when Playwright is available
+  - use `--preset micro-bridge-smoke` for bounded 2-federate bridge hydration, `--preset showcase-hydrated` for 5/10-federate visualizer hydration, or `--preset stress-mixed` for a mixed runtime-plus-visualizer stress packet
 - inspect the listener-federate index for that showcase: `artifacts/siso_runtime_showcase/siso_runtime_showcase_listener_index.html`
 - generate the runtime-backed SISO launcher packet: `./tools/fom-siso-runtime-launcher`
 - stand up the live runtime observer control plane and use the page to start/stop SISO, two-federate, or target-radar runs: `./tools/fom-siso-runtime-observer`

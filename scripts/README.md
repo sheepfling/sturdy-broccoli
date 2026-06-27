@@ -58,6 +58,7 @@ Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
   - optional `--live-only` skips the seeded local surfaces and captures only the supplied live URLs
 - `./tools/fom-siso-runtime-surface-matrix` canonical scenario x surface integration packet for runtime-only, observer/visualizer, and observer/visualizer/bridge rows over the SISO showcase manifest
   - writes per-row observer API snapshots, bridge contract snapshots, and optional screenshot galleries for selected SISO rows
+  - named presets now cover bounded micro bridge hydration plus larger 5/10-federate showcase hydration without hand-selecting rows
 - `./tools/fom-siso-runtime-launcher` canonical larger-federation launcher-oriented runtime SISO packet flow
 - `./tools/fom-siso-runtime-observer` canonical live federation-subscriber control plane for SISO, two-federate, and target-radar runtime lanes
 - `./tools/fom-siso-runtime-showcase` canonical runtime-backed SISO showcase packet flow
