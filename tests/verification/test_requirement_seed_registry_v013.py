@@ -169,6 +169,16 @@ def test_clause_6_packet_reconciliation_does_not_keep_stale_partial_precondition
         "HLA1516.1-OM-6_26-PRE-004": "test_attribute_transportation_callbacks_validate_payload_context_and_wrap_callback_failures",
         "HLA1516.1-OM-6_26-EFF-005": "test_transportation_type_services_emit_confirm_and_report_callbacks",
         "HLA1516.1-OM-6_26-EXC-006": "test_attribute_transportation_callbacks_validate_payload_context_and_wrap_callback_failures",
+        "HLA1516.1-OM-6_28-SVC-001": "test_interaction_transportation_callbacks_validate_payload_context_and_wrap_callback_failures",
+        "HLA1516.1-OM-6_28-ARG-003": "test_interaction_transportation_callbacks_validate_payload_context_and_wrap_callback_failures",
+        "HLA1516.1-OM-6_28-PRE-004": "test_interaction_transportation_callbacks_validate_payload_context_and_wrap_callback_failures",
+        "HLA1516.1-OM-6_28-EFF-005": "test_transportation_type_services_emit_confirm_and_report_callbacks",
+        "HLA1516.1-OM-6_28-EXC-006": "test_interaction_transportation_callbacks_validate_payload_context_and_wrap_callback_failures",
+        "HLA1516.1-OM-6_30-SVC-001": "test_interaction_transportation_callbacks_validate_payload_context_and_wrap_callback_failures",
+        "HLA1516.1-OM-6_30-ARG-003": "test_interaction_transportation_callbacks_validate_payload_context_and_wrap_callback_failures",
+        "HLA1516.1-OM-6_30-PRE-004": "test_interaction_transportation_callbacks_validate_payload_context_and_wrap_callback_failures",
+        "HLA1516.1-OM-6_30-EFF-005": "test_transportation_type_services_emit_confirm_and_report_callbacks",
+        "HLA1516.1-OM-6_30-EXC-006": "test_interaction_transportation_callbacks_validate_payload_context_and_wrap_callback_failures",
     }
 
     for requirement_id, current_test_id in expected.items():

@@ -305,45 +305,16 @@
       "description": "Clause 6 packet-to-curated backlog for object-management services.",
       "family": "Object Management",
       "kinds": {
-        "ARG": 5,
-        "EFF": 8,
-        "EXC": 10,
-        "PRE": 5,
+        "ARG": 3,
+        "EFF": 6,
+        "EXC": 8,
+        "PRE": 3,
         "SEM": 6,
-        "SVC": 6
+        "SVC": 4
       },
-      "open_row_count": 40,
-      "queue_item_count": 11,
+      "open_row_count": 30,
+      "queue_item_count": 9,
       "queue_items": [
-        {
-          "acceptance_tests": [
-            "test_transportation_type_services_emit_confirm_and_report_callbacks"
-          ],
-          "clause": "6.28",
-          "implementation_areas": [
-            "transportation_interaction_change_callback_subset"
-          ],
-          "kinds": {
-            "ARG": 1,
-            "EFF": 1,
-            "EXC": 1,
-            "PRE": 1,
-            "SVC": 1
-          },
-          "open_row_count": 5,
-          "queue_item": "Confirm Interaction Transportation Type Change",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_28-SVC-001",
-            "HLA1516.1-OM-6_28-ARG-003",
-            "HLA1516.1-OM-6_28-PRE-004",
-            "HLA1516.1-OM-6_28-EFF-005",
-            "HLA1516.1-OM-6_28-EXC-006"
-          ],
-          "statuses": {
-            "partial": 5
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
         {
           "acceptance_tests": [
             "test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions",
@@ -512,35 +483,6 @@
         },
         {
           "acceptance_tests": [
-            "test_transportation_type_services_emit_confirm_and_report_callbacks"
-          ],
-          "clause": "6.30",
-          "implementation_areas": [
-            "transportation_interaction_report_subset"
-          ],
-          "kinds": {
-            "ARG": 1,
-            "EFF": 1,
-            "EXC": 1,
-            "PRE": 1,
-            "SVC": 1
-          },
-          "open_row_count": 5,
-          "queue_item": "Report Interaction Transportation Type",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_30-SVC-001",
-            "HLA1516.1-OM-6_30-ARG-003",
-            "HLA1516.1-OM-6_30-PRE-004",
-            "HLA1516.1-OM-6_30-EFF-005",
-            "HLA1516.1-OM-6_30-EXC-006"
-          ],
-          "statuses": {
-            "partial": 5
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
             "test_transportation_type_services_emit_confirm_and_report_callbacks",
             "mapped_runtime=test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates",
             "mapped_restore=test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides",
@@ -620,7 +562,7 @@
         }
       ],
       "statuses": {
-        "partial": 40
+        "partial": 30
       }
     },
     {
@@ -2660,45 +2602,15 @@
       "description": "Cross-cutting native/gRPC/REST transport-equivalence and transportation-type backlog rows.",
       "family": "Transports",
       "kinds": {
-        "ARG": 2,
-        "EFF": 7,
-        "EXC": 70,
-        "PRE": 87,
+        "EFF": 5,
+        "EXC": 68,
+        "PRE": 85,
         "SEM": 2,
-        "SVC": 6
+        "SVC": 4
       },
-      "open_row_count": 174,
-      "queue_item_count": 102,
+      "open_row_count": 164,
+      "queue_item_count": 100,
       "queue_items": [
-        {
-          "acceptance_tests": [
-            "test_transportation_type_services_emit_confirm_and_report_callbacks"
-          ],
-          "clause": "6.28",
-          "implementation_areas": [
-            "transportation_interaction_change_callback_subset"
-          ],
-          "kinds": {
-            "ARG": 1,
-            "EFF": 1,
-            "EXC": 1,
-            "PRE": 1,
-            "SVC": 1
-          },
-          "open_row_count": 5,
-          "queue_item": "Confirm Interaction Transportation Type Change",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_28-SVC-001",
-            "HLA1516.1-OM-6_28-ARG-003",
-            "HLA1516.1-OM-6_28-PRE-004",
-            "HLA1516.1-OM-6_28-EFF-005",
-            "HLA1516.1-OM-6_28-EXC-006"
-          ],
-          "statuses": {
-            "partial": 5
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
         {
           "acceptance_tests": [
             "test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions",
@@ -2837,35 +2749,6 @@
           ],
           "statuses": {
             "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_transportation_type_services_emit_confirm_and_report_callbacks"
-          ],
-          "clause": "6.30",
-          "implementation_areas": [
-            "transportation_interaction_report_subset"
-          ],
-          "kinds": {
-            "ARG": 1,
-            "EFF": 1,
-            "EXC": 1,
-            "PRE": 1,
-            "SVC": 1
-          },
-          "open_row_count": 5,
-          "queue_item": "Report Interaction Transportation Type",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_30-SVC-001",
-            "HLA1516.1-OM-6_30-ARG-003",
-            "HLA1516.1-OM-6_30-PRE-004",
-            "HLA1516.1-OM-6_30-EFF-005",
-            "HLA1516.1-OM-6_30-EXC-006"
-          ],
-          "statuses": {
-            "partial": 5
           },
           "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
         },
@@ -5118,11 +5001,11 @@
         }
       ],
       "statuses": {
-        "partial": 174
+        "partial": 164
       }
     }
   ],
   "generated_from": "harmonized requirements ledgers + imported HLA packet v1.0",
-  "total_open_rows": 387,
-  "total_queue_items": 204
+  "total_open_rows": 367,
+  "total_queue_items": 200
 }

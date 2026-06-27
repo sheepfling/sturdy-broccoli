@@ -1482,6 +1482,57 @@ def test_attribute_transportation_callbacks_validate_payload_context_and_wrap_ca
     failing.destroy_federation_execution("transport-attribute-callback-failing-fed")
 
 
+def test_interaction_transportation_callbacks_validate_payload_context_and_wrap_callback_failures():
+    _, owner, observer, owner_fed, observer_fed, owner_handle, _observer_handle = joined_pair(
+        "transport-interaction-callback-contract-fed"
+    )
+    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    best_effort = owner.backend.engine.transportation_best_effort
+
+    owner.publish_interaction_class(interaction)
+    owner_fed.clear()
+
+    owner.request_interaction_transportation_type_change(interaction, best_effort)
+    owner.query_interaction_transportation_type(interaction)
+    drain(owner, observer)
+
+    confirm = owner_fed.last_callback("confirmInteractionTransportationTypeChange")
+    report = owner_fed.last_callback("reportInteractionTransportationType")
+    assert confirm is not None
+    assert confirm.args == (interaction, best_effort)
+    assert report is not None
+    assert report.args == (owner_handle, interaction, best_effort)
+    assert observer_fed.callbacks_named("confirmInteractionTransportationTypeChange") == []
+    assert observer_fed.callbacks_named("reportInteractionTransportationType") == []
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("transport-interaction-callback-contract-fed")
+
+    class _FailingInteractionTransportAmbassador(RecordingFederateAmbassador):
+        def on_confirm_interaction_transportation_type_change(self, *args, **kwargs):
+            raise RuntimeError("confirm-interaction-transport-failed")
+
+        def on_report_interaction_transportation_type(self, *args, **kwargs):
+            raise RuntimeError("report-interaction-transport-failed")
+
+    failing = rti_ambassador(engine=InMemoryRTIEngine())
+    failing.connect(_FailingInteractionTransportAmbassador(), CallbackModel.HLA_IMMEDIATE)
+    failing.create_federation_execution("transport-interaction-callback-failing-fed", "TargetRadarFOMmodule.xml")
+    failing.join_federation_execution("alpha", "type-a", "transport-interaction-callback-failing-fed")
+    fail_interaction = failing.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    fail_best_effort = failing.backend.engine.transportation_best_effort
+    failing.publish_interaction_class(fail_interaction)
+
+    with pytest.raises(FederateInternalError):
+        failing.request_interaction_transportation_type_change(fail_interaction, fail_best_effort)
+    with pytest.raises(FederateInternalError):
+        failing.query_interaction_transportation_type(fail_interaction)
+
+    failing.resign_federation_execution(ResignAction.NO_ACTION)
+    failing.destroy_federation_execution("transport-interaction-callback-failing-fed")
+
+
 def test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates():
     _, owner, observer, _owner_fed, observer_fed, _h1, _h2 = joined_pair("transport-runtime-behavior-fed")
     cls = owner.get_object_class_handle("HLAobjectRoot.Target")
