@@ -306,14 +306,13 @@
       "family": "Object Management",
       "kinds": {
         "ARG": 3,
-        "EFF": 4,
-        "EXC": 6,
+        "EFF": 2,
+        "EXC": 4,
         "PRE": 3,
-        "SEM": 6,
-        "SVC": 2
+        "SEM": 6
       },
-      "open_row_count": 24,
-      "queue_item_count": 7,
+      "open_row_count": 18,
+      "queue_item_count": 5,
       "queue_items": [
         {
           "acceptance_tests": [
@@ -351,32 +350,6 @@
             "partial": 6
           },
           "suggested_next_action": "Add focused runtime or state-transition evidence for the remaining behavioral slice."
-        },
-        {
-          "acceptance_tests": [
-            "test_transportation_type_services_emit_confirm_and_report_callbacks",
-            "negative=test_query_interaction_transportation_type_rejects_not_connected_not_joined_invalid_handle_and_save_restore"
-          ],
-          "clause": "6.29",
-          "implementation_areas": [
-            "transportation_interaction_query_subset"
-          ],
-          "kinds": {
-            "EFF": 1,
-            "EXC": 1,
-            "SVC": 1
-          },
-          "open_row_count": 3,
-          "queue_item": "Query Interaction Transportation Type",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_29-SVC-001",
-            "HLA1516.1-OM-6_29-EFF-005",
-            "HLA1516.1-OM-6_29-EXC-006"
-          ],
-          "statuses": {
-            "partial": 3
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
         },
         {
           "acceptance_tests": [
@@ -457,34 +430,6 @@
         },
         {
           "acceptance_tests": [
-            "test_transportation_type_services_emit_confirm_and_report_callbacks",
-            "mapped_runtime=test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates",
-            "mapped_restore=test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides",
-            "negative=test_request_interaction_transportation_type_change_rejects_not_connected_not_joined_and_save_restore"
-          ],
-          "clause": "6.27",
-          "implementation_areas": [
-            "transportation_interaction_change_subset"
-          ],
-          "kinds": {
-            "EFF": 1,
-            "EXC": 1,
-            "SVC": 1
-          },
-          "open_row_count": 3,
-          "queue_item": "Request Interaction Transportation Type Change",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_27-SVC-001",
-            "HLA1516.1-OM-6_27-EFF-005",
-            "HLA1516.1-OM-6_27-EXC-006"
-          ],
-          "statuses": {
-            "partial": 3
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
             "test_two_python_federates_share_in_memory_rti"
           ],
           "clause": "6.12",
@@ -508,7 +453,7 @@
         }
       ],
       "statuses": {
-        "partial": 24
+        "partial": 18
       }
     },
     {
@@ -2548,14 +2493,13 @@
       "description": "Cross-cutting native/gRPC/REST transport-equivalence and transportation-type backlog rows.",
       "family": "Transports",
       "kinds": {
-        "EFF": 3,
-        "EXC": 66,
+        "EFF": 1,
+        "EXC": 64,
         "PRE": 85,
-        "SEM": 2,
-        "SVC": 2
+        "SEM": 2
       },
-      "open_row_count": 158,
-      "queue_item_count": 98,
+      "open_row_count": 152,
+      "queue_item_count": 96,
       "queue_items": [
         {
           "acceptance_tests": [
@@ -2580,32 +2524,6 @@
           ],
           "statuses": {
             "partial": 2
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_transportation_type_services_emit_confirm_and_report_callbacks",
-            "negative=test_query_interaction_transportation_type_rejects_not_connected_not_joined_invalid_handle_and_save_restore"
-          ],
-          "clause": "6.29",
-          "implementation_areas": [
-            "transportation_interaction_query_subset"
-          ],
-          "kinds": {
-            "EFF": 1,
-            "EXC": 1,
-            "SVC": 1
-          },
-          "open_row_count": 3,
-          "queue_item": "Query Interaction Transportation Type",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_29-SVC-001",
-            "HLA1516.1-OM-6_29-EFF-005",
-            "HLA1516.1-OM-6_29-EXC-006"
-          ],
-          "statuses": {
-            "partial": 3
           },
           "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
         },
@@ -2669,34 +2587,6 @@
           ],
           "statuses": {
             "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_transportation_type_services_emit_confirm_and_report_callbacks",
-            "mapped_runtime=test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates",
-            "mapped_restore=test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides",
-            "negative=test_request_interaction_transportation_type_change_rejects_not_connected_not_joined_and_save_restore"
-          ],
-          "clause": "6.27",
-          "implementation_areas": [
-            "transportation_interaction_change_subset"
-          ],
-          "kinds": {
-            "EFF": 1,
-            "EXC": 1,
-            "SVC": 1
-          },
-          "open_row_count": 3,
-          "queue_item": "Request Interaction Transportation Type Change",
-          "requirement_ids": [
-            "HLA1516.1-OM-6_27-SVC-001",
-            "HLA1516.1-OM-6_27-EFF-005",
-            "HLA1516.1-OM-6_27-EXC-006"
-          ],
-          "statuses": {
-            "partial": 3
           },
           "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
         },
@@ -4893,11 +4783,11 @@
         }
       ],
       "statuses": {
-        "partial": 158
+        "partial": 152
       }
     }
   ],
   "generated_from": "harmonized requirements ledgers + imported HLA packet v1.0",
-  "total_open_rows": 355,
-  "total_queue_items": 196
+  "total_open_rows": 343,
+  "total_queue_items": 192
 }
