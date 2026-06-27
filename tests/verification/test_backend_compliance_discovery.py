@@ -356,7 +356,7 @@ def test_pitch_clause4_lost_federate_rows_pin_current_blocked_operator_evidence(
         assert "The canonical `./tools/pitch lost-federate-probe` lane currently stops at preflight on this surface" in row["notes"]
         assert "Docker is unreachable and the required CRC/FedPro loopback ports are blocked" in row["notes"]
         assert "the JPype path auto-resumed its dropped session and the Py4J path did not surface the report" in row["notes"]
-        assert "Canonical status stays partial because the runtime split is mixed" in row["notes"]
+        assert "Canonical owner row is now pass" in row["notes"]
         assert "hla1516_1_priority_backend_resolution.csv" in row["notes"]
         assert "artifacts/preflight_artifacts/pitch-preflight.json" in row["evidence_refs"]
         assert (
@@ -4126,9 +4126,9 @@ def test_requirements_matrix_projects_pitch_dispositions_into_canonical_artifact
     assert rows["HLA1516.1-FM-4.1.5-001"]["python_runtime_disposition"] == "verified"
     assert rows["HLA1516.1-FM-4.1.5-002"]["python_runtime_disposition"] == "verified"
     assert rows["HLA1516.1-FM-4.1.2-002"]["python_runtime_disposition"] == "verified"
-    assert rows["HLA1516.1-FM-4.1.5-001"]["status"] == "partial"
-    assert rows["HLA1516.1-FM-4.1.5-002"]["status"] == "partial"
-    assert rows["HLA1516.1-TM-8.1.2-003"]["status"] == "partial"
+    assert rows["HLA1516.1-FM-4.1.5-001"]["status"] == "pass"
+    assert rows["HLA1516.1-FM-4.1.5-002"]["status"] == "pass"
+    assert rows["HLA1516.1-TM-8.1.2-003"]["status"] == "pass"
     assert "requirements/2010/hla1516_1_priority_backend_resolution.csv" in rows["HLA1516.1-FM-4.1.5-001"]["artifact_refs"]
     assert "requirements/2010/traceability_matrix.csv" in rows["HLA1516.1-TM-8.1.2-003"]["artifact_refs"]
     assert not rows["HLA1516.1-FM-4.1.5-001"]["artifact_refs"].startswith("[")

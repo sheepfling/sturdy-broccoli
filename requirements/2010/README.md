@@ -24,7 +24,7 @@ Treat this as the single source-side list for the 2010 edition:
 - `hla1516_clause_12_save_restore.csv`: clause-level save/restore tranche
 - `hla1516_1_federate_interface.csv`: federate interface family ledger
 - `hla1516_1_priority_clauses_4_8_11.csv`: first clause-priority extraction tranche
-- `hla1516_1_priority_backend_resolution.csv`: backend-resolution companion for the currently bounded mixed-backend rows from the priority tranche
+- `hla1516_1_priority_backend_resolution.csv`: backend-resolution companion for the priority rows where canonical owner status is closed but vendor/runtime truth still differs
 - `hla1516_1_priority_clauses_7_9_10.csv`: second clause-priority extraction tranche
 - `hla1516_1_clause_4_fm_service_decomposition.csv`: federation management decomposition bridge
 - `hla1516_1_fm_detailed_reconciliation.csv`: federation management reconciliation
@@ -92,13 +92,13 @@ owner file first, then reflect the change in `traceability_matrix.csv`,
 `hla_1516_master_harmonization_index_v1_0.csv`, and the relevant verification
 artifact.
 
-Use `hla1516_1_priority_backend_resolution.csv` when the owner row is still
-canonically `partial` but the backend truth differs by runtime. That companion
-keeps `python`, `certi`, `pitch`, and `portico` answers separate from the
-requirement-level status.
+Use `hla1516_1_priority_backend_resolution.csv` when the canonical owner row is
+already closed for the repo-supported claim but the backend truth still differs
+by runtime. That companion keeps `python`, `certi`, `pitch`, and `portico`
+answers separate from the requirement-level status.
 
-For the human-facing explanation of why those rows stay `partial` and how to
-read them as an explicit bounded final state rather than an ambiguous backlog,
+For the human-facing explanation of why those rows are now canonical `pass`
+while backend resolution still differs by runtime,
 use:
 
 - `docs/requirements/ieee-1516-2010/mixed_backend_priority_boundaries.md`

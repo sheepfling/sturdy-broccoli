@@ -13,8 +13,8 @@ HLA1516.1-FM-4.1.4-002,IEEE 1516.1-2010,4.1.4,FM,RTI shall provide the standard 
 HLA1516.1-FM-4.1.4.1-001,IEEE 1516.1-2010,4.1.4.1,FM,RTI shall reject invalid or incompatible FOM modules,shall,fom_validation,integration test,test_conflicting_time_implementations_are_rejected,mapped
 HLA1516.1-FM-4.1.4.1-002,IEEE 1516.1-2010,4.1.4.1,FM,If a FOM module or MIM definition is rejected the RTI shall reject it in entirety,shall,fom_validation,negative backend matrix scenario,test_python_backend_fom_integrity_negative_matrix,mapped
 HLA1516.1-FM-4.1.4.2-001,IEEE 1516.1-2010,4.1.4.2,FM,RTI shall provide access to the current FDD individual FOM modules and the MIM,shall,fom_reporting,integration test,test_mom_fom_module_request_reports_requested_module_payload,mapped
-HLA1516.1-FM-4.1.5-001,IEEE 1516.1-2010,4.1.5,FM,RTI shall detect lost federates and report them through MOM,shall,connection_management,observer verification slice,test_python_backend_lost_federate_mom_matrix,partial
-HLA1516.1-FM-4.1.5-002,IEEE 1516.1-2010,4.1.5,FM,RTI shall resign lost federates using the current automatic resign directive,shall,connection_management,integration test,test_python_backend_lost_federate_mom_matrix,partial
+HLA1516.1-FM-4.1.5-001,IEEE 1516.1-2010,4.1.5,FM,RTI shall detect lost federates and report them through MOM,shall,connection_management,observer verification slice,test_python_backend_lost_federate_mom_matrix,pass
+HLA1516.1-FM-4.1.5-002,IEEE 1516.1-2010,4.1.5,FM,RTI shall resign lost federates using the current automatic resign directive,shall,connection_management,integration test,test_python_backend_lost_federate_mom_matrix,pass
 HLA1516.1-FM-4.2-001,IEEE 1516.1-2010,4.2,FM,RTI shall provide a Connect service,shall,federation_lifecycle,service verification,test_requirements_ledger_covers_generated_api_surface,mapped
 HLA1516.1-FM-4.3-001,IEEE 1516.1-2010,4.3,FM,RTI shall provide a Disconnect service,shall,federation_lifecycle,service verification,test_disconnect_requires_resign_and_marks_backend_not_connected,mapped
 HLA1516.1-FM-4.5-001,IEEE 1516.1-2010,4.5,FM,RTI shall provide Create Federation Execution,shall,federation_lifecycle,service verification,test_requirements_ledger_covers_generated_api_surface,mapped
@@ -49,7 +49,7 @@ HLA1516.1-TM-8.1-002,IEEE 1516.1-2010,8.1,TM,RTI shall coordinate logical time a
 HLA1516.1-TM-8.1.1-001,IEEE 1516.1-2010,8.1.1,TM,RTI shall treat attribute updates interactions object deletes and DDM region messages as HLA messages,shall,time_management,integration test,,mapped
 HLA1516.1-TM-8.1.2-001,IEEE 1516.1-2010,8.1.2,TM,Each message shall be either timestamp order TSO or receive order RO,shall,time_management,integration test,,mapped
 HLA1516.1-TM-8.1.2-002,IEEE 1516.1-2010,8.1.2,TM,RTI shall determine sent message order type from preferred order type timestamp presence and federate time status,shall,time_management,integration test,,mapped
-HLA1516.1-TM-8.1.2-003,IEEE 1516.1-2010,8.1.2,TM,RTI shall never convert RO messages into received TSO messages,shall,time_management,integration test,test_section8_backend_matrix_order_override_services,partial
+HLA1516.1-TM-8.1.2-003,IEEE 1516.1-2010,8.1.2,TM,RTI shall never convert RO messages into received TSO messages,shall,time_management,integration test,test_section8_backend_matrix_order_override_services,pass
 HLA1516.1-TM-8.1.2-004,IEEE 1516.1-2010,8.1.2,TM,RTI shall deliver received TSO messages in timestamp order except where flush queue behavior applies,shall,time_management,integration test,test_timestamp_ordered_updates_are_delivered_by_time_advance_order,mapped
 HLA1516.1-TM-8.1.3-001,IEEE 1516.1-2010,8.1.3,TM,Each joined federate shall have a logical time,shall,time_management,integration test,,mapped
 HLA1516.1-TM-8.1.3-002,IEEE 1516.1-2010,8.1.3,TM,A joined federate logical time shall only advance,shall,time_management,integration test,,mapped

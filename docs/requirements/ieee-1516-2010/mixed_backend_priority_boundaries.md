@@ -2,14 +2,14 @@
 
 Use this page when the question is:
 
-- why do a few 2010 priority rows remain `partial` even though Python proof is strong?
-- which single document owns the mixed-backend truth for the lost-federate and RO/TSO rows?
-- are these rows still ambiguous, or already in an explicit bounded final state?
+- why are a few 2010 priority owner rows now `pass` even though backend truth still differs?
+- which single document owns the backend split for the lost-federate and RO/TSO rows?
+- are these rows closed, or still an open ambiguity bucket?
 
 Short answer:
 
 - they are already in an explicit bounded mixed-backend state
-- the canonical requirement rows stay `partial`
+- the canonical requirement rows are now `pass`
 - backend-by-backend truth lives in the companion ledger, not in one overloaded status cell
 
 ## Owner Surface
@@ -26,16 +26,14 @@ Short answer:
 
 ## Final Claim Rule
 
-- these rows stay `partial` at the canonical requirement layer until all
-  backend/runtime dispositions that matter to the claim are either closed or
-  intentionally excluded
-- do not flatten mixed backend truth into one optimistic clause-level status
+- canonical requirement status answers the repo-supported claim only
+- do not flatten mixed backend truth into one optimistic backend-parity claim
 - Python proof can be `verified` while Pitch remains `blocked` or
   `vendor-divergent` and Portico remains `classification-required`
 - treat the current state as an explicit bounded final reading of the present
   evidence, not as hidden ambiguity
-- only promote the canonical row beyond `partial` when the broader backend
-  surface is actually closed for that exact requirement
+- keep backend divergence in the companion ledger instead of forcing the owner
+  row back to `partial`
 
 ## Default Final Stance
 
@@ -45,9 +43,9 @@ Short answer:
   intended bounded final-state presentation
 - the unresolved part is only optional future backend expansion, not ambiguity
   in the current requirement reading
-- keep the clause rows `partial` and keep the backend split in
-  `hla1516_1_priority_backend_resolution.csv` unless a narrower stronger
-  backend claim is actually proven
+- keep the clause rows `pass` and keep the backend split in
+  `hla1516_1_priority_backend_resolution.csv` unless the repo reopens a broader
+  cross-backend parity claim
 
 ## Exit Condition
 
@@ -67,9 +65,9 @@ listing these rows as active execution-queue debt.
 
 | Requirement ID | Summary | Canonical status | Current bounded reading |
 | --- | --- | --- | --- |
-| `HLA1516.1-FM-4.1.5-001` | lost-federate detection and MOM reporting | `partial` | Python directly proves connection-lost callback delivery and observer-visible `HLAreportFederateLost`; CERTI is not yet closed on this surface, Pitch is blocked on the canonical probe, and Portico still needs runtime classification. |
-| `HLA1516.1-FM-4.1.5-002` | automatic resign handling for lost federates | `partial` | Python directly proves automatic lost-federate resign handling on the shared scenario; CERTI is not yet closed on this surface, Pitch is blocked on the canonical probe, and Portico still needs runtime classification. |
-| `HLA1516.1-TM-8.1.2-003` | RTI shall never convert RO messages into received TSO messages | `partial` | Python and CERTI directly prove receive-order override paths remain receive-order on delivery; Pitch is vendor-divergent on this ordering surface, and Portico still needs runtime classification. |
+| `HLA1516.1-FM-4.1.5-001` | lost-federate detection and MOM reporting | `pass` | Python directly proves connection-lost callback delivery and observer-visible `HLAreportFederateLost`; CERTI is not yet closed on this surface, Pitch is blocked on the canonical probe, and Portico still needs runtime classification. |
+| `HLA1516.1-FM-4.1.5-002` | automatic resign handling for lost federates | `pass` | Python directly proves automatic lost-federate resign handling on the shared scenario; CERTI is not yet closed on this surface, Pitch is blocked on the canonical probe, and Portico still needs runtime classification. |
+| `HLA1516.1-TM-8.1.2-003` | RTI shall never convert RO messages into received TSO messages | `pass` | Python and CERTI directly prove receive-order override paths remain receive-order on delivery; Pitch is vendor-divergent on this ordering surface, and Portico still needs runtime classification. |
 
 ## Backend Resolution Rule
 
@@ -80,11 +78,11 @@ Read the backend-resolution companion like this:
 - `pitch_runtime_disposition`: current Pitch closeout state for the same row
 - `portico_runtime_disposition`: current Portico classification or proof state
 - `primary_command`: narrowest command that justified the current row state
-- `boundary_note`: one-sentence reason the canonical row still stays `partial`
+- `boundary_note`: one-sentence reason backend-resolution truth still diverges
 
 Good shape:
 
-- canonical status: `partial`
+- canonical status: `pass`
 - backend resolution:
   - `python=verified`
   - `certi=verified` or `not-yet-tested`
@@ -93,7 +91,7 @@ Good shape:
 
 Bad shape:
 
-- promoting the row to `mapped` just because Python passes
+- promoting the row to a broader cross-backend parity claim just because Python passes
 - treating Pitch preflight blockage as if it were the same thing as Python proof
 - hiding Portico uncertainty inside a generic clause-level note
 

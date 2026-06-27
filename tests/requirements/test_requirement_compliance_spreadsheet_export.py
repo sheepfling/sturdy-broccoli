@@ -64,10 +64,11 @@ def test_requirement_compliance_spreadsheet_export_writes_both_editions(tmp_path
 
     assert any(row["requirement_id"] == "HLA1516.1-FM-4.1.5-001" for row in rows_2010)
     assert any(row["service_group"] == "Data distribution management" for row in rows_2025)
-    assert any(row["canonical_status"] == "partial" for row in rows_2010)
+    assert any(row["canonical_status"] == "pass" for row in rows_2010)
     assert any(row["canonical_disposition"] == "covered" for row in rows_2025)
     assert any(
         row["requirement_id"] == "HLA1516.1-FM-4.1.5-001"
+        and row["canonical_status"] == "pass"
         and row["python_runtime_disposition"] == "verified"
         and row["pitch_runtime_disposition"] == "blocked"
         for row in rows_2010

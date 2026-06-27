@@ -29,7 +29,7 @@ Keep verification docs in this order:
 ## Primary Entry Points
 
 - [../requirements/ieee-1516-2010/README.md](../requirements/ieee-1516-2010/README.md): 2010 requirement-facing front door
-- [../requirements/ieee-1516-2010/mixed_backend_priority_boundaries.md](../requirements/ieee-1516-2010/mixed_backend_priority_boundaries.md): canonical reading for the remaining bounded mixed-backend 2010 priority rows
+- [../requirements/ieee-1516-2010/mixed_backend_priority_boundaries.md](../requirements/ieee-1516-2010/mixed_backend_priority_boundaries.md): canonical reading for the closed 2010 priority rows whose backend-resolution truth still differs by runtime
 - [../requirements/ieee-1516-2010/federation_management_bounded_family.md](../requirements/ieee-1516-2010/federation_management_bounded_family.md): canonical reading for the remaining bounded Clause 4 federation-management partial-family tail
 - [../requirements/ieee-1516-2010/declaration_management_bounded_family.md](../requirements/ieee-1516-2010/declaration_management_bounded_family.md): canonical reading for the remaining bounded Clause 5 declaration-management partial-family tail
 - [../requirements/ieee-1516-2010/object_management_bounded_family.md](../requirements/ieee-1516-2010/object_management_bounded_family.md): canonical reading for the remaining bounded Clause 6 object-management partial-family tail

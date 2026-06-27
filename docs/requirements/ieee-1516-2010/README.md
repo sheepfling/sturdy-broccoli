@@ -168,8 +168,8 @@ For 2010 work, the usual ownership pattern is:
 
 - source requirement family in [`../../../requirements/2010/README.md`](../../../requirements/2010/README.md)
 - canonical closure or status row in the family CSV or `traceability_matrix.csv`
-- backend split in a linked companion artifact such as `requirements/2010/hla1516_1_priority_backend_resolution.csv` when the owner row is still partial for cross-backend reasons
-- bounded mixed-backend final-state note in [`mixed_backend_priority_boundaries.md`](mixed_backend_priority_boundaries.md) when the question is how to read those partial rows honestly
+- backend split in a linked companion artifact such as `requirements/2010/hla1516_1_priority_backend_resolution.csv` when backend truth differs by runtime even though the owner row is already closed for the repo-supported claim
+- bounded mixed-backend final-state note in [`mixed_backend_priority_boundaries.md`](mixed_backend_priority_boundaries.md) when the question is how to read those canonical pass rows honestly without flattening vendor divergence
 - bounded support-services family note in [`support_services_bounded_family.md`](support_services_bounded_family.md) when the question is why Clause 10 still has a narrow `PRE/EXC/EXC_API` partial tail even though service, signature, MOM, and main negative-path coverage are already strong
 - bounded federation-management family note in [`federation_management_bounded_family.md`](federation_management_bounded_family.md) when the question is why Clause 4 still has a mixed `ARG/EFF/CB_ORD/EXC` partial tail even though most lifecycle, synchronization, and save/restore services are already strongly covered
 - bounded declaration-management family note in [`declaration_management_bounded_family.md`](declaration_management_bounded_family.md) when the question is why Clause 5 still has a `PRE/EXC/EXC_API` partial tail even though most direct publication, subscription, declaration-callback, and MOM behavior is already strongly covered
