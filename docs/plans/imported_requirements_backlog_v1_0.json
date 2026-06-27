@@ -30,265 +30,11 @@
     {
       "description": "Clause 7 packet-to-curated backlog for ownership-management services.",
       "family": "Ownership Management",
-      "kinds": {
-        "EXC": 11,
-        "PRE": 8
-      },
-      "open_row_count": 19,
-      "queue_item_count": 11,
-      "queue_items": [
-        {
-          "acceptance_tests": [
-            "test_python_rti_acquisition_if_available_reports_unavailable_without_transfer"
-          ],
-          "clause": "7.8",
-          "implementation_areas": [
-            "ownership_callbacks"
-          ],
-          "kinds": {
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "attributeOwnershipAcquisition",
-          "requirement_ids": [
-            "HLA1516.1-OWN-7_8-ATTRIBUTEOWNERSHIPACQUISITION-EXC-001",
-            "HLA1516.1-OWN-7_8-ATTRIBUTEOWNERSHIPACQUISITION-PRE-001"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_python_rti_negotiated_ownership_tracks_divesting_and_candidate_flows",
-            "test_python_rti_acquisition_if_available_reports_unavailable_without_transfer"
-          ],
-          "clause": "7.9",
-          "implementation_areas": [
-            "ownership_runtime"
-          ],
-          "kinds": {
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "attributeOwnershipAcquisitionIfAvailable",
-          "requirement_ids": [
-            "HLA1516.1-OWN-7_9-ATTRIBUTEOWNERSHIPACQUISITIONIFAVAILABLE-EXC-001",
-            "HLA1516.1-OWN-7_9-ATTRIBUTEOWNERSHIPACQUISITIONIFAVAILABLE-PRE-001"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_name_reservation_ddm_regions_ownership_and_time_support"
-          ],
-          "clause": "7.13",
-          "implementation_areas": [
-            "ownership_callbacks"
-          ],
-          "kinds": {
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "attributeOwnershipDivestitureIfWanted",
-          "requirement_ids": [
-            "HLA1516.1-OWN-7_13-ATTRIBUTEOWNERSHIPDIVESTITUREIFWANTED-EXC-001",
-            "HLA1516.1-OWN-7_13-ATTRIBUTEOWNERSHIPDIVESTITUREIFWANTED-PRE-001"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_python_rti_query_attribute_ownership_reports_not_owned_after_divestiture"
-          ],
-          "clause": "7.12",
-          "implementation_areas": [
-            "ownership_runtime"
-          ],
-          "kinds": {
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "attributeOwnershipReleaseDenied",
-          "requirement_ids": [
-            "HLA1516.1-OWN-7_12-ATTRIBUTEOWNERSHIPRELEASEDENIED-EXC-001",
-            "HLA1516.1-OWN-7_12-ATTRIBUTEOWNERSHIPRELEASEDENIED-PRE-001"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_cancel_attribute_ownership_acquisition_rejects_not_connected_not_joined_unknown_object_and_save_restore"
-          ],
-          "clause": "7.15",
-          "implementation_areas": [
-            "ownership_runtime"
-          ],
-          "kinds": {
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "cancelAttributeOwnershipAcquisition",
-          "requirement_ids": [
-            "HLA1516.1-OWN-7_15-CANCELATTRIBUTEOWNERSHIPACQUISITION-EXC-001",
-            "HLA1516.1-OWN-7_15-CANCELATTRIBUTEOWNERSHIPACQUISITION-PRE-001"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_cancel_negotiated_divestiture_rejects_not_connected_not_joined_unknown_object_and_save_restore"
-          ],
-          "clause": "7.14",
-          "implementation_areas": [
-            "ownership_runtime"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "cancelNegotiatedAttributeOwnershipDivestiture",
-          "requirement_ids": [
-            "HLA1516.1-OWN-7_14-CANCELNEGOTIATEDATTRIBUTEOWNERSHIPDIVESTITURE-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_python_rti_acquisition_if_available_reports_unavailable_without_transfer"
-          ],
-          "clause": "7.6",
-          "implementation_areas": [
-            "ownership_runtime"
-          ],
-          "kinds": {
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "confirmDivestiture",
-          "requirement_ids": [
-            "HLA1516.1-OWN-7_6-CONFIRMDIVESTITURE-EXC-001",
-            "HLA1516.1-OWN-7_6-CONFIRMDIVESTITURE-PRE-001"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_unconditional_divestiture_query_ownership_and_is_owned_reject_not_connected_not_joined_unknown_object_and_save_restore"
-          ],
-          "clause": "7.19",
-          "implementation_areas": [
-            "ownership_runtime"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "isAttributeOwnedByFederate",
-          "requirement_ids": [
-            "HLA1516.1-OWN-7_19-ISATTRIBUTEOWNEDBYFEDERATE-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_python_rti_negotiated_ownership_tracks_divesting_and_candidate_flows"
-          ],
-          "clause": "7.3",
-          "implementation_areas": [
-            "ownership_runtime"
-          ],
-          "kinds": {
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "negotiatedAttributeOwnershipDivestiture",
-          "requirement_ids": [
-            "HLA1516.1-OWN-7_3-NEGOTIATEDATTRIBUTEOWNERSHIPDIVESTITURE-EXC-001",
-            "HLA1516.1-OWN-7_3-NEGOTIATEDATTRIBUTEOWNERSHIPDIVESTITURE-PRE-001"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_unconditional_divestiture_query_ownership_and_is_owned_reject_not_connected_not_joined_unknown_object_and_save_restore"
-          ],
-          "clause": "7.17",
-          "implementation_areas": [
-            "ownership_runtime"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "queryAttributeOwnership",
-          "requirement_ids": [
-            "HLA1516.1-OWN-7_17-QUERYATTRIBUTEOWNERSHIP-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        },
-        {
-          "acceptance_tests": [
-            "test_unconditional_divestiture_query_ownership_and_is_owned_reject_not_connected_not_joined_unknown_object_and_save_restore"
-          ],
-          "clause": "7.2",
-          "implementation_areas": [
-            "ownership_runtime"
-          ],
-          "kinds": {
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "unconditionalAttributeOwnershipDivestiture",
-          "requirement_ids": [
-            "HLA1516.1-OWN-7_2-UNCONDITIONALATTRIBUTEOWNERSHIPDIVESTITURE-EXC-001",
-            "HLA1516.1-OWN-7_2-UNCONDITIONALATTRIBUTEOWNERSHIPDIVESTITURE-PRE-001"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Tighten negative-path coverage until the supported precondition and exception envelope is explicit."
-        }
-      ],
-      "statuses": {
-        "partial": 19
-      }
+      "kinds": {},
+      "open_row_count": 0,
+      "queue_item_count": 0,
+      "queue_items": [],
+      "statuses": {}
     },
     {
       "description": "Clause 8 packet-to-curated backlog for time-management services.",
@@ -1920,149 +1666,12 @@
       "description": "Cross-cutting native/gRPC/REST transport-equivalence and transportation-type backlog rows.",
       "family": "Transports",
       "kinds": {
-        "EXC": 45,
-        "PRE": 70
+        "EXC": 34,
+        "PRE": 62
       },
-      "open_row_count": 115,
-      "queue_item_count": 73,
+      "open_row_count": 96,
+      "queue_item_count": 62,
       "queue_items": [
-        {
-          "acceptance_tests": [
-            "test_python_rti_acquisition_if_available_reports_unavailable_without_transfer"
-          ],
-          "clause": "7.8",
-          "implementation_areas": [
-            "ownership_callbacks"
-          ],
-          "kinds": {
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "attributeOwnershipAcquisition",
-          "requirement_ids": [
-            "HLA1516.1-OWN-7_8-ATTRIBUTEOWNERSHIPACQUISITION-EXC-001",
-            "HLA1516.1-OWN-7_8-ATTRIBUTEOWNERSHIPACQUISITION-PRE-001"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_python_rti_negotiated_ownership_tracks_divesting_and_candidate_flows",
-            "test_python_rti_acquisition_if_available_reports_unavailable_without_transfer"
-          ],
-          "clause": "7.9",
-          "implementation_areas": [
-            "ownership_runtime"
-          ],
-          "kinds": {
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "attributeOwnershipAcquisitionIfAvailable",
-          "requirement_ids": [
-            "HLA1516.1-OWN-7_9-ATTRIBUTEOWNERSHIPACQUISITIONIFAVAILABLE-EXC-001",
-            "HLA1516.1-OWN-7_9-ATTRIBUTEOWNERSHIPACQUISITIONIFAVAILABLE-PRE-001"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_name_reservation_ddm_regions_ownership_and_time_support"
-          ],
-          "clause": "7.13",
-          "implementation_areas": [
-            "ownership_callbacks"
-          ],
-          "kinds": {
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "attributeOwnershipDivestitureIfWanted",
-          "requirement_ids": [
-            "HLA1516.1-OWN-7_13-ATTRIBUTEOWNERSHIPDIVESTITUREIFWANTED-EXC-001",
-            "HLA1516.1-OWN-7_13-ATTRIBUTEOWNERSHIPDIVESTITUREIFWANTED-PRE-001"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_python_rti_query_attribute_ownership_reports_not_owned_after_divestiture"
-          ],
-          "clause": "7.12",
-          "implementation_areas": [
-            "ownership_runtime"
-          ],
-          "kinds": {
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "attributeOwnershipReleaseDenied",
-          "requirement_ids": [
-            "HLA1516.1-OWN-7_12-ATTRIBUTEOWNERSHIPRELEASEDENIED-EXC-001",
-            "HLA1516.1-OWN-7_12-ATTRIBUTEOWNERSHIPRELEASEDENIED-PRE-001"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_cancel_attribute_ownership_acquisition_rejects_not_connected_not_joined_unknown_object_and_save_restore"
-          ],
-          "clause": "7.15",
-          "implementation_areas": [
-            "ownership_runtime"
-          ],
-          "kinds": {
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "cancelAttributeOwnershipAcquisition",
-          "requirement_ids": [
-            "HLA1516.1-OWN-7_15-CANCELATTRIBUTEOWNERSHIPACQUISITION-EXC-001",
-            "HLA1516.1-OWN-7_15-CANCELATTRIBUTEOWNERSHIPACQUISITION-PRE-001"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_cancel_negotiated_divestiture_rejects_not_connected_not_joined_unknown_object_and_save_restore"
-          ],
-          "clause": "7.14",
-          "implementation_areas": [
-            "ownership_runtime"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "cancelNegotiatedAttributeOwnershipDivestiture",
-          "requirement_ids": [
-            "HLA1516.1-OWN-7_14-CANCELNEGOTIATEDATTRIBUTEOWNERSHIPDIVESTITURE-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
         {
           "acceptance_tests": [
             "tests/backends/test_python_backend_time_ddm_extended.py::test_async_delivery_and_order_type_services_update_runtime_state",
@@ -2105,29 +1714,6 @@
           "requirement_ids": [
             "HLA1516.1-TM-8_24-CHANGEINTERACTIONORDERTYPE-EXC-001",
             "HLA1516.1-TM-8_24-CHANGEINTERACTIONORDERTYPE-PRE-001"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_python_rti_acquisition_if_available_reports_unavailable_without_transfer"
-          ],
-          "clause": "7.6",
-          "implementation_areas": [
-            "ownership_runtime"
-          ],
-          "kinds": {
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "confirmDivestiture",
-          "requirement_ids": [
-            "HLA1516.1-OWN-7_6-CONFIRMDIVESTITURE-EXC-001",
-            "HLA1516.1-OWN-7_6-CONFIRMDIVESTITURE-PRE-001"
           ],
           "statuses": {
             "partial": 2
@@ -3249,27 +2835,6 @@
         },
         {
           "acceptance_tests": [
-            "test_unconditional_divestiture_query_ownership_and_is_owned_reject_not_connected_not_joined_unknown_object_and_save_restore"
-          ],
-          "clause": "7.19",
-          "implementation_areas": [
-            "ownership_runtime"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "isAttributeOwnedByFederate",
-          "requirement_ids": [
-            "HLA1516.1-OWN-7_19-ISATTRIBUTEOWNEDBYFEDERATE-EXC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
             "tests/time/test_lookahead_backend_matrix.py::test_lookahead_backend_matrix_state_services",
             "tests/time/test_mom_mim_and_time_semantics_v010.py::test_query_lookahead_requires_time_regulation_and_modify_lookahead_rejects_pending_advance",
             "tests/time/test_mom_mim_and_time_semantics_v010.py::test_negative_lookahead_is_rejected_for_regulation_and_modification"
@@ -3287,29 +2852,6 @@
           "requirement_ids": [
             "HLA1516.1-TM-8_19-MODIFYLOOKAHEAD-EXC-001",
             "HLA1516.1-TM-8_19-MODIFYLOOKAHEAD-PRE-001"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_python_rti_negotiated_ownership_tracks_divesting_and_candidate_flows"
-          ],
-          "clause": "7.3",
-          "implementation_areas": [
-            "ownership_runtime"
-          ],
-          "kinds": {
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "negotiatedAttributeOwnershipDivestiture",
-          "requirement_ids": [
-            "HLA1516.1-OWN-7_3-NEGOTIATEDATTRIBUTEOWNERSHIPDIVESTITURE-EXC-001",
-            "HLA1516.1-OWN-7_3-NEGOTIATEDATTRIBUTEOWNERSHIPDIVESTITURE-PRE-001"
           ],
           "statuses": {
             "partial": 2
@@ -3407,27 +2949,6 @@
           "queue_item": "normalizeServiceGroup",
           "requirement_ids": [
             "HLA1516.1-SUP-10_32-NORMALIZESERVICEGROUP-PRE-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_unconditional_divestiture_query_ownership_and_is_owned_reject_not_connected_not_joined_unknown_object_and_save_restore"
-          ],
-          "clause": "7.17",
-          "implementation_areas": [
-            "ownership_runtime"
-          ],
-          "kinds": {
-            "EXC": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "queryAttributeOwnership",
-          "requirement_ids": [
-            "HLA1516.1-OWN-7_17-QUERYATTRIBUTEOWNERSHIP-EXC-001"
           ],
           "statuses": {
             "partial": 1
@@ -3654,37 +3175,14 @@
             "partial": 2
           },
           "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_unconditional_divestiture_query_ownership_and_is_owned_reject_not_connected_not_joined_unknown_object_and_save_restore"
-          ],
-          "clause": "7.2",
-          "implementation_areas": [
-            "ownership_runtime"
-          ],
-          "kinds": {
-            "EXC": 1,
-            "PRE": 1
-          },
-          "open_row_count": 2,
-          "queue_item": "unconditionalAttributeOwnershipDivestiture",
-          "requirement_ids": [
-            "HLA1516.1-OWN-7_2-UNCONDITIONALATTRIBUTEOWNERSHIPDIVESTITURE-EXC-001",
-            "HLA1516.1-OWN-7_2-UNCONDITIONALATTRIBUTEOWNERSHIPDIVESTITURE-PRE-001"
-          ],
-          "statuses": {
-            "partial": 2
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
         }
       ],
       "statuses": {
-        "partial": 115
+        "partial": 96
       }
     }
   ],
   "generated_from": "harmonized requirements ledgers + imported HLA packet v1.0",
-  "total_open_rows": 258,
-  "total_queue_items": 146
+  "total_open_rows": 220,
+  "total_queue_items": 124
 }

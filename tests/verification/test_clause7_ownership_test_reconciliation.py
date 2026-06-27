@@ -36,7 +36,7 @@ def test_ownership_family_test_rows_have_direct_evidence_and_mapped_companion_sl
 
     for row in test_rows:
         assert row["current_status"] == "mapped"
-        assert "broader ARG, PRE, and EXC envelope rows remain partial" in row["notes"]
+        assert "PRE and EXC companion rows are intentionally narrowed" in row["notes"]
 
         feature_rows = by_feature[row["feature"]]
         for companion_kind in ("SIG", "MOM", "EFF"):

@@ -128,10 +128,9 @@ rather than a vague object-management gap, use:
 
 - `docs/requirements/ieee-1516-2010/object_management_bounded_family.md`
 
-For the human-facing explanation of the remaining `CAP-OWN` partial family and
-why the Clause 7 tail is now an explicit bounded
-`PRE/EXC/EXC_API` granularity limit rather than a vague ownership-management
-gap, use:
+For the human-facing explanation of the final `CAP-OWN` closeout reading and
+why the Clause 7 PRE/EXC/EXC_API tail is now fully mapped only through
+intentionally narrowed direct-guard claims, use:
 
 - `docs/requirements/ieee-1516-2010/ownership_management_bounded_family.md`
 

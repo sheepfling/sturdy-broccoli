@@ -2,19 +2,20 @@
 
 Use this page when the question is:
 
-- why does the 2010 Clause 7 ownership-management family still carry
-  `partial` rows even though the repo already has strong direct ownership,
-  divestiture, acquisition, callback, query, and MOM evidence?
-- which single document owns the remaining `CAP-OWN` partial pattern?
-- are those partial rows still vague, or already in an explicit bounded final
-  state?
+- which single document owns the 2010 Clause 7 ownership-management closeout
+  surface?
+- did the Ownership owner family still carry bounded `partial` rows, or is it
+  now fully mapped?
+- where should reviewers look for the final ownership-state, acquisition-state,
+  divestiture-state, and exception readings for ownership services?
 
 Short answer:
 
-- the remaining `CAP-OWN` partial rows are already in an explicit bounded
-  family state
-- the canonical owner ledger stays `partial` for those rows
-- the bounded reasons are now structured and reviewable instead of implied
+- the canonical Ownership owner ledger is now fully mapped
+- the earlier bounded precondition and exception tail has been closed by
+  narrowing claims to the directly exercised ownership-service guard surface
+- this page remains the canonical closeout note for how that final reading is
+  supposed to be interpreted
 
 ## Owner Surface
 
@@ -30,61 +31,51 @@ Short answer:
   - `unit-scenarios-light`
 - wider ownership-family view only when needed:
   - `./tools/test-focus run backends`
+  - `./tools/test-surface run unit-scenarios-light`
 
 ## Final Claim Rule
 
-- keep the remaining Clause 7 family rows `partial` when the repo already
-  proves the main service surface, signature shape, callback delivery,
-  representative ownership-state transitions, ownership queries, and MOM
-  observability, but does not yet prove every imported packet slice as a
-  one-row exhaustive witness
-- do not describe these rows as missing ownership-management services
-- do not describe these rows as unsupported acquisition, divestiture, or
-  ownership-query behavior
-- do not flatten the family into `mapped` merely because the primary ownership
-  paths are strong
-- treat the current state as an explicit bounded final reading of the present
-  evidence, not as hidden uncertainty
+- keep Clause 7 rows `mapped` only when the claim is narrowed to the directly
+  exercised executable surface the repo actually proves
+- do not describe ownership management as missing acquisition, divestiture,
+  ownership-query, callback, or MOM-observer capability
+- do not widen a row back to the full standard precondition or exception
+  universe unless new direct witnesses are added for that broader surface
+- treat the current state as an explicit evidence-bounded final reading, not as
+  implied support for unexercised callback-reentrancy, internal-error, or
+  broader service-wide failure combinations
 
 ## Default Final Stance
 
 - this owner note is the canonical final reading for the current `CAP-OWN`
-  partial family
-- the remaining rows are not waiting on wording cleanup; they are already in
-  their intended bounded supported-scope presentation
-- the unresolved part is only optional future precondition-envelope isolation
-  or exception-envelope isolation, not ambiguity about whether the currently
-  exercised Clause 7 service surface exists
-- keep the family rows `partial` in
-  `hla1516_1_own_detailed_reconciliation.csv` unless narrower direct proof is
-  actually added for the remaining packet slices
+  family
+- the owner ledger no longer carries any remaining Ownership `partial` rows
+- the final family reading is that Clause 7 is fully mapped only because the
+  last PRE, EXC, and EXC_API rows were intentionally narrowed to the directly
+  exercised runtime surface
+- future work should widen claims only by adding stronger isolated witnesses,
+  not by reintroducing vague bounded-partial wording
 
 ## Exit Condition
 
 Treat this bucket as closed for documentation ownership and closeout-surface
 purposes unless one of these becomes true:
 
-1. the remaining `PRE`, `EXC`, or `EXC_API` rows gain new direct isolated
-   witnesses
-2. the repo decides to make a stronger one-row-per-packet Clause 7 claim
+1. the repo adds stronger isolated witnesses that justify widening any current
+   narrowed ownership-management claim
+2. the owner ledger regresses away from fully mapped status
 3. the current family owner ledger stops being the right canonical location for
-   the bounded Clause 7 ownership-management story
+   the Clause 7 closeout story
 
-If none of those happen, preserve the current bounded family reading and do not
-keep describing `CAP-OWN` as vague or structurally unfinished.
+If none of those happen, preserve the current fully mapped family reading and
+do not reintroduce a bounded-partial framing.
 
 ## Current Family Shape
 
 The current owner ledger has `225` ownership-management packet rows:
 
-- `195 mapped`
-- `30 partial`
-
-The remaining `30 partial` rows cluster into stable categories:
-
-- `11 EXC`
-- `11 EXC_API`
-- `8 PRE`
+- `225 mapped`
+- `0 partial`
 
 There are no remaining partial ownership rows for:
 
@@ -94,36 +85,43 @@ There are no remaining partial ownership rows for:
 - MOM service-reporting observability
 - callback delivery and callback-order slices
 - ownership-state return-value slices
+- precondition-envelope rows
+- exception-envelope rows
 
-That means the family is no longer broad proof debt across all of Clause 7.
-The remaining bounded area is the negative-path and precondition envelope.
+That means the family no longer carries any bounded closeout debt inside the
+owner ledger.
 
-## What The Categories Mean
+## What The Final Reading Means
 
-### Precondition-envelope tail
+- the repo already had direct proof for the main Clause 7 executable surface
+- the remaining work was to convert the last broad PRE, EXC, and EXC_API rows
+  into honest narrowed claims
+- the family is fully mapped because those last rows now point at explicit
+  negative-path witnesses instead of broad unverified standard universes
 
-The `8 PRE` rows mostly state a broader service-precondition universe than the
-current isolated witnesses prove directly for one row at a time.
+Recent closeout examples:
 
-Typical pattern:
-
-- key not-connected, not-joined, save/restore, invalid-object, invalid-handle,
-  and ownership-state guards are already proven
-- the packet row still claims a larger clause-level precondition envelope than
-  the direct witness currently isolates
-
-### Exception-envelope tail
-
-The `11 EXC` and `11 EXC_API` rows usually keep a broader failure envelope than
-the current tests isolate directly.
-
-Typical pattern:
-
-- representative standard exceptions are already exercised on the direct
-  ownership lane
-- the packet row still claims the full exception universe, including broader
-  internal-error or full service-wide failure combinations, as one exhaustive
-  witness
+- the `unconditionalAttributeOwnershipDivestiture`,
+  `queryAttributeOwnership`, and `isAttributeOwnedByFederate` rows are now
+  mapped because the current guard suite isolates the exercised ownership-state,
+  attribute-definition, object-knownness, connection-state,
+  execution-membership, and save/restore failures they claim
+- the `confirmDivestiture` rows are now mapped because the current guard suite
+  and direct state tests isolate the exercised active-divestiture,
+  pending-acquisition, ownership-state, attribute-definition,
+  object-knownness, connection-state, execution-membership, and save/restore
+  failures they claim
+- the `attributeOwnershipAcquisition` and
+  `attributeOwnershipAcquisitionIfAvailable` rows are now mapped because the
+  current guard suite isolates the exercised publication-state,
+  acquisition-state, ownership-state, attribute-definition,
+  object-knownness, connection-state, execution-membership, and save/restore
+  failures they claim
+- the `attributeOwnershipDivestitureIfWanted` rows are now mapped because the
+  current guard suite and state test isolate the exercised
+  pending-acquisition-state, ownership-state, attribute-definition,
+  object-knownness, connection-state, execution-membership, and save/restore
+  surfaces they claim
 
 ## What Is Already Proved
 
@@ -147,28 +145,41 @@ Primary evidence anchors:
 - `tests/scenarios/test_ownership_management_backend_matrix.py`
 - `requirements/2010/traceability_matrix.csv`
 
-Use these rerun commands before dropping to raw file paths:
+Execution-membership reading for this family:
 
-- `./tools/test-focus run backends` for the main 2010 ownership-management
-  backend slice
-- `./tools/test-surface run unit-scenarios-light` when the narrowest owning
-  shard is still the scenario layer
+- before a federate joins, after it resigns, or after it disconnects, the
+  Clause 7 ownership services are expected to reject the caller as not
+  connected or not joined rather than silently accept the operation
+- the direct guard witnesses now fully close the PRE owner rows
+  `HLA1516.1-OWN-7_2-UNCONDITIONALATTRIBUTEOWNERSHIPDIVESTITURE-PRE-001`,
+  `HLA1516.1-OWN-7_3-NEGOTIATEDATTRIBUTEOWNERSHIPDIVESTITURE-PRE-001`,
+  `HLA1516.1-OWN-7_6-CONFIRMDIVESTITURE-PRE-001`,
+  `HLA1516.1-OWN-7_8-ATTRIBUTEOWNERSHIPACQUISITION-PRE-001`,
+  `HLA1516.1-OWN-7_9-ATTRIBUTEOWNERSHIPACQUISITIONIFAVAILABLE-PRE-001`,
+  `HLA1516.1-OWN-7_12-ATTRIBUTEOWNERSHIPRELEASEDENIED-PRE-001`,
+  `HLA1516.1-OWN-7_13-ATTRIBUTEOWNERSHIPDIVESTITUREIFWANTED-PRE-001`, and
+  `HLA1516.1-OWN-7_15-CANCELATTRIBUTEOWNERSHIPACQUISITION-PRE-001`
+- the direct guard witnesses now also fully close the EXC and EXC_API rows for
+  those same services plus the EXC and EXC_API rows for
+  `cancelNegotiatedAttributeOwnershipDivestiture`,
+  `queryAttributeOwnership`, and `isAttributeOwnedByFederate`
 
 ## Good Reading
 
 Good reading:
 
 - ownership management is broadly implemented, linked, and strongly tested
-- the remaining partial rows describe bounded precondition-envelope and
-  exception-envelope granularity limits
-- the family already has a defensible supported-scope reading
+- the former PRE, EXC, and EXC_API tail is now closed through explicit narrowed
+  row language
+- the family already has a defensible fully mapped supported-scope reading
 
 Bad reading:
 
-- Clause 7 is mostly unproven
-- acquisition, divestiture, or ownership-query behavior is still speculative
-- the partial rows imply missing support for ownership-management services
-  themselves
+- Clause 7 is only partially implemented
+- the repo proved the entire standard exception universe for every ownership
+  service
+- future reviewers should treat the old bounded-partial wording as still
+  canonical
 
 ## Reading Order
 

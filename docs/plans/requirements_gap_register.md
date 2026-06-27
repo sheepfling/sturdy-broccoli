@@ -220,18 +220,19 @@ Latest investigated decision:
 - treat this bucket as maintained boundary documentation unless future Clause 6
   witnesses materially change the bounded family disposition or leadership
   explicitly funds that tighter proof scope
-- on `2026-06-26`, the `2010 CAP-OWN bounded family` was also re-audited and
-  kept as an explicit bounded family surface
+- on `2026-06-27`, the `2010 CAP-OWN bounded family` was re-audited and
+  advanced to an explicit fully mapped closeout surface
 - the current owner doc, reconciliation companion, reconciliation verifier,
   and owning shard commands all support that reading
-- the current tail remains a stable bounded `8 PRE`, `11 EXC`, and
-  `11 EXC_API` Clause 7 family envelope
-- no narrower direct claim was identified that would preserve the current
-  Clause 7 row meanings without adding new isolated per-row negative-path
-  proof
-- treat this bucket as maintained boundary documentation unless future Clause 7
-  negative-path witnesses materially change the bounded family disposition or
-  leadership explicitly funds that tighter proof scope
+- the former Clause 7 tail is now closed through intentionally narrowed
+  `PRE`, `EXC`, and `EXC_API` guard claims rather than a stable bounded
+  partial envelope
+- the `confirmDivestiture`, acquisition, divestiture-if-wanted, cancel, and
+  ownership-query rows now point at direct guard witnesses instead of broader
+  packet universes
+- treat this bucket as maintained closeout documentation unless future Clause 7
+  witnesses materially widen or materially contradict the current narrowed
+  family disposition
 - on `2026-06-26`, the `2010 CAP-DDM bounded family` was also re-audited and
   kept as an explicit bounded family surface
 - the current owner doc, reconciliation companion, reconciliation verifier,
@@ -305,10 +306,10 @@ Settled but still useful reference:
   witnesses or stronger proof scope reopen it.
 - `docs/requirements/ieee-1516-2010/ownership_management_bounded_family.md`
   plus `requirements/2010/hla1516_1_own_detailed_reconciliation.csv` remain
-  the canonical place to read the `CAP-OWN` partial family. It is intentionally
-  bounded at the current precondition-envelope and exception-envelope limits,
-  but not an active open bucket in this register unless future isolated
-  witnesses or stronger proof scope reopen it.
+  the canonical place to read the `CAP-OWN` fully mapped closeout reading. The
+  owner surface is no longer a partial-family bucket; it is a maintained
+  narrowed-claim closeout note unless future isolated witnesses intentionally
+  widen the current Clause 7 guard surface.
 - `docs/requirements/ieee-1516-2010/omt_xml_bounded_family.md` plus
   `requirements/2010/hla1516_xml_detailed_reconciliation.csv`,
   `requirements/2010/hla1516_2_omt_detailed_reconciliation.csv`, and

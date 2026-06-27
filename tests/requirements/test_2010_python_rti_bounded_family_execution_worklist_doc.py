@@ -78,9 +78,10 @@ def test_2010_bounded_family_execution_worklist_keeps_owner_and_tightening_rules
     assert "`updateAttributeValues` exception rows" in text
     assert "`requestAttributeValueUpdate`" in text
     assert "`ObjectClassNotDefined`" in text
-    assert "keep the `CAP-OWN` family as canonical `partial`" in text
-    assert "`8 PRE`, `11 EXC`, and `11 EXC_API` rows" in text
-    assert "isolated per-row negative-path" in text
+    assert "keep the `CAP-OWN` family as canonical fully mapped closeout documentation" in text
+    assert "`225 mapped` and `0 partial` Clause 7" in text
+    assert "direct ownership witnesses" in text
+    assert "broader packet universes" in text
     assert "keep the `CAP-DDM` family as canonical `partial`" in text
     assert "`6 EXC` and `10 EXC_API` rows" in text
     assert "keep the `CAP-XML / CAP-OMT` family as canonical `partial`" in text

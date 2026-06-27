@@ -263,25 +263,25 @@ Why:
 Use the federation-management owner docs as maintained bounded documentation
 and advance to `P1` / `P2` above for the next actual closeout move.
 
-The `2010 CAP-OWN bounded family` was also re-audited on `2026-06-26`.
+The `2010 CAP-OWN bounded family` was also re-audited on `2026-06-27`.
 
 Result:
 
-- keep it as a bounded family surface
-- do not spend the next closeout slice trying to relabel it as direct support
+- keep it as a fully mapped closeout surface
+- do not spend the next closeout slice trying to reintroduce broader Clause 7
+  exception universes without new witnesses
 
 Why:
 
-1. the current owner doc and reconciliation companion already express the
-   intended bounded Clause 7 reading
+1. the current owner doc and reconciliation companion now express the intended
+   fully mapped Clause 7 closeout reading
 2. the owning ownership shards are green
-3. the remaining tail is still a stable bounded `8 PRE`, `11 EXC`, and
-   `11 EXC_API` envelope rather than a set of isolated direct per-row
-   witnesses
-4. no narrower direct claim was identified that would preserve the current row
-   meanings without adding new isolated negative-path proof
+3. the former Clause 7 tail has been converted into isolated direct guard
+   claims for PRE, EXC, and EXC_API rows
+4. future work should widen those rows only by adding stronger isolated
+   negative-path proof
 
-Use the ownership-management owner docs as maintained bounded documentation
+Use the ownership-management owner docs as maintained closeout documentation
 and advance to `P1` / `P2` above for the next actual closeout move.
 
 The `2010 CAP-DDM bounded family` was also re-audited on `2026-06-26`.
@@ -371,7 +371,7 @@ boundary surfaces:
 | 2010 CAP-TM bounded family | the owner doc and reconciliation ledger already express the intended bounded supported-scope reading; rerun only if precondition-envelope scope, exception-envelope scope, or overview decomposition materially changes | `python3 -m pytest tests/time/test_mom_mim_time_v10.py tests/time/test_mom_mim_and_time_semantics_v010.py tests/time/test_mom_mim_time_management_v010.py` | `time_management_bounded_family.md` plus `hla1516_1_tm_detailed_reconciliation.csv` |
 | 2010 CAP-DM bounded family | the owner doc and reconciliation ledger now express the intended fully mapped closeout reading; rerun only if future work tries to widen the narrowed Clause 5 guard claims materially | `python3 -m pytest tests/backends/test_python_backend_object_ownership_extended.py tests/backends/test_python_backend_time_ddm_extended.py` | `declaration_management_bounded_family.md` plus `hla1516_1_dm_detailed_reconciliation.csv` |
 | 2010 CAP-DDM bounded family | the owner doc and reconciliation ledger already express the intended bounded supported-scope reading; rerun only if precondition-envelope scope or exception-envelope scope materially changes | `python3 -m pytest tests/backends/test_python_backend_time_ddm_extended.py tests/verification/test_compliance_slice_v011.py` | `data_distribution_management_bounded_family.md` plus `hla1516_1_ddm_detailed_reconciliation.csv` |
-| 2010 CAP-OWN bounded family | the owner doc and reconciliation ledger already express the intended bounded supported-scope reading; rerun only if precondition-envelope scope or exception-envelope scope materially changes | `python3 -m pytest tests/backends/test_python_backend_object_ownership_extended.py tests/scenarios/test_ownership_management_backend_matrix.py` | `ownership_management_bounded_family.md` plus `hla1516_1_own_detailed_reconciliation.csv` |
+| 2010 CAP-OWN bounded family | the owner doc and reconciliation ledger now express the intended fully mapped closeout reading; rerun only if future work tries to widen the narrowed Clause 7 guard claims materially | `python3 -m pytest tests/backends/test_python_backend_object_ownership_extended.py tests/scenarios/test_ownership_management_backend_matrix.py` | `ownership_management_bounded_family.md` plus `hla1516_1_own_detailed_reconciliation.csv` |
 | 2010 CAP-XML / CAP-OMT bounded family | the owner doc and companion ledgers already express the intended bounded schema-family and normalization-semantics reading; rerun only if the repo deliberately expands to one-row-per-atom XML witnesses or stronger runtime normalization semantics | `python3 -m pytest tests/factories/test_fom_omt_parsing.py tests/factories/test_fom_validate.py tests/mom/test_mom_catalog_validation_v012.py` | `omt_xml_bounded_family.md` plus `hla1516_xml_detailed_reconciliation.csv` and `hla1516_2_omt_detailed_reconciliation.csv` |
 | 2025 duplicate/umbrella framework rows | the owner doc and row-level disposition ledger already express the intended non-standalone final reading; rerun only if child claims or framework ownership change materially | `./tools/python verify-main-2025` only if child claims change | `framework_rules.md` plus `hla_2025_requirement_disposition_ledger.csv` |
 | 2025 duplicate/umbrella callback-binding rows | the owner doc, row-level disposition ledger, and FI binding matrix already express the intended non-standalone final reading; rerun only if child claims or binding ownership change materially | `./tools/test-surface run unit-shim-tooling` only if child claims change | `callback_binding_deltas.md` plus `hla_2025_requirement_disposition_ledger.csv` and `hla_2025_fi_binding_surface_matrix.csv` |

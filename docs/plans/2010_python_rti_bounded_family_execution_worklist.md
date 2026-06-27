@@ -355,7 +355,7 @@ Operational effect:
 - the active execution queue should advance to `CAP-OWN` instead of continuing
   to treat `CAP-OM` as unresolved wording debt
 
-The `CAP-OWN` bounded family was also re-audited on `2026-06-26` against the
+The `CAP-OWN` bounded family was also re-audited on `2026-06-27` against the
 current owner doc, reconciliation companion, reconciliation verifier, and the
 owning shard commands for:
 
@@ -365,27 +365,29 @@ owning shard commands for:
 
 Decision:
 
-- keep the `CAP-OWN` family as canonical `partial`
-- keep its Clause 7 tail recorded as the current bounded `PRE`, `EXC`, and
-  `EXC_API` envelope
-- do not promote the family to narrower direct support yet
+- keep the `CAP-OWN` family as canonical fully mapped closeout documentation
+- keep its former Clause 7 tail recorded as intentionally narrowed direct-guard
+  `PRE`, `EXC`, and `EXC_API` claims rather than a bounded partial envelope
+- do not widen those rows back to broader packet universes without new isolated
+  witnesses
 
 Reason:
 
-1. the reconciliation companion still shows a stable bounded tail of
-   `8 PRE`, `11 EXC`, and `11 EXC_API` rows
-2. the current ownership shards are green, but the remaining packet rows still
-   describe broader precondition or exception envelopes than the direct
-   witnesses isolate
-3. no narrower direct claim was identified that would preserve the current
-   Clause 7 row meanings without adding new isolated per-row negative-path
-   proof
-4. the current owner doc already expresses the honest final reading for the
-   present evidence
+1. the reconciliation companion now shows `225 mapped` and `0 partial` Clause 7
+   rows
+2. the current ownership shards are green, and the last PRE, EXC, and EXC_API
+   rows are now narrowed to the direct ownership witnesses the repo actually
+   isolates
+3. the `confirmDivestiture`, acquisition, divestiture-if-wanted, cancel, and
+   ownership-query rows now point at explicit guard witnesses instead of broad
+   packet universes
+4. the current owner doc now expresses the honest final closeout reading for
+   the present evidence
 
 Operational effect:
 
-- `CAP-OWN` remains a maintained bounded-family surface
+- `CAP-OWN` remains a maintained owner-doc surface, but no longer a bounded
+  partial bucket
 - the active execution queue should advance to `CAP-DDM` instead of continuing
   to treat `CAP-OWN` as unresolved wording debt
 
@@ -472,7 +474,7 @@ Operational effect:
 | `CAP-DM` | `declaration_management_bounded_family.md` | `requirements/2010/hla1516_1_dm_detailed_reconciliation.csv` plus `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv` | `unit-foundation` | `2010-core`, `setup-preflight`, `scenarios` | Clause 5 is fully mapped because the former PRE/EXC/EXC_API tail is now intentionally narrowed to the direct declaration guard surface the repo actually proves | future work widens these rows only by adding stronger isolated witnesses, not by reintroducing bounded-partial wording |
 | `CAP-SUP` | `support_services_bounded_family.md` | `requirements/2010/hla1516_1_sup_detailed_reconciliation.csv` plus `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv` | `unit-python-core` | `2010-core`, `setup-preflight` | support-service presence, signatures, lookup behavior, MOM observability, and representative negative paths are already strong while the remaining negative envelope stays broader than the direct witnesses | new direct per-service negative-matrix witnesses close the remaining `PRE`, `EXC`, and `EXC_API` rows |
 | `CAP-OM` | `object_management_bounded_family.md` | `requirements/2010/hla1516_1_om_detailed_reconciliation.csv` plus `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv` | `unit-scenarios-light` | `2010-core`, `scenarios` | naming, discovery, update, interaction, delete, and supported transport-subset paths are already strong while the remaining rows still describe broader callback-order, effect-vector, or exception envelopes | new isolated row witnesses close the exact remaining bounded row kinds |
-| `CAP-OWN` | `ownership_management_bounded_family.md` | `requirements/2010/hla1516_1_own_detailed_reconciliation.csv` plus `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv` | `unit-scenarios-light` | `2010-core`, `ownership`, `scenarios` | divestiture, acquisition, callback, query, and MOM behavior are already strong while the remaining rows still describe broader precondition or exception envelopes | new ownership-specific witnesses close the remaining `PRE`, `EXC`, or `EXC_API` packet slices |
+| `CAP-OWN` | `ownership_management_bounded_family.md` | `requirements/2010/hla1516_1_own_detailed_reconciliation.csv` plus `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv` | `unit-scenarios-light` | `2010-core`, `ownership`, `scenarios` | Clause 7 is fully mapped because the former PRE/EXC/EXC_API tail is now intentionally narrowed to the direct ownership guard surface the repo actually proves | future work widens these rows only by adding stronger isolated witnesses, not by reintroducing bounded-partial wording |
 | `CAP-TM` | `time_management_bounded_family.md` | `requirements/2010/hla1516_1_tm_detailed_reconciliation.csv` plus `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv` | `unit-python-core` | `2010-core`, `time` | logical time, lookahead, callback ordering, retraction, and queries are already strong while the remaining rows still describe broader precondition, exception, or overview decomposition scope | new time-specific witnesses close the exact remaining `PRE`, `EXC`, `EXC_API`, or overview rows |
 | `CAP-DDM` | `data_distribution_management_bounded_family.md` | `requirements/2010/hla1516_1_ddm_detailed_reconciliation.csv` plus `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv` | `unit-python-core` | `2010-core`, `time`, `scenarios` | region lifecycle, overlap routing, DDM-gated routing, and MOM behavior are already strong while the remaining rows still describe broader precondition or exception envelopes | new DDM-specific witnesses close the exact remaining bounded row kinds |
 | `CAP-XML` plus `CAP-OMT` tail | `omt_xml_bounded_family.md` | `requirements/2010/hla1516_xml_detailed_reconciliation.csv`, `requirements/2010/hla1516_2_omt_detailed_reconciliation.csv`, and `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv` | `unit-fom-tooling` | `2010-core`, `fom-omt` | parser, schema, validator, and round-trip families are already strong while the remaining rows still describe one-row-per-atom XML witnesses or Annex B normalization semantics beyond the current direct proof | the repo deliberately adds curated element/type witnesses or stronger runtime normalization semantics and records them row by row |

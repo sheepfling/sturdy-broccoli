@@ -22,9 +22,7 @@ def test_ownership_detailed_reconciliation_has_expected_shape():
     rows = _read_rows()
 
     assert len(rows) == 225
-    assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 195, "partial": 30}
-    )
+    assert Counter(row["current_status"] for row in rows) == Counter({"mapped": 225})
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
     }
@@ -37,7 +35,7 @@ def test_ownership_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-OWN-OVERVIEW-008"]["reconciliation_kind"] == "OVW"
     assert rows["HLA1516.1-OWN-7_2-RTIAPI-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OWN-7_2-RTIAPI-001"]["reconciliation_kind"] == "RTI_API"
-    assert rows["HLA1516.1-OWN-7_2-RTIAPI-001-EXC"]["current_status"] == "partial"
+    assert rows["HLA1516.1-OWN-7_2-RTIAPI-001-EXC"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OWN-7_2-RTIAPI-001-EXC"]["reconciliation_kind"] == "EXC_API"
     assert rows["HLA1516.1-OWN-7_2-RTIAPI-001-MOM"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OWN-7_2-RTIAPI-001-MOM"]["reconciliation_kind"] == "MOM_TRACE"

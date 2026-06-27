@@ -68,8 +68,9 @@ def test_gap_register_and_queue_keep_owner_companion_split_explicit() -> None:
     assert "`requestAttributeValueUpdate`" in gap_text
     assert "`ObjectClassNotDefined`" in gap_text
     assert "2010 CAP-OWN bounded family" in gap_text
-    assert "stable bounded `8 PRE`, `11 EXC`, and" in gap_text
-    assert "`11 EXC_API` Clause 7 family envelope" in gap_text
+    assert "advanced to an explicit fully mapped closeout surface" in gap_text
+    assert "intentionally narrowed `PRE`, `EXC`, and `EXC_API` guard claims" in normalized_gap_text
+    assert "fully mapped closeout reading" in gap_text
     assert "2010 CAP-DDM bounded family" in gap_text
     assert "stable bounded `6 EXC` and `10 EXC_API` Clause 9 family envelope" in normalized_gap_text
     assert "2010 CAP-XML / CAP-OMT bounded family" in gap_text
@@ -110,7 +111,7 @@ def test_gap_register_and_queue_keep_owner_companion_split_explicit() -> None:
     assert "support-services owner docs as maintained bounded documentation" in queue_text
     assert "time-management owner docs as maintained bounded documentation" in queue_text
     assert "federation-management owner docs as maintained bounded documentation" in queue_text
-    assert "ownership-management owner docs as maintained bounded documentation" in queue_text
+    assert "ownership-management owner docs as maintained closeout documentation" in queue_text
     assert "data-distribution owner docs as maintained bounded documentation" in queue_text
     assert "OMT/XML owner docs as maintained bounded documentation" in queue_text
     assert "no narrower direct claim was identified" in queue_text
