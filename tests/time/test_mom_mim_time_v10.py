@@ -152,6 +152,46 @@ def test_timestamp_order_next_message_requests_deliver_in_time_order_and_query_g
     assert receiver_fed.last_callback("timeAdvanceGrant").args[0] == factory.makeTime(3.0)
 
 
+def test_framework_rule_10_time_management_coordinates_federate_exchange_with_federation_time():
+    engine, sender, receiver, sender_fed, receiver_fed = _joined_pair("framework-time-coordination-fed")
+    factory = sender.getTimeFactory()
+    sender.enableTimeRegulation(factory.makeInterval(1.0))
+    receiver.enableTimeConstrained()
+    _drain(sender, receiver)
+
+    interaction = sender.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    track_id = sender.getParameterHandle(interaction, "TrackId")
+    sender.publishInteractionClass(interaction)
+    receiver.subscribeInteractionClass(interaction)
+
+    sender.sendInteraction(interaction, {track_id: b"t3"}, b"tag3", factory.makeTime(3.0))
+    sender.sendInteraction(interaction, {track_id: b"t2"}, b"tag2", factory.makeTime(2.0))
+    _drain(sender, receiver)
+    assert not receiver_fed.callbacks_named("receiveInteraction")
+
+    sender.timeAdvanceRequest(factory.makeTime(4.0))
+    _drain(sender, receiver)
+    assert sender_fed.last_callback("timeAdvanceGrant").args[0] == factory.makeTime(4.0)
+    assert receiver.queryGALT().time == factory.makeTime(5.0)
+    assert receiver.queryLITS().time == factory.makeTime(2.0)
+
+    receiver.nextMessageRequest(factory.makeTime(5.0))
+    _drain(sender, receiver)
+    first = receiver_fed.callbacks_named("receiveInteraction")[-1]
+    assert first.args[2] == b"tag2"
+    assert first.args[5] == factory.makeTime(2.0)
+    assert receiver_fed.last_callback("timeAdvanceGrant").args[0] == factory.makeTime(2.0)
+
+    receiver.nextMessageRequest(factory.makeTime(5.0))
+    _drain(sender, receiver)
+    second = receiver_fed.callbacks_named("receiveInteraction")[-1]
+    assert second.args[2] == b"tag3"
+    assert second.args[5] == factory.makeTime(3.0)
+    assert receiver_fed.last_callback("timeAdvanceGrant").args[0] == factory.makeTime(3.0)
+
+    assert receiver.queryGALT().time == factory.makeTime(5.0)
+
+
 def test_time_advance_request_waits_at_galt_boundary_but_available_request_can_grant_equal_galt():
     engine, sender, receiver, sender_fed, receiver_fed = _joined_pair("galt-boundary-fed")
     factory = sender.getTimeFactory()

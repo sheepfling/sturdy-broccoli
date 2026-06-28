@@ -79,14 +79,14 @@ reframe the residual framework rows as vague or unowned.
 
 The current owner ledger has `53` framework packet rows:
 
-- `18 mapped`
-- `35 partial`
+- `35 mapped`
+- `18 partial`
 
-The remaining `35 partial` rows cluster into stable categories:
+The remaining `18 partial` rows cluster into stable categories:
 
-- `10 FW_RULE_DETAIL`
-- `18 DET`
-- `7 partial`
+- `8 FW_RULE_DETAIL`
+- `9 DET`
+- `1 partial`
 
 ## What The Categories Mean
 
@@ -110,9 +110,6 @@ The `DET` rows break the framework rules into narrower supporting statements,
 but many still remain broader than the current direct proof set. Typical
 examples include:
 
-- `HLA1516-FW-5_2-DET-001` through `HLA1516-FW-5_2-DET-003`
-  because ownership and MOM tests prove the RTI-owned versus federate-owned
-  split, but not every full framework implication
 - `HLA1516-FW-5_3-DET-004`
   because RTI-mediated exchange and declaration gating are now directly mapped,
   while the broader federate-responsibility statement about substantive data
@@ -125,11 +122,96 @@ examples include:
 
 ### Umbrella framework rows
 
-The `partial` rows such as `HLA1516-RULE-002`, `HLA1516-RULE-004`,
-`HLA1516-RULE-006`, `HLA1516-RULE-007`, `HLA1516-RULE-008`,
-`HLA1516-RULE-009`, and `HLA1516-RULE-010` are umbrella
-rules that intentionally stay partial until the broader architectural claim has
-direct owner-level evidence rather than only adjacent clause-level support.
+The remaining `partial` umbrella row is `HLA1516-RULE-006`. Earlier Rule 7,
+Rule 8, Rule 9, and Rule 10 capability statements are now mapped where the
+runtime directly proves the bounded executable behavior, while Rule 6 still
+remains a federate-wide SOM-documentation claim rather than a runtime
+capability claim.
+
+## Residual Row Groups
+
+The remaining `18` partial rows are not one undifferentiated backlog. They are
+stable residual groups with explicit bounded readings.
+
+### Broad conceptual framework rows
+
+These rows remain partial because they are framework-wide conceptual or
+architectural statements, not isolated runtime service obligations:
+
+- `HLA1516-FW-FW_SCOPE-001`
+- `HLA1516-FW-FW_PURPOSE-002`
+- `HLA1516-FW-FW_OO_RELATIONSHIP-004`
+- `HLA1516-FW-RATIONALE-015`
+
+Canonical reading:
+
+- repo documentation preserves these concepts and boundaries
+- the runtime suite should not be stretched into proof of every conceptual
+  implication
+
+### Federate-responsibility and semantics-breadth rows
+
+These rows remain partial because the runtime proves the nearby transport or
+capability path, but not the broader substantive-correctness or full semantics
+claim:
+
+- `HLA1516-FW-5_3-DET-004`
+- `HLA1516-FW-5_4-DET-002`
+- `HLA1516-FW-RULE_7_PUBLISH_SUBSCRIBE-011`
+- `HLA1516-FW-RULE_9_TIME-013`
+- `HLA1516-FW-RULE_10_COMPLIANCE-014`
+
+Canonical reading:
+
+- the direct runtime witness is already credited to narrower mapped rows
+- the remaining gap is broader correctness, semantics, SOM/FOM consistency, or
+  federate-local conformance language
+
+### SOM-documentation breadth rows
+
+These rows remain partial because the repo proves OMT/SOM parsing and example
+fixture preservation, but not the stronger claim that each federate in scope
+owns a complete, federate-specific SOM proof surface:
+
+- `HLA1516-FW-6_1-DET-001`
+- `HLA1516-FW-6_1-DET-002`
+- `HLA1516-FW-6_1-DET-003`
+- `HLA1516-FW-RULE_6_SOM-010`
+- `HLA1516-RULE-006`
+- `HLA1516-FW-6_2-DET-003`
+- `HLA1516-FW-6_3-DET-002`
+- `HLA1516-FW-6_4-DET-002`
+- `HLA1516-FW-6_5-DET-002`
+
+Canonical reading:
+
+- maintained SOM fixtures and OMT parsing prove the format and example-model
+  surface
+- they do not prove a per-federate authored SOM for every runtime capability
+
+### Residual Read Rule
+
+When one of the residual rows above stays partial, the intended reading is:
+
+- the repo already has bounded evidence for the nearby executable capability
+- the remaining gap is claim breadth, not missing basic runtime implementation
+- the owner ledger is already the canonical narrowed disposition for that row
+
+Do not reopen these rows merely because adjacent runtime slices are green. They
+need broader owner evidence, not repetition of the already credited runtime
+witnesses.
+
+### Residual Exit Rule
+
+Promote one of the residual rows above only if one of these becomes true:
+
+1. a new direct witness proves the broader statement itself rather than only a
+   neighboring runtime capability
+2. a federate-specific SOM or rationale owner artifact is added and clearly
+   narrows the row into a smaller honest documentation claim
+3. the imported row is re-owned elsewhere with a better bounded interpretation
+
+If none of those become true, preserve the current partial disposition.
 
 ## What Is Already Proved
 
@@ -148,10 +230,29 @@ Rule 3 and its direct exchange/detail slices are now mapped because the current
 DM/DDM routing and declaration-gating tests directly prove RTI-mediated
 exchange through the standard runtime path.
 
-Rule 8's direct ownership-transfer capability row is also now mapped because
-the negotiated ownership runtime tests directly prove offer acquire cancel and
-completion flows for dynamic object-attribute ownership transfer, while the
-broader SOM-framed umbrella rows remain partial.
+Rule 4 and the direct interface-surface rows are now mapped because joined
+federates are exercised through the standard generated RTIambassador and
+FederateAmbassador runtime surface rather than backend-private entry points.
+
+Rule 8's direct dynamic-ownership capability rows are also now mapped because
+the runtime directly proves joined federates can offer, request, cancel, and
+complete dynamic object-attribute ownership transfer flows during execution.
+
+Rule 9's direct update-condition capability rows are now mapped because the
+runtime directly proves different subscribers can apply different update-rate
+designators to the same attribute and observe different delivery behavior.
+
+Rule 7's direct exchange-capability rows are now mapped because the DM/DDM
+runtime directly proves publish/subscribe-driven attribute reflection and
+interaction receipt across joined federates during execution.
+
+Rule 10's direct time-coordination rows are now mapped because the runtime
+directly proves timestamp-ordered delivery and time-advance grants coordinate
+local federate time with federation exchange.
+
+Rule 2 and its Clause 5.2 detail slices are now mapped because the runtime has
+a direct witness that isolates the joined-federate simulation-state owner from
+the RTI-owned standard MOM management exception.
 
 Primary evidence anchors:
 

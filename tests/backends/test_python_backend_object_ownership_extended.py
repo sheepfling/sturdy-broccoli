@@ -3,6 +3,8 @@
 import pytest
 
 import hla.fom.mom as hla_mom
+from hla.backends.common import lower_camel_to_snake
+from hla.backends.python1516e.state import RTI_FEDERATE_HANDLE
 from tests.backends.python_backend_extended_support import *
 from hla.rti1516e import RTIambassador, NullFederateAmbassador
 from hla.rti1516e.exceptions import *
@@ -1310,6 +1312,87 @@ def test_python_rti_query_attribute_ownership_reports_rti_for_mom_owned_attribut
     owner.resign_federation_execution(ResignAction.NO_ACTION)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("query-rti-owned-fed")
+
+
+def test_framework_rule_2_runtime_keeps_simulation_state_in_joined_federates_and_mom_state_in_rti():
+    (
+        _engine,
+        owner,
+        observer,
+        _owner_fed,
+        observer_fed,
+        _h1,
+        _h2,
+    ) = joined_pair("framework-rule-2-state-fed")
+    federation = owner.backend.state.federation
+    assert federation is not None
+
+    sim_class = owner.get_object_class_handle("HLAobjectRoot.Target")
+    sim_attr = owner.get_attribute_handle(sim_class, "Position")
+    owner.publish_object_class_attributes(sim_class, {sim_attr})
+    sim_object = owner.register_object_instance(sim_class, "Framework-Rule-2-Object")
+    owner.update_attribute_values(sim_object, {sim_attr: b"sim-state"}, b"framework-rule-2")
+
+    sim_instance = federation.objects[sim_object]
+    assert sim_instance.owner == owner.backend.state.handle
+    assert sim_instance.attributes[sim_attr] == b"sim-state"
+    assert sim_instance.attribute_owners[sim_attr] == owner.backend.state.handle
+
+    federation_class = observer.get_object_class_handle("HLAobjectRoot.HLAmanager.HLAfederation")
+    federation_name = observer.get_attribute_handle(federation_class, "HLAfederationName")
+    mom_object = observer.backend.current_mom_summary()["federation_object"]
+    assert isinstance(mom_object, ObjectInstanceHandle)
+
+    mom_instance = federation.objects[mom_object]
+    assert mom_instance.owner == RTI_FEDERATE_HANDLE
+    assert mom_instance.attribute_owners[federation_name] == RTI_FEDERATE_HANDLE
+
+    observer_fed.clear()
+    observer.query_attribute_ownership(sim_object, sim_attr)
+    observer.query_attribute_ownership(mom_object, federation_name)
+    drain(owner, observer)
+
+    owned = observer_fed.callbacks_named("informAttributeOwnership")
+    assert owned
+    assert owned[-1].args == (sim_object, sim_attr, owner.backend.state.handle)
+
+    rti_owned = observer_fed.callbacks_named("attributeIsOwnedByRTI")
+    assert rti_owned
+    assert rti_owned[-1].args == (mom_object, federation_name)
+
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("framework-rule-2-state-fed")
+
+
+def test_framework_rule_4_joined_federates_use_standard_hla_interface_surface():
+    (
+        _engine,
+        owner,
+        observer,
+        owner_fed,
+        observer_fed,
+        _h1,
+        _h2,
+    ) = joined_pair("framework-rule-4-interface-fed")
+
+    assert isinstance(owner_fed, NullFederateAmbassador)
+    assert isinstance(observer_fed, NullFederateAmbassador)
+
+    for method_name in API_METADATA["RTIambassador"]:
+        snake_name = lower_camel_to_snake(method_name)
+        assert hasattr(owner, method_name), method_name
+        assert hasattr(observer, method_name), method_name
+        assert hasattr(owner, snake_name), snake_name
+        assert hasattr(observer, snake_name), snake_name
+
+    for callback_name in API_METADATA["FederateAmbassador"]:
+        assert hasattr(owner_fed, callback_name), callback_name
+        assert hasattr(observer_fed, callback_name), callback_name
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("framework-rule-4-interface-fed")
 
 
 def test_declaration_management_effects_apply_while_time_managed():

@@ -1224,6 +1224,72 @@ def test_update_rate_designator_does_not_suppress_receive_order_updates(tmp_path
     publisher.destroy_federation_execution("update-rate-ro-fed")
 
 
+def test_framework_rule_9_subscribers_can_vary_attribute_update_conditions_by_designator(tmp_path: Path):
+    fom_path = tmp_path / "framework-update-rate-fom.xml"
+    _write_update_rate_fom(fom_path)
+
+    engine = InMemoryRTIEngine()
+    publisher = rti_ambassador(engine=engine)
+    fast_subscriber = rti_ambassador(engine=engine)
+    default_subscriber = rti_ambassador(engine=engine)
+    pub_fed = RecordingFederateAmbassador()
+    fast_fed = RecordingFederateAmbassador()
+    default_fed = RecordingFederateAmbassador()
+
+    publisher.connect(pub_fed, CallbackModel.HLA_EVOKED)
+    fast_subscriber.connect(fast_fed, CallbackModel.HLA_EVOKED)
+    default_subscriber.connect(default_fed, CallbackModel.HLA_EVOKED)
+    publisher.create_federation_execution("framework-update-rate-fed", str(fom_path))
+    publisher.join_federation_execution("pub", "type-pub", "framework-update-rate-fed")
+    fast_subscriber.join_federation_execution("fast", "type-fast", "framework-update-rate-fed")
+    default_subscriber.join_federation_execution("default", "type-default", "framework-update-rate-fed")
+
+    cls = publisher.get_object_class_handle("HLAobjectRoot.RateObject")
+    attr = publisher.get_attribute_handle(cls, "Payload")
+    factory = publisher.get_time_factory()
+
+    publisher.publish_object_class_attributes(cls, {attr})
+    fast_subscriber.subscribe_object_class_attributes(cls, {attr}, "Fast")
+    default_subscriber.subscribe_object_class_attributes(cls, {attr}, "HLAdefault")
+    publisher.enable_time_regulation(factory.make_interval(0.1))
+    fast_subscriber.enable_time_constrained()
+    default_subscriber.enable_time_constrained()
+    drain(publisher, fast_subscriber, default_subscriber)
+
+    obj = publisher.register_object_instance(cls, "Framework-Rate-1")
+    drain(publisher, fast_subscriber, default_subscriber)
+    fast_fed.clear()
+    default_fed.clear()
+
+    publisher.update_attribute_values(obj, {attr: b"t1"}, b"tag1", factory.make_time(1.0))
+    publisher.update_attribute_values(obj, {attr: b"t12"}, b"tag12", factory.make_time(1.2))
+    publisher.update_attribute_values(obj, {attr: b"t16"}, b"tag16", factory.make_time(1.6))
+    drain(publisher, fast_subscriber, default_subscriber)
+
+    publisher.time_advance_request(factory.make_time(2.0))
+    fast_subscriber.next_message_request_available(factory.make_time(2.0))
+    default_subscriber.next_message_request_available(factory.make_time(2.0))
+    drain(publisher, fast_subscriber, default_subscriber)
+    fast_subscriber.next_message_request_available(factory.make_time(2.0))
+    default_subscriber.next_message_request_available(factory.make_time(2.0))
+    drain(publisher, fast_subscriber, default_subscriber)
+    default_subscriber.next_message_request_available(factory.make_time(2.0))
+    drain(publisher, fast_subscriber, default_subscriber)
+
+    fast_values = [record.args[1][attr] for record in fast_fed.callbacks_named("reflectAttributeValues")]
+    default_values = [record.args[1][attr] for record in default_fed.callbacks_named("reflectAttributeValues")]
+
+    assert fast_values == [b"t1", b"t16"]
+    assert default_values == [b"t1", b"t12", b"t16"]
+    assert fast_subscriber.get_update_rate_value_for_attribute(obj, attr) == 2.0
+    assert default_subscriber.get_update_rate_value_for_attribute(obj, attr) == 0.0
+
+    publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    fast_subscriber.resign_federation_execution(ResignAction.NO_ACTION)
+    default_subscriber.resign_federation_execution(ResignAction.NO_ACTION)
+    publisher.destroy_federation_execution("framework-update-rate-fed")
+
+
 def test_fom_declared_transport_defaults_apply_to_attributes_and_interactions(tmp_path: Path):
     fom_path = tmp_path / "transport-update-rate-fom.xml"
     _write_transport_and_update_rate_fom(fom_path)

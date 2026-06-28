@@ -49,7 +49,7 @@ def test_framework_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 53
     statuses = Counter(row["current_status"] for row in rows)
-    assert statuses == Counter({"partial": 35, "mapped": 18})
+    assert statuses == Counter({"partial": 18, "mapped": 35})
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
     }
@@ -63,9 +63,20 @@ def test_framework_detailed_reconciliation_spot_checks_key_rows():
         "HLA1516-FW-001;"
     )
     assert rows["HLA1516-FW-5_1-DET-001"]["current_status"] == "mapped"
-    assert rows["HLA1516-FW-5_2-DET-001"]["current_status"] == "partial"
+    assert rows["HLA1516-FW-5_2-DET-001"]["current_status"] == "mapped"
+    assert rows["HLA1516-FW-5_4-DET-001"]["current_status"] == "mapped"
     assert rows["HLA1516-FW-5_3-DET-001"]["current_status"] == "mapped"
+    assert rows["HLA1516-FW-6_3-DET-001"]["current_status"] == "mapped"
+    assert rows["HLA1516-FW-6_4-DET-001"]["current_status"] == "mapped"
+    assert rows["HLA1516-FW-6_2-DET-001"]["current_status"] == "mapped"
+    assert rows["HLA1516-FW-6_5-DET-001"]["current_status"] == "mapped"
     assert rows["HLA1516-RULE-003"]["current_status"] == "mapped"
+    assert rows["HLA1516-RULE-002"]["current_status"] == "mapped"
+    assert rows["HLA1516-RULE-004"]["current_status"] == "mapped"
+    assert rows["HLA1516-RULE-007"]["current_status"] == "mapped"
+    assert rows["HLA1516-RULE-008"]["current_status"] == "mapped"
+    assert rows["HLA1516-RULE-009"]["current_status"] == "mapped"
+    assert rows["HLA1516-RULE-010"]["current_status"] == "mapped"
     assert rows["HLA1516-FW-RULE_8_OWNERSHIP-012"]["current_status"] == "mapped"
     assert rows["HLA1516-FW-RULE_5_OWNERSHIP-009"]["current_status"] == "mapped"
     assert rows["HLA1516-FW-BIBLIOGRAPHY-016"]["current_status"] == "mapped"
@@ -97,6 +108,15 @@ def test_framework_rows_do_not_use_closeout_packets_or_plan_docs_as_truth_source
             assert forbidden not in row["current_test_id"], (
                 f"{row['packet_requirement_id']} should not use {forbidden} as a truth source"
             )
+
+
+def test_framework_partial_rows_carry_explicit_canonical_residual_dispositions() -> None:
+    for row in _read_rows():
+        if row["current_status"] != "partial":
+            continue
+        assert row["notes"].startswith("Canonical residual disposition:"), row[
+            "packet_requirement_id"
+        ]
 
 
 def test_framework_rule_3_rows_now_anchor_to_direct_exchange_and_declaration_witnesses() -> None:
@@ -140,3 +160,125 @@ def test_framework_rule_8_direct_row_now_anchors_to_dynamic_ownership_runtime_wi
         "test_python_rti_negotiated_ownership_tracks_divesting_and_candidate_flows"
     )
     assert "dynamic object-attribute ownership transfer" in row["notes"]
+
+
+def test_framework_rule_2_rows_now_anchor_to_direct_runtime_state_split_witness() -> None:
+    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    witness = (
+        "tests/backends/test_python_backend_object_ownership_extended.py::"
+        "test_framework_rule_2_runtime_keeps_simulation_state_in_joined_federates_and_mom_state_in_rti"
+    )
+
+    for packet_id in (
+        "HLA1516-FW-5_2-DET-001",
+        "HLA1516-FW-5_2-DET-002",
+        "HLA1516-FW-5_2-DET-003",
+        "HLA1516-FW-RULE_2_FEDERATE_STATE-006",
+        "HLA1516-RULE-002",
+    ):
+        row = rows[packet_id]
+        assert row["current_status"] == "mapped"
+        assert row["current_test_id"] == witness
+
+    assert "joined federate owner" in rows["HLA1516-FW-5_2-DET-001"]["notes"]
+    assert "MOM federation object attributes remain RTI-owned" in rows["HLA1516-FW-5_2-DET-002"]["notes"]
+    assert "RTI owns only the management exception" in rows["HLA1516-FW-5_2-DET-003"]["notes"]
+    assert "simulation object representation stays with the joined federate" in rows["HLA1516-FW-RULE_2_FEDERATE_STATE-006"]["notes"]
+
+
+def test_framework_rule_4_interface_rows_now_anchor_to_direct_runtime_surface_witness() -> None:
+    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    witness = (
+        "tests/backends/test_python_backend_object_ownership_extended.py::"
+        "test_framework_rule_4_joined_federates_use_standard_hla_interface_surface"
+    )
+
+    for packet_id in (
+        "HLA1516-FW-5_4-DET-001",
+        "HLA1516-FW-RULE_4_INTERFACE-008",
+        "HLA1516-RULE-004",
+    ):
+        row = rows[packet_id]
+        assert row["current_status"] == "mapped"
+        assert row["current_test_id"] == witness
+
+    assert "standard generated HLA service and callback entry points" in rows["HLA1516-FW-5_4-DET-001"]["notes"]
+    assert "private backend-only entry path" in rows["HLA1516-FW-RULE_4_INTERFACE-008"]["notes"]
+
+
+def test_framework_rule_8_capability_rows_now_anchor_to_direct_dynamic_ownership_witness() -> None:
+    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    witness = (
+        "tests/backends/test_python_backend_object_ownership_extended.py::"
+        "test_python_rti_negotiated_ownership_tracks_divesting_and_candidate_flows"
+    )
+
+    for packet_id in (
+        "HLA1516-FW-6_3-DET-001",
+        "HLA1516-RULE-008",
+    ):
+        row = rows[packet_id]
+        assert row["current_status"] == "mapped"
+        assert row["current_test_id"] == witness
+
+    assert "offer divestiture and acquire object-attribute ownership dynamically" in rows["HLA1516-FW-6_3-DET-001"]["notes"]
+    assert "dynamic ownership transfer and acceptance" in rows["HLA1516-RULE-008"]["notes"]
+
+
+def test_framework_rule_9_capability_rows_now_anchor_to_direct_update_rate_witness() -> None:
+    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    witness = (
+        "tests/backends/test_python_backend_support_services.py::"
+        "test_framework_rule_9_subscribers_can_vary_attribute_update_conditions_by_designator"
+    )
+
+    for packet_id in (
+        "HLA1516-FW-6_4-DET-001",
+        "HLA1516-RULE-009",
+    ):
+        row = rows[packet_id]
+        assert row["current_status"] == "mapped"
+        assert row["current_test_id"] == witness
+
+    assert "vary attribute update conditions by selecting different update-rate designators" in rows["HLA1516-FW-6_4-DET-001"]["notes"]
+    assert "distinct delivery behavior" in rows["HLA1516-RULE-009"]["notes"]
+
+
+def test_framework_rule_7_capability_rows_now_anchor_to_direct_exchange_runtime_witness() -> None:
+    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    witness = (
+        "tests/backends/test_python_backend_time_ddm_extended.py::"
+        "test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions"
+    )
+
+    for packet_id in (
+        "HLA1516-FW-6_2-DET-001",
+        "HLA1516-FW-6_2-DET-002",
+        "HLA1516-RULE-007",
+    ):
+        row = rows[packet_id]
+        assert row["current_status"] == "mapped"
+        assert row["current_test_id"] == witness
+
+    assert "update attributes and a subscribing federate can reflect them" in rows["HLA1516-FW-6_2-DET-001"]["notes"]
+    assert "send interactions and a subscribing federate can receive them" in rows["HLA1516-FW-6_2-DET-002"]["notes"]
+    assert "update, reflection, sending, and receipt capabilities" in rows["HLA1516-RULE-007"]["notes"]
+
+
+def test_framework_rule_10_time_coordination_rows_now_anchor_to_direct_runtime_witness() -> None:
+    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    witness = (
+        "tests/time/test_mom_mim_time_v10.py::"
+        "test_framework_rule_10_time_management_coordinates_federate_exchange_with_federation_time"
+    )
+
+    for packet_id in (
+        "HLA1516-FW-6_5-DET-001",
+        "HLA1516-RULE-010",
+    ):
+        row = rows[packet_id]
+        assert row["current_status"] == "mapped"
+        assert row["current_test_id"] == witness
+
+    assert "timestamped interaction delivery and grants occur in time order" in rows["HLA1516-FW-6_5-DET-001"]["notes"]
+    assert "compatibly with coordinated federation exchange" in rows["HLA1516-RULE-010"]["notes"]
