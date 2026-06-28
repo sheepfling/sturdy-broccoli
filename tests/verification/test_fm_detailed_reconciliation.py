@@ -53,7 +53,7 @@ def test_fm_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 632
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 628, "partial": 4}
+        {"mapped": 630, "partial": 2}
     )
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
@@ -110,7 +110,7 @@ def test_fm_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-FM-4_10-EFF-004"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_16-EFF-002"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_16-RTIAPI-002-EFF"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-FM-OVERVIEW-001"]["current_status"] == "partial"
+    assert rows["HLA1516.1-FM-OVERVIEW-001"]["current_status"] == "mapped"
 
 
 def test_fm_connection_lost_rows_point_to_direct_runtime_loss_witness() -> None:
@@ -149,6 +149,30 @@ def test_fm_no_remaining_executable_semantic_partials() -> None:
     assert executable_partial_ids == set()
 
 
+def test_fm_overview_rows_use_direct_overview_witnesses() -> None:
+    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+
+    lifecycle_row = rows["HLA1516.1-FM-OVERVIEW-001"]
+    assert lifecycle_row["current_status"] == "mapped"
+    assert lifecycle_row["current_test_id"] == (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_federation_management_lifecycle_states_cover_connected_joined_resigned_and_disconnected"
+        ";tests/backends/test_python_backend_federation_extended.py::"
+        "test_force_federate_loss_delivers_connection_lost_and_clears_execution_membership"
+    )
+    assert "connected joined resigned and disconnected federate states" in lifecycle_row["notes"]
+
+    modules_row = rows["HLA1516.1-FM-OVERVIEW-002"]
+    assert modules_row["current_status"] == "mapped"
+    assert modules_row["current_test_id"] == (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_create_federation_execution_maintains_current_fdd_modules_and_standard_mim"
+        ";tests/factories/test_fom_omt_parsing.py::"
+        "test_merge_with_standard_mim_preserves_standard_mom_definitions_and_catalog_metadata"
+    )
+    assert "supplied FOM modules together with an accepted standard MIM surface" in modules_row["notes"]
+
+
 def test_fm_new_argument_rows_point_to_direct_runtime_witnesses() -> None:
     rows = {row["packet_requirement_id"]: row for row in _read_rows()}
 
@@ -184,6 +208,13 @@ def test_fm_remaining_create_time_argument_partial_is_explicitly_narrowed() -> N
         in row["current_test_id"]
     )
     assert "overclaims an unconditional omitted-argument fallback to HLAfloat64Time" in row["notes"]
+
+
+def test_fm_lost_federate_overview_remains_the_only_residual_overview_partial() -> None:
+    rows = {candidate["packet_requirement_id"]: candidate for candidate in _read_rows()}
+
+    assert rows["HLA1516.1-FM-OVERVIEW-003"]["current_status"] == "partial"
+    assert "framework-level lost-federate consequence" in rows["HLA1516.1-FM-OVERVIEW-003"]["notes"]
 
 
 def test_fm_callback_order_rows_use_direct_callback_model_witnesses() -> None:
@@ -269,34 +300,30 @@ def test_fm_overview_rows_anchor_to_owner_surface_plus_live_evidence() -> None:
     rows = {row["packet_requirement_id"]: row for row in _read_rows()}
 
     lifecycle_row = rows["HLA1516.1-FM-OVERVIEW-001"]
-    assert lifecycle_row["current_status"] == "partial"
+    assert lifecycle_row["current_status"] == "mapped"
     lifecycle_refs = {item.strip() for item in lifecycle_row["current_test_id"].split(";") if item.strip()}
-    assert "docs/requirements/ieee-1516-2010/federation_management_bounded_family.md" in lifecycle_refs
-    assert "requirements/2010/hla1516_framework_detailed_reconciliation.csv" in lifecycle_refs
     assert (
         "tests/backends/test_python_backend_federation_extended.py::"
-        "test_connect_create_and_join_apply_positive_lifecycle_effects"
-    ) in lifecycle_refs
-    assert (
-        "tests/backends/test_python_backend_federation_extended.py::"
-        "test_disconnect_requires_resign_and_marks_backend_not_connected"
+        "test_federation_management_lifecycle_states_cover_connected_joined_resigned_and_disconnected"
     ) in lifecycle_refs
     assert (
         "tests/backends/test_python_backend_federation_extended.py::"
         "test_force_federate_loss_delivers_connection_lost_and_clears_execution_membership"
     ) in lifecycle_refs
-    assert "lost-federate disconnected-state teardown" in lifecycle_row["notes"]
+    assert "connected joined resigned and disconnected federate states" in lifecycle_row["notes"]
 
     modules_row = rows["HLA1516.1-FM-OVERVIEW-002"]
-    assert modules_row["current_status"] == "partial"
+    assert modules_row["current_status"] == "mapped"
     module_refs = {item.strip() for item in modules_row["current_test_id"].split(";") if item.strip()}
-    assert "docs/requirements/ieee-1516-2010/federation_management_bounded_family.md" in module_refs
-    assert "requirements/2010/hla1516_framework_detailed_reconciliation.csv" in module_refs
+    assert (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_create_federation_execution_maintains_current_fdd_modules_and_standard_mim"
+    ) in module_refs
     assert (
         "tests/factories/test_fom_omt_parsing.py::"
         "test_merge_with_standard_mim_preserves_standard_mom_definitions_and_catalog_metadata"
     ) in module_refs
-    assert "direct FOM/MIM witnesses prove active FDD assembly" in modules_row["notes"]
+    assert "supplied FOM modules together with an accepted standard MIM surface" in modules_row["notes"]
 
     lost_row = rows["HLA1516.1-FM-OVERVIEW-003"]
     assert lost_row["current_status"] == "partial"

@@ -79,17 +79,17 @@ keep describing `CAP-FM` as vague or structurally unfinished.
 
 The current owner ledger has `632` federation-management packet rows:
 
-- `628 mapped`
-- `4 partial`
+- `630 mapped`
+- `2 partial`
 
-The remaining `4 partial` rows cluster into stable categories:
+The remaining `2 partial` rows cluster into stable categories:
 
 - `1 ARG`
-- `3 OVW`
+- `1 OVW`
 
 Residual bounded row kinds in that last group:
 
-- `3 OVW`
+- `1 OVW`
 
 ## What The Categories Mean
 
@@ -110,9 +110,9 @@ directly mapped for the current Python 2010 lane.
 
 ### Residual overview and harmonization tail
 
-The last `4` rows are the small bounded remainder:
+The last `2` rows are the small bounded remainder:
 
-- broad overview rows
+- one broad lost-federate overview row
 - one create-time logical-time-default argument row
 
 These rows are already explicit enough to review honestly, but they are not yet
@@ -130,6 +130,10 @@ including:
 - direct runtime `connectionLost` callback delivery, lost-federate MOM
   reporting, post-loss execution-membership teardown, and direct
   disconnected-state transition after `connectionLost` delivery
+- direct connected, joined, resigned, and disconnected lifecycle-state
+  management for the Python 2010 lane
+- direct current-FDD maintenance with supplied FOM modules plus accepted
+  standard MIM exposure
 - direct disconnected-state transition after `connectionLost` delivery
 - direct joined-live precondition coverage and callback-model dispatch
   coverage for `connectionLost`
@@ -153,6 +157,8 @@ Primary evidence anchors:
 - `tests/backends/test_python_backend_federation_extended.py`
 - `tests/backends/test_python_backend_federation_extended.py::test_force_federate_loss_delivers_connection_lost_and_clears_execution_membership`
 - `tests/backends/test_python_backend_federation_extended.py::test_force_federate_loss_requires_joined_live_victim_and_honors_callback_model`
+- `tests/backends/test_python_backend_federation_extended.py::test_federation_management_lifecycle_states_cover_connected_joined_resigned_and_disconnected`
+- `tests/backends/test_python_backend_federation_extended.py::test_create_federation_execution_maintains_current_fdd_modules_and_standard_mim`
 - `tests/backends/test_python_backend_federation_extended.py::test_connection_lost_and_report_federation_executions_wrap_callback_failures_as_federate_internal_error`
 - `tests/backends/test_python_backend_federation_extended.py::test_list_federation_executions_is_observable_through_mom_service_invocation_reporting`
 - `tests/backends/test_python_backend_federation_extended.py::test_list_federation_executions_surfaces_rti_internal_error_for_corrupt_runtime_state`

@@ -600,6 +600,66 @@ def test_create_federation_execution_accepts_explicit_logical_time_implementatio
     creator.disconnect()
 
 
+def test_federation_management_lifecycle_states_cover_connected_joined_resigned_and_disconnected():
+    engine = InMemoryRTIEngine()
+
+    creator = rti_ambassador(engine=engine)
+    creator.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    assert creator.backend.state.connected is True
+    assert creator.backend.state.handle is None
+    assert creator.backend.state.federation is None
+
+    creator.create_federation_execution("fm-overview-lifecycle-fed", "TargetRadarFOMmodule.xml")
+    federation = engine.federations["fm-overview-lifecycle-fed"]
+
+    joiner = rti_ambassador(engine=engine)
+    joiner.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    handle = joiner.join_federation_execution("alpha", "type-a", "fm-overview-lifecycle-fed")
+
+    assert joiner.backend.state.connected is True
+    assert joiner.backend.state.handle == handle
+    assert joiner.backend.state.federation is federation
+    assert handle in federation.federates
+
+    joiner.resign_federation_execution(ResignAction.NO_ACTION)
+    assert joiner.backend.state.connected is True
+    assert joiner.backend.state.handle is None
+    assert joiner.backend.state.federation is None
+
+    joiner.disconnect()
+    assert joiner.backend.state.connected is False
+    assert joiner.backend.state.handle is None
+    assert joiner.backend.state.federation is None
+
+    creator.destroy_federation_execution("fm-overview-lifecycle-fed")
+    creator.disconnect()
+
+
+def test_create_federation_execution_maintains_current_fdd_modules_and_standard_mim(tmp_path):
+    engine = InMemoryRTIEngine()
+    creator = rti_ambassador(engine=engine)
+    creator.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+
+    first = _write_minimal_fom_module(tmp_path, "overview-alpha", "OverviewAlphaModel", "OverviewAlphaObject")
+    second = _write_minimal_fom_module(tmp_path, "overview-bravo", "OverviewBravoModel", "OverviewBravoObject")
+
+    creator.create_federation_execution("fm-overview-fdd-fed", [first, second])
+    federation = engine.federations["fm-overview-fdd-fed"]
+
+    assert [module.path.name for module in federation.fom_modules if module.path is not None] == [
+        first.name,
+        second.name,
+    ]
+    assert federation.mim_module is not None
+    assert federation.mim_module.is_mim is True
+    assert "HLAobjectRoot.OverviewAlphaObject" in federation.fom_catalog.object_classes
+    assert "HLAobjectRoot.OverviewBravoObject" in federation.fom_catalog.object_classes
+    assert "HLAobjectRoot.HLAmanager.HLAfederation" in federation.fom_catalog.object_classes
+
+    creator.destroy_federation_execution("fm-overview-fdd-fed")
+    creator.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FI-030")
 def test_join_federation_execution_applies_full_effect_vector(tmp_path):
     engine = InMemoryRTIEngine()
