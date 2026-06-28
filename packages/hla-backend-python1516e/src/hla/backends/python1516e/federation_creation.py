@@ -11,6 +11,7 @@ from hla.rti1516e.exceptions import (
     FederationExecutionAlreadyExists,
     FederationExecutionDoesNotExist,
     FederatesCurrentlyJoined,
+    RTIinternalError,
 )
 from hla.fom import standard_mim_module
 from hla.rti1516e import NullFederateAmbassador
@@ -205,11 +206,14 @@ class PythonRTIFederationCreationMixin(_FederationCreationMixinBase):
 
     def _svc_listFederationExecutions(self) -> None:
         self._require_connected()
-        infos = {
-            FederationExecutionInformation(
-                federation.name,
-                federation.time_factory.get_name(),
-            )
-            for federation in self.engine.federations.values()
-        }
+        try:
+            infos = {
+                FederationExecutionInformation(
+                    federation.name,
+                    federation.time_factory.get_name(),
+                )
+                for federation in self.engine.federations.values()
+            }
+        except Exception as exc:
+            raise RTIinternalError("Unable to enumerate federation executions") from exc
         self._deliver(self.state, "reportFederationExecutions", infos)

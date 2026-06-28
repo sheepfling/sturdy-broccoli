@@ -79,15 +79,14 @@ keep describing `CAP-FM` as vague or structurally unfinished.
 
 The current owner ledger has `632` federation-management packet rows:
 
-- `565 mapped`
-- `67 partial`
+- `567 mapped`
+- `65 partial`
 
-The remaining `67 partial` rows cluster into stable categories:
+The remaining `65 partial` rows cluster into stable categories:
 
 - `42 ARG`
 - `17 CB_ORD`
 - `1 EFF`
-- `1 EXC`
 - `5` residual overview, callback-surface, or traceability-bounded rows
 
 Residual bounded row kinds in that last group:
@@ -95,7 +94,6 @@ Residual bounded row kinds in that last group:
 - `3 OVW`
 - `1 CB`
 - `1 PRE`
-- `1 EXC_API`
 
 ## What The Categories Mean
 
@@ -112,9 +110,8 @@ This is the current argument-harmonization tail for `CAP-FM`.
 
 ### Lost-connection callback/fault-surface tail
 
-The small `EFF`, `EXC`, `CB`, `PRE`, and `EXC_API` remainder is now
-concentrated around the connection-lost surface and the list/report
-federation helper family.
+The small `EFF`, `CB`, and `PRE` remainder is now concentrated around the
+connection-lost surface.
 
 Typical pattern:
 
@@ -136,16 +133,6 @@ They are rows where:
 - the signature is already present
 - the broader ordering, timing, or scope envelope remains stated more broadly
   than the currently isolated proof
-
-### List/report federation breadth tail
-
-The remaining `EXC_API` and one residual exception row also include the
-list/report federation helper family.
-
-These rows are not signs that federation reporting is missing.
-They remain `partial` because the current direct witness isolates the main
-report callback and the not-connected guard, but not every broader observer,
-callback-failure, or API-declared exception permutation as one exhaustive row.
 
 ### Residual overview and harmonization tail
 
@@ -175,6 +162,8 @@ including:
   `listFederationExecutions`
 - direct scheduled-save replacement coverage for `requestFederationSave`, and
   direct cancel-capable resign coverage for pending ownership acquisitions
+- direct `RTIinternalError` coverage for corrupted `listFederationExecutions`
+  runtime state
 - representative MOM-observer visibility for key lifecycle and save/restore
   states
 - many direct negative-path guards and callback outcome paths
@@ -187,6 +176,7 @@ Primary evidence anchors:
 - `tests/backends/test_python_backend_federation_extended.py::test_force_federate_loss_delivers_connection_lost_and_clears_execution_membership`
 - `tests/backends/test_python_backend_federation_extended.py::test_connection_lost_and_report_federation_executions_wrap_callback_failures_as_federate_internal_error`
 - `tests/backends/test_python_backend_federation_extended.py::test_list_federation_executions_is_observable_through_mom_service_invocation_reporting`
+- `tests/backends/test_python_backend_federation_extended.py::test_list_federation_executions_surfaces_rti_internal_error_for_corrupt_runtime_state`
 - `tests/backends/test_python_backend_federation_extended.py::test_request_federation_save_latest_scheduled_request_supersedes_prior_requested_save`
 - `tests/backends/test_python_backend_federation_extended.py::test_resign_canceling_directives_clear_pending_acquisition_requests`
 - `tests/scenarios/test_federation_management_backend_matrix.py`

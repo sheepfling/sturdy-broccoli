@@ -1941,3 +1941,17 @@ def test_list_federation_executions_is_observable_through_mom_service_invocation
     witness.resign_federation_execution(ResignAction.NO_ACTION)
     owner.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("fm-list-mom-report-fed")
+
+
+def test_list_federation_executions_surfaces_rti_internal_error_for_corrupt_runtime_state():
+    engine = InMemoryRTIEngine()
+    rti = rti_ambassador(engine=engine)
+    rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    rti.create_federation_execution("list-fed-corrupt-state", "TargetRadarFOMmodule.xml")
+
+    engine.federations["list-fed-corrupt-state"] = object()
+    with pytest.raises(RTIinternalError):
+        rti.list_federation_executions()
+
+    engine.federations.pop("list-fed-corrupt-state", None)
+    rti.disconnect()

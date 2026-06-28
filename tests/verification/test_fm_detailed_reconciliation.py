@@ -53,7 +53,7 @@ def test_fm_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 632
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 565, "partial": 67}
+        {"mapped": 567, "partial": 65}
     )
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
@@ -74,8 +74,10 @@ def test_fm_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-FM-4_4-FEDCB-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_4-FEDCB-001-SIG"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_7-EXC-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_7-EXC-002"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_7-RTIAPI-001-MOM"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_7-RTIAPI-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_7-RTIAPI-001-EXC"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_8-EXC-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_8-FEDCB-001-ORD"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_10-EFF-004"]["current_status"] == "mapped"
@@ -156,6 +158,29 @@ def test_fm_resign_and_scheduled_save_effect_rows_use_direct_backend_witnesses()
         assert row["current_status"] == "mapped"
         assert row["current_test_id"] == save_replace_test
         assert row["notes"].startswith("Direct ")
+
+
+def test_fm_list_federation_executions_internal_error_rows_use_direct_backend_witness() -> None:
+    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    internal_error_test = (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_list_federation_executions_surfaces_rti_internal_error_for_corrupt_runtime_state"
+    )
+
+    row = rows["HLA1516.1-FM-4_7-EXC-002"]
+    assert row["current_status"] == "mapped"
+    assert row["current_test_id"] == internal_error_test
+    assert row["notes"].startswith("Direct ")
+
+    exc_api_row = rows["HLA1516.1-FM-4_7-RTIAPI-001-EXC"]
+    assert exc_api_row["current_status"] == "mapped"
+    test_ids = {item.strip() for item in exc_api_row["current_test_id"].split(";") if item.strip()}
+    assert test_ids == {
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_list_federation_executions_requires_connection_and_reports_known_federations",
+        internal_error_test,
+    }
+    assert exc_api_row["notes"].startswith("Direct ")
 
 
 def test_fm_report_federation_executions_argument_row_has_direct_payload_evidence():
