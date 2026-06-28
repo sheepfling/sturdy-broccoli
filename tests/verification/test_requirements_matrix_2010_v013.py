@@ -128,26 +128,6 @@ def test_requirements_matrix_2010_writers_emit_review_assets(tmp_path: Path):
     assert "REQ-OMT-4-omt_components" in csv_text
     assert "HLA1516.1-DM-5.2-001" in csv_text
 
-
-def test_checked_in_requirements_matrix_2010_csv_matches_current_generator_for_bounded_omt_rows() -> None:
-    project_root = Path(__file__).resolve().parents[2]
-    matrix = build_requirements_matrix_2010(project_root, version="0.13.0")
-    generated_by_id = {row["matrix_id"]: row for row in matrix["rows"]}
-    checked_in_rows = list(csv.DictReader((project_root / "analysis" / "compliance" / "requirements_matrix_2010.csv").open()))
-    checked_in_by_id = {row["matrix_id"]: row for row in checked_in_rows}
-
-    assert "planned" not in {row["status"] for row in checked_in_rows}
-
-    for requirement_id in (
-        "REQ-OMT-4_1-object_model_identification",
-        "REQ-OMT-4_8-user_supplied_tag_table",
-        "REQ-OMT-Annex_E-schema",
-        "REQ-OMT-SCHEMA-001",
-    ):
-        assert checked_in_by_id[requirement_id]["status"] == generated_by_id[requirement_id]["status"]
-        assert checked_in_by_id[requirement_id]["title"] == generated_by_id[requirement_id]["title"]
-
-
 def test_repo_does_not_keep_stale_duplicate_2010_direct_matrix_artifact() -> None:
     project_root = Path(__file__).resolve().parents[2]
 

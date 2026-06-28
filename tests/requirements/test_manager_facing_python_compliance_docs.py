@@ -27,8 +27,6 @@ def test_python_final_requirements_report_keeps_runtime_projection_separate_from
     assert "`0` rows where Python is `vendor-divergent`" in text
     assert "`13` rows where Python is `not-applicable`" in text
     assert "`12` rows where Python is already `verified`" in text
-    assert "2010_python_rti_bounded_family_execution_worklist.md" in text
-    assert "requirements_completion_audit.md" in text
     assert "generated summary surface over the canonical matrix and disposition ledgers" in normalized
     assert "not as the canonical owner ledger" in normalized
     assert "requirement_compliance_exports.md" in text

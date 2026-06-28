@@ -243,7 +243,6 @@ def test_requirement_compliance_export_doc_keeps_2025_denominator_split_explicit
     assert "Pitch proto HLA 4 / `202X`" in text
     assert "`analysis/compliance/compliance.before/`" in text
     assert "as the current owner surface or the current spreadsheet handoff packet" in normalized
-    assert "2010_python_rti_bounded_family_execution_worklist.md" in text
     assert "`requirements_2010_backend_compliance_policy_parents.csv`" in text
     assert "`policy_parents`" in text
     assert "9 broad partial rows" in text

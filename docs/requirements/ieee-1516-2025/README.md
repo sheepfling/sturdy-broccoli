@@ -253,6 +253,14 @@ Reading rule:
 4. use `requirements_completion_audit.md` for the current honest answer to
    whether the broader closeout program is actually finished
 
+Requirement-test rule:
+
+- verify 2025 rows through live evidence anchors and owning proof notes
+- do not treat closeout plans, worklists, or finish-line prose as the thing
+  being verified
+- use [`../../verification/requirements_verification_flow.md`](../../verification/requirements_verification_flow.md)
+  as the canonical policy for that split
+
 ## Boundary Bucket Owners
 
 Use this index when the question is not "what service row proves this?" but

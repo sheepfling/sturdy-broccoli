@@ -62,7 +62,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_validation.py",
             "tests/test_hla_factory_composition.py",
-            "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+            "packages/hla-rti-core/src/hla/fom/validation.py",
         ),
     },
     {
@@ -417,7 +417,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_validation.py",
             "packages/hla-rti-core/src/hla/fom/__init__.py",
-            "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+            "packages/hla-rti-core/src/hla/fom/validation.py",
         ),
         "supported_scope": (
             "Shared OMT parser preserves referenceDataTypes and attribute valueRequired metadata, "
@@ -964,7 +964,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
         "evidence": (
             "tests/test_rti1516_2025_validation.py",
-            "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+            "packages/hla-rti-core/src/hla/fom/validation.py",
             "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd",
         ),
         "supported_scope": (
@@ -4722,12 +4722,12 @@ def _build_implementation_lane_audit(
                 "stopping at ambassador-construction evidence."
             ),
             "evidence_tests": [
-                "tests/test_python_api_spec.py::test_runtime_backend_listing_exposes_python2025_as_primary_2025_lane",
-                "tests/test_python_api_spec.py::test_generic_runtime_creation_for_2025_accepts_python2025_aliases_and_keeps_primary_identity",
+                "tests/test_python_api_spec.py::test_runtime_backend_listing_exposes_python1516_2025_as_primary_2025_lane",
+                "tests/test_python_api_spec.py::test_generic_runtime_creation_for_2025_accepts_python1516_2025_aliases_and_keeps_primary_identity",
                 "tests/test_python_api_spec.py::test_generic_runtime_creation_for_2025_rejects_legacy_shim_provider_name",
-                "tests/test_python_api_spec.py::test_generic_runtime_creation_for_2025_accepts_hosted_transport_on_python2025_aliases",
+                "tests/test_python_api_spec.py::test_generic_runtime_creation_for_2025_accepts_hosted_transport_on_python1516_2025_aliases",
                 "tests/test_python_api_spec.py::test_generic_runtime_creation_for_2025_rejects_hosted_transport_on_legacy_shim_provider",
-                "tests/test_hla_factory_composition.py::test_2025_version_local_factory_accepts_hosted_transport_creation_on_python2025_lane",
+                "tests/test_hla_factory_composition.py::test_2025_version_local_factory_accepts_hosted_transport_creation_on_python1516_2025_lane",
                 "tests/test_hla_factory_composition.py::test_2025_version_local_factory_rejects_legacy_shim_provider_name",
                 "tests/transport/test_grpc_transport_2025.py::test_2025_factory_transport_route_creates_hosted_python2025_ambassador",
                 "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_federation_listing_slice",

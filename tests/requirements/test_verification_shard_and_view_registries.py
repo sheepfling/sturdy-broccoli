@@ -236,29 +236,3 @@ def test_execution_membership_docs_cover_every_manifest_test_entry() -> None:
         short_name = entry.split("::", 1)[1]
         assert short_name in test_surface, short_name
         assert short_name in runbook, short_name
-
-
-def test_top_level_requirement_surfaces_link_to_closeout_program_docs() -> None:
-    expectations = {
-        ROOT / "README.md": (
-            "docs/plans/requirements_completion_audit.md",
-            "docs/plans/2025_python_rti_100_percent_worklist.md",
-            "docs/plans/2010_python_rti_bounded_family_execution_worklist.md",
-            "docs/plans/PLN-004_python_rti_100_percent_compliance_plan.md",
-        ),
-        ROOT / "docs" / "README.md": (
-            "plans/requirements_completion_audit.md",
-            "plans/2025_python_rti_100_percent_worklist.md",
-            "plans/2010_python_rti_bounded_family_execution_worklist.md",
-            "plans/PLN-004_python_rti_100_percent_compliance_plan.md",
-        ),
-        ROOT / "docs" / "verification" / "README.md": (
-            "../plans/2025_python_rti_100_percent_worklist.md",
-            "../plans/PLN-004_python_rti_100_percent_compliance_plan.md",
-        ),
-    }
-
-    for path, refs in expectations.items():
-        text = path.read_text(encoding="utf-8")
-        for ref in refs:
-            assert ref in text, f"{path.relative_to(ROOT)} missing {ref}"

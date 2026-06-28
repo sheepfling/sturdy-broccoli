@@ -44,6 +44,7 @@ Keep verification docs in this order:
 - [../plans/2025_python_rti_100_percent_worklist.md](../plans/2025_python_rti_100_percent_worklist.md): exact 2025 non-covered row inventory, denominator rule, and promotion criteria for literal `691 / 691 covered`
 - [shard_registry.md](shard_registry.md): canonical runnable shard registry and repo-green gating map
 - [view_registry.md](view_registry.md): canonical focused-target and overlapping audit-view registry
+- [requirements_verification_flow.md](requirements_verification_flow.md): canonical rule for requirements -> live evidence -> code flow, and the ban on using plan/worklist prose as a requirement truth source
 - [../plans/requirements_completion_audit.md](../plans/requirements_completion_audit.md): current-state audit of what still blocks an honest full requirements-complete claim
 - [../../requirements/README.md](../../requirements/README.md): edition index for the source-side requirement surfaces
 - [requirements_structure_packet.md](requirements_structure_packet.md): current packet explaining the requirements layout, bridge strategy, and pinned harmonization state

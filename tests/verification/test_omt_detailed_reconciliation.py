@@ -20,9 +20,12 @@ def _read_rows() -> list[dict[str, str]]:
 
 def test_omt_detailed_reconciliation_has_expected_shape():
     rows = _read_rows()
+    statuses = Counter(row["current_status"] for row in rows)
 
     assert len(rows) == 60
-    assert Counter(row["current_status"] for row in rows) == Counter({"mapped": 60})
+    assert set(statuses) <= {"mapped", "partial"}
+    assert statuses["partial"] == 0
+    assert statuses["mapped"] == len(rows)
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
     }

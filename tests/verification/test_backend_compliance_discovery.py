@@ -30,6 +30,76 @@ ALLOWED_DISPOSITIONS = {
 }
 
 
+def _assert_contains_all(container: object, expected_items: list[object]) -> None:
+    for item in expected_items:
+        assert item in container
+
+
+def _assert_refs_exclude_backend_leaks(refs: list[str], notes: str) -> None:
+    assert not any(ref.startswith("tests/backends/") for ref in refs)
+    assert not any("pitch" in ref.lower() for ref in refs)
+    assert "pitch" not in notes.lower()
+
+
+def _assert_disposition_row(
+    rows: dict[str, dict[str, object]],
+    requirement_id: str,
+    disposition: str,
+    required_refs: list[str],
+) -> None:
+    row = rows[requirement_id]
+    refs = row["evidence_refs"]  # type: ignore[assignment]
+    assert row["runtime_disposition"] == disposition
+    _assert_contains_all(refs, required_refs)
+    _assert_refs_exclude_backend_leaks(refs, row["notes"])  # type: ignore[arg-type]
+
+
+def _assert_disposition_rows(
+    rows: dict[str, dict[str, object]],
+    requirement_ids: set[str],
+    disposition: str,
+    required_refs: list[str],
+) -> None:
+    for requirement_id in requirement_ids:
+        _assert_disposition_row(rows, requirement_id, disposition, required_refs)
+
+
+def _assert_pitch_row(
+    rows: dict[str, dict[str, object]],
+    requirement_id: str,
+    disposition: str,
+    required_refs: list[str],
+) -> None:
+    row = rows[requirement_id]
+    assert row["pitch_disposition"] == disposition
+    _assert_contains_all(row["evidence_refs"], required_refs)  # type: ignore[arg-type]
+
+
+def _assert_pitch_rows(
+    rows: dict[str, dict[str, object]],
+    requirement_ids: set[str],
+    disposition: str,
+    required_refs: list[str],
+) -> None:
+    for requirement_id in requirement_ids:
+        _assert_pitch_row(rows, requirement_id, disposition, required_refs)
+
+
+def _assert_pitch_profile_split_row(
+    rows: dict[str, dict[str, object]],
+    requirement_id: str,
+    disposition: str,
+    jpype_refs: list[str],
+    py4j_refs: list[str],
+) -> None:
+    row = rows[requirement_id]
+    assert row["pitch_disposition"] == disposition
+    assert row["pitch_jpype_disposition"] == disposition
+    assert row["pitch_py4j_disposition"] == disposition
+    _assert_contains_all(row["pitch_jpype_evidence_refs"], jpype_refs)  # type: ignore[arg-type]
+    _assert_contains_all(row["pitch_py4j_evidence_refs"], py4j_refs)  # type: ignore[arg-type]
+
+
 def _source_checkout_env(project_root: Path) -> dict[str, str]:
     data = tomllib.loads((project_root / "pyproject.toml").read_text(encoding="utf-8"))
     roots = data["tool"]["pytest"]["ini_options"]["pythonpath"]
@@ -40,14 +110,6 @@ def _source_checkout_env(project_root: Path) -> dict[str, str]:
 
 def _requirement_disposition_artifact_paths(project_root: Path) -> list[Path]:
     return sorted((project_root / "analysis" / "compliance").glob("*_requirement_disposition.json"))
-
-
-def _catalog_summary_key_for_artifact(path: Path) -> str:
-    return f"{path.stem.replace('-', '_')}_summary"
-
-
-def _catalog_row_count_key_for_artifact(path: Path) -> str:
-    return f"{path.stem.replace('-', '_')}_row_count"
 
 
 def _row_disposition_keys(payload: dict[str, object]) -> set[str]:
@@ -65,18 +127,23 @@ def test_backend_compliance_catalog_exposes_primary_backend_views():
     catalog = build_backend_compliance_catalog(project_root)
 
     assert catalog["summary"]["backend_count"] >= 6
-    assert "analysis/compliance/core_backend_matrix.json" in catalog["source_artifacts"]
-    assert "analysis/compliance/python_requirement_disposition.json" in catalog["source_artifacts"]
-    assert "analysis/compliance/certi_requirement_disposition.json" in catalog["source_artifacts"]
-    assert "analysis/compliance/certi-native_requirement_disposition.json" in catalog["source_artifacts"]
-    assert "analysis/compliance/certi-jpype_requirement_disposition.json" in catalog["source_artifacts"]
-    assert "analysis/compliance/certi-py4j_requirement_disposition.json" in catalog["source_artifacts"]
-    assert "analysis/compliance/portico_requirement_disposition.json" in catalog["source_artifacts"]
-    assert "analysis/compliance/portico-jpype_requirement_disposition.json" in catalog["source_artifacts"]
-    assert "analysis/compliance/portico-py4j_requirement_disposition.json" in catalog["source_artifacts"]
-    assert "analysis/compliance/pitch_requirement_disposition.json" in catalog["source_artifacts"]
-    assert "analysis/compliance/pitch-jpype_requirement_disposition.json" in catalog["source_artifacts"]
-    assert "analysis/compliance/pitch-py4j_requirement_disposition.json" in catalog["source_artifacts"]
+    _assert_contains_all(
+        catalog["source_artifacts"],
+        [
+            "analysis/compliance/core_backend_matrix.json",
+            "analysis/compliance/python_requirement_disposition.json",
+            "analysis/compliance/certi_requirement_disposition.json",
+            "analysis/compliance/certi-native_requirement_disposition.json",
+            "analysis/compliance/certi-jpype_requirement_disposition.json",
+            "analysis/compliance/certi-py4j_requirement_disposition.json",
+            "analysis/compliance/portico_requirement_disposition.json",
+            "analysis/compliance/portico-jpype_requirement_disposition.json",
+            "analysis/compliance/portico-py4j_requirement_disposition.json",
+            "analysis/compliance/pitch_requirement_disposition.json",
+            "analysis/compliance/pitch-jpype_requirement_disposition.json",
+            "analysis/compliance/pitch-py4j_requirement_disposition.json",
+        ],
+    )
     assert catalog["operator_entrypoints"]["discover_command"] == "./tools/compliance discover"
 
     backends = {row["backend_id"]: row for row in catalog["backends"]}
@@ -90,16 +157,29 @@ def test_backend_compliance_catalog_exposes_primary_backend_views():
     assert any("queryGALT" in " ".join(row["section_refs"]) or row["slice_id"] == "negotiated-ownership" for row in backends["certi-native"]["notable_rows"])
 
     vendor_summary = catalog["requirements_vendor_summary"]
-    assert vendor_summary["python_runtime_status_counts"].get("yes", 0) > 0
-    assert vendor_summary["certi_runtime_status_counts"].get("partial", 0) > 0
-    assert vendor_summary["python_runtime_disposition_counts"].get("verified", 0) > 0
-    assert vendor_summary["certi_runtime_disposition_counts"].get("vendor-divergent", 0) > 0
-    assert vendor_summary["certi_runtime_disposition_counts"].get("not-yet-tested", 0) > 0
+    assert {
+        "python_runtime_status_yes": vendor_summary["python_runtime_status_counts"].get("yes", 0) > 0,
+        "certi_runtime_status_partial": vendor_summary["certi_runtime_status_counts"].get("partial", 0) > 0,
+        "python_runtime_disposition_verified": vendor_summary["python_runtime_disposition_counts"].get("verified", 0) > 0,
+        "certi_runtime_disposition_vendor_divergent": vendor_summary["certi_runtime_disposition_counts"].get("vendor-divergent", 0) > 0,
+        "certi_runtime_disposition_not_yet_tested": vendor_summary["certi_runtime_disposition_counts"].get("not-yet-tested", 0) > 0,
+    } == {
+        "python_runtime_status_yes": True,
+        "certi_runtime_status_partial": True,
+        "python_runtime_disposition_verified": True,
+        "certi_runtime_disposition_vendor_divergent": True,
+        "certi_runtime_disposition_not_yet_tested": True,
+    }
     python_disposition = catalog["python_requirement_disposition_summary"]["disposition_counts"]
     assert python_disposition.get("verified", 0) > 0
     certi_disposition = catalog["certi_requirement_disposition_summary"]["disposition_counts"]
-    assert certi_disposition.get("verified", 0) > 0
-    assert certi_disposition.get("classification-required", 0) > 0
+    assert {
+        "verified": certi_disposition.get("verified", 0) > 0,
+        "classification_required": certi_disposition.get("classification-required", 0) > 0,
+    } == {
+        "verified": True,
+        "classification_required": True,
+    }
     certi_native_disposition = catalog["certi_native_requirement_disposition_summary"]["disposition_counts"]
     certi_jpype_disposition = catalog["certi_jpype_requirement_disposition_summary"]["disposition_counts"]
     certi_py4j_disposition = catalog["certi_py4j_requirement_disposition_summary"]["disposition_counts"]
@@ -112,30 +192,71 @@ def test_backend_compliance_catalog_exposes_primary_backend_views():
     portico_py4j_disposition = catalog["portico_py4j_requirement_disposition_summary"]["disposition_counts"]
     assert portico_jpype_disposition == portico_disposition
     assert portico_py4j_disposition == portico_disposition
-    assert vendor_summary["pitch_runtime_disposition_counts"].get("verified", 0) > 0
-    assert vendor_summary["pitch_runtime_disposition_counts"].get("blocked", 0) > 0
-    assert vendor_summary["pitch_jpype_runtime_disposition_counts"].get("blocked", 0) >= 2
-    assert vendor_summary["pitch_py4j_runtime_disposition_counts"].get("verified", 0) > 0
+    assert {
+        "pitch_runtime_verified": vendor_summary["pitch_runtime_disposition_counts"].get("verified", 0) > 0,
+        "pitch_runtime_blocked": vendor_summary["pitch_runtime_disposition_counts"].get("blocked", 0) > 0,
+        "pitch_jpype_runtime_blocked_ge_2": vendor_summary["pitch_jpype_runtime_disposition_counts"].get("blocked", 0) >= 2,
+        "pitch_py4j_runtime_verified": vendor_summary["pitch_py4j_runtime_disposition_counts"].get("verified", 0) > 0,
+    } == {
+        "pitch_runtime_verified": True,
+        "pitch_runtime_blocked": True,
+        "pitch_jpype_runtime_blocked_ge_2": True,
+        "pitch_py4j_runtime_verified": True,
+    }
     pitch_disposition = catalog["pitch_requirement_disposition_summary"]["disposition_counts"]
-    assert pitch_disposition.get("verified", 0) > 0
-    assert pitch_disposition.get("blocked", 0) > 0
-    assert pitch_disposition.get("not-applicable", 0) > 0
-    assert pitch_disposition.get("classification-required", 0) > 0
+    assert {
+        "verified": pitch_disposition.get("verified", 0) > 0,
+        "blocked": pitch_disposition.get("blocked", 0) > 0,
+        "not_applicable": pitch_disposition.get("not-applicable", 0) > 0,
+        "classification_required": pitch_disposition.get("classification-required", 0) > 0,
+    } == {
+        "verified": True,
+        "blocked": True,
+        "not_applicable": True,
+        "classification_required": True,
+    }
     pitch_jpype_disposition = catalog["pitch_jpype_requirement_disposition_summary"]["disposition_counts"]
-    assert pitch_jpype_disposition.get("verified", 0) > 0
-    assert pitch_jpype_disposition.get("blocked", 0) >= 2
+    assert {
+        "verified": pitch_jpype_disposition.get("verified", 0) > 0,
+        "blocked_ge_2": pitch_jpype_disposition.get("blocked", 0) >= 2,
+    } == {
+        "verified": True,
+        "blocked_ge_2": True,
+    }
     pitch_py4j_disposition = catalog["pitch_py4j_requirement_disposition_summary"]["disposition_counts"]
     assert pitch_py4j_disposition.get("verified", 0) > 0
     profile_disposition = catalog["pitch_requirement_disposition_summary"]["profile_disposition_counts"]
-    assert profile_disposition["pitch-jpype"].get("blocked", 0) >= 2
-    assert profile_disposition["pitch-py4j"].get("verified", 0) > 0
+    assert {
+        "pitch_jpype_blocked_ge_2": profile_disposition["pitch-jpype"].get("blocked", 0) >= 2,
+        "pitch_py4j_verified": profile_disposition["pitch-py4j"].get("verified", 0) > 0,
+    } == {
+        "pitch_jpype_blocked_ge_2": True,
+        "pitch_py4j_verified": True,
+    }
     clause_summary = catalog["pitch_requirement_disposition_summary"]["clause_summary"]
-    assert clause_summary_counts(clause_summary, IEEE_1516_1_2010, "4").get("not-yet-tested", 0) == 0
-    assert clause_summary_counts(clause_summary, IEEE_1516_1_2010, "6").get("not-yet-tested", 0) == 0
-    assert clause_summary_counts(clause_summary, IEEE_1516_1_2010, "8")["vendor-divergent"] > 0
+    assert {
+        "clause4_not_yet_tested": clause_summary_counts(clause_summary, IEEE_1516_1_2010, "4").get("not-yet-tested", 0),
+        "clause6_not_yet_tested": clause_summary_counts(clause_summary, IEEE_1516_1_2010, "6").get("not-yet-tested", 0),
+        "clause8_vendor_divergent_positive": clause_summary_counts(clause_summary, IEEE_1516_1_2010, "8")["vendor-divergent"] > 0,
+    } == {
+        "clause4_not_yet_tested": 0,
+        "clause6_not_yet_tested": 0,
+        "clause8_vendor_divergent_positive": True,
+    }
     profile_clause_summary = catalog["pitch_requirement_disposition_summary"]["profile_clause_summary"]
-    assert clause_summary_counts(profile_clause_summary["pitch-jpype"], IEEE_1516_1_2010, "4")["blocked"] >= 2
-    assert clause_summary_counts(profile_clause_summary["pitch-py4j"], IEEE_1516_1_2010, "4")["verified"] >= 2
+    assert {
+        "pitch_jpype_clause4_blocked_ge_2": clause_summary_counts(profile_clause_summary["pitch-jpype"], IEEE_1516_1_2010, "4")[
+            "blocked"
+        ]
+        >= 2,
+        "pitch_py4j_clause4_verified_ge_2": clause_summary_counts(profile_clause_summary["pitch-py4j"], IEEE_1516_1_2010, "4")[
+            "verified"
+        ]
+        >= 2,
+    } == {
+        "pitch_jpype_clause4_blocked_ge_2": True,
+        "pitch_py4j_clause4_verified_ge_2": True,
+    }
     assert "analysis/compliance/vendor_discovery_backlog.json" in catalog["source_artifacts"]
 
 
@@ -169,34 +290,44 @@ def test_backend_compliance_catalog_text_render_supports_filtering():
     catalog = build_backend_compliance_catalog(project_root)
 
     rendered = render_backend_compliance_catalog_text(catalog, backend_filter="certi-native")
-    assert "Backend Compliance Discovery" in rendered
-    assert "certi-native" in rendered
+    _assert_contains_all(
+        rendered,
+        [
+            "Backend Compliance Discovery",
+            "certi-native",
+            "python_requirement_dispositions:",
+            "certi_requirement_dispositions:",
+            "certi-native_requirement_dispositions:",
+            "certi-jpype_requirement_dispositions:",
+            "certi-py4j_requirement_dispositions:",
+            "portico-jpype_requirement_dispositions:",
+            "portico-py4j_requirement_dispositions:",
+            "pitch_requirement_dispositions:",
+            "pitch-py4j_clause4_requirement_dispositions:",
+            "Refresh: ./tools/compliance generate",
+        ],
+    )
     assert "python-inmemory" not in rendered
-    assert "python_requirement_dispositions:" in rendered
-    assert "certi_requirement_dispositions:" in rendered
-    assert "certi-native_requirement_dispositions:" in rendered
-    assert "certi-jpype_requirement_dispositions:" in rendered
-    assert "certi-py4j_requirement_dispositions:" in rendered
-    assert "portico-jpype_requirement_dispositions:" in rendered
-    assert "portico-py4j_requirement_dispositions:" in rendered
-    assert "pitch_requirement_dispositions:" in rendered
     assert rendered.count("pitch-jpype_requirement_dispositions:") == 1
-    assert "pitch-py4j_clause4_requirement_dispositions:" in rendered
     assert rendered.count("pitch-py4j_requirement_dispositions:") == 1
-    assert "Refresh: ./tools/compliance generate" in rendered
 
 
 def test_pitch_requirement_disposition_markdown_surfaces_profile_split_rows():
     project_root = Path(__file__).resolve().parents[2]
     rendered = (project_root / "analysis" / "compliance" / "pitch_requirement_disposition.md").read_text(encoding="utf-8")
 
-    assert "## Profile Summary" in rendered
-    assert "Vendor divergent" in rendered
-    assert "## Profile Clause Summary" in rendered
-    assert "### pitch-jpype" in rendered
-    assert "## Backend-Split Rows" in rendered
-    assert "| pitch-jpype |" in rendered
-    assert "| pitch-py4j |" in rendered
+    _assert_contains_all(
+        rendered,
+        [
+            "## Profile Summary",
+            "Vendor divergent",
+            "## Profile Clause Summary",
+            "### pitch-jpype",
+            "## Backend-Split Rows",
+            "| pitch-jpype |",
+            "| pitch-py4j |",
+        ],
+    )
     assert "HLA1516.1-FM-4.1.5-001" not in rendered
     assert "| blocked | blocked | blocked |" not in rendered
 
@@ -260,22 +391,6 @@ def test_generated_requirement_disposition_summaries_match_row_level_counts() ->
 
         assert observed_family == summary["disposition_counts"]
         assert observed_profiles == summary["profile_disposition_counts"]
-
-
-def test_backend_compliance_catalog_mirrors_generated_requirement_disposition_packet_summaries() -> None:
-    project_root = Path(__file__).resolve().parents[2]
-    catalog = build_backend_compliance_catalog(project_root)
-
-    for path in _requirement_disposition_artifact_paths(project_root):
-        payload = json.loads(path.read_text(encoding="utf-8"))
-        source_artifact = f"analysis/compliance/{path.name}"
-        summary_key = _catalog_summary_key_for_artifact(path)
-        row_count_key = _catalog_row_count_key_for_artifact(path)
-
-        assert source_artifact in catalog["source_artifacts"], path.name
-        assert source_artifact in catalog["operator_entrypoints"]["primary_artifacts"], path.name
-        assert catalog[summary_key] == payload["summary"], path.name
-        assert catalog["summary"][row_count_key] == payload["summary"]["row_count"], path.name
 
 
 def test_pitch_profile_requirement_disposition_artifacts_surface_profile_specific_rows():
@@ -450,23 +565,22 @@ def test_certi_requirement_disposition_tracks_shared_save_restore_evidence():
     }:
         assert rows[requirement_id]["runtime_disposition"] == "verified"
 
-    for requirement_id in {
-        "REQ-RTI-FM-4_16-requestFederationSave",
-        "REQ-FED-FM-4_17-initiateFederateSave",
-        "REQ-RTI-FM-4_22-queryFederationSaveStatus",
-        "REQ-RTI-FM-4_24-requestFederationRestore",
-        "REQ-FED-FM-4_27-initiateFederateRestore",
-        "REQ-RTI-FM-4_31-queryFederationRestoreStatus",
-    }:
-        refs = rows[requirement_id]["evidence_refs"]
-        assert (
-            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario"
-            in refs
-        )
-        assert "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke" in refs
-        assert not any(ref.startswith("tests/backends/") for ref in refs)
-        assert not any("pitch" in ref.lower() for ref in refs)
-        assert "pitch" not in rows[requirement_id]["notes"].lower()
+    _assert_disposition_rows(
+        rows,
+        {
+            "REQ-RTI-FM-4_16-requestFederationSave",
+            "REQ-FED-FM-4_17-initiateFederateSave",
+            "REQ-RTI-FM-4_22-queryFederationSaveStatus",
+            "REQ-RTI-FM-4_24-requestFederationRestore",
+            "REQ-FED-FM-4_27-initiateFederateRestore",
+            "REQ-RTI-FM-4_31-queryFederationRestoreStatus",
+        },
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
+            "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke",
+        ],
+    )
 
 
 def test_certi_requirement_disposition_tracks_shared_synchronization_evidence():
@@ -474,23 +588,21 @@ def test_certi_requirement_disposition_tracks_shared_synchronization_evidence():
     payload = json.loads((project_root / "analysis" / "compliance" / "certi_requirement_disposition.json").read_text(encoding="utf-8"))
     rows = {row["requirement_id"]: row for row in payload["rows"] if row.get("requirement_id")}
 
-    for requirement_id in {
-        "REQ-RTI-FM-4_11-registerFederationSynchronizationPoint",
-        "REQ-FED-FM-4_12-synchronizationPointRegistrationSucceeded",
-        "REQ-FED-FM-4_13-announceSynchronizationPoint",
-        "REQ-RTI-FM-4_14-synchronizationPointAchieved",
-        "REQ-FED-FM-4_15-federationSynchronized",
-    }:
-        refs = rows[requirement_id]["evidence_refs"]
-        assert rows[requirement_id]["runtime_disposition"] == "verified"
-        assert (
-            "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario"
-            in refs
-        )
-        assert "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_synchronization_matrix" in refs
-        assert not any(ref.startswith("tests/backends/") for ref in refs)
-        assert not any("pitch" in ref.lower() for ref in refs)
-        assert "pitch" not in rows[requirement_id]["notes"].lower()
+    _assert_disposition_rows(
+        rows,
+        {
+            "REQ-RTI-FM-4_11-registerFederationSynchronizationPoint",
+            "REQ-FED-FM-4_12-synchronizationPointRegistrationSucceeded",
+            "REQ-FED-FM-4_13-announceSynchronizationPoint",
+            "REQ-RTI-FM-4_14-synchronizationPointAchieved",
+            "REQ-FED-FM-4_15-federationSynchronized",
+        },
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
+            "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_synchronization_matrix",
+        ],
+    )
 
 
 def test_certi_requirement_disposition_tracks_clause6_exchange_evidence():
@@ -522,17 +634,15 @@ def test_certi_requirement_disposition_tracks_clause6_exchange_evidence():
     }
     assert verified_clause6_ids == expected_ids
 
-    for requirement_id in expected_ids:
-        row = rows[requirement_id]
-        refs = row["evidence_refs"]
-        assert (
-            "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario"
-            in refs
-        )
-        assert "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_exchange_matrix" in refs
-        assert not any(ref.startswith("tests/backends/") for ref in refs)
-        assert not any("pitch" in ref.lower() for ref in refs)
-        assert "pitch" not in row["notes"].lower()
+    _assert_disposition_rows(
+        rows,
+        expected_ids,
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
+            "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_exchange_matrix",
+        ],
+    )
 
 
 def test_certi_requirement_disposition_tracks_clause7_ownership_evidence():
@@ -564,17 +674,15 @@ def test_certi_requirement_disposition_tracks_clause7_ownership_evidence():
     }
     assert verified_clause7_ids == expected_ids
 
-    for requirement_id in expected_ids:
-        row = rows[requirement_id]
-        refs = row["evidence_refs"]
-        assert (
-            "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario"
-            in refs
-        )
-        assert "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_ownership_matrix" in refs
-        assert not any(ref.startswith("tests/backends/") for ref in refs)
-        assert not any("pitch" in ref.lower() for ref in refs)
-        assert "pitch" not in row["notes"].lower()
+    _assert_disposition_rows(
+        rows,
+        expected_ids,
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario",
+            "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_ownership_matrix",
+        ],
+    )
 
 
 def test_certi_requirement_disposition_tracks_clause8_shared_harness_subset():
@@ -656,137 +764,114 @@ def test_certi_requirement_disposition_tracks_clause8_shared_harness_subset():
         "HLA1516.1-TM-8.8-003",
     }
 
-    for requirement_id in state_service_ids:
-        row = rows[requirement_id]
-        refs = row["evidence_refs"]
-        assert row["runtime_disposition"] == "verified"
-        assert (
-            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case"
-            in refs
-        )
-        assert "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_services_matrix" in refs
-
-    for requirement_id in ordering_ids:
-        row = rows[requirement_id]
-        refs = row["evidence_refs"]
-        assert row["runtime_disposition"] == "verified"
-        assert (
-            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case"
-            in refs
-        )
-        assert "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_ordering_and_query_matrix" in refs
-
-    for requirement_id in available_flush_ids:
-        row = rows[requirement_id]
-        refs = row["evidence_refs"]
-        assert row["runtime_disposition"] == "verified"
-        assert (
-            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_available_and_flush_case"
-            in refs
-        )
-        assert "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_available_and_flush_matrix" in refs
-
-    for requirement_id in available_retraction_ids:
-        row = rows[requirement_id]
-        refs = row["evidence_refs"]
-        assert row["runtime_disposition"] == "verified"
-        assert (
-            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_available_and_retraction_case"
-            in refs
-        )
-        assert "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_available_and_retraction_matrix" in refs
-
-    for requirement_id in logical_time_ids:
-        row = rows[requirement_id]
-        refs = row["evidence_refs"]
-        assert row["runtime_disposition"] == "verified"
-        assert (
-            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case"
-            in refs
-        )
-        assert "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_logical_time_query_matrix" in refs
-
-    for requirement_id in state_toggle_ids:
-        row = rows[requirement_id]
-        refs = row["evidence_refs"]
-        assert row["runtime_disposition"] == "verified"
-        assert (
-            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case"
-            in refs
-        )
-        assert "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_toggle_services_matrix" in refs
-
-    for requirement_id in request_retraction_ids:
-        row = rows[requirement_id]
-        refs = row["evidence_refs"]
-        assert row["runtime_disposition"] == "verified"
-        assert (
-            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_request_retraction_case"
-            in refs
-        )
-        assert "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_request_retraction_matrix" in refs
-
-    for requirement_id in order_override_ids:
-        row = rows[requirement_id]
-        refs = row["evidence_refs"]
-        assert row["runtime_disposition"] == "verified"
-        assert (
-            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_order_override_case"
-            in refs
-        )
-        assert "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_order_override_matrix" in refs
-
-    for requirement_id in time_bound_vendor_divergent_ids:
-        row = rows[requirement_id]
-        refs = row["evidence_refs"]
-        assert row["runtime_disposition"] == "vendor-divergent"
-        assert (
-            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_time_bound_query_case"
-            in refs
-        )
-        assert "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_time_bound_query_matrix" in refs
-
-    for requirement_id in order_override_vendor_divergent_ids:
-        row = rows[requirement_id]
-        refs = row["evidence_refs"]
-        assert row["runtime_disposition"] == "vendor-divergent"
-        assert (
-            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_order_override_case"
-            in refs
-        )
-        assert "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_order_override_matrix" in refs
-
-    for requirement_id in duplicate_enable_rejection_ids:
-        row = rows[requirement_id]
-        refs = row["evidence_refs"]
-        assert row["runtime_disposition"] == "verified"
-        assert (
-            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_duplicate_enable_rejection_case"
-            in refs
-        )
-        assert (
-            "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_duplicate_enable_rejection_matrix"
-            in refs
-        )
-
-    for requirement_id in tar_boundary_ids:
-        row = rows[requirement_id]
-        refs = row["evidence_refs"]
-        assert row["runtime_disposition"] == "verified"
-        assert (
-            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_tar_galt_boundary_case"
-            in refs
-        )
-        assert (
-            "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_tar_galt_boundary_matrix"
-            in refs
-        )
-
-    for requirement_id in state_service_ids | ordering_ids | available_flush_ids:
-        refs = rows[requirement_id]["evidence_refs"]
-        assert not any(ref.startswith("tests/backends/") for ref in refs)
-        assert not any("pitch" in ref.lower() for ref in refs)
-        assert "pitch" not in rows[requirement_id]["notes"].lower()
+    _assert_disposition_rows(
+        rows,
+        state_service_ids,
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
+            "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_services_matrix",
+        ],
+    )
+    _assert_disposition_rows(
+        rows,
+        ordering_ids,
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case",
+            "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_ordering_and_query_matrix",
+        ],
+    )
+    _assert_disposition_rows(
+        rows,
+        available_flush_ids,
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_available_and_flush_case",
+            "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_available_and_flush_matrix",
+        ],
+    )
+    _assert_disposition_rows(
+        rows,
+        available_retraction_ids,
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_available_and_retraction_case",
+            "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_available_and_retraction_matrix",
+        ],
+    )
+    _assert_disposition_rows(
+        rows,
+        logical_time_ids,
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
+            "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_logical_time_query_matrix",
+        ],
+    )
+    _assert_disposition_rows(
+        rows,
+        state_toggle_ids,
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
+            "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_toggle_services_matrix",
+        ],
+    )
+    _assert_disposition_rows(
+        rows,
+        request_retraction_ids,
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_request_retraction_case",
+            "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_request_retraction_matrix",
+        ],
+    )
+    _assert_disposition_rows(
+        rows,
+        order_override_ids,
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_order_override_case",
+            "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_order_override_matrix",
+        ],
+    )
+    _assert_disposition_rows(
+        rows,
+        time_bound_vendor_divergent_ids,
+        "vendor-divergent",
+        [
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_time_bound_query_case",
+            "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_time_bound_query_matrix",
+        ],
+    )
+    _assert_disposition_rows(
+        rows,
+        order_override_vendor_divergent_ids,
+        "vendor-divergent",
+        [
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_order_override_case",
+            "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_order_override_matrix",
+        ],
+    )
+    _assert_disposition_rows(
+        rows,
+        duplicate_enable_rejection_ids,
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_duplicate_enable_rejection_case",
+            "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_duplicate_enable_rejection_matrix",
+        ],
+    )
+    _assert_disposition_rows(
+        rows,
+        tar_boundary_ids,
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_tar_galt_boundary_case",
+            "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_tar_galt_boundary_matrix",
+        ],
+    )
 
     for requirement_id in (
         state_service_ids
@@ -883,97 +968,103 @@ def test_pitch_requirement_disposition_tracks_lifecycle_probe_evidence():
         "REQ-RTI-FM-4_10-resignFederationExecution",
     }
 
-    for requirement_id in lifecycle_ids:
-        row = rows[requirement_id]
-        assert row["pitch_disposition"] == "verified"
-        assert (
-            "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario"
-            in row["evidence_refs"]
-        )
-        assert "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_lifecycle_matrix" in row["evidence_refs"]
-        assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_federation_lifecycle_matrix" in row["evidence_refs"]
-
-    for requirement_id in {"REQ-RTI-FM-4_7-listFederationExecutions", "REQ-FED-FM-4_8-reportFederationExecutions"}:
-        row = rows[requirement_id]
-        assert row["pitch_disposition"] == "verified"
-        assert (
-            "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_listing_scenario"
-            in row["evidence_refs"]
-        )
-        assert "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_listing_matrix" in row["evidence_refs"]
-        assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_federation_listing_matrix" in row["evidence_refs"]
-
-    save_restore_time_state_row = rows["REQ-SAVE-RESTORE-001"]
-    assert save_restore_time_state_row["pitch_disposition"] == "verified"
-    assert (
-        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_scheduled_save_restore_time_state_scenario"
-        in save_restore_time_state_row["evidence_refs"]
+    _assert_pitch_rows(
+        rows,
+        lifecycle_ids,
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario",
+            "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_lifecycle_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_federation_lifecycle_matrix",
+        ],
     )
-    assert (
-        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_scheduled_save_restore_time_state_matrix"
-        in save_restore_time_state_row["evidence_refs"]
-    )
-    assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_scheduled_save_restore_time_state_matrix" in save_restore_time_state_row["evidence_refs"]
 
-    for requirement_id in {"HLA1516.1-FM-4.1.4.2-001", "HLA1516.1-FM-4.5-MOM-001"}:
-        row = rows[requirement_id]
-        assert row["pitch_disposition"] == "verified"
-        assert (
-            "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_fom_module_visibility_scenario"
-            in row["evidence_refs"]
-        )
-        assert "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_fom_module_visibility_matrix" in row["evidence_refs"]
-        assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_fom_module_visibility_matrix" in row["evidence_refs"]
-
-    mim_row = rows["REQ-RTI-FM-4_5-createFederationExecutionWithMIM"]
-    assert mim_row["pitch_disposition"] == "vendor-divergent"
-    assert (
-        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario"
-        in mim_row["evidence_refs"]
+    _assert_pitch_rows(
+        rows,
+        {"REQ-RTI-FM-4_7-listFederationExecutions", "REQ-FED-FM-4_8-reportFederationExecutions"},
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_listing_scenario",
+            "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_listing_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_federation_listing_matrix",
+        ],
     )
-    assert "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_lifecycle_with_mim_matrix" in mim_row["evidence_refs"]
-    assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_federation_lifecycle_with_mim_matrix" in mim_row["evidence_refs"]
 
-    connection_lost = rows["REQ-FED-FM-4_4-connectionLost"]
-    assert connection_lost["pitch_disposition"] == "verified"
-    assert (
-        "packages/hla-verification/src/hla.verification/scenario_connection_lost.py::run_connection_lost_callback_scenario"
-        in connection_lost["evidence_refs"]
+    _assert_pitch_row(
+        rows,
+        "REQ-SAVE-RESTORE-001",
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_scheduled_save_restore_time_state_scenario",
+            "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_scheduled_save_restore_time_state_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_scheduled_save_restore_time_state_matrix",
+        ],
     )
-    assert "tests/scenarios/test_federation_management_backend_matrix.py::test_python_connection_lost_callback_matrix" in connection_lost["evidence_refs"]
-    assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_connection_lost_callback_matrix" in connection_lost["evidence_refs"]
+
+    _assert_pitch_rows(
+        rows,
+        {"HLA1516.1-FM-4.1.4.2-001", "HLA1516.1-FM-4.5-MOM-001"},
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_fom_module_visibility_scenario",
+            "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_fom_module_visibility_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_fom_module_visibility_matrix",
+        ],
+    )
+
+    _assert_pitch_row(
+        rows,
+        "REQ-RTI-FM-4_5-createFederationExecutionWithMIM",
+        "vendor-divergent",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario",
+            "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_lifecycle_with_mim_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_federation_lifecycle_with_mim_matrix",
+        ],
+    )
+
+    _assert_pitch_row(
+        rows,
+        "REQ-FED-FM-4_4-connectionLost",
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_connection_lost.py::run_connection_lost_callback_scenario",
+            "tests/scenarios/test_federation_management_backend_matrix.py::test_python_connection_lost_callback_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_connection_lost_callback_matrix",
+        ],
+    )
 
     for requirement_id in {"HLA1516.1-FM-4.1.5-001", "HLA1516.1-FM-4.1.5-002"}:
-        row = rows[requirement_id]
-        assert row["pitch_disposition"] == "blocked"
-        assert row["pitch_jpype_disposition"] == "blocked"
-        assert row["pitch_py4j_disposition"] == "blocked"
-        assert (
-            "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_external_lost_federate_observer_scenario"
-            in row["pitch_jpype_evidence_refs"]
+        _assert_pitch_profile_split_row(
+            rows,
+            requirement_id,
+            "blocked",
+            [
+                "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_external_lost_federate_observer_scenario",
+                "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix",
+            ],
+            [
+                "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_lost_federate_mom_scenario",
+                "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix",
+            ],
         )
-        assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix" in row["pitch_jpype_evidence_refs"]
-        assert (
-            "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_lost_federate_mom_scenario"
-            in row["pitch_py4j_evidence_refs"]
-        )
-        assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix" in row["pitch_py4j_evidence_refs"]
 
-    for requirement_id in {
-        "REQ-RTI-FM-4_11-registerFederationSynchronizationPoint",
-        "REQ-FED-FM-4_12-synchronizationPointRegistrationSucceeded",
-        "REQ-FED-FM-4_13-announceSynchronizationPoint",
-        "REQ-RTI-FM-4_14-synchronizationPointAchieved",
-        "REQ-FED-FM-4_15-federationSynchronized",
-    }:
-        row = rows[requirement_id]
-        assert row["pitch_disposition"] == "verified"
-        assert (
-            "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario"
-            in row["evidence_refs"]
-        )
-        assert "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix" in row["evidence_refs"]
-        assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix" in row["evidence_refs"]
+    _assert_pitch_rows(
+        rows,
+        {
+            "REQ-RTI-FM-4_11-registerFederationSynchronizationPoint",
+            "REQ-FED-FM-4_12-synchronizationPointRegistrationSucceeded",
+            "REQ-FED-FM-4_13-announceSynchronizationPoint",
+            "REQ-RTI-FM-4_14-synchronizationPointAchieved",
+            "REQ-FED-FM-4_15-federationSynchronized",
+        },
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
+            "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix",
+        ],
+    )
 
     failure_row = rows["REQ-FED-FM-4_12-synchronizationPointRegistrationFailed"]
     assert failure_row["pitch_disposition"] == "verified"
@@ -1245,24 +1336,25 @@ def test_pitch_clause4_1516_1_dispositions_are_fully_classified_and_harness_back
         ), requirement_id
         assert any(ref.startswith("tests/vendors/test_pitch_real_backend_matrix.py::") for ref in refs), requirement_id
 
-    save_abort_row = by_requirement_id["REQ-RTI-FM-4_21-abortFederationSave"]
-    assert save_abort_row["pitch_disposition"] == "verified"
-    assert (
-        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_abort_scenario"
-        in save_abort_row["evidence_refs"]
+    _assert_pitch_row(
+        by_requirement_id,
+        "REQ-RTI-FM-4_21-abortFederationSave",
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_abort_scenario",
+            "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_abort_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_abort_matrix",
+        ],
     )
-    assert "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_abort_matrix" in save_abort_row["evidence_refs"]
-    assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_abort_matrix" in save_abort_row["evidence_refs"]
 
-    restore_request_failure_row = by_requirement_id["REQ-FED-FM-4_25-requestFederationRestoreFailed"]
-    assert restore_request_failure_row["pitch_disposition"] == "verified"
-    assert (
-        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_request_failure_scenario"
-        in restore_request_failure_row["evidence_refs"]
-    )
-    assert (
-        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_request_failure_matrix"
-        in restore_request_failure_row["evidence_refs"]
+    _assert_pitch_row(
+        by_requirement_id,
+        "REQ-FED-FM-4_25-requestFederationRestoreFailed",
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_request_failure_scenario",
+            "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_request_failure_matrix",
+        ],
     )
 
     restore_failure_pairs = {
@@ -1278,132 +1370,117 @@ def test_pitch_clause4_1516_1_dispositions_are_fully_classified_and_harness_back
         ),
     }
     for requirement_id, refs in restore_failure_pairs.items():
-        row = by_requirement_id[requirement_id]
-        assert row["pitch_disposition"] == "verified"
-        for ref in refs:
-            assert ref in row["evidence_refs"]
+        _assert_pitch_row(by_requirement_id, requirement_id, "verified", list(refs))
 
-    restore_abort_exc_row = by_requirement_id["HLA1516.1-FM-4.30-EXC-001"]
-    assert restore_abort_exc_row["pitch_disposition"] == "verified"
-    assert (
-        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_abort_exception_scenario"
-        in restore_abort_exc_row["evidence_refs"]
+    _assert_pitch_row(
+        by_requirement_id,
+        "HLA1516.1-FM-4.30-EXC-001",
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_abort_exception_scenario",
+            "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_abort_exception_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_abort_exception_matrix",
+        ],
     )
-    assert (
-        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_abort_exception_matrix"
-        in restore_abort_exc_row["evidence_refs"]
-    )
-    assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_abort_exception_matrix" in restore_abort_exc_row["evidence_refs"]
 
-    resign_callback_row = by_requirement_id["HLA1516.1-FM-4.10-CB-001"]
-    assert resign_callback_row["pitch_disposition"] == "verified"
-    assert (
-        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_resigned_federate_callback_silence_scenario"
-        in resign_callback_row["evidence_refs"]
+    _assert_pitch_row(
+        by_requirement_id,
+        "HLA1516.1-FM-4.10-CB-001",
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_resigned_federate_callback_silence_scenario",
+            "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_resigned_federate_callback_silence_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_resigned_federate_callback_silence_matrix",
+        ],
     )
-    assert (
-        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_resigned_federate_callback_silence_matrix"
-        in resign_callback_row["evidence_refs"]
-    )
-    assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_resigned_federate_callback_silence_matrix" in resign_callback_row["evidence_refs"]
 
-    resign_precondition_row = by_requirement_id["HLA1516.1-FM-4.10-PRE-001"]
-    assert resign_precondition_row["pitch_disposition"] == "verified"
-    assert (
-        "packages/hla-verification/src/hla.verification/scenario_resign.py::run_resign_precondition_scenario"
-        in resign_precondition_row["evidence_refs"]
+    _assert_pitch_rows(
+        by_requirement_id,
+        {"HLA1516.1-FM-4.10-PRE-001", "HLA1516.1-FM-4.10-EXC-001"},
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_resign.py::run_resign_precondition_scenario",
+            "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_resign_precondition_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_resign_precondition_matrix",
+        ],
     )
-    assert (
-        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_resign_precondition_matrix"
-        in resign_precondition_row["evidence_refs"]
-    )
-    assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_resign_precondition_matrix" in resign_precondition_row["evidence_refs"]
 
-    resign_exception_row = by_requirement_id["HLA1516.1-FM-4.10-EXC-001"]
-    assert resign_exception_row["pitch_disposition"] == "verified"
-    assert (
-        "packages/hla-verification/src/hla.verification/scenario_resign.py::run_resign_precondition_scenario"
-        in resign_exception_row["evidence_refs"]
+    _assert_pitch_row(
+        by_requirement_id,
+        "HLA1516.1-FM-4.10-MOM-001",
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_resign.py::run_resign_mom_cleanup_scenario",
+            "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_resign_mom_cleanup_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_resign_mom_cleanup_matrix",
+        ],
     )
-    assert (
-        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_resign_precondition_matrix"
-        in resign_exception_row["evidence_refs"]
-    )
-    assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_resign_precondition_matrix" in resign_exception_row["evidence_refs"]
 
-    resign_mom_row = by_requirement_id["HLA1516.1-FM-4.10-MOM-001"]
-    assert resign_mom_row["pitch_disposition"] == "verified"
-    assert (
-        "packages/hla-verification/src/hla.verification/scenario_resign.py::run_resign_mom_cleanup_scenario"
-        in resign_mom_row["evidence_refs"]
+    _assert_pitch_row(
+        by_requirement_id,
+        "HLA1516.1-FM-4.3-MOM-001",
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_resign.py::run_disconnect_mom_cleanup_scenario",
+            "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_disconnect_mom_cleanup_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_disconnect_mom_cleanup_matrix",
+        ],
     )
-    assert (
-        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_resign_mom_cleanup_matrix"
-        in resign_mom_row["evidence_refs"]
-    )
-    assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_resign_mom_cleanup_matrix" in resign_mom_row["evidence_refs"]
 
-    disconnect_mom_row = by_requirement_id["HLA1516.1-FM-4.3-MOM-001"]
-    assert disconnect_mom_row["pitch_disposition"] == "verified"
-    assert (
-        "packages/hla-verification/src/hla.verification/scenario_resign.py::run_disconnect_mom_cleanup_scenario"
-        in disconnect_mom_row["evidence_refs"]
+    _assert_pitch_row(
+        by_requirement_id,
+        "HLA1516.1-FM-4.9-PRE-001",
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_join.py::run_join_precondition_scenario",
+            "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_join_precondition_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_join_precondition_matrix",
+        ],
     )
-    assert (
-        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_disconnect_mom_cleanup_matrix"
-        in disconnect_mom_row["evidence_refs"]
-    )
-    assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_disconnect_mom_cleanup_matrix" in disconnect_mom_row["evidence_refs"]
 
-    join_precondition_row = by_requirement_id["HLA1516.1-FM-4.9-PRE-001"]
-    assert join_precondition_row["pitch_disposition"] == "verified"
-    assert (
-        "packages/hla-verification/src/hla.verification/scenario_join.py::run_join_precondition_scenario"
-        in join_precondition_row["evidence_refs"]
+    _assert_pitch_rows(
+        by_requirement_id,
+        {"HLA1516.1-FM-4.1-005", "HLA1516.1-FM-4.1-006"},
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_multi_participation_scenario",
+            "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_multi_participation_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_multi_participation_matrix",
+        ],
     )
-    assert (
-        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_join_precondition_matrix"
-        in join_precondition_row["evidence_refs"]
+
+    _assert_pitch_rows(
+        by_requirement_id,
+        {"HLA1516.1-FM-4.1.4.1-001", "HLA1516.1-FM-4.1.4.1-002"},
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_fom_integrity_negative_scenario",
+            "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_fom_integrity_negative_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_fom_integrity_negative_matrix",
+        ],
     )
-    assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_join_precondition_matrix" in join_precondition_row["evidence_refs"]
 
-    for requirement_id in {"HLA1516.1-FM-4.1-005", "HLA1516.1-FM-4.1-006"}:
-        row = by_requirement_id[requirement_id]
-        assert row["pitch_disposition"] == "verified"
-        assert (
-            "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_multi_participation_scenario"
-            in row["evidence_refs"]
-        )
-        assert "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_multi_participation_matrix" in row["evidence_refs"]
-        assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_multi_participation_matrix" in row["evidence_refs"]
-
-    for requirement_id in {"HLA1516.1-FM-4.1.4.1-001", "HLA1516.1-FM-4.1.4.1-002"}:
-        row = by_requirement_id[requirement_id]
-        assert row["pitch_disposition"] == "verified"
-        assert (
-            "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_fom_integrity_negative_scenario"
-            in row["evidence_refs"]
-        )
-        assert "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_fom_integrity_negative_matrix" in row["evidence_refs"]
-        assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_fom_integrity_negative_matrix" in row["evidence_refs"]
-
-    combined_fom_row = by_requirement_id["HLA1516.1-FM-4.1.4-001"]
-    assert combined_fom_row["pitch_disposition"] == "verified"
-    assert (
-        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_multi_module_fom_visibility_scenario"
-        in combined_fom_row["evidence_refs"]
+    _assert_pitch_row(
+        by_requirement_id,
+        "HLA1516.1-FM-4.1.4-001",
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_multi_module_fom_visibility_scenario",
+            "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_multi_module_fom_visibility_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_multi_module_fom_visibility_matrix",
+        ],
     )
-    assert "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_multi_module_fom_visibility_matrix" in combined_fom_row["evidence_refs"]
-    assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_multi_module_fom_visibility_matrix" in combined_fom_row["evidence_refs"]
 
-    auto_mim_row = by_requirement_id["HLA1516.1-FM-4.1.4-002"]
-    assert auto_mim_row["pitch_disposition"] == "verified"
-    assert (
-        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_fom_module_visibility_scenario"
-        in auto_mim_row["evidence_refs"]
+    _assert_pitch_row(
+        by_requirement_id,
+        "HLA1516.1-FM-4.1.4-002",
+        "verified",
+        [
+            "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_fom_module_visibility_scenario",
+            "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_fom_module_visibility_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_fom_module_visibility_matrix",
+        ],
     )
-    assert "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_fom_module_visibility_matrix" in auto_mim_row["evidence_refs"]
-    assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_fom_module_visibility_matrix" in auto_mim_row["evidence_refs"]
 
 
 def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():

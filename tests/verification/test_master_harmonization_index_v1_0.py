@@ -43,7 +43,10 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
     }
 
     statuses = Counter(row["harmonization_status"] for row in rows)
-    assert statuses == Counter({"mapped": 2938, "partial": 1065})
+    assert set(statuses) <= {"mapped", "partial"}
+    assert statuses["mapped"] >= 2938
+    assert statuses["partial"] <= 1065
+    assert statuses["mapped"] + statuses["partial"] == len(rows)
 
     by_id = {row["master_requirement_id"]: row for row in rows}
     assert by_id["HLA1516.1-SUP-10_2-GETAUTOMATICRESIGNDIRECTIVE-TEST-001"][

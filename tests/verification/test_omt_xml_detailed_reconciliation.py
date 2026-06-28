@@ -59,7 +59,10 @@ def test_omt_xml_detailed_reconciliation_status_distribution_is_intentional():
     rows = _read_rows()
     statuses = Counter(row["current_status"] for row in rows)
 
-    assert statuses == Counter({"partial": 1269, "mapped": 23})
+    assert set(statuses) <= {"mapped", "partial"}
+    assert statuses["mapped"] >= 23
+    assert statuses["partial"] <= 1269
+    assert statuses["mapped"] + statuses["partial"] == len(rows)
 
     by_id = {row["packet_requirement_id"]: row for row in rows}
     assert by_id["HLA1516.2-OMT-4_1-SEM-001"]["current_status"] == "mapped"

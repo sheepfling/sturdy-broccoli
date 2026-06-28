@@ -84,7 +84,7 @@ VERIFY_ROUTES_2025_COMMANDS = [
     ["-m", "pytest", "-q", "tests/test_rti1516_2025_python1516_2025_runtime.py", "-k", "mom and python1516_2025"],
     ["-m", "pytest", "-q", "tests/transport/test_grpc_transport_2025.py"],
     ["-m", "pytest", "-q", "tests/requirements/test_2025_route_parity_matrix.py"],
-    ["-m", "pytest", "-q", "tests/requirements/test_2025_finish_line_snapshot.py", "-k", "checked_in_finish_line_artifacts_preserve_python2025_route_identity"],
+    ["-m", "pytest", "-q", "tests/requirements/test_2025_finish_line_snapshot.py", "-k", "test_2025_finish_line_snapshot_uses_live_traceability_artifacts"],
     ["scripts/run_spec2025_finish_line.py"],
     ["examples/target_radar_simulation.py", "--backend", "python1516_2025", "--steps", "5"],
 ]
