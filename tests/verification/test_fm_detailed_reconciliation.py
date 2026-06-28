@@ -53,7 +53,7 @@ def test_fm_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 632
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 601, "partial": 31}
+        {"mapped": 619, "partial": 13}
     )
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
@@ -69,6 +69,10 @@ def test_fm_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-FM-4_8-ARG-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_11-ARG-002"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_15-ARG-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_16-ARG-002"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_20-ARG-002"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_25-ARG-002"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_32-ARG-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_3-RTIAPI-001-SIG"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_3-RTIAPI-001-MOM"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_4-001"]["current_status"] == "mapped"
