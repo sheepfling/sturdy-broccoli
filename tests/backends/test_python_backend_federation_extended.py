@@ -33,6 +33,7 @@ from hla.rti1516e.datatypes import (
 )
 from hla.rti1516e.handles import FederateHandleSet
 from hla.spec.refs import method_label, method_reference
+from hla.verification import LostFederateScenarioConfig, run_lost_federate_mom_scenario
 
 
 def _write_minimal_fom_module(tmp_path, stem: str, model_name: str, object_name: str, *, time_type: str = "HLAinteger64BE"):
@@ -131,6 +132,37 @@ def test_disconnect_clears_buffered_report_callbacks():
 
     assert not rti.backend.state.queue
     assert fed.last_callback("reportFederationExecutions") is None
+
+
+def test_force_federate_loss_delivers_connection_lost_and_clears_execution_membership():
+    engine = InMemoryRTIEngine()
+    observer = rti_ambassador(engine=engine)
+    victim = rti_ambassador(engine=engine)
+    config = LostFederateScenarioConfig(
+        federation_name="fm-loss-fed",
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        observer_name="Observer",
+        victim_name="Victim",
+        federate_type="LostFederateProbe",
+        object_instance_name="fm-loss-object",
+        fault_description="python runtime induced loss",
+    )
+
+    summary = run_lost_federate_mom_scenario(
+        observer,
+        victim,
+        config=config,
+        observer_federate=RecordingFederateAmbassador(),
+        victim_federate=RecordingFederateAmbassador(),
+        induce_loss=observer.backend.force_federate_loss,
+    )
+
+    assert summary["victim_callback_pending_before_drain"] is True
+    assert summary["victim_connection_lost"].args == (config.fault_description,)
+    assert type(summary["victim_post_loss_resign_error"]).__name__ == "FederateNotExecutionMember"
+    assert summary["loss_record"].args[1]
+    assert summary["removal"].args[0] == summary["object_instance"]
 
 
 @pytest.mark.requirements("HLA1516.1-FM-4.3-001")

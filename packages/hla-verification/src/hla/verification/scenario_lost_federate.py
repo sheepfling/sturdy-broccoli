@@ -7,7 +7,11 @@ from typing import Any, Callable, cast
 
 import hla.fom.mom as hla_mom
 from hla.rti1516e.enums import CallbackModel, ResignAction
+from hla.rti1516e.exceptions import FederateNotExecutionMember
+from hla.rti1516e.exceptions import NotConnected as NotConnected2010
 from hla.rti1516e.exceptions import ObjectInstanceNotKnown
+from hla.rti1516_2025.exceptions import FederateNotExecutionMember as FederateNotExecutionMember2025
+from hla.rti1516_2025.exceptions import NotConnected as NotConnected2025
 from hla.rti1516_2025.exceptions import ObjectInstanceNotKnown as ObjectInstanceNotKnown2025
 
 from .scenario_support import drain_callbacks, drain_callbacks_pair, register_named_object_instance, wait_for_callback
@@ -117,8 +121,20 @@ def run_lost_federate_mom_scenario(
 
     victim_time_before_loss = victim_rti.query_logical_time()
     induce_loss(victim_handle, config.fault_description)
+    victim_callback_pending_before_drain = victim_federate.last_callback("connectionLost") is None
     for _ in range(32):
         drain_callbacks(observer_rti)
+
+    victim_connection_lost = victim_federate.last_callback("connectionLost")
+    if victim_connection_lost is None:
+        try:
+            for _ in range(32):
+                drain_callbacks(victim_rti)
+        except (NotConnected2010, NotConnected2025):
+            pass
+        victim_connection_lost = victim_federate.last_callback("connectionLost")
+    assert victim_connection_lost is not None
+    assert victim_connection_lost.args == (config.fault_description,)
 
     loss_record = wait_for_callback(observer_rti, observer_federate, "receiveInteraction", loops=120)
     assert loss_record is not None
@@ -144,6 +160,13 @@ def run_lost_federate_mom_scenario(
         object_instance_not_known = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected lost federate object to be removed under DELETE_OBJECTS automatic resign")
+
+    try:
+        victim_rti.resign_federation_execution(ResignAction.NO_ACTION)
+    except (FederateNotExecutionMember, FederateNotExecutionMember2025, NotConnected2010, NotConnected2025) as exc:
+        victim_post_loss_resign_error = exc
+    else:  # pragma: no cover - scenario contract
+        raise AssertionError("Expected lost federate resign path to reject after loss")
     finally:
         try:
             observer_rti.resign_federation_execution(ResignAction.NO_ACTION)
@@ -169,6 +192,9 @@ def run_lost_federate_mom_scenario(
         "discovery": discovery,
         "loss_record": loss_record,
         "removal": removal,
+        "victim_callback_pending_before_drain": victim_callback_pending_before_drain,
+        "victim_connection_lost": victim_connection_lost,
+        "victim_post_loss_resign_error": victim_post_loss_resign_error,
         "object_instance_not_known": object_instance_not_known,
     }
 

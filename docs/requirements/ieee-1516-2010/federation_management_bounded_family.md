@@ -79,25 +79,22 @@ keep describing `CAP-FM` as vague or structurally unfinished.
 
 The current owner ledger has `632` federation-management packet rows:
 
-- `529 mapped`
-- `79 partial`
+- `559 mapped`
+- `73 partial`
 
-The remaining `79 partial` rows cluster into stable categories:
+The remaining `73 partial` rows cluster into stable categories:
 
-- `43 ARG`
+- `42 ARG`
 - `17 CB_ORD`
 - `4 EFF`
-- `4 EXC`
-- `11` residual overview, callback-surface, or traceability-bounded rows
+- `3 EXC`
+- `7` residual overview, callback-surface, or traceability-bounded rows
 
 Residual bounded row kinds in that last group:
 
 - `3 OVW`
-- `2 CB`
-- `1 FED_CB`
-- `1 MOM`
+- `1 CB`
 - `1 PRE`
-- `1 SVC`
 - `1 EXC_API`
 - `1 MOM_TRACE`
 
@@ -116,18 +113,18 @@ This is the current argument-harmonization tail for `CAP-FM`.
 
 ### Lost-connection callback/fault-surface tail
 
-The small `EFF`, `EXC`, `CB`, `FED_CB`, `PRE`, `SVC`, `MOM`, `MOM_TRACE`, and
-`EXC_API` remainder is now concentrated around the connection-lost surface and
-the list/report federation helper family.
+The small `EFF`, `EXC`, `CB`, `PRE`, `MOM_TRACE`, and `EXC_API` remainder is
+now concentrated around the connection-lost surface and the list/report
+federation helper family.
 
 Typical pattern:
 
 - the generated callback surface and section mapping are present
-- the repo does not yet drive a concrete end-to-end connection-loss runtime
-  trigger
-- list/report federation helpers already prove the core service path, but the
-  broader fault or observer wording remains more expansive than the isolated
-  witnesses
+- the repo now drives a concrete runtime loss trigger and direct observer
+  witness
+- the remaining partial rows are the broader defined-condition, disconnected
+  state, callback-order, or internal-error envelope that still extends beyond
+  the isolated witnesses
 
 ### Callback-order breadth tail
 
@@ -143,8 +140,8 @@ They are rows where:
 
 ### List/report federation breadth tail
 
-The remaining `EXC_API`, `MOM_TRACE`, and part of the residual fault-surface
-tail also include the list/report federation helper family.
+The remaining `EXC_API`, `MOM_TRACE`, and one residual exception row also
+include the list/report federation helper family.
 
 These rows are not signs that federation reporting is missing.
 They remain `partial` because the current direct witness isolates the main
@@ -153,7 +150,7 @@ callback-failure, or API-declared exception permutation as one exhaustive row.
 
 ### Residual overview and harmonization tail
 
-The last `11` rows are the small bounded remainder:
+The last `7` rows are the small bounded remainder:
 
 - broad overview rows
 - connection-lost callback/fault-surface rows
@@ -172,6 +169,8 @@ including:
 - synchronization registration, announcement, achievement, and federation-wide
   completion paths
 - save and restore request, status, outcome, abort, and callback families
+- direct runtime `connectionLost` callback delivery, lost-federate MOM
+  reporting, and post-loss execution-membership teardown
 - representative MOM-observer visibility for key lifecycle and save/restore
   states
 - many direct negative-path guards and callback outcome paths
@@ -181,6 +180,7 @@ including:
 Primary evidence anchors:
 
 - `tests/backends/test_python_backend_federation_extended.py`
+- `tests/backends/test_python_backend_federation_extended.py::test_force_federate_loss_delivers_connection_lost_and_clears_execution_membership`
 - `tests/scenarios/test_federation_management_backend_matrix.py`
 - `tests/verification/test_requirements_ledger_v013.py`
 - `requirements/2010/traceability_matrix.csv`

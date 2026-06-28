@@ -128,6 +128,9 @@ def test_python_backend_lost_federate_mom_matrix():
 
     assert summary["loss_record"].args[1]
     assert summary["removal"].args[0] == summary["object_instance"]
+    assert summary["victim_callback_pending_before_drain"] is True
+    assert summary["victim_connection_lost"].args == (config.fault_description,)
+    assert type(summary["victim_post_loss_resign_error"]).__name__ == "FederateNotExecutionMember"
 
 
 def test_python_backend_synchronization_registration_failure_matrix():

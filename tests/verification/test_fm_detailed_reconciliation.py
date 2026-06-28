@@ -53,7 +53,7 @@ def test_fm_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 632
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 553, "partial": 79}
+        {"mapped": 559, "partial": 73}
     )
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
@@ -68,10 +68,39 @@ def test_fm_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-FM-4_8-ARG-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_3-RTIAPI-001-SIG"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_3-RTIAPI-001-MOM"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_4-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_4-ARG-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_4-FEDCB-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_4-FEDCB-001-SIG"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_7-EXC-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_7-RTIAPI-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_8-FEDCB-001-ORD"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-OVERVIEW-001"]["current_status"] == "partial"
+
+
+def test_fm_connection_lost_rows_point_to_direct_runtime_loss_witness() -> None:
+    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    direct_test = (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_force_federate_loss_delivers_connection_lost_and_clears_execution_membership"
+    )
+
+    for packet_id in (
+        "HLA1516.1-FM-4_4-001",
+        "HLA1516.1-FM-4_4-ARG-001",
+        "HLA1516.1-FM-4_4-FEDCB-001",
+        "HLA1516.1-FM-4_4-MOM-001",
+        "HLA1516.1-FM-4_4-SVC-001",
+    ):
+        row = rows[packet_id]
+        assert row["current_status"] == "mapped"
+        assert row["current_test_id"] == direct_test
+        assert row["notes"].startswith("Direct ")
+
+    partial_row = rows["HLA1516.1-FM-4_4-EFF-001"]
+    assert partial_row["current_status"] == "partial"
+    assert partial_row["current_test_id"] == direct_test
+    assert "does not prove a full disconnected-state transition" in partial_row["notes"]
 
 
 def test_fm_report_federation_executions_argument_row_has_direct_payload_evidence():
