@@ -79,12 +79,12 @@ keep describing `CAP-FM` as vague or structurally unfinished.
 
 The current owner ledger has `632` federation-management packet rows:
 
-- `586 mapped`
-- `46 partial`
+- `601 mapped`
+- `31 partial`
 
-The remaining `46 partial` rows cluster into stable categories:
+The remaining `31 partial` rows cluster into stable categories:
 
-- `42 ARG`
+- `27 ARG`
 - `1 EFF`
 - `3 OVW`
 
@@ -96,14 +96,16 @@ Residual bounded row kinds in that last group:
 
 ### Argument-decomposition tail
 
-The `42 ARG` rows are mostly imported packet argument slices that do not yet
+The `27 ARG` rows are the remaining imported packet argument slices that do not yet
 map cleanly onto one direct row in
 `hla1516_1_clause_4_fm_service_decomposition.csv`.
 
 This is primarily a harmonization-granularity limit, not evidence that the
 underlying services are absent.
 
-This is the current argument-harmonization tail for `CAP-FM`.
+Core lifecycle and synchronization argument rows are now directly mapped for
+create, destroy, registration, announcement, achievement, and completion
+surfaces. This is the remaining argument-harmonization tail for `CAP-FM`.
 
 ### Lost-connection callback/fault-surface tail
 

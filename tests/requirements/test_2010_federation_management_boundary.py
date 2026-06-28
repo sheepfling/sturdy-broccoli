@@ -14,9 +14,9 @@ def test_federation_management_partial_tail_current_shape_is_stable() -> None:
     rows = list(csv.DictReader(LEDGER.open(newline="", encoding="utf-8")))
     partial_rows = [row for row in rows if row["current_status"] == "partial"]
 
-    assert len(partial_rows) == 46
+    assert len(partial_rows) == 31
     assert Counter(row["reconciliation_kind"] for row in partial_rows) == {
-        "ARG": 42,
+        "ARG": 27,
         "EFF": 1,
         "OVW": 3,
     }
@@ -30,9 +30,9 @@ def test_federation_management_boundary_doc_records_current_family_shape() -> No
     assert "## Default Final Stance" in text
     assert "## Exit Condition" in text
     assert "canonical final reading for the current `CAP-FM`" in text
-    assert "`586 mapped`" in text
-    assert "`46 partial`" in text
-    assert "`42 ARG`" in text
+    assert "`601 mapped`" in text
+    assert "`31 partial`" in text
+    assert "`27 ARG`" in text
     assert "`1 EFF`" in text
     assert "`3 OVW`" in text
     assert "The last `4` rows are the small bounded remainder:" in text
@@ -57,6 +57,7 @@ def test_federation_management_boundary_doc_records_current_family_shape() -> No
     assert "test_python_backend_resign_precondition_matrix" in text
     assert "Lost-connection callback/fault-surface tail" in text
     assert "argument-harmonization tail" in text
+    assert "Core lifecycle and synchronization argument rows are now directly mapped" in text
     assert "the only remaining executable semantic row is `HLA1516.1-FM-4_4-EFF-001`" in text
     assert "membership teardown, but it does not yet prove a full disconnected-state" in text
     assert "transition for the lost victim" in text
