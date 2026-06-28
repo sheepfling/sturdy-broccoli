@@ -13,6 +13,7 @@ CLOSEOUT_DOC = (
 FRONT_DOOR_DOC = ROOT / "docs/requirements/ieee-1516-2010/README.md"
 SOURCE_README = ROOT / "requirements/2010/README.md"
 HIERARCHY_DOC = ROOT / "docs/verification/requirements_hierarchy.md"
+REQUIREMENTS_INDEX = ROOT / "requirements/README.md"
 
 
 def test_clause13_conformance_owner_ledger_is_fully_mapped() -> None:
@@ -45,9 +46,12 @@ def test_clause13_conformance_owner_surface_is_split_from_api_binding_in_front_d
     front_door = FRONT_DOOR_DOC.read_text(encoding="utf-8")
     source_readme = SOURCE_README.read_text(encoding="utf-8")
     hierarchy = HIERARCHY_DOC.read_text(encoding="utf-8")
+    requirements_index = REQUIREMENTS_INDEX.read_text(encoding="utf-8")
 
     assert "Clause 13 conformance closeout reading | `clause13_conformance_closeout.md`" in front_door
     assert "API binding | `hla1516_1_api_detailed_reconciliation.csv`" in source_readme
     assert "Clause 13 conformance | `hla1516_1_conf_detailed_reconciliation.csv`" in source_readme
     assert "| API binding | `requirements/2010/hla1516_1_api_detailed_reconciliation.csv` |" in hierarchy
     assert "| Clause 13 conformance | `requirements/2010/hla1516_1_conf_detailed_reconciliation.csv` |" in hierarchy
+    assert "It does not claim external certification." in requirements_index
+    assert "directly back the imported federate and RTI conformance-package rows" in requirements_index
