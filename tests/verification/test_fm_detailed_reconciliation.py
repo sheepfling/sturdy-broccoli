@@ -114,6 +114,17 @@ def test_fm_connection_lost_rows_point_to_direct_runtime_loss_witness() -> None:
     assert "does not prove a full disconnected-state transition" in partial_row["notes"]
 
 
+def test_fm_only_remaining_executable_semantic_partial_is_connection_lost_disconnect_effect() -> None:
+    rows = _read_rows()
+    executable_partial_ids = {
+        row["packet_requirement_id"]
+        for row in rows
+        if row["current_status"] == "partial"
+        and row["reconciliation_kind"] not in {"ARG", "CB_ORD", "OVW"}
+    }
+    assert executable_partial_ids == {"HLA1516.1-FM-4_4-EFF-001"}
+
+
 def test_fm_connection_lost_precondition_and_callback_model_rows_use_direct_backend_witness() -> None:
     rows = {row["packet_requirement_id"]: row for row in _read_rows()}
     model_test = (

@@ -58,6 +58,9 @@ def test_federation_management_boundary_doc_records_current_family_shape() -> No
     assert "test_python_backend_resign_precondition_matrix" in text
     assert "Lost-connection callback/fault-surface tail" in text
     assert "argument-harmonization tail" in text
+    assert "the only remaining executable semantic row is `HLA1516.1-FM-4_4-EFF-001`" in text
+    assert "membership teardown, but it does not yet prove a full disconnected-state" in text
+    assert "transition for the lost victim" in text
     assert "direct runtime `connectionLost` callback delivery" in text
     assert "direct joined-live precondition coverage and callback-model dispatch" in text
     assert "direct `RTIinternalError` coverage for corrupted `listFederationExecutions`" in text

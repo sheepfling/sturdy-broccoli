@@ -116,9 +116,10 @@ Typical pattern:
 - the generated callback surface and section mapping are present
 - the repo now drives a concrete runtime loss trigger and direct observer
   witness
-- the remaining partial rows are the broader defined-condition, disconnected
-  state, callback-order, or internal-error envelope that still extends beyond
-  the isolated witnesses
+- the only remaining executable semantic row is `HLA1516.1-FM-4_4-EFF-001`
+- the current Python 2010 backend proves callback delivery and execution
+  membership teardown, but it does not yet prove a full disconnected-state
+  transition for the lost victim
 
 ### Callback-order breadth tail
 
@@ -137,7 +138,7 @@ They are rows where:
 The last `5` rows are the small bounded remainder:
 
 - broad overview rows
-- connection-lost callback/fault-surface rows
+- one connection-lost disconnected-state effect row
 - one service/meta traceability row that is broader than the current direct
   executable witness
 
