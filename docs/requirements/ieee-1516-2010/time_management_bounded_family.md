@@ -1,20 +1,22 @@
-# 2010 Time-Management Bounded Family
+# 2010 Time-Management Closeout Surface
 
 Use this page when the question is:
 
-- why does the 2010 time-management owner ledger still carry any `partial`
-  row even though the repo already has strong direct time, lookahead,
-  GALT/LITS, retraction, MOM, and callback-order evidence?
-- which single document owns the remaining `CAP-TM` residual partial pattern?
-- is that partial row still vague, or already in an explicit bounded final
-  state?
+- how is the 2010 time-management family closed now that the old residual
+  overview row is no longer `partial`?
+- which single document explains the separation between the mapped time-axis
+  owner row and the mixed-backend RO/TSO companion row?
+- where should reviewers look to verify that the family is closed without
+  collapsing backend divergence?
 
 Short answer:
 
-- the remaining `CAP-TM` partial row is already in an explicit bounded family
-  state
-- the canonical owner ledger stays `partial` for that row
-- the bounded reason is structured and reviewable instead of implied
+- the 2010 time-management owner ledger no longer carries any `partial` rows
+- the time-axis overview row is mapped for the repo-supported logical-time and
+  ordered-delivery claim
+- the narrower mixed-backend receive-order conversion split stays explicit in
+  the priority backend-resolution companion instead of leaking back into the
+  owner-row status
 
 ## Owner Surface
 
@@ -36,75 +38,64 @@ Short answer:
 
 ## Final Claim Rule
 
-- keep the remaining overview row `partial` only where the repo already proves
-  the executable Clause 8 service surface, signature shape, callback order,
-  lookahead, GALT/LITS queries, retraction, and representative MOM visibility,
-  but the canonical sentence still compresses a broader cross-backend ordered-
-  delivery story than one row can honestly claim as a direct exhaustive witness
-- do not describe these rows as missing time-management services
-- do not describe these rows as unsupported logical-time behavior
-- do not flatten the family into `mapped` merely because the primary time and
-  lookahead paths are strong
-- treat the current state as an explicit bounded final reading of the present
-  evidence, not as hidden uncertainty
+- keep the overview row `mapped` only for the repo-supported logical-time and
+  ordered-delivery claim directly exercised by the current time witnesses
+- keep the backend split for receive-order conversion in
+  `hla1516_1_priority_backend_resolution.csv` and
+  `mixed_backend_priority_boundaries.md`
+- do not reintroduce `partial` status merely because Pitch diverges on the
+  separate `HLA1516.1-TM-8.1.2-003` row
+- do not flatten the family into a broader backend-parity claim than the
+  companion ledger actually proves
 
 ## Default Final Stance
 
-- this owner note is the canonical final reading for the current `CAP-TM`
-  partial family
-- the remaining row is not waiting on wording cleanup; it is already in its
-  intended bounded supported-scope presentation
-- the unresolved part is only optional future overview decomposition, not
-  ambiguity about whether the currently exercised Clause 8 service surface
-  exists
-- keep the family rows `partial` in
-  `hla1516_1_tm_detailed_reconciliation.csv` unless narrower direct proof is
-  actually added for the remaining packet slices
+- this owner note is the canonical closeout reading for the current `CAP-TM`
+  family
+- the family is closed at the owner-ledger level: `hla1516_1_tm_detailed_reconciliation.csv`
+  now maps every row
+- the remaining nuance is backend resolution for one narrower requirement row,
+  not ambiguity in the family overview claim
+- keep the overview row `mapped` unless the repo broadens or weakens the
+  current evidence-backed claim
 
 ## Current Family Shape
 
 The current owner ledger has `301` time-management packet rows:
 
-- `300 mapped`
-- `1 partial`
-
-The remaining `1 partial` row clusters into stable categories:
-
-- `1 OVW`
+- `301 mapped`
+- `0 partial`
 
 ## What The Categories Mean
 
-### Residual overview tail
+### Closed overview row with separate backend companion
 
-The last `1 OVW` row is the broad time-axis overview row.
+The broad time-axis overview row is now mapped.
 
-It is not a sign that Clause 8 is largely unproven.
-It remains `partial` because that one overview sentence still compresses a
-broader ordered-delivery and receive-order-conversion story than the current
-single row can honestly claim as one direct exhaustive witness.
-
-The specific mixed-backend RO/TSO divergence row is owned separately by:
+It is not a backend-parity claim.
+It closes the family-level logical-time and ordered-delivery statement using
+the current executable time witnesses, while the narrower mixed-backend
+RO/TSO divergence row stays owned separately by:
 
 - `requirements/2010/hla1516_1_priority_backend_resolution.csv`
 - `docs/requirements/ieee-1516-2010/mixed_backend_priority_boundaries.md`
 
-That keeps the family-wide `CAP-TM` bounded reading separate from the narrower
-cross-backend priority-row note.
+That keeps the family-wide `CAP-TM` owner row closed without overloading it
+with backend-resolution truth that already has a narrower canonical home.
 
 ## Exit Condition
 
 Treat this bucket as closed for documentation ownership and closeout-surface
 purposes unless one of these becomes true:
 
-1. the remaining `PRE`, `EXC`, `EXC_API`, or overview rows gain new direct
-   isolated witnesses
-   In the current state, only the overview row remains.
-2. the repo decides to make a stronger one-row-per-packet Clause 8 claim
+1. the repo decides to make a broader backend-parity claim for the overview row
+2. the mixed-backend RO/TSO requirement stops being best owned by the priority
+   companion artifacts
 3. the current family owner ledger stops being the right canonical location for
-   the bounded Clause 8 time-management story
+   the Clause 8 time-management closeout story
 
-If none of those happen, preserve the current bounded family reading and do not
-keep describing `CAP-TM` as vague or structurally unfinished.
+If none of those happen, preserve the current closed family reading and do not
+reintroduce a synthetic `partial` tail.
 
 ## What Is Already Proved
 
@@ -140,17 +131,18 @@ Use these rerun commands before dropping to raw file paths:
 
 Good reading:
 
-- time management is broadly implemented, linked, and strongly tested
-- the remaining partial rows describe bounded precondition-envelope,
-  exception-envelope, or broad overview granularity limits
-- the family already has a defensible supported-scope reading
+- time management is implemented, linked, and fully mapped at the owner-ledger
+  level
+- backend divergence for `HLA1516.1-TM-8.1.2-003` is explicit in the separate
+  priority companion artifacts
+- the family closeout surface now matches the narrower canonical owner split
 
 Bad reading:
 
-- Clause 8 is mostly unproven
-- logical-time, lookahead, or retraction behavior is still speculative
-- the partial rows imply missing support for time-management services
-  themselves
+- the mapped overview row means every backend agrees on RO/TSO behavior
+- the old partial overview tail still exists
+- the family closeout should carry backend-resolution nuance in one overloaded
+  status cell
 
 ## Reading Order
 

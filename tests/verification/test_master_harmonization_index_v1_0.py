@@ -142,7 +142,7 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
     assert by_id["HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-TEST-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_30-REPORTINTERACTIONTRANSPORTATIONTYPE-CB_ORDER-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-OVERVIEW-007"]["harmonization_status"] == "mapped"
-    assert by_id["HLA1516.1-TM-OVERVIEW-009"]["harmonization_status"] == "partial"
+    assert by_id["HLA1516.1-TM-OVERVIEW-009"]["harmonization_status"] == "mapped"
     assert (
         by_id["HLA1516.1-TM-OVERVIEW-009"]["harmonization_source_file"]
         == "hla1516_1_tm_detailed_reconciliation.csv"

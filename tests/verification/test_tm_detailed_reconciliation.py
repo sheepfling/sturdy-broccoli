@@ -52,9 +52,7 @@ def test_tm_detailed_reconciliation_has_expected_shape():
     rows = _read_rows()
 
     assert len(rows) == 301
-    assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 300, "partial": 1}
-    )
+    assert Counter(row["current_status"] for row in rows) == Counter({"mapped": 301})
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
     }
@@ -63,7 +61,7 @@ def test_tm_detailed_reconciliation_has_expected_shape():
 def test_tm_detailed_reconciliation_spot_checks_key_rows():
     rows = {row["packet_requirement_id"]: row for row in _read_rows()}
 
-    assert rows["HLA1516.1-TM-OVERVIEW-009"]["current_status"] == "partial"
+    assert rows["HLA1516.1-TM-OVERVIEW-009"]["current_status"] == "mapped"
     assert rows["HLA1516.1-TM-OVERVIEW-010"]["current_status"] == "mapped"
     assert rows["HLA1516.1-TM-8_2-RTIAPI-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-TM-8_2-RTIAPI-001"]["reconciliation_kind"] == "RTI_API"
@@ -145,7 +143,7 @@ def test_tm_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-TM-8_24-CHANGEINTERACTIONORDERTYPE-PRE-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-TM-8_24-CHANGEINTERACTIONORDERTYPE-EXC-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-TM-8_24-RTIAPI-001-EXC"]["current_status"] == "mapped"
-    assert "mixed-backend priority-resolution note" in rows["HLA1516.1-TM-OVERVIEW-009"]["notes"]
+    assert "priority backend-resolution companion" in rows["HLA1516.1-TM-OVERVIEW-009"]["notes"]
     assert "applicable precondition surface" in rows["HLA1516.1-TM-8_2-ENABLETIMEREGULATION-PRE-001"]["notes"]
     assert "invalid-lookahead" in rows["HLA1516.1-TM-8_2-ENABLETIMEREGULATION-PRE-001"]["notes"]
     assert "immediate-grant witness" in rows["HLA1516.1-TM-8_8-TIMEADVANCEREQUEST-EXC-001"]["notes"]
@@ -205,9 +203,7 @@ def test_tm_detailed_reconciliation_spot_checks_key_rows():
 def test_tm_partial_rows_use_explicit_bounded_envelope_notes() -> None:
     rows = _read_rows()
     partial_rows = [row for row in rows if row["current_status"] == "partial"]
-    assert [row["packet_requirement_id"] for row in partial_rows] == ["HLA1516.1-TM-OVERVIEW-009"]
-    assert partial_rows[0]["reconciliation_kind"] == "OVW"
-    assert "mixed-backend priority-resolution note" in partial_rows[0]["notes"]
+    assert partial_rows == []
 
 
 def test_tm_rows_anchor_to_live_evidence_refs() -> None:
