@@ -14,10 +14,8 @@ def test_federation_management_partial_tail_current_shape_is_stable() -> None:
     rows = list(csv.DictReader(LEDGER.open(newline="", encoding="utf-8")))
     partial_rows = [row for row in rows if row["current_status"] == "partial"]
 
-    assert len(partial_rows) == 1
-    assert Counter(row["reconciliation_kind"] for row in partial_rows) == {
-        "ARG": 1,
-    }
+    assert len(partial_rows) == 0
+    assert Counter(row["reconciliation_kind"] for row in partial_rows) == {}
 
 
 def test_federation_management_boundary_doc_records_current_family_shape() -> None:
@@ -25,13 +23,11 @@ def test_federation_management_boundary_doc_records_current_family_shape() -> No
     normalized = " ".join(text.split())
 
     assert "2010 Federation-Management Bounded Family" in text
-    assert "## Default Final Stance" in text
-    assert "## Exit Condition" in text
-    assert "canonical final reading for the current `CAP-FM`" in text
-    assert "`631 mapped`" in text
-    assert "`1 partial`" in text
-    assert "`1 ARG`" in text
-    assert "The last `1` row is the small bounded remainder:" in text
+    assert "## Final State" in text
+    assert "## Reopen Condition" in text
+    assert "canonical closeout reading for the former `CAP-FM`" in text
+    assert "`632 mapped`" in text
+    assert "No FM packet rows remain `partial`." in text
     assert "`./tools/test-focus run execution-membership`" in text
     assert "`./tools/test-focus run backends`" in text
     assert "`./tools/test-surface run unit-scenarios-light`" in text
@@ -51,15 +47,12 @@ def test_federation_management_boundary_doc_records_current_family_shape() -> No
     assert "test_request_attribute_value_update_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore" in text
     assert "test_python_backend_join_precondition_matrix" in text
     assert "test_python_backend_resign_precondition_matrix" in text
-    assert "single remaining argument-tail row" in text
-    assert (
-        "Connect, join, resign, and federation-synchronized argument rows are now directly mapped"
-        in normalized
-    )
+    assert "former FM bounded tail is now closed" in normalized
     assert "direct runtime `connectionLost` callback delivery" in text
     assert "direct connected, joined, resigned, and disconnected lifecycle-state" in text
     assert "direct current-FDD maintenance with supplied FOM modules plus accepted" in text
     assert "direct lost-federate automatic-resign cleanup for pending acquisitions" in text
+    assert "direct omitted-logical-time defaulting to the RTI-provided" in text
     assert "direct disconnected-state transition after `connectionLost` delivery" in text
     assert "direct joined-live precondition coverage and callback-model dispatch" in text
     assert "direct `RTIinternalError` coverage for corrupted `listFederationExecutions`" in text
@@ -69,6 +62,8 @@ def test_federation_management_boundary_doc_records_current_family_shape() -> No
     assert "test_force_federate_loss_honors_unconditional_divest_automatic_resign_cleanup" in text
     assert "test_federation_management_lifecycle_states_cover_connected_joined_resigned_and_disconnected" in text
     assert "test_create_federation_execution_maintains_current_fdd_modules_and_standard_mim" in text
+    assert "test_create_federation_execution_defaults_to_hlafloat64_time_when_logical_time_is_omitted" in text
+    assert "test_create_federation_execution_accepts_explicit_logical_time_implementation" in text
     assert "test_connection_lost_and_report_federation_executions_wrap_callback_failures_as_federate_internal_error" in text
     assert "test_list_federation_executions_is_observable_through_mom_service_invocation_reporting" in text
     assert "test_list_federation_executions_surfaces_rti_internal_error_for_corrupt_runtime_state" in text

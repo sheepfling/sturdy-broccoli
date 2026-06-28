@@ -679,7 +679,7 @@ def test_create_federation_execution_applies_full_effect_vector(tmp_path):
     }
     assert federation.mim_module is not None
     assert federation.mim_module.is_mim is True
-    assert federation.time_factory.get_name() == "HLAinteger64Time"
+    assert federation.time_factory.get_name() == "HLAfloat64Time"
 
     handle = creator.join_federation_execution("creator", "type-create", "create-effects-fed")
     assert handle in federation.federates
@@ -711,6 +711,27 @@ def test_create_federation_execution_accepts_explicit_logical_time_implementatio
     assert federation.time_factory.get_name() == "HLAfloat64Time"
 
     creator.destroy_federation_execution("create-explicit-time-fed")
+    creator.disconnect()
+
+
+def test_create_federation_execution_defaults_to_hlafloat64_time_when_logical_time_is_omitted(tmp_path):
+    engine = InMemoryRTIEngine()
+    creator = rti_ambassador(engine=engine)
+    creator.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+
+    int_time_fom = _write_minimal_fom_module(
+        tmp_path,
+        "create-omitted-time",
+        "CreateOmittedTimeModel",
+        "CreateOmittedTimeObject",
+        time_type="HLAinteger64BE",
+    )
+    creator.create_federation_execution("create-omitted-time-fed", [int_time_fom])
+
+    federation = engine.federations["create-omitted-time-fed"]
+    assert federation.time_factory.get_name() == "HLAfloat64Time"
+
+    creator.destroy_federation_execution("create-omitted-time-fed")
     creator.disconnect()
 
 
@@ -1780,8 +1801,12 @@ def test_create_federation_execution_distinguishes_open_read_time_and_inconsiste
         ),
     )
     rti_bad_time.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
-    with pytest.raises(CouldNotCreateLogicalTimeFactory):
-        rti_bad_time.create_federation_execution("bogus-time-fed", "TargetRadarFOMmodule.xml")
+    rti_bad_time.create_federation_execution("bogus-time-fed", "TargetRadarFOMmodule.xml")
+    assert (
+        rti_bad_time.backend.engine.federations["bogus-time-fed"].time_factory.get_name()
+        == "HLAfloat64Time"
+    )
+    rti_bad_time.destroy_federation_execution("bogus-time-fed")
     rti_bad_time.disconnect()
 
     int_time = tmp_path / "int-time.xml"
@@ -1862,12 +1887,16 @@ def test_create_federation_execution_with_mim_rejects_invalid_logical_time_facto
     )
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
 
-    with pytest.raises(CouldNotCreateLogicalTimeFactory):
-        rti.create_federation_execution_with_mim(
-            "bad-time-fed",
-            "TargetRadarFOMmodule.xml",
-            "hla2010/resources/foms/HLAstandardMIM.xml",
-        )
+    rti.create_federation_execution_with_mim(
+        "bad-time-fed",
+        "TargetRadarFOMmodule.xml",
+        "hla2010/resources/foms/HLAstandardMIM.xml",
+    )
+    assert (
+        rti.backend.engine.federations["bad-time-fed"].time_factory.get_name()
+        == "HLAfloat64Time"
+    )
+    rti.destroy_federation_execution("bad-time-fed")
 
     rti.disconnect()
 

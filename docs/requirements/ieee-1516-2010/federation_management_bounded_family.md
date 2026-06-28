@@ -2,19 +2,16 @@
 
 Use this page when the question is:
 
-- why does the 2010 Clause 4 federation-management family still carry
-  `partial` rows even though most lifecycle, synchronization, save, and restore
-  services are already directly tested?
-- which single document owns the remaining `CAP-FM` partial pattern?
-- are those partial rows still vague, or already in an explicit bounded final
-  state?
+- is the focused 2010 Clause 4 federation-management family now fully closed
+  for the Python RTI lane?
+- which single document owns the final human-facing FM closeout reading?
+- what direct runtime evidence eliminated the former FM bounded tail?
 
 Short answer:
 
-- the remaining `CAP-FM` partial rows are already in an explicit bounded family
-  state
-- the canonical owner ledger stays `partial` for those rows
-- the bounded reasons are now structured and reviewable instead of implied
+- the focused Python 2010 FM family is now fully `mapped`
+- the former FM bounded tail was closed with direct runtime witnesses
+- this document remains the canonical human-facing closeout note for that work
 
 ## Owner Surface
 
@@ -34,89 +31,49 @@ Short answer:
   - `./tools/test-focus run execution-membership`
   - `./tools/test-focus run backends`
 
-## Final Claim Rule
+## Final State
 
-- keep the remaining Clause 4 family rows `partial` when the repo already
-  proves the main service surface, signature shape, major preconditions,
-  representative callback delivery, save/restore outcomes, and many state
-  transitions, but does not yet prove every imported packet slice as a one-row
-  exhaustive witness
-- do not describe these rows as missing federation-management services
-- do not describe these rows as unsupported lifecycle behavior
-- do not flatten the family into `mapped` merely because the primary lifecycle
-  and save/restore paths are strong
-- treat the current state as an explicit bounded final reading of the present
-  evidence, not as hidden uncertainty
+- this owner note is the canonical closeout reading for the former `CAP-FM`
+  bounded family
+- `requirements/2010/hla1516_1_fm_detailed_reconciliation.csv` is now fully
+  `mapped`
+- the closeout was achieved by adding direct lifecycle, FDD/MIM,
+  lost-federate, and omitted-logical-time-default witnesses
+- future edits should only reopen FM rows if the repo widens its Clause 4 claim
+  beyond the currently witnessed Python 2010 behavior
 
-## Default Final Stance
-
-- this owner note is the canonical final reading for the current `CAP-FM`
-  partial family
-- the remaining rows are not waiting on wording cleanup; they are already in
-  their intended bounded supported-scope presentation
-- the unresolved part is only optional future row-level decomposition or
-  broader proof granularity, not ambiguity about whether the currently
-  exercised Clause 4 service surface exists
-- keep the family rows `partial` in
-  `hla1516_1_fm_detailed_reconciliation.csv` unless narrower direct proof is
-  actually added for the remaining packet slices
-
-## Exit Condition
+## Reopen Condition
 
 Treat this bucket as closed for documentation ownership and closeout-surface
 purposes unless one of these becomes true:
 
-1. the remaining `ARG`, `EFF`, `CB_ORD`, `EXC`, or residual rows gain new
-   direct decomposition or narrower executable witnesses
-2. the repo decides to make a stronger one-row-per-packet Clause 4 claim
+1. the repo decides to widen Clause 4 claims beyond the current direct
+   witnesses
+2. a backend change invalidates one of the direct FM witnesses
 3. the current family owner ledger stops being the right canonical location for
-   the bounded Clause 4 federation-management story
+   the Clause 4 federation-management story
 
-If none of those happen, preserve the current bounded family reading and do not
-keep describing `CAP-FM` as vague or structurally unfinished.
+If none of those happen, preserve the current mapped reading and do not
+reintroduce bounded-tail language.
 
 ## Current Family Shape
 
 The current owner ledger has `632` federation-management packet rows:
 
-- `631 mapped`
-- `1 partial`
+- `632 mapped`
 
-The remaining `1 partial` row clusters into a stable category:
+No FM packet rows remain `partial`.
 
-- `1 ARG`
+## Former Tail
 
-Residual bounded row kinds in that last group:
+The former FM bounded tail is now closed:
 
-- none
-
-## What The Categories Mean
-
-### Argument tail
-
-This is the single remaining argument-tail row for `CAP-FM`.
-
-The single remaining `ARG` row is the imported create-federation optional
-logical-time-implementation slice that still claims the default should be
-`HLAfloat64Time` when omitted.
-
-That row stays `partial` because the current Python 2010 lane honestly proves
-time-factory selection from the merged federation model instead of that broader
-default-time statement.
-
-Connect, join, resign, and federation-synchronized argument rows are now
-directly mapped for the current Python 2010 lane.
-
-### Residual overview and harmonization tail
-
-The last `1` row is the small bounded remainder:
-
-- one create-time logical-time-default argument row
-
-The lost-federate overview row is now directly mapped through loss-trigger,
-callback-model, membership-teardown, pending-acquisition-cancellation, owned-
-object-delete, and unconditional-divest cleanup witnesses. The only remaining
-bounded FM row is the create-time logical-time-default argument mismatch.
+- the lost-federate overview row is directly mapped through loss-trigger,
+  callback-model, membership-teardown, pending-acquisition-cancellation,
+  owned-object-delete, and unconditional-divest cleanup witnesses
+- the create-federation optional logical-time row is directly mapped through
+  explicit-time and omitted-default witnesses that now prove the standard
+  `HLAfloat64Time` default when the argument is omitted
 
 ## What Is Already Proved
 
@@ -136,6 +93,8 @@ including:
   management for the Python 2010 lane
 - direct current-FDD maintenance with supplied FOM modules plus accepted
   standard MIM exposure
+- direct omitted-logical-time defaulting to the RTI-provided
+  `HLAfloat64Time` representation
 - direct disconnected-state transition after `connectionLost` delivery
 - direct joined-live precondition coverage and callback-model dispatch
   coverage for `connectionLost`
@@ -163,6 +122,8 @@ Primary evidence anchors:
 - `tests/backends/test_python_backend_federation_extended.py::test_force_federate_loss_honors_unconditional_divest_automatic_resign_cleanup`
 - `tests/backends/test_python_backend_federation_extended.py::test_federation_management_lifecycle_states_cover_connected_joined_resigned_and_disconnected`
 - `tests/backends/test_python_backend_federation_extended.py::test_create_federation_execution_maintains_current_fdd_modules_and_standard_mim`
+- `tests/backends/test_python_backend_federation_extended.py::test_create_federation_execution_defaults_to_hlafloat64_time_when_logical_time_is_omitted`
+- `tests/backends/test_python_backend_federation_extended.py::test_create_federation_execution_accepts_explicit_logical_time_implementation`
 - `tests/backends/test_python_backend_federation_extended.py::test_connection_lost_and_report_federation_executions_wrap_callback_failures_as_federate_internal_error`
 - `tests/backends/test_python_backend_federation_extended.py::test_list_federation_executions_is_observable_through_mom_service_invocation_reporting`
 - `tests/backends/test_python_backend_federation_extended.py::test_list_federation_executions_surfaces_rti_internal_error_for_corrupt_runtime_state`
@@ -217,17 +178,15 @@ Use these rerun commands before dropping to raw file paths:
 
 Good reading:
 
-- federation management is broadly implemented, linked, and strongly tested
-- the remaining partial rows describe bounded harmonization, callback-order, or
-  state-vector granularity limits
-- the family already has a defensible supported-scope reading
+- federation management is fully mapped for the focused Python 2010 lane
+- the closeout is anchored in direct runtime witnesses rather than plan prose
+- the owner and rollup surfaces agree on a fully mapped Clause 4 family
 
 Bad reading:
 
-- Clause 4 is mostly unproven
+- Clause 4 still carries a hidden bounded tail
 - lifecycle or save/restore behavior is still speculative
-- the partial rows imply missing support for federation-management services
-  themselves
+- the closeout came from documentation harmonization without runtime evidence
 
 ## Reading Order
 

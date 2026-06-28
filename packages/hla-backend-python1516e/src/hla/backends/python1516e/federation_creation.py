@@ -15,7 +15,7 @@ from hla.rti1516e.exceptions import (
 )
 from hla.fom import standard_mim_module
 from hla.rti1516e import NullFederateAmbassador
-from hla.rti1516e.time import TimeFactoryRegistry
+from hla.rti1516e.time import HLAfloat64TimeFactory, TimeFactoryRegistry
 from hla.rti1516e.datatypes import FederationExecutionInformation
 
 from . import mom_catalog as mom_table
@@ -164,7 +164,8 @@ class PythonRTIFederationCreationMixin(_FederationCreationMixinBase):
             for module in ((resolved_mim,) if resolved_mim is not None else ()) + tuple(resolved_foms)
             if module is not None
         )
-        time_factory = self._choose_time_factory(time_name, time_modules)
+        effective_time_name = time_name or HLAfloat64TimeFactory.NAME
+        time_factory = self._choose_time_factory(effective_time_name, time_modules)
         with self.engine._lock:
             if federationExecutionName in self.engine.federations:
                 raise FederationExecutionAlreadyExists(str(federationExecutionName))

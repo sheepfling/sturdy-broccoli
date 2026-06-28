@@ -53,7 +53,7 @@ def test_fm_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 632
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 631, "partial": 1}
+        {"mapped": 632}
     )
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
@@ -149,6 +149,15 @@ def test_fm_no_remaining_executable_semantic_partials() -> None:
     assert executable_partial_ids == set()
 
 
+def test_fm_family_is_now_fully_mapped() -> None:
+    partial_ids = {
+        row["packet_requirement_id"]
+        for row in _read_rows()
+        if row["current_status"] == "partial"
+    }
+    assert partial_ids == set()
+
+
 def test_fm_overview_rows_use_direct_overview_witnesses() -> None:
     rows = {row["packet_requirement_id"]: row for row in _read_rows()}
 
@@ -202,23 +211,16 @@ def test_fm_remaining_create_time_argument_partial_is_explicitly_narrowed() -> N
         candidate["packet_requirement_id"]: candidate for candidate in _read_rows()
     }["HLA1516.1-FM-4_5-ARG-004"]
 
-    assert row["current_status"] == "partial"
+    assert row["current_status"] == "mapped"
     assert (
         "test_create_federation_execution_accepts_explicit_logical_time_implementation"
         in row["current_test_id"]
     )
-    assert "overclaims an unconditional omitted-argument fallback to HLAfloat64Time" in row["notes"]
-
-
-def test_fm_create_time_argument_row_is_the_only_remaining_partial() -> None:
-    rows = {candidate["packet_requirement_id"]: candidate for candidate in _read_rows()}
-
-    partial_ids = {
-        packet_id
-        for packet_id, row in rows.items()
-        if row["current_status"] == "partial"
-    }
-    assert partial_ids == {"HLA1516.1-FM-4_5-ARG-004"}
+    assert (
+        "test_create_federation_execution_defaults_to_hlafloat64_time_when_logical_time_is_omitted"
+        in row["current_test_id"]
+    )
+    assert "defaults to the RTI-provided HLAfloat64Time representation" in row["notes"]
 
 
 def test_fm_callback_order_rows_use_direct_callback_model_witnesses() -> None:
