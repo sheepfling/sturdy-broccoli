@@ -68,7 +68,10 @@ Treat these as the canonical 2010 owner surfaces behind the hierarchy view:
 | data-distribution-management bounded partial-family reading | `docs/requirements/ieee-1516-2010/data_distribution_management_bounded_family.md` |
 | support services | `requirements/2010/hla1516_1_sup_detailed_reconciliation.csv` |
 | MOM/MIM | `requirements/2010/hla1516_1_mom_detailed_reconciliation.csv` |
-| API binding and Clause 13 conformance | `requirements/2010/hla1516_1_conf_detailed_reconciliation.csv` |
+| API binding | `requirements/2010/hla1516_1_api_detailed_reconciliation.csv` |
+| API-binding bounded-family reading | `docs/requirements/ieee-1516-2010/api_binding_bounded_family.md` |
+| Clause 13 conformance | `requirements/2010/hla1516_1_conf_detailed_reconciliation.csv` |
+| Clause 13 conformance closeout reading | `docs/requirements/ieee-1516-2010/clause13_conformance_closeout.md` |
 | OMT family | `requirements/2010/hla1516_2_omt_detailed_reconciliation.csv` |
 | XML family | `requirements/2010/hla1516_xml_detailed_reconciliation.csv` |
 | legacy OMT/XML bridge artifact | `requirements/2010/hla1516_2_omt_xml_detailed_reconciliation.csv` |

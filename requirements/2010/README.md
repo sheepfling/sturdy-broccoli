@@ -167,3 +167,9 @@ is already mapped while the imported C++ header-token and Web Services binding
 catalog rows remain intentionally partial, use:
 
 - `docs/requirements/ieee-1516-2010/api_binding_bounded_family.md`
+
+For the human-facing explanation of how the imported Clause 13 federate and
+RTI conformance rows are fully mapped through repo-native generated evidence
+without claiming external certification, use:
+
+- `docs/requirements/ieee-1516-2010/clause13_conformance_closeout.md`
