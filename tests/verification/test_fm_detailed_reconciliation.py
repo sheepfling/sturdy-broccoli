@@ -5,17 +5,47 @@ from collections import Counter
 from pathlib import Path
 
 
+ROOT = Path(__file__).resolve().parents[2]
 RECONCILIATION_PATH = (
-    Path(__file__).resolve().parents[2]
-    / "requirements"
-    / "2010"
-    / "hla1516_1_fm_detailed_reconciliation.csv"
+    ROOT / "requirements" / "2010" / "hla1516_1_fm_detailed_reconciliation.csv"
+)
+_DISALLOWED_TRUTH_SOURCES = (
+    "docs/plans/",
+    "analysis/compliance/presentation_packets",
+    "analysis/compliance/python_final_requirements_report.md",
+    "analysis/compliance/python_boss_capability_brief.md",
 )
 
 
 def _read_rows() -> list[dict[str, str]]:
     with RECONCILIATION_PATH.open(newline="", encoding="utf-8") as handle:
         return list(csv.DictReader(handle))
+
+
+def _split_refs(refs: str) -> list[str]:
+    return [item.strip() for item in refs.split(";") if item.strip()]
+
+
+def _assert_reference_is_live(reference: str) -> None:
+    if "::" in reference:
+        file_part, test_name = reference.split("::", 1)
+        path = ROOT / file_part
+        assert path.exists(), f"missing evidence file for {reference}"
+        text = path.read_text(encoding="utf-8")
+        base_name = test_name.split("[", 1)[0]
+        assert (test_name in text or base_name in text), f"missing test anchor for {reference}"
+        return
+
+    path = ROOT / reference
+    if path.exists():
+        return
+
+    matches: list[str] = []
+    for candidate in (ROOT / "tests").rglob("*.py"):
+        if f"def {reference}(" in candidate.read_text(encoding="utf-8"):
+            matches.append(str(candidate.relative_to(ROOT)))
+    assert matches, f"unresolved bare evidence ref {reference}"
+    assert len(matches) == 1, f"ambiguous bare evidence ref {reference}: {matches}"
 
 
 def test_fm_detailed_reconciliation_has_expected_shape():
@@ -180,3 +210,19 @@ def test_fm_core_lifecycle_effect_and_return_rows_use_direct_runtime_witnesses()
     assert broad_resign_row["current_status"] == "mapped"
     assert broad_resign_row["current_test_id"] == broad_resign_test
     assert broad_resign_row["notes"].startswith("Direct ")
+
+
+def test_fm_rows_anchor_to_live_evidence_refs_even_when_legacy_rows_use_bare_names() -> None:
+    for row in _read_rows():
+        references = _split_refs(row["current_test_id"])
+        assert references, f"{row['packet_requirement_id']} should carry evidence references"
+        for reference in references:
+            _assert_reference_is_live(reference)
+
+
+def test_fm_rows_do_not_use_plan_or_closeout_packets_as_truth_sources() -> None:
+    for row in _read_rows():
+        for forbidden in _DISALLOWED_TRUTH_SOURCES:
+            assert forbidden not in row["current_test_id"], (
+                f"{row['packet_requirement_id']} should not use {forbidden} as a truth source"
+            )

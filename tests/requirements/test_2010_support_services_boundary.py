@@ -40,6 +40,13 @@ def test_support_services_boundary_doc_records_current_family_shape() -> None:
     assert "`python_runtime_disposition=verified`" in text
     assert "`./tools/test-focus run backends`" in text
     assert "`./tools/test-surface run unit-scenarios-light`" in text
+    assert "requirements/2010/hla1516_1_sup_detailed_reconciliation.csv" in text
+    assert "requirements/2010/traceability_matrix.csv" in text
+    assert "docs/verification/requirement_compliance_exports.md" in text
+    assert "analysis/compliance/requirements_matrix_2010.csv" not in text
+    assert "analysis/compliance/requirements_ledger.csv" not in text
+    assert "analysis/compliance/service_conformance.json" not in text
+    assert "../../plans/requirements_gap_register.md" not in text
 
 
 def test_support_services_clause10_tail_uses_explicit_pre_and_exception_notes() -> None:

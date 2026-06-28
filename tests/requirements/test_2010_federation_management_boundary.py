@@ -72,3 +72,8 @@ def test_federation_management_boundary_doc_records_current_family_shape() -> No
     assert "Lost-connection callback/fault-surface tail" in text
     assert "List/report federation breadth tail" in text
     assert "argument-harmonization tail" in text
+    assert "requirements/2010/hla1516_1_fm_detailed_reconciliation.csv" in text
+    assert "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv" in text
+    assert "requirements/2010/traceability_matrix.csv" in text
+    assert "requirement_compliance_exports.md" in text
+    assert "../../plans/requirements_gap_register.md" not in text

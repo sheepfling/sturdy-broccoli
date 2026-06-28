@@ -29,13 +29,15 @@ claim plus the explicit excluded-area map for legacy aliases, Java/C++
 bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows,
 and out-of-scope OMT extension semantics.
 
-For the current closeout answer, also pair this hierarchy view with:
+For the current closeout answer, pair this hierarchy view with the canonical
+owner surfaces instead:
 
-- [`../plans/requirements_completion_audit.md`](../plans/requirements_completion_audit.md)
-- [`../plans/requirements_remaining_closure.md`](../plans/requirements_remaining_closure.md)
+- [`../requirements/ieee-1516-2010/README.md`](../requirements/ieee-1516-2010/README.md)
+  for the 2010 reader-facing front door
+- [`../../requirements/2010/README.md`](../../requirements/2010/README.md)
+  for the 2010 source-side owner ledger inventory
 - [`requirement_compliance_exports.md`](requirement_compliance_exports.md) when
-  you need the generated spreadsheet summaries rather than the canonical owner
-  ledgers
+  you need generated spreadsheet summaries downstream of the owner ledgers
 
 This hierarchy is a view, not a closure ledger:
 
@@ -92,7 +94,7 @@ status word.
 | L1 capability | L2 feature | L3 requirement scope | Test or proof anchor |
 | --- | --- | --- | --- |
 | Framework rules | Framework concepts | `HLA1516-FW-001` | `tests/verification/test_framework_rule_docs_v1_0.py::test_framework_docs_capture_product_set_scope_and_source_policy` |
-| Framework rules | Federation and federate rules | `HLA1516-RULE-001` | Planned clause extraction from framework sources |
+| Framework rules | Federation and federate rules | `HLA1516-RULE-001` | `requirements/2010/hla1516_framework_detailed_reconciliation.csv`, `tests/factories/test_fom_omt_parsing.py::test_parse_fom_xml_recognizes_standard_omt_component_tables_across_fom_som_and_mim`, `tests/factories/test_fom_omt_parsing.py::test_merge_with_standard_mim_preserves_standard_mom_definitions_and_catalog_metadata`, `tests/backends/test_python_backend_federation_extended.py::test_create_federation_execution_distinguishes_open_read_time_and_inconsistent_fom_errors` |
 | Framework rules | Object model concepts | `HLA1516-OBJ-001` | `tests/factories/test_fom_omt_parsing.py::test_parse_fom_xml_recognizes_standard_omt_component_tables_across_fom_som_and_mim` plus cross-links into `HLA1516.1` object services and `HLA1516.2` OMT rows |
 | Framework rules | Time concepts | `HLA1516-TIME-001` | Cross-links into `HLA1516.1-TM-*` rows |
 

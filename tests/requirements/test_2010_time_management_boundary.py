@@ -40,6 +40,11 @@ def test_time_management_boundary_doc_records_current_family_shape() -> None:
     assert "mixed_backend_priority_boundaries.md" in text
     assert "`./tools/test-focus run time`" in text
     assert "`./tools/test-focus run backends`" in text
+    assert "requirements/2010/hla1516_1_tm_detailed_reconciliation.csv" in text
+    assert "requirements/2010/traceability_matrix.csv" in text
+    assert "requirements/2010/hla_1516_master_harmonization_index_v1_0.csv" in text
+    assert "requirement_compliance_exports.md" in text
+    assert "../../plans/requirements_gap_register.md" not in text
 
 
 def test_time_management_clause8_tail_uses_explicit_pre_and_exception_notes() -> None:

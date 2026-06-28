@@ -102,9 +102,9 @@ Current reading for those two rows:
 
 Primary current artifacts for those two rows:
 
-- `analysis/compliance/requirements_matrix_2010.csv`
-- `analysis/compliance/requirements_ledger.csv`
-- `analysis/compliance/service_conformance.json`
+- `requirements/2010/hla1516_1_sup_detailed_reconciliation.csv`
+- `requirements/2010/traceability_matrix.csv`
+- `docs/verification/requirement_compliance_exports.md`
 
 There are no remaining partial support rows for:
 
@@ -196,4 +196,3 @@ Bad reading:
 - [`README.md`](README.md)
 - [`../../../requirements/2010/README.md`](../../../requirements/2010/README.md)
 - [`../../verification/README.md`](../../verification/README.md)
-- [`../../plans/requirements_gap_register.md`](../../plans/requirements_gap_register.md)
