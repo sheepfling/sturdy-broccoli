@@ -51,14 +51,14 @@ Short answer:
 
 The current API owner ledger has `614` packet rows:
 
-- `220 mapped`
-- `394 partial`
+- `221 mapped`
+- `393 partial`
 
-The remaining `394 partial` rows cluster into stable categories:
+The remaining `393 partial` rows cluster into stable categories:
 
 - `308 WSDL_OP`
 - `79 CPP_CLASS`
-- `7 CLAUSE12_13_DETAIL`
+- `6 CLAUSE12_13_DETAIL`
 
 ## What The Categories Mean
 
@@ -81,9 +81,8 @@ curated executable or static witness per header-level token.
 
 ### Broad binding and clause-detail rows
 
-The remaining `7 CLAUSE12_13_DETAIL` rows are the broad binding-level claims:
+The remaining `6 CLAUSE12_13_DETAIL` rows are the broad binding-level claims:
 
-- `HLA1516.1-API_DESIGNATORS-002`
 - `HLA1516.1-API_CONCURRENCY-006`
 - `HLA1516.1-API_DYNAMIC_LINK-007`
 - `HLA1516.1-API_CPP-012`
@@ -139,9 +138,12 @@ the imported C++ method rows through:
 - requirements-ledger coverage that ensures the generated API surface remains
   represented in the canonical requirements inventory
 - callback-family overview rows for reflect, receive, and remove method groups
+- cross-binding designator metadata and overload-resolution coverage for
+  local-settings, logical-time, FOM-module, and update-rate designators
 
 Primary evidence anchors:
 
+- `tests/factories/test_fom_time_factories.py`
 - `tests/verification/test_spec_traceability_all_methods.py`
 - `tests/verification/test_requirements_ledger_v013.py`
 - `tests/verification/test_api_detailed_reconciliation.py`

@@ -21,10 +21,10 @@ def test_api_partial_tail_current_shape_is_stable() -> None:
 
     assert len(rows) == 614
     assert Counter(row["current_status"] for row in rows) == {
-        "partial": 394,
-        "mapped": 220,
+        "partial": 393,
+        "mapped": 221,
     }
-    assert kind_counts == {"WSDL_OP": 308, "CPP_CLASS": 79, "CLAUSE12_13_DETAIL": 7}
+    assert kind_counts == {"WSDL_OP": 308, "CPP_CLASS": 79, "CLAUSE12_13_DETAIL": 6}
 
 
 def test_api_boundary_doc_records_current_family_shape() -> None:
@@ -33,11 +33,11 @@ def test_api_boundary_doc_records_current_family_shape() -> None:
     for snippet in (
         "2010 API-Binding Bounded Family",
         "`614` packet rows",
-        "`220 mapped`",
-        "`394 partial`",
+        "`221 mapped`",
+        "`393 partial`",
         "`308 WSDL_OP`",
         "`79 CPP_CLASS`",
-        "`7 CLAUSE12_13_DETAIL`",
+        "`6 CLAUSE12_13_DETAIL`",
         "## Residual Read Rule",
         "## Residual Exit Rule",
         "`Canonical residual disposition:`",
@@ -46,6 +46,7 @@ def test_api_boundary_doc_records_current_family_shape() -> None:
         "`requirements/2010/traceability_matrix.csv`",
         "`tests/verification/test_spec_traceability_all_methods.py`",
         "`tests/verification/test_requirements_ledger_v013.py`",
+        "`tests/factories/test_fom_time_factories.py`",
         "`HLA1516.1-API_WSDL-013`",
         "`HLA1516.1-API_CPP_NORMATIVE-017`",
         "`HLA1516.1-API_WS_NORMATIVE-018`",

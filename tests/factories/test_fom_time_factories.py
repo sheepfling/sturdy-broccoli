@@ -310,6 +310,46 @@ def test_java_overload_resolution_and_converter_prepare_vendor_owned_collections
     assert bridge.calls[-1][1] == "AttributeHandleValueMap"
 
 
+def test_api_designator_metadata_preserves_standard_designator_types_across_java_and_cpp_bindings():
+    connect_overloads = tuple(API_METADATA["RTIambassador"]["connect"])
+    assert any(
+        overload.get("language") == "java"
+        and "String localSettingsDesignator" in str(overload.get("params", ""))
+        for overload in connect_overloads
+    )
+    assert any(
+        overload.get("language") == "cpp"
+        and "std::wstring const & localSettingsDesignator" in str(overload.get("params", ""))
+        for overload in connect_overloads
+    )
+
+    create_overloads = tuple(API_METADATA["RTIambassador"]["createFederationExecution"])
+    assert any(
+        overload.get("language") == "java"
+        and "String logicalTimeImplementationName" in str(overload.get("params", ""))
+        for overload in create_overloads
+    )
+    assert any(
+        overload.get("language") == "cpp"
+        and "std::wstring const & logicalTimeImplementationName" in str(overload.get("params", ""))
+        for overload in create_overloads
+    )
+
+    turn_updates_overloads = tuple(
+        API_METADATA["FederateAmbassador"]["turnUpdatesOnForObjectInstance"]
+    )
+    assert any(
+        overload.get("language") == "java"
+        and "String updateRateDesignator" in str(overload.get("params", ""))
+        for overload in turn_updates_overloads
+    )
+    assert any(
+        overload.get("language") == "cpp"
+        and "std::wstring const & updateRateDesignator" in str(overload.get("params", ""))
+        for overload in turn_updates_overloads
+    )
+
+
 def test_java_overload_resolution_rejects_equal_score_ambiguity():
     invocation = Invocation(
         method_name="ambiguousCall",

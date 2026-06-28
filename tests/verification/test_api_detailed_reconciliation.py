@@ -23,15 +23,15 @@ def test_api_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 614
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"partial": 394, "mapped": 220}
+        {"partial": 393, "mapped": 221}
     )
     assert Counter((row["reconciliation_kind"], row["current_status"]) for row in rows) == Counter(
         {
             ("WSDL_OP", "partial"): 308,
             ("CPP_METHOD", "mapped"): 211,
             ("CPP_CLASS", "partial"): 79,
-            ("CLAUSE12_13_DETAIL", "partial"): 7,
-            ("CLAUSE12_13_DETAIL", "mapped"): 9,
+            ("CLAUSE12_13_DETAIL", "partial"): 6,
+            ("CLAUSE12_13_DETAIL", "mapped"): 10,
         }
     )
     assert {row["source_packet_file"] for row in rows} == {
@@ -52,6 +52,13 @@ def test_api_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-API_REFLECT_METHODS-008"]["current_status"] == "mapped"
     assert rows["HLA1516.1-API_RECEIVE_METHODS-009"]["current_status"] == "mapped"
     assert rows["HLA1516.1-API_REMOVE_METHODS-010"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-API_DESIGNATORS-002"]["current_status"] == "mapped"
+    assert "test_api_designator_metadata_preserves_standard_designator_types_across_java_and_cpp_bindings" in rows[
+        "HLA1516.1-API_DESIGNATORS-002"
+    ]["current_test_id"]
+    assert "local-settings, logical-time, FOM-module, and update-rate designators" in rows[
+        "HLA1516.1-API_DESIGNATORS-002"
+    ]["notes"]
     assert rows["HLA1516.1-API_CPP-012"]["current_status"] == "partial"
     assert rows["HLA1516.1-CPP-12_12-RTIAMBASSADOR-234"]["current_status"] == "partial"
     assert rows["HLA1516.1-API_WSDL-013"]["current_status"] == "partial"
