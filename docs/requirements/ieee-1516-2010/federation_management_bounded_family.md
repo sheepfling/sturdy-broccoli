@@ -79,14 +79,14 @@ keep describing `CAP-FM` as vague or structurally unfinished.
 
 The current owner ledger has `632` federation-management packet rows:
 
-- `562 mapped`
-- `70 partial`
+- `565 mapped`
+- `67 partial`
 
-The remaining `70 partial` rows cluster into stable categories:
+The remaining `67 partial` rows cluster into stable categories:
 
 - `42 ARG`
 - `17 CB_ORD`
-- `4 EFF`
+- `1 EFF`
 - `1 EXC`
 - `5` residual overview, callback-surface, or traceability-bounded rows
 
@@ -101,7 +101,7 @@ Residual bounded row kinds in that last group:
 
 ### Argument-decomposition tail
 
-The `43 ARG` rows are mostly imported packet argument slices that do not yet
+The `42 ARG` rows are mostly imported packet argument slices that do not yet
 map cleanly onto one direct row in
 `hla1516_1_clause_4_fm_service_decomposition.csv`.
 
@@ -173,6 +173,8 @@ including:
 - direct callback-failure wrapping for `connectionLost` and
   `reportFederationExecutions`, plus MOM service-reporting visibility for
   `listFederationExecutions`
+- direct scheduled-save replacement coverage for `requestFederationSave`, and
+  direct cancel-capable resign coverage for pending ownership acquisitions
 - representative MOM-observer visibility for key lifecycle and save/restore
   states
 - many direct negative-path guards and callback outcome paths
@@ -185,6 +187,8 @@ Primary evidence anchors:
 - `tests/backends/test_python_backend_federation_extended.py::test_force_federate_loss_delivers_connection_lost_and_clears_execution_membership`
 - `tests/backends/test_python_backend_federation_extended.py::test_connection_lost_and_report_federation_executions_wrap_callback_failures_as_federate_internal_error`
 - `tests/backends/test_python_backend_federation_extended.py::test_list_federation_executions_is_observable_through_mom_service_invocation_reporting`
+- `tests/backends/test_python_backend_federation_extended.py::test_request_federation_save_latest_scheduled_request_supersedes_prior_requested_save`
+- `tests/backends/test_python_backend_federation_extended.py::test_resign_canceling_directives_clear_pending_acquisition_requests`
 - `tests/scenarios/test_federation_management_backend_matrix.py`
 - `tests/verification/test_requirements_ledger_v013.py`
 - `requirements/2010/traceability_matrix.csv`

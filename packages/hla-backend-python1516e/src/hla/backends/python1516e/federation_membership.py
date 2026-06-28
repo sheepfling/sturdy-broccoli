@@ -174,6 +174,10 @@ class PythonRTIFederationMembershipMixin(_FederationMembershipMixinBase):
         action_name = self._enum_name(resignAction)
         handle = self.state.handle
         assert handle is not None
+        cancel_pending_acquisition_actions = {
+            "CANCEL_PENDING_OWNERSHIP_ACQUISITIONS",
+            "CANCEL_THEN_DELETE_THEN_DIVEST",
+        }
         owns_attributes = False
         acquisition_pending = False
         for obj in federation.objects.values():
@@ -186,8 +190,18 @@ class PythonRTIFederationMembershipMixin(_FederationMembershipMixinBase):
             if any(owner == handle for owner in obj.attribute_owners.values()):
                 owns_attributes = True
                 break
-        if acquisition_pending:
+        if acquisition_pending and action_name not in cancel_pending_acquisition_actions:
             raise OwnershipAcquisitionPending(repr(handle))
+        if acquisition_pending:
+            for obj in federation.objects.values():
+                stale_attrs = []
+                for attr, candidates in obj.attribute_candidates.items():
+                    if handle in candidates:
+                        candidates.discard(handle)
+                        if not candidates:
+                            stale_attrs.append(attr)
+                for attr in stale_attrs:
+                    obj.attribute_candidates.pop(attr, None)
         divesting_actions = {
             "UNCONDITIONALLY_DIVEST_ATTRIBUTES",
             "DELETE_OBJECTS",

@@ -807,6 +807,58 @@ def test_request_federation_save_rejects_past_and_invalid_time():
     r1.destroy_federation_execution("save-time-negative-fed")
 
 
+def test_request_federation_save_latest_scheduled_request_supersedes_prior_requested_save():
+    _, r1, r2, f1, f2, _h1, _h2 = joined_pair("save-time-replace-fed")
+    factory = r1.get_time_factory()
+
+    r1.enable_time_constrained()
+    r2.enable_time_constrained()
+    drain(r1, r2)
+
+    first_time = factory.make_time(10.0)
+    second_time = factory.make_time(12.0)
+    r1.request_federation_save("SAVE-EARLY", first_time)
+    drain(r1, r2)
+    assert f1.last_callback("initiateFederateSave") is None
+    assert f2.last_callback("initiateFederateSave") is None
+    summary = r1.backend.current_mom_summary()
+    assert summary["next_save_name"] == "SAVE-EARLY"
+
+    r1.request_federation_save("SAVE-LATE", second_time)
+    drain(r1, r2)
+    summary = r1.backend.current_mom_summary()
+    assert summary["next_save_name"] == "SAVE-LATE"
+
+    r1.time_advance_request_available(first_time)
+    r2.time_advance_request_available(first_time)
+    drain(r1, r2)
+    assert f1.last_callback("initiateFederateSave") is None
+    assert f2.last_callback("initiateFederateSave") is None
+    summary = r1.backend.current_mom_summary()
+    assert summary["save_label"] is None
+    assert summary["next_save_name"] == "SAVE-LATE"
+
+    r1.time_advance_request_available(second_time)
+    r2.time_advance_request_available(second_time)
+    drain(r1, r2)
+    assert f1.last_callback("initiateFederateSave").args == ("SAVE-LATE", second_time)
+    assert f2.last_callback("initiateFederateSave").args == ("SAVE-LATE", second_time)
+    assert all(
+        record.args[0] != "SAVE-EARLY"
+        for record in f1.callbacks_named("initiateFederateSave") + f2.callbacks_named("initiateFederateSave")
+    )
+
+    r1.federate_save_begun()
+    r2.federate_save_begun()
+    r1.federate_save_complete()
+    r2.federate_save_complete()
+    drain(r1, r2)
+
+    r1.resign_federation_execution(ResignAction.NO_ACTION)
+    r2.resign_federation_execution(ResignAction.NO_ACTION)
+    r1.destroy_federation_execution("save-time-replace-fed")
+
+
 def test_query_federation_save_status_rejects_not_connected_and_not_joined():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
@@ -1553,6 +1605,39 @@ def test_resign_federation_execution_rejects_pending_acquisition():
     owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     acquirer.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("resign-pending-acquisition-fed")
+
+
+@pytest.mark.parametrize(
+    "resign_action",
+    (
+        ResignAction.CANCEL_PENDING_OWNERSHIP_ACQUISITIONS,
+        ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST,
+    ),
+)
+def test_resign_canceling_directives_clear_pending_acquisition_requests(resign_action):
+    _, owner, acquirer, _owner_fed, acquirer_fed, _h1, _h2 = joined_pair(
+        f"resign-cancel-pending-{resign_action.name.lower()}-fed"
+    )
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+    owner.publish_object_class_attributes(cls, {attr})
+    acquirer.publish_object_class_attributes(cls, {attr})
+
+    pending = owner.register_object_instance(cls, f"Pending-{resign_action.name}")
+    acquirer.attribute_ownership_acquisition(pending, {attr}, b"req")
+    drain(owner, acquirer)
+    federation = owner.backend.state.federation
+    assert federation is not None
+    assert acquirer.backend.state.handle in federation.objects[pending].attribute_candidates[attr]
+
+    acquirer.resign_federation_execution(resign_action)
+
+    assert acquirer.backend.state.handle is None
+    assert federation.objects[pending].attribute_candidates.get(attr, set()) == set()
+    assert acquirer_fed.last_callback("confirmAttributeOwnershipAcquisitionCancellation") is None
+
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    owner.destroy_federation_execution(f"resign-cancel-pending-{resign_action.name.lower()}-fed")
 
 
 def test_resign_federation_execution_removes_mom_federate_object_and_refreshes_summary():
