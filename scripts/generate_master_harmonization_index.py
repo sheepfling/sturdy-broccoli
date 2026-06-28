@@ -9,7 +9,10 @@ SCRIPT_REPO_ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = Path.cwd()
 REQUIREMENTS_ROOT = REPO_ROOT / "requirements"
 RECONCILIATION_ROOT = REQUIREMENTS_ROOT / "2010"
-OUTPUT_PATH = REQUIREMENTS_ROOT / "hla_1516_master_harmonization_index_v1_0.csv"
+OUTPUT_PATHS = (
+    REQUIREMENTS_ROOT / "hla_1516_master_harmonization_index_v1_0.csv",
+    RECONCILIATION_ROOT / "hla_1516_master_harmonization_index_v1_0.csv",
+)
 
 
 def _bootstrap_source_checkout() -> None:
@@ -125,10 +128,11 @@ def build_index_rows() -> list[dict[str, str]]:
 
 def write_index() -> None:
     rows = build_index_rows()
-    with OUTPUT_PATH.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=FIELDNAMES)
-        writer.writeheader()
-        writer.writerows(rows)
+    for output_path in OUTPUT_PATHS:
+        with output_path.open("w", newline="", encoding="utf-8") as handle:
+            writer = csv.DictWriter(handle, fieldnames=FIELDNAMES)
+            writer.writeheader()
+            writer.writerows(rows)
 
 
 if __name__ == "__main__":

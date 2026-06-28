@@ -16,21 +16,33 @@ INDEX_PATH = (
     / "requirements"
     / "hla_1516_master_harmonization_index_v1_0.csv"
 )
+INDEX_2010_PATH = (
+    Path(__file__).resolve().parents[2]
+    / "requirements"
+    / "2010"
+    / "hla_1516_master_harmonization_index_v1_0.csv"
+)
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
-def _read_rows() -> list[dict[str, str]]:
-    with INDEX_PATH.open(newline="", encoding="utf-8") as handle:
+def _read_rows(path: Path = INDEX_PATH) -> list[dict[str, str]]:
+    with path.open(newline="", encoding="utf-8") as handle:
         return list(csv.DictReader(handle))
 
 
 def test_master_harmonization_index_matches_generated_rows():
     expected_rows = build_index_rows()
     actual_rows = _read_rows()
+    actual_2010_rows = _read_rows(INDEX_2010_PATH)
 
     assert actual_rows
     assert list(actual_rows[0].keys()) == FIELDNAMES
     assert actual_rows == expected_rows
+    assert actual_2010_rows == expected_rows
+
+
+def test_master_harmonization_index_2010_copy_matches_top_level_index():
+    assert _read_rows(INDEX_2010_PATH) == _read_rows(INDEX_PATH)
 
 
 def test_master_harmonization_index_covers_every_imported_master_requirement():
