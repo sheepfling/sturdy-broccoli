@@ -1752,6 +1752,16 @@ class _ResignFromCallbackAmbassador(RecordingFederateAmbassador):
             self.rti.resign_federation_execution(ResignAction.NO_ACTION)
 
 
+class _FailingConnectionLostAmbassador(RecordingFederateAmbassador):
+    def on_connection_lost(self, *args, **kwargs):
+        raise RuntimeError("connection-lost-failed")
+
+
+class _FailingReportFederationExecutionsAmbassador(RecordingFederateAmbassador):
+    def on_report_federation_executions(self, *args, **kwargs):
+        raise RuntimeError("report-federation-executions-failed")
+
+
 def test_join_and_resign_reject_calls_from_within_callback():
     engine = InMemoryRTIEngine()
     rti = rti_ambassador(engine=engine)
@@ -1767,3 +1777,82 @@ def test_join_and_resign_reject_calls_from_within_callback():
     rti2.enable_time_regulation(factory.make_interval(1.0))
     rti2.resign_federation_execution(ResignAction.NO_ACTION)
     rti2.destroy_federation_execution("callback-join-fed")
+
+
+def test_connection_lost_and_report_federation_executions_wrap_callback_failures_as_federate_internal_error():
+    engine = InMemoryRTIEngine()
+
+    failing_loss_observer = rti_ambassador(engine=engine)
+    failing_loss_victim = rti_ambassador(engine=engine)
+    failing_loss_observer.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    failing_loss_victim.connect(_FailingConnectionLostAmbassador(), CallbackModel.HLA_IMMEDIATE)
+    failing_loss_observer.create_federation_execution("callback-failure-loss-fed", "TargetRadarFOMmodule.xml")
+    failing_loss_observer.join_federation_execution("observer", "type-a", "callback-failure-loss-fed")
+    victim_handle = failing_loss_victim.join_federation_execution("victim", "type-b", "callback-failure-loss-fed")
+
+    with pytest.raises(FederateInternalError):
+        failing_loss_observer.backend.force_federate_loss(victim_handle, "callback failure loss")
+
+    failing_loss_observer.resign_federation_execution(ResignAction.NO_ACTION)
+    failing_loss_victim.resign_federation_execution(ResignAction.NO_ACTION)
+    failing_loss_observer.destroy_federation_execution("callback-failure-loss-fed")
+    failing_loss_observer.disconnect()
+    failing_loss_victim.disconnect()
+
+    failing_report = rti_ambassador(engine=InMemoryRTIEngine())
+    failing_report.connect(_FailingReportFederationExecutionsAmbassador(), CallbackModel.HLA_IMMEDIATE)
+    failing_report.create_federation_execution("callback-failure-report-fed", "TargetRadarFOMmodule.xml")
+
+    with pytest.raises(FederateInternalError):
+        failing_report.list_federation_executions()
+
+    failing_report.destroy_federation_execution("callback-failure-report-fed")
+    failing_report.disconnect()
+
+
+def test_list_federation_executions_is_observable_through_mom_service_invocation_reporting():
+    engine, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("fm-list-mom-report-fed")
+    witness = rti_ambassador(engine=engine)
+    witness_fed = RecordingFederateAmbassador()
+    witness.connect(witness_fed, CallbackModel.HLA_EVOKED)
+    witness.join_federation_execution("charlie", "type-c", "fm-list-mom-report-fed")
+
+    set_reporting = owner.get_interaction_class_handle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
+    )
+    service_report = owner.get_interaction_class_handle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation"
+    )
+    sr_fed = owner.get_parameter_handle(set_reporting, "HLAfederate")
+    sr_state = owner.get_parameter_handle(set_reporting, "HLAreportingState")
+    report_service = witness.get_parameter_handle(service_report, "HLAservice")
+    report_success = witness.get_parameter_handle(service_report, "HLAsuccessIndicator")
+
+    witness.subscribe_interaction_class(service_report)
+    owner.send_interaction(
+        set_reporting,
+        {
+            sr_fed: owner.backend.state.handle.encode(),
+            sr_state: hla_mom.encode_bool(True),
+        },
+        b"enable-fm-list-service-reporting",
+    )
+    drain(owner, observer, witness)
+    assert owner.backend.state.service_reporting is True
+
+    witness_fed.clear()
+    owner.list_federation_executions()
+    drain(owner, observer, witness)
+
+    reports = [rec for rec in witness_fed.callbacks_named("receiveInteraction") if rec.args[0] == service_report]
+    assert reports
+    assert any(
+        hla_mom.decode_text(rec.args[1][report_service]) == "listFederationExecutions"
+        and hla_mom.decode_bool(rec.args[1][report_success])
+        for rec in reports
+    )
+
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    witness.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("fm-list-mom-report-fed")

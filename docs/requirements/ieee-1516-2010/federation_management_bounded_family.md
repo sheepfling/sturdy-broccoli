@@ -79,16 +79,16 @@ keep describing `CAP-FM` as vague or structurally unfinished.
 
 The current owner ledger has `632` federation-management packet rows:
 
-- `559 mapped`
-- `73 partial`
+- `562 mapped`
+- `70 partial`
 
-The remaining `73 partial` rows cluster into stable categories:
+The remaining `70 partial` rows cluster into stable categories:
 
 - `42 ARG`
 - `17 CB_ORD`
 - `4 EFF`
-- `3 EXC`
-- `7` residual overview, callback-surface, or traceability-bounded rows
+- `1 EXC`
+- `5` residual overview, callback-surface, or traceability-bounded rows
 
 Residual bounded row kinds in that last group:
 
@@ -96,7 +96,6 @@ Residual bounded row kinds in that last group:
 - `1 CB`
 - `1 PRE`
 - `1 EXC_API`
-- `1 MOM_TRACE`
 
 ## What The Categories Mean
 
@@ -113,8 +112,8 @@ This is the current argument-harmonization tail for `CAP-FM`.
 
 ### Lost-connection callback/fault-surface tail
 
-The small `EFF`, `EXC`, `CB`, `PRE`, `MOM_TRACE`, and `EXC_API` remainder is
-now concentrated around the connection-lost surface and the list/report
+The small `EFF`, `EXC`, `CB`, `PRE`, and `EXC_API` remainder is now
+concentrated around the connection-lost surface and the list/report
 federation helper family.
 
 Typical pattern:
@@ -140,8 +139,8 @@ They are rows where:
 
 ### List/report federation breadth tail
 
-The remaining `EXC_API`, `MOM_TRACE`, and one residual exception row also
-include the list/report federation helper family.
+The remaining `EXC_API` and one residual exception row also include the
+list/report federation helper family.
 
 These rows are not signs that federation reporting is missing.
 They remain `partial` because the current direct witness isolates the main
@@ -150,7 +149,7 @@ callback-failure, or API-declared exception permutation as one exhaustive row.
 
 ### Residual overview and harmonization tail
 
-The last `7` rows are the small bounded remainder:
+The last `5` rows are the small bounded remainder:
 
 - broad overview rows
 - connection-lost callback/fault-surface rows
@@ -171,6 +170,9 @@ including:
 - save and restore request, status, outcome, abort, and callback families
 - direct runtime `connectionLost` callback delivery, lost-federate MOM
   reporting, and post-loss execution-membership teardown
+- direct callback-failure wrapping for `connectionLost` and
+  `reportFederationExecutions`, plus MOM service-reporting visibility for
+  `listFederationExecutions`
 - representative MOM-observer visibility for key lifecycle and save/restore
   states
 - many direct negative-path guards and callback outcome paths
@@ -181,6 +183,8 @@ Primary evidence anchors:
 
 - `tests/backends/test_python_backend_federation_extended.py`
 - `tests/backends/test_python_backend_federation_extended.py::test_force_federate_loss_delivers_connection_lost_and_clears_execution_membership`
+- `tests/backends/test_python_backend_federation_extended.py::test_connection_lost_and_report_federation_executions_wrap_callback_failures_as_federate_internal_error`
+- `tests/backends/test_python_backend_federation_extended.py::test_list_federation_executions_is_observable_through_mom_service_invocation_reporting`
 - `tests/scenarios/test_federation_management_backend_matrix.py`
 - `tests/verification/test_requirements_ledger_v013.py`
 - `requirements/2010/traceability_matrix.csv`

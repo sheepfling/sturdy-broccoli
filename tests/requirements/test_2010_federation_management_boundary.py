@@ -14,17 +14,16 @@ def test_federation_management_partial_tail_current_shape_is_stable() -> None:
     rows = list(csv.DictReader(LEDGER.open(newline="", encoding="utf-8")))
     partial_rows = [row for row in rows if row["current_status"] == "partial"]
 
-    assert len(partial_rows) == 73
+    assert len(partial_rows) == 70
     assert Counter(row["reconciliation_kind"] for row in partial_rows) == {
         "ARG": 42,
         "CB_ORD": 17,
         "EFF": 4,
-        "EXC": 3,
+        "EXC": 1,
         "OVW": 3,
         "CB": 1,
         "PRE": 1,
         "EXC_API": 1,
-        "MOM_TRACE": 1,
     }
 
 
@@ -36,12 +35,12 @@ def test_federation_management_boundary_doc_records_current_family_shape() -> No
     assert "## Default Final Stance" in text
     assert "## Exit Condition" in text
     assert "canonical final reading for the current `CAP-FM`" in text
-    assert "`559 mapped`" in text
-    assert "`73 partial`" in text
+    assert "`562 mapped`" in text
+    assert "`70 partial`" in text
     assert "`42 ARG`" in text
     assert "`17 CB_ORD`" in text
     assert "`4 EFF`" in text
-    assert "`3 EXC`" in text
+    assert "`1 EXC`" in text
     assert "`3 OVW`" in text
     assert "`1 CB`" in text
     assert "`1 PRE`" in text
@@ -70,6 +69,8 @@ def test_federation_management_boundary_doc_records_current_family_shape() -> No
     assert "argument-harmonization tail" in text
     assert "direct runtime `connectionLost` callback delivery" in text
     assert "test_force_federate_loss_delivers_connection_lost_and_clears_execution_membership" in text
+    assert "test_connection_lost_and_report_federation_executions_wrap_callback_failures_as_federate_internal_error" in text
+    assert "test_list_federation_executions_is_observable_through_mom_service_invocation_reporting" in text
     assert "requirements/2010/hla1516_1_fm_detailed_reconciliation.csv" in text
     assert "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv" in text
     assert "requirements/2010/traceability_matrix.csv" in text

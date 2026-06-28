@@ -53,7 +53,7 @@ def test_fm_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 632
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 559, "partial": 73}
+        {"mapped": 562, "partial": 70}
     )
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
@@ -70,10 +70,13 @@ def test_fm_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-FM-4_3-RTIAPI-001-MOM"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_4-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_4-ARG-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_4-EXC-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_4-FEDCB-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_4-FEDCB-001-SIG"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_7-EXC-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_7-RTIAPI-001-MOM"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_7-RTIAPI-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_8-EXC-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_8-FEDCB-001-ORD"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-OVERVIEW-001"]["current_status"] == "partial"
 
@@ -101,6 +104,30 @@ def test_fm_connection_lost_rows_point_to_direct_runtime_loss_witness() -> None:
     assert partial_row["current_status"] == "partial"
     assert partial_row["current_test_id"] == direct_test
     assert "does not prove a full disconnected-state transition" in partial_row["notes"]
+
+
+def test_fm_list_and_report_exception_and_mom_rows_use_direct_backend_witnesses() -> None:
+    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    callback_failure_test = (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_connection_lost_and_report_federation_executions_wrap_callback_failures_as_federate_internal_error"
+    )
+    mom_reporting_test = (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_list_federation_executions_is_observable_through_mom_service_invocation_reporting"
+    )
+
+    assert rows["HLA1516.1-FM-4_4-EXC-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_4-EXC-001"]["current_test_id"] == callback_failure_test
+    assert rows["HLA1516.1-FM-4_4-EXC-001"]["notes"].startswith("Direct ")
+
+    assert rows["HLA1516.1-FM-4_8-EXC-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_8-EXC-001"]["current_test_id"] == callback_failure_test
+    assert rows["HLA1516.1-FM-4_8-EXC-001"]["notes"].startswith("Direct ")
+
+    assert rows["HLA1516.1-FM-4_7-RTIAPI-001-MOM"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_7-RTIAPI-001-MOM"]["current_test_id"] == mom_reporting_test
+    assert rows["HLA1516.1-FM-4_7-RTIAPI-001-MOM"]["notes"].startswith("Direct ")
 
 
 def test_fm_report_federation_executions_argument_row_has_direct_payload_evidence():
