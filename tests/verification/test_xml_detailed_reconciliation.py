@@ -49,3 +49,24 @@ def test_xml_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-FDD_XSD_NORMATIVE-019"]["current_status"] == "partial"
     assert rows["HLA1516.2-XML-ELEM-001"]["current_status"] == "partial"
     assert rows["HLA1516.2-XML-TYPE-001"]["current_status"] == "partial"
+    assert rows["HLA1516.1-FDD_XSD_NORMATIVE-019"]["notes"].startswith(
+        "Canonical residual disposition:"
+    )
+    assert "broader IEEE 1516.1 normative-source claim remains intentionally partial" in rows[
+        "HLA1516.1-FDD_XSD_NORMATIVE-019"
+    ]["notes"]
+    assert "atom-level XML element row remains intentionally partial" in rows[
+        "HLA1516.2-XML-ELEM-001"
+    ]["notes"]
+    assert "atom-level XML type row remains intentionally partial" in rows[
+        "HLA1516.2-XML-TYPE-001"
+    ]["notes"]
+
+
+def test_xml_partial_rows_carry_explicit_canonical_residual_dispositions() -> None:
+    for row in _read_rows():
+        if row["current_status"] != "partial":
+            continue
+        assert row["notes"].startswith("Canonical residual disposition:"), row[
+            "packet_requirement_id"
+        ]

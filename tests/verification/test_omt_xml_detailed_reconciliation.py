@@ -115,6 +115,24 @@ def test_omt_xml_detailed_reconciliation_status_distribution_is_intentional():
     ]
     assert by_id["HLA1516.2-OMT-Annex_F-SEM-022"]["curated_requirement_id"] == "HLA1516.2-OMT-F-001"
     assert by_id["HLA1516.2-OMT-Annex_G-SEM-023"]["curated_requirement_id"] == "HLA1516.2-OMT-G-001"
+    assert by_id["HLA1516.2-XML-SCHEMA-ELEM-0001"]["notes"].startswith(
+        "Canonical residual disposition:"
+    )
+    assert "each imported XSD atom remains intentionally partial until it has its own curated witness" in by_id[
+        "HLA1516.2-XML-SCHEMA-ELEM-0001"
+    ]["notes"]
+    assert "each imported XSD atom remains intentionally partial until it has its own curated witness" in by_id[
+        "HLA1516.2-XML-SCHEMA-TYPE-0001"
+    ]["notes"]
+
+
+def test_omt_xml_partial_rows_carry_explicit_canonical_residual_dispositions() -> None:
+    for row in _read_rows():
+        if row["current_status"] != "partial":
+            continue
+        assert row["notes"].startswith("Canonical residual disposition:"), row[
+            "packet_requirement_id"
+        ]
 
 
 def test_omt_xml_rows_anchor_to_live_evidence_refs() -> None:

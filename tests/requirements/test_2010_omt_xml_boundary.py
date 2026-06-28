@@ -65,6 +65,9 @@ def test_omt_xml_boundary_doc_records_current_family_shape() -> None:
             "linear (...)` and `linearEnumerated (...)",
             "Normalize Federate Handle service",
             "Normalize Service Group service",
+            "## Residual Read Rule",
+            "## Residual Exit Rule",
+            "`Canonical residual disposition:`",
         ],
     )
     assert "../../plans/requirements_gap_register.md" not in text

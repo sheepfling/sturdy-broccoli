@@ -102,6 +102,33 @@ The repo already validates against the carried standard schema path, but that
 row still phrases the claim more broadly than the current direct curated
 requirement surface.
 
+## Residual Read Rule
+
+When one of the XML-family rows stays `partial`, the intended reading is:
+
+- the repo already proves the carried schema family, parse or reject behavior,
+  and metadata-preserving round trips at the family level
+- the remaining gap is atom-level claim breadth, not missing XML or OMT support
+- the canonical owner ledgers now say that explicitly in each remaining partial
+  row via `Canonical residual disposition:`
+
+Do not reopen these rows merely because parser or validator coverage is green.
+They need narrower curated atom-level witnesses, not repetition of the already
+credited family-level evidence.
+
+## Residual Exit Rule
+
+Promote one of the residual XML rows only if one of these becomes true:
+
+1. a new direct witness proves that imported element or type as its own
+   curated executable or schema-validation requirement
+2. the row is intentionally re-owned into a smaller honest canonical claim with
+   narrower documentation scope
+3. the imported row is retired because the canonical owner surface no longer
+   treats that atom as a standalone requirement
+
+If none of those become true, preserve the current partial disposition.
+
 ### Annex B normalization closeout
 
 The OMT normalization rows are no longer a bounded residual.
