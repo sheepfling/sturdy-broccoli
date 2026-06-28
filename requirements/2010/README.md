@@ -81,7 +81,8 @@ bucket families:
 | data distribution management | `hla1516_1_ddm_detailed_reconciliation.csv` |
 | support services | `hla1516_1_sup_detailed_reconciliation.csv` |
 | MOM/MIM | `hla1516_1_mom_detailed_reconciliation.csv` |
-| API binding and Clause 13 conformance | `hla1516_1_conf_detailed_reconciliation.csv` |
+| API binding | `hla1516_1_api_detailed_reconciliation.csv` |
+| Clause 13 conformance | `hla1516_1_conf_detailed_reconciliation.csv` |
 | OMT family | `hla1516_2_omt_detailed_reconciliation.csv` |
 | XML family | `hla1516_xml_detailed_reconciliation.csv` |
 | legacy OMT/XML bridge artifact | `hla1516_2_omt_xml_detailed_reconciliation.csv` |
@@ -160,3 +161,9 @@ together as one bounded final-state reading rather than a vague parser or
 schema-support gap, use:
 
 - `docs/requirements/ieee-1516-2010/omt_xml_bounded_family.md`
+
+For the human-facing explanation of why the generated ambassador method surface
+is already mapped while the imported C++ header-token and Web Services binding
+catalog rows remain intentionally partial, use:
+
+- `docs/requirements/ieee-1516-2010/api_binding_bounded_family.md`

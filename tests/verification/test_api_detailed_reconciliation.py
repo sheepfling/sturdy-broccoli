@@ -56,7 +56,31 @@ def test_api_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-CPP-12_12-RTIAMBASSADOR-234"]["current_status"] == "partial"
     assert rows["HLA1516.1-API_WSDL-013"]["current_status"] == "partial"
     assert rows["HLA1516.1-WSDL-OP-001"]["current_status"] == "partial"
+    assert rows["HLA1516.1-API_CPP-012"]["notes"].startswith(
+        "Canonical residual disposition:"
+    )
+    assert "broader imported C++ header/class catalog claim remains intentionally partial" in rows[
+        "HLA1516.1-API_CPP-012"
+    ]["notes"]
+    assert "header-level C++ token row remains intentionally partial" in rows[
+        "HLA1516.1-CPP-12_12-RTIAMBASSADOR-234"
+    ]["notes"]
+    assert "broader Web Services binding claim remains intentionally partial" in rows[
+        "HLA1516.1-API_WSDL-013"
+    ]["notes"]
+    assert "operation-level Web Services binding row remains intentionally partial" in rows[
+        "HLA1516.1-WSDL-OP-001"
+    ]["notes"]
     assert (
         rows["HLA1516.1-WSDL-OP-001"]["current_test_id"]
         == "tests/verification/test_imported_hla_packet_v1_0.py::test_imported_packet_extended_catalog_families_match_expected_shape"
     )
+
+
+def test_api_partial_rows_carry_explicit_canonical_residual_dispositions() -> None:
+    for row in _read_rows():
+        if row["current_status"] != "partial":
+            continue
+        assert row["notes"].startswith("Canonical residual disposition:"), row[
+            "packet_requirement_id"
+        ]

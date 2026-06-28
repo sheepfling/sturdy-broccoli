@@ -28,6 +28,7 @@ That edition inventory covers:
 - federate interface clause extractions
 - declaration, object, ownership, time, DDM, support, and MOM reconciliations
 - OMT, OMT/XML, and XML reconciliations
+- API-binding and Clause 13 conformance reconciliations
 - traceability and packet-hookup ledgers
 
 ## Practical Flow
@@ -179,6 +180,7 @@ For 2010 work, the usual ownership pattern is:
 - time-management closeout reading in [`time_management_bounded_family.md`](time_management_bounded_family.md) when the question is how Clause 8 is now fully mapped at the owner-ledger level while the narrower RO/TSO backend split stays owned in the priority companion artifacts
 - bounded data-distribution-management family note in [`data_distribution_management_bounded_family.md`](data_distribution_management_bounded_family.md) when the question is why Clause 9 still has a `PRE/EXC/EXC_API` partial tail even though most direct region lifecycle, overlap-routing, DDM-gated routing, and MOM behavior is already strongly covered
 - bounded OMT/XML family note in [`omt_xml_bounded_family.md`](omt_xml_bounded_family.md) when the question is how the imported XML element or type rows remain partial while the Annex B normalization story is already closed on the supported common subset
+- bounded API-binding family note in [`api_binding_bounded_family.md`](api_binding_bounded_family.md) when the question is why the generated ambassador method surface is mapped while imported C++ header-token and Web Services catalog rows remain intentionally partial
 - primary proof shard or focused command from [`../../test_surface.md`](../../test_surface.md)
 - proof artifact or verification packet from [`../../verification/README.md`](../../verification/README.md)
 
@@ -227,7 +229,9 @@ Use this index when the question is "which single document or ledger owns this
 | support-services clause and family rows | `../../../requirements/2010/hla1516_1_sup_detailed_reconciliation.csv` | `unit-python-core` | `2010-core`, `setup-preflight` |
 | support-services bounded partial-family reading | `support_services_bounded_family.md` | `unit-python-core` | `2010-core`, `setup-preflight` |
 | MOM/MIM clause and family rows | `../../../requirements/2010/hla1516_1_mom_detailed_reconciliation.csv` | `unit-python-core` | `2010-core`, `time` |
-| API-binding and Clause 13 conformance rows | `../../../requirements/2010/hla1516_1_conf_detailed_reconciliation.csv` | `unit-shim-tooling` | `2010-core`, `java-shim`, `cpp-shim` |
+| API-binding rows | `../../../requirements/2010/hla1516_1_api_detailed_reconciliation.csv` | `unit-shim-tooling` | `2010-core`, `java-shim`, `cpp-shim`, `ws-bindings` |
+| API-binding bounded-family reading | `api_binding_bounded_family.md` | `unit-shim-tooling` | `2010-core`, `java-shim`, `cpp-shim`, `ws-bindings` |
+| Clause 13 conformance rows | `../../../requirements/2010/hla1516_1_conf_detailed_reconciliation.csv` | `unit-shim-tooling` | `2010-core`, `java-shim`, `cpp-shim` |
 | OMT family reconciliation rows | `../../../requirements/2010/hla1516_2_omt_detailed_reconciliation.csv` | `unit-fom-tooling` | `2010-core`, `fom-omt` |
 | XML family reconciliation rows | `../../../requirements/2010/hla1516_xml_detailed_reconciliation.csv` | `unit-fom-tooling` | `2010-core`, `fom-omt` |
 | legacy OMT/XML bridge artifact | `../../../requirements/2010/hla1516_2_omt_xml_detailed_reconciliation.csv` | `unit-fom-tooling` | `2010-core`, `fom-omt` |
