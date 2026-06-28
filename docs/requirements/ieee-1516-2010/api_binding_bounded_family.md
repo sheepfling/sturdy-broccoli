@@ -51,13 +51,13 @@ Short answer:
 
 The current API owner ledger has `614` packet rows:
 
-- `221 mapped`
-- `393 partial`
+- `229 mapped`
+- `385 partial`
 
-The remaining `393 partial` rows cluster into stable categories:
+The remaining `385 partial` rows cluster into stable categories:
 
 - `308 WSDL_OP`
-- `79 CPP_CLASS`
+- `71 CPP_CLASS`
 - `6 CLAUSE12_13_DETAIL`
 
 ## What The Categories Mean
@@ -73,11 +73,23 @@ or verify a live WSDL-backed runtime surface for each operation.
 
 ### C++ header-token catalog tail
 
-The `79 CPP_CLASS` rows are imported C++ catalog or class/header token rows.
+The `71 CPP_CLASS` residual rows are imported C++ catalog or class/header token rows
+that still lack their own direct witness.
 
 These rows remain `partial` because the repo preserves the imported C++ catalog
 and source-derived ambassador method metadata, but does not yet maintain one
 curated executable or static witness per header-level token.
+
+Several header-declaration rows are no longer in that residual tail. The repo
+now directly maps a small class-declaration cluster where the carried official
+2010 C++ API archive itself proves the expected declarations in:
+
+- `RTIambassadorFactory.h`
+- `NullFederateAmbassador.h`
+- `LogicalTimeFactory.h`
+- `HLAfloat64TimeFactory.h`
+- `HLAinteger64TimeFactory.h`
+- `LogicalTime.h`
 
 ### Broad binding and clause-detail rows
 
@@ -144,9 +156,9 @@ the imported C++ method rows through:
 Primary evidence anchors:
 
 - `tests/factories/test_fom_time_factories.py`
+- `tests/verification/test_api_detailed_reconciliation.py`
 - `tests/verification/test_spec_traceability_all_methods.py`
 - `tests/verification/test_requirements_ledger_v013.py`
-- `tests/verification/test_api_detailed_reconciliation.py`
 - `requirements/2010/traceability_matrix.csv`
 
 ## Good Reading
