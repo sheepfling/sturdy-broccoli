@@ -14,10 +14,9 @@ def test_federation_management_partial_tail_current_shape_is_stable() -> None:
     rows = list(csv.DictReader(LEDGER.open(newline="", encoding="utf-8")))
     partial_rows = [row for row in rows if row["current_status"] == "partial"]
 
-    assert len(partial_rows) == 62
+    assert len(partial_rows) == 46
     assert Counter(row["reconciliation_kind"] for row in partial_rows) == {
         "ARG": 42,
-        "CB_ORD": 16,
         "EFF": 1,
         "OVW": 3,
     }
@@ -31,12 +30,12 @@ def test_federation_management_boundary_doc_records_current_family_shape() -> No
     assert "## Default Final Stance" in text
     assert "## Exit Condition" in text
     assert "canonical final reading for the current `CAP-FM`" in text
-    assert "`570 mapped`" in text
-    assert "`62 partial`" in text
+    assert "`586 mapped`" in text
+    assert "`46 partial`" in text
     assert "`42 ARG`" in text
-    assert "`16 CB_ORD`" in text
     assert "`1 EFF`" in text
     assert "`3 OVW`" in text
+    assert "The last `4` rows are the small bounded remainder:" in text
     assert "`./tools/test-focus run execution-membership`" in text
     assert "`./tools/test-focus run backends`" in text
     assert "`./tools/test-surface run unit-scenarios-light`" in text

@@ -79,15 +79,14 @@ keep describing `CAP-FM` as vague or structurally unfinished.
 
 The current owner ledger has `632` federation-management packet rows:
 
-- `570 mapped`
-- `62 partial`
+- `586 mapped`
+- `46 partial`
 
-The remaining `62 partial` rows cluster into stable categories:
+The remaining `46 partial` rows cluster into stable categories:
 
 - `42 ARG`
-- `16 CB_ORD`
 - `1 EFF`
-- `5` residual overview, callback-surface, or traceability-bounded rows
+- `3 OVW`
 
 Residual bounded row kinds in that last group:
 
@@ -121,26 +120,12 @@ Typical pattern:
   membership teardown, but it does not yet prove a full disconnected-state
   transition for the lost victim
 
-### Callback-order breadth tail
-
-The `16 CB_ORD` rows are mostly callback-order or callback-model breadth rows.
-
-These are not callback-delivery gaps.
-They are rows where:
-
-- the callback is already delivered directly
-- the signature is already present
-- the broader ordering, timing, or scope envelope remains stated more broadly
-  than the currently isolated proof
-
 ### Residual overview and harmonization tail
 
-The last `5` rows are the small bounded remainder:
+The last `4` rows are the small bounded remainder:
 
 - broad overview rows
 - one connection-lost disconnected-state effect row
-- one service/meta traceability row that is broader than the current direct
-  executable witness
 
 These rows are already explicit enough to review honestly, but they are not yet
 standalone exhaustive service proofs.

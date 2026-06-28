@@ -285,6 +285,230 @@ def test_connect_establishes_callback_delivery_model_for_follow_on_reports():
     immediate.disconnect()
 
 
+def _joined_pair_with_callback_model(name: str, model: CallbackModel):
+    engine = InMemoryRTIEngine()
+    r1 = rti_ambassador(engine=engine)
+    r2 = rti_ambassador(engine=engine)
+    f1 = RecordingFederateAmbassador()
+    f2 = RecordingFederateAmbassador()
+    r1.connect(f1, model)
+    r2.connect(f2, model)
+    r1.create_federation_execution(name, "TargetRadarFOMmodule.xml")
+    h1 = r1.join_federation_execution("alpha", "type-a", name)
+    h2 = r2.join_federation_execution("bravo", "type-b", name)
+    return engine, r1, r2, f1, f2, h1, h2
+
+
+def test_synchronization_callbacks_respect_callback_model_for_registration_announcement_and_completion():
+    for suffix, model in (("evoked", CallbackModel.HLA_EVOKED), ("immediate", CallbackModel.HLA_IMMEDIATE)):
+        _, r1, r2, f1, f2, _h1, h2 = _joined_pair_with_callback_model(
+            f"sync-callback-model-{suffix}", model
+        )
+
+        r1.register_federation_synchronization_point("READY", b"sync")
+        if model is CallbackModel.HLA_EVOKED:
+            assert f1.last_callback("synchronizationPointRegistrationSucceeded") is None
+            assert f2.last_callback("announceSynchronizationPoint") is None
+            drain(r1, r2)
+        assert f1.last_callback("synchronizationPointRegistrationSucceeded").args == ("READY",)
+        assert f2.last_callback("announceSynchronizationPoint").args[:2] == ("READY", b"sync")
+
+        r1.register_federation_synchronization_point("READY", b"sync")
+        if model is CallbackModel.HLA_EVOKED:
+            assert f1.last_callback("synchronizationPointRegistrationFailed") is None
+            drain(r1, r2)
+        assert f1.last_callback("synchronizationPointRegistrationFailed").args == (
+            "READY",
+            SynchronizationPointFailureReason.SYNCHRONIZATION_POINT_LABEL_NOT_UNIQUE,
+        )
+
+        invalid_handle = type(h2)(h2.value + 1000)
+        r1.register_federation_synchronization_point("BAD-TARGET", b"sync", {invalid_handle})
+        if model is CallbackModel.HLA_EVOKED:
+            assert f1.last_callback("synchronizationPointRegistrationFailed").args == (
+                "READY",
+                SynchronizationPointFailureReason.SYNCHRONIZATION_POINT_LABEL_NOT_UNIQUE,
+            )
+            drain(r1, r2)
+        assert f1.last_callback("synchronizationPointRegistrationFailed").args == (
+            "BAD-TARGET",
+            SynchronizationPointFailureReason.SYNCHRONIZATION_SET_MEMBER_NOT_JOINED,
+        )
+
+        r1.synchronization_point_achieved("READY")
+        r2.synchronization_point_achieved("READY")
+        if model is CallbackModel.HLA_EVOKED:
+            assert f1.last_callback("federationSynchronized") is None
+            assert f2.last_callback("federationSynchronized") is None
+            drain(r1, r2)
+        assert f1.last_callback("federationSynchronized").args[0] == "READY"
+        assert f2.last_callback("federationSynchronized").args[0] == "READY"
+
+        r1.resign_federation_execution(ResignAction.NO_ACTION)
+        r2.resign_federation_execution(ResignAction.NO_ACTION)
+        r1.destroy_federation_execution(f"sync-callback-model-{suffix}")
+        r1.disconnect()
+        r2.disconnect()
+
+
+def test_save_callbacks_respect_callback_model_for_initiation_outcomes_and_status():
+    for suffix, model in (("evoked", CallbackModel.HLA_EVOKED), ("immediate", CallbackModel.HLA_IMMEDIATE)):
+        _, r1, r2, f1, f2, _h1, _h2 = _joined_pair_with_callback_model(
+            f"save-callback-model-{suffix}", model
+        )
+
+        r1.request_federation_save("SAVE-SUCCESS")
+        if model is CallbackModel.HLA_EVOKED:
+            assert f1.last_callback("initiateFederateSave") is None
+            assert f2.last_callback("initiateFederateSave") is None
+            drain(r1, r2)
+        assert f1.last_callback("initiateFederateSave").args == ("SAVE-SUCCESS",)
+        assert f2.last_callback("initiateFederateSave").args == ("SAVE-SUCCESS",)
+
+        r1.federate_save_begun()
+        r2.federate_save_begun()
+        r1.federate_save_complete()
+        r2.federate_save_complete()
+        if model is CallbackModel.HLA_EVOKED:
+            assert f1.last_callback("federationSaved") is None
+            assert f2.last_callback("federationSaved") is None
+            drain(r1, r2)
+        assert f1.last_callback("federationSaved") is not None
+        assert f2.last_callback("federationSaved") is not None
+
+        r1.query_federation_save_status()
+        if model is CallbackModel.HLA_EVOKED:
+            assert f1.last_callback("federationSaveStatusResponse") is None
+            drain(r1)
+        status_response = f1.last_callback("federationSaveStatusResponse").args[0]
+        assert all(pair.save_status is SaveStatus.NO_SAVE_IN_PROGRESS for pair in status_response)
+
+        r1.request_federation_save("SAVE-FAIL")
+        if model is CallbackModel.HLA_EVOKED:
+            assert f1.last_callback("initiateFederateSave").args == ("SAVE-SUCCESS",)
+            drain(r1, r2)
+        assert f1.last_callback("initiateFederateSave").args == ("SAVE-FAIL",)
+        assert f2.last_callback("initiateFederateSave").args == ("SAVE-FAIL",)
+
+        r1.federate_save_begun()
+        r2.federate_save_begun()
+        r1.federate_save_complete()
+        r2.federate_save_not_complete()
+        if model is CallbackModel.HLA_EVOKED:
+            assert f1.last_callback("federationNotSaved") is None
+            assert f2.last_callback("federationNotSaved") is None
+            drain(r1, r2)
+        assert f1.last_callback("federationNotSaved").args == (
+            SaveFailureReason.FEDERATE_REPORTED_FAILURE_DURING_SAVE,
+        )
+        assert f2.last_callback("federationNotSaved").args == (
+            SaveFailureReason.FEDERATE_REPORTED_FAILURE_DURING_SAVE,
+        )
+
+        r1.query_federation_save_status()
+        if model is CallbackModel.HLA_EVOKED:
+            drain(r1)
+        status_response = f1.last_callback("federationSaveStatusResponse").args[0]
+        assert all(pair.save_status is SaveStatus.NO_SAVE_IN_PROGRESS for pair in status_response)
+
+        r1.resign_federation_execution(ResignAction.NO_ACTION)
+        r2.resign_federation_execution(ResignAction.NO_ACTION)
+        r1.destroy_federation_execution(f"save-callback-model-{suffix}")
+        r1.disconnect()
+        r2.disconnect()
+
+
+def test_restore_callbacks_respect_callback_model_for_request_progress_outcomes_and_status():
+    for suffix, model in (("evoked", CallbackModel.HLA_EVOKED), ("immediate", CallbackModel.HLA_IMMEDIATE)):
+        _, r1, r2, f1, f2, h1, h2 = _joined_pair_with_callback_model(
+            f"restore-callback-model-{suffix}", model
+        )
+
+        r1.request_federation_restore("MISSING-SAVE")
+        if model is CallbackModel.HLA_EVOKED:
+            assert f1.last_callback("requestFederationRestoreFailed") is None
+            assert f2.last_callback("requestFederationRestoreFailed") is None
+            drain(r1, r2)
+        assert f1.last_callback("requestFederationRestoreFailed").args == ("MISSING-SAVE",)
+        assert f2.last_callback("requestFederationRestoreFailed") is None
+
+        r1.request_federation_save("SAVE-RESTORE")
+        if model is CallbackModel.HLA_EVOKED:
+            drain(r1, r2)
+        r1.federate_save_begun()
+        r2.federate_save_begun()
+        r1.federate_save_complete()
+        r2.federate_save_complete()
+        if model is CallbackModel.HLA_EVOKED:
+            drain(r1, r2)
+
+        r1.request_federation_restore("SAVE-RESTORE")
+        if model is CallbackModel.HLA_EVOKED:
+            assert f1.last_callback("requestFederationRestoreSucceeded") is None
+            assert f1.last_callback("federationRestoreBegun") is None
+            assert f2.last_callback("initiateFederateRestore") is None
+            drain(r1, r2)
+        assert f1.last_callback("requestFederationRestoreSucceeded").args == ("SAVE-RESTORE",)
+        assert f1.last_callback("federationRestoreBegun") is not None
+        assert f2.last_callback("initiateFederateRestore").args == ("SAVE-RESTORE", "bravo", h2)
+
+        r1.query_federation_restore_status()
+        if model is CallbackModel.HLA_EVOKED:
+            assert f1.last_callback("federationRestoreStatusResponse") is None
+            drain(r1)
+        status_response = f1.last_callback("federationRestoreStatusResponse").args[0]
+        by_handle = {pair.pre_restore_handle: pair.restore_status for pair in status_response}
+        assert by_handle[h1] is RestoreStatus.FEDERATE_RESTORE_REQUEST_PENDING
+        assert by_handle[h2] is RestoreStatus.FEDERATE_RESTORE_REQUEST_PENDING
+
+        r1.federate_restore_complete()
+        r2.federate_restore_complete()
+        if model is CallbackModel.HLA_EVOKED:
+            assert f1.last_callback("federationRestored") is None
+            assert f2.last_callback("federationRestored") is None
+            drain(r1, r2)
+        assert f1.last_callback("federationRestored") is not None
+        assert f2.last_callback("federationRestored") is not None
+
+        r1.request_federation_save("SAVE-RESTORE-FAIL")
+        if model is CallbackModel.HLA_EVOKED:
+            drain(r1, r2)
+        r1.federate_save_begun()
+        r2.federate_save_begun()
+        r1.federate_save_complete()
+        r2.federate_save_complete()
+        if model is CallbackModel.HLA_EVOKED:
+            drain(r1, r2)
+
+        r1.request_federation_restore("SAVE-RESTORE-FAIL")
+        if model is CallbackModel.HLA_EVOKED:
+            drain(r1, r2)
+        r1.federate_restore_complete()
+        r2.federate_restore_not_complete()
+        if model is CallbackModel.HLA_EVOKED:
+            assert f1.last_callback("federationNotRestored") is None
+            assert f2.last_callback("federationNotRestored") is None
+            drain(r1, r2)
+        assert f1.last_callback("federationNotRestored").args == (
+            RestoreFailureReason.FEDERATE_REPORTED_FAILURE_DURING_RESTORE,
+        )
+        assert f2.last_callback("federationNotRestored").args == (
+            RestoreFailureReason.FEDERATE_REPORTED_FAILURE_DURING_RESTORE,
+        )
+
+        r1.query_federation_restore_status()
+        if model is CallbackModel.HLA_EVOKED:
+            drain(r1)
+        status_response = f1.last_callback("federationRestoreStatusResponse").args[0]
+        assert all(pair.restore_status is RestoreStatus.NO_RESTORE_IN_PROGRESS for pair in status_response)
+
+        r1.resign_federation_execution(ResignAction.NO_ACTION)
+        r2.resign_federation_execution(ResignAction.NO_ACTION)
+        r1.destroy_federation_execution(f"restore-callback-model-{suffix}")
+        r1.disconnect()
+        r2.disconnect()
+
+
 def test_connect_create_and_join_apply_positive_lifecycle_effects():
     engine = InMemoryRTIEngine()
 

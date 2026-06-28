@@ -53,7 +53,7 @@ def test_fm_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 632
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 570, "partial": 62}
+        {"mapped": 586, "partial": 46}
     )
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
@@ -83,6 +83,17 @@ def test_fm_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-FM-4_7-RTIAPI-001-EXC"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_8-EXC-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_8-FEDCB-001-ORD"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_12-FEDCB-001-ORD"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_13-FEDCB-001-ORD"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_15-FEDCB-001-ORD"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_17-FEDCB-001-ORD"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_20-FEDCB-001-ORD"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_23-FEDCB-001-ORD"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_25-FEDCB-001-ORD"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_26-FEDCB-001-ORD"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_27-FEDCB-001-ORD"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_29-FEDCB-001-ORD"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_32-FEDCB-001-ORD"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_10-EFF-004"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_16-EFF-002"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_16-RTIAPI-002-EFF"]["current_status"] == "mapped"
@@ -120,9 +131,63 @@ def test_fm_only_remaining_executable_semantic_partial_is_connection_lost_discon
         row["packet_requirement_id"]
         for row in rows
         if row["current_status"] == "partial"
-        and row["reconciliation_kind"] not in {"ARG", "CB_ORD", "OVW"}
+        and row["reconciliation_kind"] not in {"ARG", "OVW"}
     }
     assert executable_partial_ids == {"HLA1516.1-FM-4_4-EFF-001"}
+
+
+def test_fm_callback_order_rows_use_direct_callback_model_witnesses() -> None:
+    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+
+    sync_model_test = (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_synchronization_callbacks_respect_callback_model_for_registration_announcement_and_completion"
+    )
+    save_model_test = (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_save_callbacks_respect_callback_model_for_initiation_outcomes_and_status"
+    )
+    restore_model_test = (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_restore_callbacks_respect_callback_model_for_request_progress_outcomes_and_status"
+    )
+
+    for packet_id in (
+        "HLA1516.1-FM-4_12-FEDCB-001-ORD",
+        "HLA1516.1-FM-4_12-FEDCB-001-ORD-DUP02",
+        "HLA1516.1-FM-4_13-FEDCB-001-ORD",
+        "HLA1516.1-FM-4_15-FEDCB-001-ORD",
+    ):
+        row = rows[packet_id]
+        assert row["current_status"] == "mapped"
+        assert row["current_test_id"] == sync_model_test
+        assert "queued HLA_EVOKED delivery against immediate HLA_IMMEDIATE delivery" in row["notes"]
+
+    for packet_id in (
+        "HLA1516.1-FM-4_17-FEDCB-001-ORD",
+        "HLA1516.1-FM-4_17-FEDCB-002-ORD",
+        "HLA1516.1-FM-4_20-FEDCB-001-ORD",
+        "HLA1516.1-FM-4_20-FEDCB-001-ORD-DUP02",
+        "HLA1516.1-FM-4_23-FEDCB-001-ORD",
+    ):
+        row = rows[packet_id]
+        assert row["current_status"] == "mapped"
+        assert row["current_test_id"] == save_model_test
+        assert "queued HLA_EVOKED delivery against immediate HLA_IMMEDIATE delivery" in row["notes"]
+
+    for packet_id in (
+        "HLA1516.1-FM-4_25-FEDCB-001-ORD",
+        "HLA1516.1-FM-4_25-FEDCB-001-ORD-DUP02",
+        "HLA1516.1-FM-4_26-FEDCB-001-ORD",
+        "HLA1516.1-FM-4_27-FEDCB-001-ORD",
+        "HLA1516.1-FM-4_29-FEDCB-001-ORD",
+        "HLA1516.1-FM-4_29-FEDCB-001-ORD-DUP02",
+        "HLA1516.1-FM-4_32-FEDCB-001-ORD",
+    ):
+        row = rows[packet_id]
+        assert row["current_status"] == "mapped"
+        assert row["current_test_id"] == restore_model_test
+        assert "queued HLA_EVOKED delivery against immediate HLA_IMMEDIATE delivery" in row["notes"]
 
 
 def test_fm_connection_lost_precondition_and_callback_model_rows_use_direct_backend_witness() -> None:
