@@ -54,7 +54,9 @@ from hla.rti1516e.datatypes import (
 
 from tests.backends.python_backend_extended_support import *
 from tests.backends.python_backend_extended_support import (
+    _ImmediateAsyncDeliveryAmbassador,
     _ImmediateConstrainedPendingAmbassador,
+    _ImmediateOrderTypeAmbassador,
     _ImmediateTimeAdvanceGrantAmbassador,
     _ImmediateRegulationPendingAmbassador,
 )
@@ -1687,3 +1689,53 @@ def test_hla_immediate_time_advance_grant_callbacks_block_nested_requests():
     receiver.resign_federation_execution(ResignAction.NO_ACTION)
     sender.resign_federation_execution(ResignAction.NO_ACTION)
     sender.destroy_federation_execution("immediate-time-advance-grant-fed")
+
+
+def test_hla_immediate_callbacks_block_async_delivery_services():
+    engine = InMemoryRTIEngine()
+    rti = rti_ambassador(engine=engine)
+    fed = _ImmediateAsyncDeliveryAmbassador(rti)
+
+    rti.connect(fed, CallbackModel.HLA_IMMEDIATE)
+    rti.create_federation_execution("immediate-async-delivery-fed", "TargetRadarFOMmodule.xml")
+    rti.join_federation_execution("alpha", "type-a", "immediate-async-delivery-fed")
+
+    rti.register_federation_synchronization_point("IMMEDIATE-ASYNC", b"x")
+
+    assert fed.last_callback("synchronizationPointRegistrationSucceeded") is not None
+    assert fed.captured == [
+        CallNotAllowedFromWithinCallback,
+        CallNotAllowedFromWithinCallback,
+    ]
+
+    rti.resign_federation_execution(ResignAction.NO_ACTION)
+    rti.destroy_federation_execution("immediate-async-delivery-fed")
+
+
+def test_hla_immediate_callbacks_block_order_type_services():
+    engine = InMemoryRTIEngine()
+    rti = rti_ambassador(engine=engine)
+    fed = _ImmediateOrderTypeAmbassador(rti)
+    rti.connect(fed, CallbackModel.HLA_IMMEDIATE)
+    rti.create_federation_execution("immediate-order-type-fed", "TargetRadarFOMmodule.xml")
+    rti.join_federation_execution("alpha", "type-a", "immediate-order-type-fed")
+
+    cls = rti.get_object_class_handle("HLAobjectRoot.Target")
+    attr = rti.get_attribute_handle(cls, "Position")
+    interaction = rti.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    rti.publish_object_class_attributes(cls, {attr})
+    obj = rti.register_object_instance(cls, "Immediate-Order-Type")
+    fed.obj = obj
+    fed.attr = attr
+    fed.interaction = interaction
+
+    rti.register_federation_synchronization_point("IMMEDIATE-ORDER-TYPE", b"x")
+
+    assert fed.last_callback("synchronizationPointRegistrationSucceeded") is not None
+    assert fed.captured == [
+        CallNotAllowedFromWithinCallback,
+        CallNotAllowedFromWithinCallback,
+    ]
+
+    rti.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    rti.destroy_federation_execution("immediate-order-type-fed")

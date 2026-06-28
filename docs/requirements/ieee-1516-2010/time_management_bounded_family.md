@@ -65,21 +65,21 @@ Short answer:
 
 The current owner ledger has `301` time-management packet rows:
 
-- `265 mapped`
-- `36 partial`
+- `292 mapped`
+- `9 partial`
 
-The remaining `36 partial` rows cluster into stable categories:
+The remaining `9 partial` rows cluster into stable categories:
 
-- `13 PRE`
-- `11 EXC`
-- `11 EXC_API`
+- `4 PRE`
+- `2 EXC`
+- `2 EXC_API`
 - `1 OVW`
 
 ## What The Categories Mean
 
 ### Precondition-envelope tail
 
-The `13 PRE` rows mostly state a broader service-precondition universe than the
+The `4 PRE` rows mostly state a broader service-precondition universe than the
 current isolated witnesses prove directly for one row at a time.
 
 Typical pattern:
@@ -91,7 +91,7 @@ Typical pattern:
 
 ### Exception-envelope tail
 
-The `11 EXC` and `11 EXC_API` rows usually keep a broader failure envelope than
+The `2 EXC` and `2 EXC_API` rows usually keep a broader failure envelope than
 the current tests isolate directly.
 
 Typical pattern:

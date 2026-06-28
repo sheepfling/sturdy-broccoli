@@ -3,6 +3,7 @@ from hla.backends.common import RecordingFederateAmbassador
 from hla.backends.python1516e import InMemoryRTIEngine, rti_ambassador
 from hla.rti1516e.enums import (
     CallbackModel,
+    OrderType,
 )
 from hla.rti1516e.exceptions import (
     CallNotAllowedFromWithinCallback,
@@ -149,4 +150,53 @@ class _ImmediateTimeAdvanceGrantAmbassador(RecordingFederateAmbassador):
         self._capture(
             CallNotAllowedFromWithinCallback,
             lambda: self.rti.flush_queue_request(factory.make_time(6.0)),
+        )
+
+
+class _ImmediateAsyncDeliveryAmbassador(RecordingFederateAmbassador):
+    def __init__(self, rti):
+        super().__init__()
+        self.rti = rti
+        self.captured: list[type[BaseException]] = []
+
+    def _capture(self, exc_type, fn):
+        try:
+            fn()
+        except exc_type:
+            self.captured.append(exc_type)
+        else:  # pragma: no cover - defensive
+            raise AssertionError(f"expected {exc_type.__name__}")
+
+    def synchronizationPointRegistrationSucceeded(self, label):
+        super().synchronizationPointRegistrationSucceeded(label)
+        self._capture(CallNotAllowedFromWithinCallback, self.rti.enable_asynchronous_delivery)
+        self._capture(CallNotAllowedFromWithinCallback, self.rti.disable_asynchronous_delivery)
+
+
+class _ImmediateOrderTypeAmbassador(RecordingFederateAmbassador):
+    def __init__(self, rti, obj=None, attr=None, interaction=None):
+        super().__init__()
+        self.rti = rti
+        self.obj = obj
+        self.attr = attr
+        self.interaction = interaction
+        self.captured: list[type[BaseException]] = []
+
+    def _capture(self, exc_type, fn):
+        try:
+            fn()
+        except exc_type:
+            self.captured.append(exc_type)
+        else:  # pragma: no cover - defensive
+            raise AssertionError(f"expected {exc_type.__name__}")
+
+    def synchronizationPointRegistrationSucceeded(self, label):
+        super().synchronizationPointRegistrationSucceeded(label)
+        self._capture(
+            CallNotAllowedFromWithinCallback,
+            lambda: self.rti.change_attribute_order_type(self.obj, {self.attr}, OrderType.TIMESTAMP),
+        )
+        self._capture(
+            CallNotAllowedFromWithinCallback,
+            lambda: self.rti.change_interaction_order_type(self.interaction, OrderType.TIMESTAMP),
         )
