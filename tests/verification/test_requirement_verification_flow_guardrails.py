@@ -11,6 +11,9 @@ _READ_METHODS = {"read_text", "read_bytes", "open"}
 _FORBIDDEN_EXPR_SNIPPETS = (
     "ROOT/'docs'/'plans'",
     "ROOT/'docs'/'plans'/",
+    "ROOT/'analysis'/'compliance'/'presentation_packets'",
+    "ROOT/'analysis'/'compliance'/'python_final_requirements_report.md'",
+    "ROOT/'analysis'/'compliance'/'python_boss_capability_brief.md'",
     "requirements_completion_audit.md",
     "2025_python_rti_100_percent_worklist.md",
     "2025_python_rti_umbrella_decomposition_worklist.md",
@@ -19,6 +22,8 @@ _FORBIDDEN_EXPR_SNIPPETS = (
 )
 
 _FORBIDDEN_REQUIREMENT_ASSERT_TEXT_SNIPPETS = (
+    "python_final_requirements_report.md",
+    "python_boss_capability_brief.md",
     "requirements_completion_audit.md",
     "2025_python_rti_100_percent_worklist.md",
     "2025_python_rti_umbrella_decomposition_worklist.md",
