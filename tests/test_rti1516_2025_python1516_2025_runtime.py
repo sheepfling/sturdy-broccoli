@@ -4262,6 +4262,8 @@ def test_2025_provider_runs_time_managed_declaration_independence_scenario_end_t
 @pytest.mark.requirements(
     "HLA2025-FR-010",
     "HLA2025-FI-001",
+    "HLA2025-FI-027",
+    "HLA2025-FI-028",
     "HLA2025-FI-009",
     "HLA2025-MOD-006",
     "HLA2025-FI-SVC-101",
@@ -4299,6 +4301,8 @@ def test_2025_provider_runs_section8_state_services_via_compat_adapter(
 @pytest.mark.requirements(
     "HLA2025-FR-010",
     "HLA2025-FI-001",
+    "HLA2025-FI-027",
+    "HLA2025-FI-028",
     "HLA2025-FI-009",
     "HLA2025-MOD-006",
     "HLA2025-FI-SVC-101",

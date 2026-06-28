@@ -239,6 +239,7 @@ def test_connect_create_and_join_apply_positive_lifecycle_effects():
     joiner.disconnect()
 
 
+@pytest.mark.requirements("HLA2025-FI-029")
 def test_create_federation_execution_applies_full_effect_vector(tmp_path):
     engine = InMemoryRTIEngine()
     creator = rti_ambassador(engine=engine)
@@ -267,6 +268,7 @@ def test_create_federation_execution_applies_full_effect_vector(tmp_path):
     creator.disconnect()
 
 
+@pytest.mark.requirements("HLA2025-FI-030")
 def test_join_federation_execution_applies_full_effect_vector(tmp_path):
     engine = InMemoryRTIEngine()
     creator = rti_ambassador(engine=engine)
@@ -1048,6 +1050,7 @@ def test_join_federation_execution_rejects_save_and_restore_in_progress():
     r1.destroy_federation_execution("join-save-restore-fed")
 
 
+@pytest.mark.requirements("HLA2025-FI-031")
 def test_join_federation_execution_distinguishes_open_read_time_and_inconsistent_additional_fom_errors(tmp_path):
     engine = InMemoryRTIEngine()
     rti = rti_ambassador(

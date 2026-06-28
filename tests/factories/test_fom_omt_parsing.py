@@ -141,6 +141,7 @@ def test_parse_fom_xml_extracts_transportation_update_rate_and_datatype_tables(t
     assert module.is_mim is False
 
 
+@pytest.mark.requirements("HLA2025-OMT-011")
 def test_parse_standard_mim_xml_exposes_mim_content_and_merge_summary():
     mim_module = parse_fom_xml(STANDARD_MIM_FOM)
     target_module = parse_fom_xml(TARGET_RADAR_FOM)
@@ -1577,6 +1578,12 @@ def test_serialize_fom_module_round_trips_object_interaction_and_dimension_table
     assert reparsed.dimensions == ("RouteDim",)
 
 
+@pytest.mark.requirements(
+    "HLA2025-OMT-ISU-001",
+    "HLA2025-OMT-ISU-002",
+    "HLA2025-OMT-ISU-003",
+    "HLA2025-OMT-ISU-004",
+)
 def test_quirky_fom_metadata_round_trips_through_parser_serializer_and_protobuf_json(tmp_path: Path):
     xml_text = """<?xml version="1.0" encoding="utf-8"?>
 <objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
@@ -2478,6 +2485,7 @@ def test_common_dimension_normalization_helpers_cover_annex_b_examples() -> None
         normalize_dimension_value(federate_dim, FederateHandle(7))
 
 
+@pytest.mark.requirements("HLA2025-OMT-018", "HLA2025-OMT-020")
 def test_assess_omt_conformance_classifies_conforming_partial_and_nonconforming_documents(
     tmp_path: Path,
 ):

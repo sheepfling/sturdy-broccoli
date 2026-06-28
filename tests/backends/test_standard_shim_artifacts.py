@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib.util
 import subprocess
 import sys
+import uuid
 from pathlib import Path
 from typing import Any
 
@@ -55,6 +56,40 @@ def _assert_route_selected_uses_python2025_main_lane(evidence: dict[str, Any], b
     assert route_selected["implementationLane"] == "hla-backend-python1516-2025"
     assert route_selected["countsAsPython2025Rti"] is False
     assert route_selected["wrapperOnly"] is False
+
+
+def _create_unbuilt_standard_2025_ambassador(tmp_path: Path, backend_name: str):
+    from hla.rti.plugin_api import BackendRequest
+    from hla.runtime.rti1516_2025_plugin import plugin as spec_plugin
+
+    if backend_name.startswith("java-standard-2025-"):
+        from hla.bridges.java.common.java_standard_2025 import JavaStandard2025Backend
+
+        route = backend_name.rsplit("-", 1)[-1]
+        backend = JavaStandard2025Backend(
+            route=route,
+            request=BackendRequest(spec=spec_plugin().spec),
+            jar_path=tmp_path / f"{backend_name}.jar",
+            report={"surface": "official IEEE 1516.1-2025 Java API"},
+        )
+        return backend.create_rti_ambassador()
+
+    from hla.backends.cpp_shim.standard import create_cpp_standard_backend
+
+    route = backend_name.rsplit("-", 1)[-1]
+    artifact_path = tmp_path / f"{backend_name}.a"
+    artifact_path.write_text("placeholder", encoding="utf-8")
+    backend = create_cpp_standard_backend(
+        route,
+        BackendRequest(
+            spec=spec_plugin().spec,
+            options={
+                "artifact_path": str(artifact_path),
+                "report_path": str(ROOT / "docs/evidence/shim_routes/cpp-standard-2025.json"),
+            },
+        ),
+    )
+    return backend.create_rti_ambassador()
 
 
 def test_java_standard_2025_build_tool_reads_official_api_surface() -> None:
@@ -182,6 +217,61 @@ def test_cpp_standard_reports_keep_runtime_wording_off_python_shim_language() ->
         assert unsupported == [
             "RTIambassador surface is header-backed; service semantics are delegated to the backing Python runtime route for the core scenario subset"
         ]
+
+
+@pytest.mark.requirements("HLA2025-TRACE-005")
+@pytest.mark.parametrize(
+    "backend_name",
+    [
+        "java-standard-2025-jpype",
+        "java-standard-2025-py4j",
+        "cpp-standard-2025-pybind",
+        "cpp-standard-2025-grpc",
+    ],
+)
+def test_standard_2025_wrapper_routes_surface_structured_fom_errors(tmp_path: Path, backend_name: str) -> None:
+    from hla.rti1516_2025.enums import CallbackModel
+    from hla.rti1516_2025.exceptions import CouldNotOpenFOM, ErrorReadingFOM, InvalidFOM
+
+    rti = _create_unbuilt_standard_2025_ambassador(tmp_path, backend_name)
+    rti.connect(object(), CallbackModel.HLA_EVOKED)
+    try:
+        with pytest.raises(CouldNotOpenFOM):
+            rti.createFederationExecution(
+                federationName=f"missing-fom-{uuid.uuid4().hex[:8]}",
+                fomModule=tmp_path / "missing-fom.xml",
+            )
+
+        bad_fom = tmp_path / "bad-fom.xml"
+        bad_fom.write_text("<not-an-object-model/>", encoding="utf-8")
+        with pytest.raises(ErrorReadingFOM):
+            rti.createFederationExecution(
+                federationName=f"bad-fom-{uuid.uuid4().hex[:8]}",
+                fomModule=bad_fom,
+            )
+
+        invalid_name_fom = tmp_path / "invalid-name-fom.xml"
+        invalid_name_fom.write_text(
+            """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification><name>Invalid Name FOM</name><type>FOM</type></modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass><name>hlaReservedUserClass</name></objectClass>
+    </objectClass>
+  </objects>
+</objectModel>
+""",
+            encoding="utf-8",
+        )
+        with pytest.raises(InvalidFOM, match="reserved"):
+            rti.createFederationExecution(
+                federationName=f"invalid-fom-{uuid.uuid4().hex[:8]}",
+                fomModule=invalid_name_fom,
+            )
+    finally:
+        rti.disconnect()
 
 
 @pytest.mark.skipif(not _usable_java_2025_builder(), reason="Java 2025 standard shim build requires a usable JDK javac and jar")

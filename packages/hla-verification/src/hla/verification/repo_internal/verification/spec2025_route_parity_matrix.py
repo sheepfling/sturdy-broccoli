@@ -41,11 +41,6 @@ class Spec2025RouteParityRow:
 _PYTHON_CORE_TESTS = ("tests/test_rti1516_2025_python1516_2025_runtime.py",)
 _FEDPRO_TESTS = ("tests/transport/test_grpc_transport_2025.py",)
 _STANDARD_SHIM_TESTS = ("tests/backends/test_standard_shim_artifacts.py",)
-_ROUTE_EVIDENCE_TESTS = (
-    "tests/backends/test_shim_route_trace_evidence.py",
-    "tests/requirements/test_2025_tail_backlog_evidence.py",
-)
-_FINISH_LINE_TESTS = ("tests/requirements/test_2025_finish_line_snapshot.py",)
 _PYTHON_ROUTE_PARITY_TESTS = ("tests/scenarios/test_python_route_parity.py",)
 
 _STANDARD_ROUTE_BACKING_NOTE = (
@@ -718,7 +713,7 @@ def _complete_route_rows(rows: tuple[Spec2025RouteParityRow, ...]) -> tuple[Spec
                     route,
                     MISSING,
                     (*requirements, _binding_requirement(route)),
-                    _FINISH_LINE_TESTS,
+                    (),
                     _missing_route_note(scenario, route),
                 )
             )

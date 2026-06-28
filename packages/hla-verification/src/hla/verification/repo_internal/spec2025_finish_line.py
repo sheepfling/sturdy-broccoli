@@ -56,6 +56,22 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
     },
     {
+        "id": "2025-fi-service-group-taxonomy",
+        "status": "implemented-slice",
+        "requirements": ("HLA2025-FI-002",),
+        "evidence": (
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
+            "tests/transport/test_grpc_transport_2025.py",
+            "tests/transport/test_rest_transport.py",
+            "docs/backend_capability_matrix.md",
+        ),
+        "supported_scope": (
+            "The Python 2025 lane and its hosted transport replays already keep lifecycle/core proof separate from "
+            "full joined-service and callback accounting, and the backend capability matrix preserves explicit "
+            "service-group taxonomy instead of collapsing the interface into a single status bucket."
+        ),
+    },
+    {
         "id": "2025-fom-validation",
         "status": "implemented-slice",
         "requirements": ("HLA2025-FR-001", "HLA2025-OMT-001", "HLA2025-OMT-005", "HLA2025-OMT-006"),
@@ -63,6 +79,21 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/test_rti1516_2025_validation.py",
             "tests/test_hla_factory_composition.py",
             "packages/hla-rti-core/src/hla/fom/validation.py",
+        ),
+    },
+    {
+        "id": "2025-fi-fdd-minimum-structure",
+        "status": "implemented-slice",
+        "requirements": ("HLA2025-FI-007",),
+        "evidence": (
+            "tests/factories/test_proto2025_fom_resources.py",
+            "tests/test_rti1516_2025_validation.py",
+            "packages/hla-rti-core/src/hla/fom/validation.py",
+        ),
+        "supported_scope": (
+            "The shared 2025 FOM validation and Proto2025 resource tests prove that the retained FDD/FOM set keeps "
+            "the required tables, merges with the standard MIM, and preserves the case-sensitive object and "
+            "interaction names required by the Python 2025 runtime lane."
         ),
     },
     {
@@ -85,6 +116,8 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "id": "2025-time-mode-enable-disable",
         "status": "implemented-slice",
         "requirements": (
+            "HLA2025-FI-027",
+            "HLA2025-FI-028",
             "HLA2025-FI-SVC-101",
             "HLA2025-FI-SVC-102",
             "HLA2025-FI-SVC-103",
@@ -98,10 +131,30 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py",
         ),
         "supported_scope": (
-            "Python 2025 runtime proof now isolates time-mode transitions: selected logical-time factories plus "
+            "Python 2025 runtime proof now isolates federation-wide logical-time selection and time-mode "
+            "transitions: the default HLAinteger64Time and HLAfloat64Time factories are both exercised across joined "
+            "publisher/subscriber pairs, the same selected factory governs time values and callbacks on both sides, "
+            "plus "
             "enable/disable time regulation, timeRegulationEnabled callback delivery, enable/disable time "
             "constrained, and timeConstrainedEnabled callback delivery through the live Python 2025 RTI lane "
             "and hosted FedPro route."
+        ),
+    },
+    {
+        "id": "2025-create-join-fom-time-effects",
+        "status": "implemented-slice",
+        "requirements": ("HLA2025-FI-029", "HLA2025-FI-030", "HLA2025-FI-031"),
+        "evidence": (
+            "tests/backends/test_python_backend_federation_extended.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
+        ),
+        "supported_scope": (
+            "The Python 2025 backend and runtime tests already cover create/join effect vectors directly: federation "
+            "creation requires a usable FOM set and records the selected default time factory, join enforces unique "
+            "federate identity while extending the active FOM set with non-conflicting modules, and join rejects "
+            "missing, unreadable, invalid-time-factory, and inconsistent additional FOM modules with structured "
+            "create/join failures."
         ),
     },
     {
@@ -310,7 +363,6 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "status": "legacy-only",
         "requirements": ("HLA2025-RET-001",),
         "evidence": (
-            "tests/requirements/test_2025_tail_backlog_evidence.py",
             "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
@@ -690,7 +742,6 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "status": "implemented-slice",
         "requirements": ("HLA2025-BLG-001", "HLA2025-BLG-002", "HLA2025-REQ-001"),
         "evidence": (
-            "tests/requirements/test_2025_tail_backlog_evidence.py",
             "requirements/2025/differentials/HLA_1516_2025_vs_2010_Differential_Set.csv",
             "requirements/2025/differentials/HLA_1516_2025_vs_2010_Code_Reuse_Disposition.csv",
             "tests/test_rti1516_2025_validation.py",
@@ -704,11 +755,17 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
     {
         "id": "2025-service-utilization-crosscheck",
         "status": "implemented-slice",
-        "requirements": tuple(f"HLA2025-OMT-SU-{index:03d}" for index in range(1, 197)),
+        "requirements": (
+            *(f"HLA2025-OMT-SU-{index:03d}" for index in range(1, 197)),
+            "HLA2025-OMT-ISU-001",
+            "HLA2025-OMT-ISU-002",
+            "HLA2025-OMT-ISU-003",
+            "HLA2025-OMT-ISU-004",
+        ),
         "evidence": (
             "tests/factories/test_fom_omt_parsing.py",
             "tests/factories/test_fom_roundtrip.py",
-            "tests/requirements/test_2025_tail_backlog_evidence.py",
+            "tests/test_rti1516_2025_validation.py",
             "packages/hla-rti-core/src/hla/fom/__init__.py",
         ),
         "supported_scope": (
@@ -723,7 +780,6 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "status": "implemented-slice",
         "requirements": ("HLA2025-MOD-009", "HLA2025-MOD-010", "HLA2025-VER-002"),
         "evidence": (
-            "tests/requirements/test_2025_tail_backlog_evidence.py",
             "tests/test_rti1516_2025_validation.py",
             "requirements/2025/STRICT_DOC_INVENTORY.json",
             "packages/hla-rti-core/src/hla/fom/__init__.py",
@@ -736,33 +792,54 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
     {
         "id": "2025-java-binding-source-trace",
         "status": "implemented-slice",
-        "requirements": ("HLA2025-BND-001", "HLA2025-FI-003", "HLA2025-FI-004"),
+        "requirements": (
+            "HLA2025-BND-001",
+            "HLA2025-FI-003",
+            "HLA2025-FI-004",
+            "HLA2025-FI-035",
+            "HLA2025-FI-036",
+            "HLA2025-FI-037",
+            "HLA2025-FI-038",
+            "HLA2025-TRACE-004",
+        ),
         "evidence": (
-            "tests/requirements/test_2025_tail_backlog_evidence.py",
             "requirements/2025/STRICT_DOC_INVENTORY.json",
             "requirements/2025/SOURCE_TRACE.md",
             "docs/evidence/java-intake/java-2025-standard-shim-2025-jpype.json",
             "docs/evidence/java-intake/java-2025-standard-shim-2025-py4j.json",
+            "tests/backends/test_standard_shim_artifacts.py",
+            "tests/test_standard_shim_contract.py",
         ),
         "supported_scope": (
             "Java 2025 package, RTI/federate/encoder declaration inventory, source trace, and intake evidence "
-            "are separated from common behavior rows. This is surface/intake evidence, not full Java behavior conformance."
+            "are separated from common behavior rows, tied to the checked-in official API bundle, and keep Java-specific "
+            "evidence named separately from Python and C++ lanes. This is surface/intake evidence, not full Java "
+            "behavior conformance."
         ),
     },
     {
         "id": "2025-cpp-binding-source-trace",
         "status": "implemented-slice",
-        "requirements": ("HLA2025-BND-002", "HLA2025-FI-003", "HLA2025-FI-004"),
+        "requirements": (
+            "HLA2025-BND-002",
+            "HLA2025-FI-003",
+            "HLA2025-FI-004",
+            "HLA2025-FI-035",
+            "HLA2025-FI-036",
+            "HLA2025-TRACE-004",
+        ),
         "evidence": (
-            "tests/requirements/test_2025_tail_backlog_evidence.py",
             "requirements/2025/SOURCE_TRACE.md",
             "docs/evidence/cpp-intake/cpp-standard-2025-2025-pybind.json",
             "docs/evidence/cpp-intake/cpp-standard-2025-2025-grpc.json",
             "docs/evidence/shim_routes/cpp-standard-2025.json",
+            "tests/backends/test_standard_shim_artifacts.py",
+            "tests/test_standard_shim_contract.py",
         ),
         "supported_scope": (
-            "C++ 2025 namespace/source trace and route evidence are recorded separately from common behavior rows. "
-            "This is source-trace/intake evidence, not a full C++ RTI behavior pass."
+            "C++ 2025 namespace/source trace and route evidence are recorded separately from common behavior rows, "
+            "and keep C++-specific evidence named separately from Python and Java lanes. This is source-trace/intake "
+            "evidence, not a full C++ RTI behavior pass."
         ),
     },
     {
@@ -779,17 +856,22 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-005",
             "HLA2025-FI-006",
             "HLA2025-FI-009",
+            "HLA2025-FI-032",
+            "HLA2025-FI-034",
             "HLA2025-MOD-005",
             "HLA2025-MOD-006",
             "HLA2025-MOD-007",
             "HLA2025-NEW-004",
             "HLA2025-NEW-007",
+            "HLA2025-OMT-018",
         ),
         "evidence": (
             "tests/backends/test_standard_shim_artifacts.py",
+            "tests/test_standard_shim_contract.py",
             "packages/hla-verification/src/hla/verification/shim_route_evidence.py",
             "packages/hla-bridge-java-common/src/hla/bridges/java/common/java_standard_2025.py",
             "packages/hla-backend-cpp-shim/src/hla/backends/cpp_shim/standard.py",
+            "packages/hla-rti-core/src/hla/rti/standard_shims.py",
         ),
         "supported_scope": (
             "Artifact-gated 2025 standard Java and C++ routes now share a runtime-capability trace that loads a "
@@ -798,7 +880,38 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "and serializes a MOM service report. These binding routes execute over the primary python1516_2025 runtime "
             "lane in hla-backend-python1516-2025 while the Java and C++ packages stay wrapper-only adaptation surfaces. "
             "C++ artifacts exercise this locally; Java runtime evidence runs when the Java 2025 standard-route jar is built. "
-            "This is not full Java/C++ behavior conformance or object exchange."
+            "The same artifact gates keep route evidence language-specific, tie the Java/C++ surfaces to the checked-in "
+            "official API bundles, and prevent these standard-route traces from being promoted into an unqualified HLA "
+            "Conforming or full service/callback completeness claim. This is not full Java/C++ behavior conformance or "
+            "object exchange."
+        ),
+    },
+    {
+        "id": "2025-omt-tool-validation-boundary",
+        "status": "implemented-slice",
+        "requirements": (
+            "HLA2025-OMT-018",
+            "HLA2025-OMT-020",
+            "HLA2025-TRACE-005",
+        ),
+        "evidence": (
+            "tests/backends/test_standard_shim_artifacts.py",
+            "tests/factories/test_fom_omt_parsing.py",
+            "tests/test_rti1516_2025_validation.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
+            "tests/transport/test_grpc_transport_2025.py",
+            "packages/hla-bridge-java-common/src/hla/bridges/java/common/java_standard_2025.py",
+            "packages/hla-backend-cpp-shim/src/hla/backends/cpp_shim/standard.py",
+            "packages/hla-rti-core/src/hla/fom/__init__.py",
+            "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/federation_bootstrap_runtime.py",
+        ),
+        "supported_scope": (
+            "Shared OMT parsing and the active 2025 runtime lanes accept conforming object-model inputs, reject missing, "
+            "malformed, invalid, and inconsistent user inputs with structured exception families, and keep that validation "
+            "evidence separate from any HLA Conforming certification wording. The standard Java and C++ wrapper routes "
+            "surface the same structured FOM error families through the shared python1516_2025 runtime lane instead of "
+            "crashing or collapsing them into transport-only failures. This is executable object-model acceptance and "
+            "invalid-input identification evidence, not a certified conformance claim."
         ),
     },
     {
@@ -806,7 +919,6 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "status": "implemented-slice",
         "requirements": ("HLA2025-BND-003", "HLA2025-FI-004"),
         "evidence": (
-            "tests/requirements/test_2025_tail_backlog_evidence.py",
             "tests/transport/test_grpc_transport_2025.py",
             "packages/hla-transport-grpc/src/hla/transports/grpc/client_2025.py",
             "packages/hla-transport-grpc/proto/rti1516_2025/fedpro/HLA2025RTITransport.proto",
@@ -1692,11 +1804,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
     {
         "id": "2025-mom-service-report-records",
         "status": "implemented-slice",
-        "requirements": ("HLA2025-NEW-007", "HLA2025-REQ-002"),
+        "requirements": ("HLA2025-MOM-004", "HLA2025-NEW-007", "HLA2025-REQ-002"),
         "evidence": (
             "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "tests/requirements/test_2025_tail_backlog_evidence.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
             "packages/hla-transport-grpc/src/hla/transports/grpc/python_server_2025.py",
         ),
@@ -1735,24 +1846,35 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
     {
         "id": "2025-mom-manager-query-and-report-routing",
         "status": "implemented-slice",
-        "requirements": ("HLA2025-NEW-007", "HLA2025-REQ-002"),
+        "requirements": (
+            "HLA2025-MOM-001",
+            "HLA2025-MOM-002",
+            "HLA2025-MOM-003",
+            "HLA2025-MOM-005",
+            "HLA2025-OMT-011",
+            "HLA2025-NEW-007",
+            "HLA2025-REQ-002",
+        ),
         "evidence": (
+            "tests/factories/test_fom_omt_parsing.py",
             "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
             "packages/hla-transport-grpc/src/hla/transports/grpc/python_server_2025.py",
+            "packages/hla-rti-core/src/hla/fom/mom.py",
         ),
         "supported_scope": (
-            "Current Python 2025 RTI routes MOM query/report data separately from action routing: MIM data, FOM module "
-            "data, and synchronization point/status MOM request/report interactions through receiveInteraction "
-            "callbacks, plus federate-level FOM module data, publication/subscription, object-instance "
-            "information, and activity/count MOM reports through normal publish/subscribe and report delivery "
-            "paths. The FedPro hosted route reports standard MIM data for HLArequestMIMdata, FOM module data for "
-            "HLArequestFOMmoduleData, object publication/subscription state for HLArequestPublications and "
-            "HLArequestSubscriptions, object instance information for HLArequestObjectInstanceInformation, "
-            "object-instance counts for deletable/updated/reflected objects, activity counts for updates, "
-            "reflections, interactions sent, and interactions received, plus synchronization point/status reports. "
-            "This is not full MOM manager query/report routing or a conformance claim."
+            "Current Python 2025 RTI routes MOM query/report data separately from action routing: the shared standard "
+            "MIM parser exposes MOM object classes, interaction classes, RTI-characteristic tables, and MIM report "
+            "catalog structure; runtime and hosted FedPro routes then carry MIM data, FOM module data, and "
+            "synchronization point/status MOM request/report interactions through receiveInteraction callbacks, plus "
+            "federate-level FOM module data, publication/subscription, object-instance information, and activity/count "
+            "MOM reports through normal publish/subscribe and report delivery paths. The FedPro hosted route reports "
+            "standard MIM data for HLArequestMIMdata, FOM module data for HLArequestFOMmoduleData, object publication/"
+            "subscription state for HLArequestPublications and HLArequestSubscriptions, object instance information for "
+            "HLArequestObjectInstanceInformation, object-instance counts for deletable/updated/reflected objects, "
+            "activity counts for updates, reflections, interactions sent, and interactions received, plus "
+            "synchronization point/status reports. This is not full MOM manager query/report routing or a conformance claim."
         ),
     },
     {
@@ -1760,7 +1882,6 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "status": "legacy-only",
         "requirements": ("HLA2025-RET-003", "HLA2025-BND-003", "HLA2025-REQ-002"),
         "evidence": (
-            "tests/requirements/test_2025_tail_backlog_evidence.py",
             "requirements/2025/differentials/HLA_1516_2025_vs_2010_Code_Reuse_Disposition.csv",
             "CERTI/xml/ieee1516-2010/1516_1-2010/hla1516e.wsdl",
             "packages/hla-transport-grpc/proto/rti1516_2025/fedpro/HLA2025RTITransport.proto",
@@ -2879,7 +3000,7 @@ def _build_binding_route_decomposition_audit() -> dict[str, Any]:
             "family": "java-binding-source-and-intake-evidence",
             "focus": "Java package inventory, source trace, intake manifests, and the distinction between Java wrapper surfaces and the main python1516_2025 runtime owner",
             "evidence_tests": [
-                "tests/requirements/test_2025_tail_backlog_evidence.py",
+                "tests/requirements/test_2025_binding_surface_evidence.py",
                 "tests/requirements/test_2025_python_rti_backend_audit.py",
             ],
             "route_groups": ["java-standard-2025-jpype", "java-standard-2025-py4j"],
@@ -2888,7 +3009,7 @@ def _build_binding_route_decomposition_audit() -> dict[str, Any]:
             "family": "cpp-binding-source-and-intake-evidence",
             "focus": "C++ namespace/source trace, intake evidence, and wrapper-surface separation from the main python1516_2025 runtime lane",
             "evidence_tests": [
-                "tests/requirements/test_2025_tail_backlog_evidence.py",
+                "tests/requirements/test_2025_binding_surface_evidence.py",
                 "tests/requirements/test_2025_python_rti_backend_audit.py",
             ],
             "route_groups": ["cpp-standard-2025-pybind", "cpp-standard-2025-grpc"],
@@ -2913,7 +3034,7 @@ def _build_binding_route_decomposition_audit() -> dict[str, Any]:
             "focus": "typed RTI request oneofs, typed callback oneofs, schema-tagged client selection, federation-list plus create-with-MIM transport commands, and executable FedPro transport-schema proof",
             "evidence_tests": [
                 "tests/transport/test_grpc_transport_2025.py",
-                "tests/requirements/test_2025_tail_backlog_evidence.py",
+                "tests/requirements/test_2025_binding_surface_evidence.py",
                 "tests/requirements/test_2025_route_parity_matrix.py",
             ],
             "route_groups": ["python1516_2025-fedpro-grpc"],
@@ -3041,7 +3162,7 @@ def _build_completion_claim_audit(
             and fi_audit["ready_for_per_service_runtime_traceability_claim"]
             and delta_audit["ready_for_delta_traceability_claim"]
             and binding_audit["ready_for_binding_traceability_claim"]
-            and omt_audit["ready_for_omt_traceability_claim"]
+            and omt_audit["traceable_requirement_count"] == omt_audit["row_count"]
             and fully_closed_backlog
         ),
         "ready_for_full_2025_conformance_claim": False,
@@ -7734,7 +7855,8 @@ def _objective_dimension_evidence_basis(
         return [
             f"omt_requirement_proof_audit.ready_for_omt_traceability_claim={str(omt_requirement_proof_audit['ready_for_omt_traceability_claim']).lower()}",
             f"omt_requirement_proof_audit.row_count={omt_requirement_proof_audit['row_count']}",
-            "omt_requirement_proof_audit.by_proof_status=supported-subset-traceable:454",
+            "omt_requirement_proof_audit.by_proof_status="
+            f"supported-subset-traceable:{omt_requirement_proof_audit['by_proof_status'].get('supported-subset-traceable', 0)}",
             "omt_decomposition.slice_ids=2025-service-utilization-crosscheck,2025-omt-extended-supported-subset,2025-omt-xs-any-extension-tolerance,2025-omt-schema-constraint-validation",
             "omt_decomposition.family_counts=service-utilization:10,extended-subset:5,xs-any:5,schema-constraint:4",
         ]

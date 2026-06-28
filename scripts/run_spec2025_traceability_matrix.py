@@ -21,22 +21,19 @@ def _bootstrap_source_checkout() -> None:
 
 _bootstrap_source_checkout()
 
-from hla.verification.repo_internal.spec2025_finish_line import write_spec2025_finish_line
 from hla.verification.repo_internal.verification.spec2025_traceability_matrix import write_spec2025_traceability_matrix
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Write the IEEE 1516-2025 finish-line artifacts.")
+    parser = argparse.ArgumentParser(description="Write the IEEE 1516-2025 traceability matrix artifact.")
     parser.add_argument(
-        "--output-dir",
-        default=str(PROJECT_ROOT / "docs" / "plans"),
-        help="Directory for generated 2025 finish-line artifacts",
+        "--output-path",
+        default=str(PROJECT_ROOT / "docs" / "evidence" / "spec2025" / "traceability_matrix.json"),
+        help="Output path for the 2025 traceability artifact",
     )
     args = parser.parse_args(argv)
-    output_paths = write_spec2025_finish_line(Path(args.output_dir), PROJECT_ROOT)
-    for path in output_paths.values():
-        print(path)
-    print(write_spec2025_traceability_matrix(PROJECT_ROOT))
+    output_path = write_spec2025_traceability_matrix(PROJECT_ROOT, Path(args.output_path))
+    print(output_path)
     return 0
 
 

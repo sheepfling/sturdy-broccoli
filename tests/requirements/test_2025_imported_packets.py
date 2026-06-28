@@ -249,6 +249,33 @@ def test_covered_fi_service_rows_are_consistently_covered_in_disposition_review_
         "Covered by repo evidence anchor and executable test; "
         "binding or route parity beyond the claimed slice remains separate where noted."
     )
+    special_notes = {
+        "HLA2025-FI-SVC-070": (
+            "Covered by repo evidence anchor and executable test; FedPro satisfies this FI row through explicit "
+            "class-scoped and instance-scoped transport commands rather than one monolithic request shape, and "
+            "broader parity claims remain bounded to the recorded route artifacts."
+        ),
+        "HLA2025-FI-SVC-193": (
+            "Covered by repo evidence anchor and executable test; FedPro does not claim this callback-pump "
+            "control as a transport RPC because callback pumping remains a local runtime dispatch policy boundary, "
+            "not a hosted route semantics gap in the main python1516_2025 lane."
+        ),
+        "HLA2025-FI-SVC-194": (
+            "Covered by repo evidence anchor and executable test; FedPro does not claim this callback-pump "
+            "control as a transport RPC because callback pumping remains a local runtime dispatch policy boundary, "
+            "not a hosted route semantics gap in the main python1516_2025 lane."
+        ),
+        "HLA2025-FI-SVC-195": (
+            "Covered by repo evidence anchor and executable test; FedPro does not claim this callback-pump "
+            "control as a transport RPC because callback pumping remains a local runtime dispatch policy boundary, "
+            "not a hosted route semantics gap in the main python1516_2025 lane."
+        ),
+        "HLA2025-FI-SVC-196": (
+            "Covered by repo evidence anchor and executable test; FedPro does not claim this callback-pump "
+            "control as a transport RPC because callback pumping remains a local runtime dispatch policy boundary, "
+            "not a hosted route semantics gap in the main python1516_2025 lane."
+        ),
+    }
 
     disposition_rows = {
         row["id"]: row
@@ -288,4 +315,4 @@ def test_covered_fi_service_rows_are_consistently_covered_in_disposition_review_
 
     for requirement_id in tracked_ids:
         assert matrix_rows[requirement_id]["disposition"] == "covered"
-        assert matrix_rows[requirement_id]["risk_note"] == expected_note
+        assert matrix_rows[requirement_id]["risk_note"] == special_notes.get(requirement_id, expected_note)
