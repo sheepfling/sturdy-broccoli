@@ -53,7 +53,7 @@ def test_tm_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 301
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 243, "partial": 58}
+        {"mapped": 265, "partial": 36}
     )
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
@@ -67,8 +67,8 @@ def test_tm_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-TM-OVERVIEW-010"]["current_status"] == "mapped"
     assert rows["HLA1516.1-TM-8_2-RTIAPI-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-TM-8_2-RTIAPI-001"]["reconciliation_kind"] == "RTI_API"
-    assert rows["HLA1516.1-TM-8_2-RTIAPI-001-EXC"]["current_status"] == "partial"
-    assert rows["HLA1516.1-TM-8_2-RTIAPI-001-EXC"]["reconciliation_kind"] == "EXC_API"
+    assert rows["HLA1516.1-TM-8_8-RTIAPI-001-EXC"]["current_status"] == "partial"
+    assert rows["HLA1516.1-TM-8_8-RTIAPI-001-EXC"]["reconciliation_kind"] == "EXC_API"
     assert rows["HLA1516.1-TM-8_2-RTIAPI-001-MOM"]["current_status"] == "mapped"
     assert rows["HLA1516.1-TM-8_2-RTIAPI-001-MOM"]["reconciliation_kind"] == "MOM_TRACE"
     assert rows["HLA1516.1-TM-8_3-FEDCB-001"]["current_status"] == "mapped"
@@ -89,6 +89,28 @@ def test_tm_detailed_reconciliation_spot_checks_key_rows():
     )
     assert rows["HLA1516.1-TM-8_16-RTIAPI-001-RET"]["current_status"] == "mapped"
     assert rows["HLA1516.1-TM-8_16-RTIAPI-001-RET"]["reconciliation_kind"] == "RET"
+    assert rows["HLA1516.1-TM-8_16-QUERYGALT-PRE-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-TM-8_16-QUERYGALT-EXC-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-TM-8_16-RTIAPI-001-EXC"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-TM-8_17-QUERYLOGICALTIME-PRE-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-TM-8_17-QUERYLOGICALTIME-EXC-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-TM-8_17-RTIAPI-001-EXC"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-TM-8_18-QUERYLITS-PRE-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-TM-8_18-QUERYLITS-EXC-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-TM-8_18-RTIAPI-001-EXC"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-TM-8_20-QUERYLOOKAHEAD-PRE-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-TM-8_20-QUERYLOOKAHEAD-EXC-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-TM-8_20-RTIAPI-001-EXC"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-TM-8_2-ENABLETIMEREGULATION-PRE-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-TM-8_2-ENABLETIMEREGULATION-EXC-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-TM-8_2-RTIAPI-001-EXC"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-TM-8_4-DISABLETIMEREGULATION-EXC-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-TM-8_4-RTIAPI-001-EXC"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-TM-8_5-ENABLETIMECONSTRAINED-PRE-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-TM-8_5-ENABLETIMECONSTRAINED-EXC-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-TM-8_5-RTIAPI-001-EXC"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-TM-8_7-DISABLETIMECONSTRAINED-EXC-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-TM-8_7-RTIAPI-001-EXC"]["current_status"] == "mapped"
     assert "mixed-backend priority-resolution note" in rows["HLA1516.1-TM-OVERVIEW-009"]["notes"]
     assert "applicable precondition surface" in rows["HLA1516.1-TM-8_2-ENABLETIMEREGULATION-PRE-001"]["notes"]
     assert "invalid-lookahead" in rows["HLA1516.1-TM-8_2-ENABLETIMEREGULATION-PRE-001"]["notes"]
@@ -96,6 +118,28 @@ def test_tm_detailed_reconciliation_spot_checks_key_rows():
     assert "invalid-or-past logical time" in rows["HLA1516.1-TM-8_8-TIMEADVANCEREQUEST-EXC-001"]["notes"]
     assert "imported API-exception row remains broader" in rows["HLA1516.1-TM-8_21-RTIAPI-001-EXC"]["notes"]
     assert "message-retraction-handle validation" in rows["HLA1516.1-TM-8_21-RTIAPI-001-EXC"]["notes"]
+    assert "zero-argument `queryGALT` service" in rows["HLA1516.1-TM-8_16-QUERYGALT-PRE-001"]["notes"]
+    assert "exercised save or restore, membership, and connection guard surface for `queryGALT`" in rows["HLA1516.1-TM-8_16-QUERYGALT-EXC-001"]["notes"]
+    assert "directly exercised `queryGALT` guard surface" in rows["HLA1516.1-TM-8_16-RTIAPI-001-EXC"]["notes"]
+    assert "zero-argument `queryLogicalTime` service" in rows["HLA1516.1-TM-8_17-QUERYLOGICALTIME-PRE-001"]["notes"]
+    assert "exercised save or restore, membership, and connection guard surface for `queryLogicalTime`" in rows["HLA1516.1-TM-8_17-QUERYLOGICALTIME-EXC-001"]["notes"]
+    assert "directly exercised `queryLogicalTime` guard surface" in rows["HLA1516.1-TM-8_17-RTIAPI-001-EXC"]["notes"]
+    assert "zero-argument `queryLITS` service" in rows["HLA1516.1-TM-8_18-QUERYLITS-PRE-001"]["notes"]
+    assert "exercised save or restore, membership, and connection guard surface for `queryLITS`" in rows["HLA1516.1-TM-8_18-QUERYLITS-EXC-001"]["notes"]
+    assert "directly exercised `queryLITS` guard surface" in rows["HLA1516.1-TM-8_18-RTIAPI-001-EXC"]["notes"]
+    assert "zero-argument `queryLookahead` service" in rows["HLA1516.1-TM-8_20-QUERYLOOKAHEAD-PRE-001"]["notes"]
+    assert "exercised time-regulation-enabled, save or restore, membership, and connection guard surface for `queryLookahead`" in rows["HLA1516.1-TM-8_20-QUERYLOOKAHEAD-EXC-001"]["notes"]
+    assert "directly exercised `queryLookahead` guard surface" in rows["HLA1516.1-TM-8_20-RTIAPI-001-EXC"]["notes"]
+    assert "full applicable precondition surface the Python RTI exposes" in rows["HLA1516.1-TM-8_2-ENABLETIMEREGULATION-PRE-001"]["notes"]
+    assert "invalid-lookahead, duplicate-regulation, time-advancing, save or restore, membership, and connection guard surface" in rows["HLA1516.1-TM-8_2-ENABLETIMEREGULATION-EXC-001"]["notes"]
+    assert "directly exercised `enableTimeRegulation` guard surface" in rows["HLA1516.1-TM-8_2-RTIAPI-001-EXC"]["notes"]
+    assert "regulation-disabled, save or restore, membership, and connection guard surface" in rows["HLA1516.1-TM-8_4-DISABLETIMEREGULATION-EXC-001"]["notes"]
+    assert "directly exercised `disableTimeRegulation` guard surface" in rows["HLA1516.1-TM-8_4-RTIAPI-001-EXC"]["notes"]
+    assert "full applicable precondition surface the Python RTI exposes" in rows["HLA1516.1-TM-8_5-ENABLETIMECONSTRAINED-PRE-001"]["notes"]
+    assert "duplicate-enable, time-advancing, save or restore, membership, and connection guard surface" in rows["HLA1516.1-TM-8_5-ENABLETIMECONSTRAINED-EXC-001"]["notes"]
+    assert "directly exercised `enableTimeConstrained` guard surface" in rows["HLA1516.1-TM-8_5-RTIAPI-001-EXC"]["notes"]
+    assert "constrained-disabled, save or restore, membership, and connection guard surface" in rows["HLA1516.1-TM-8_7-DISABLETIMECONSTRAINED-EXC-001"]["notes"]
+    assert "directly exercised `disableTimeConstrained` guard surface" in rows["HLA1516.1-TM-8_7-RTIAPI-001-EXC"]["notes"]
 
 
 def test_tm_partial_rows_use_explicit_bounded_envelope_notes() -> None:

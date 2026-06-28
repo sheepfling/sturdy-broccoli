@@ -4128,6 +4128,10 @@ def test_modify_lookahead_retract_change_attribute_order_type_and_enable_time_co
     owner.abort_federation_restore()
     drain(owner, observer)
     owner.enable_time_regulation(owner.get_time_factory().make_interval(1.0))
+    observer.backend.state.time_advancing = True
+    with pytest.raises(InTimeAdvancingState):
+        observer.enable_time_constrained()
+    observer.backend.state.time_advancing = False
     owner.backend.state.time_advancing = True
     with pytest.raises(InTimeAdvancingState):
         owner.modify_lookahead(1.0)

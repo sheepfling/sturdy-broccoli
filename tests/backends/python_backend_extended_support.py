@@ -111,3 +111,42 @@ class _ImmediateConstrainedPendingAmbassador(RecordingFederateAmbassador):
             CallNotAllowedFromWithinCallback,
             lambda: self.rti.flush_queue_request(factory.make_time(1.0)),
         )
+
+
+class _ImmediateTimeAdvanceGrantAmbassador(RecordingFederateAmbassador):
+    def __init__(self, rti):
+        super().__init__()
+        self.rti = rti
+        self.captured: list[type[BaseException]] = []
+
+    def _capture(self, exc_type, fn):
+        try:
+            fn()
+        except exc_type:
+            self.captured.append(exc_type)
+        else:  # pragma: no cover - defensive
+            raise AssertionError(f"expected {exc_type.__name__}")
+
+    def timeAdvanceGrant(self, time):
+        super().timeAdvanceGrant(time)
+        factory = HLAfloat64TimeFactory()
+        self._capture(
+            CallNotAllowedFromWithinCallback,
+            lambda: self.rti.time_advance_request(factory.make_time(6.0)),
+        )
+        self._capture(
+            CallNotAllowedFromWithinCallback,
+            lambda: self.rti.time_advance_request_available(factory.make_time(6.0)),
+        )
+        self._capture(
+            CallNotAllowedFromWithinCallback,
+            lambda: self.rti.next_message_request(factory.make_time(6.0)),
+        )
+        self._capture(
+            CallNotAllowedFromWithinCallback,
+            lambda: self.rti.next_message_request_available(factory.make_time(6.0)),
+        )
+        self._capture(
+            CallNotAllowedFromWithinCallback,
+            lambda: self.rti.flush_queue_request(factory.make_time(6.0)),
+        )

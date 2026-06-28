@@ -55,6 +55,7 @@ from hla.rti1516e.datatypes import (
 from tests.backends.python_backend_extended_support import *
 from tests.backends.python_backend_extended_support import (
     _ImmediateConstrainedPendingAmbassador,
+    _ImmediateTimeAdvanceGrantAmbassador,
     _ImmediateRegulationPendingAmbassador,
 )
 
@@ -1649,3 +1650,40 @@ def test_hla_immediate_time_enable_callbacks_expose_pending_request_exceptions()
     constrained.resign_federation_execution(ResignAction.NO_ACTION)
     regulator.resign_federation_execution(ResignAction.NO_ACTION)
     regulator.destroy_federation_execution("immediate-time-fed")
+
+
+def test_hla_immediate_time_advance_grant_callbacks_block_nested_requests():
+    engine = InMemoryRTIEngine()
+    sender = rti_ambassador(engine=engine)
+    receiver = rti_ambassador(engine=engine)
+    sender_fed = RecordingFederateAmbassador()
+    receiver_fed = _ImmediateTimeAdvanceGrantAmbassador(receiver)
+
+    sender.connect(sender_fed, CallbackModel.HLA_EVOKED)
+    receiver.connect(receiver_fed, CallbackModel.HLA_IMMEDIATE)
+    sender.create_federation_execution("immediate-time-advance-grant-fed", "TargetRadarFOMmodule.xml")
+    sender.join_federation_execution("alpha", "type-a", "immediate-time-advance-grant-fed")
+    receiver.join_federation_execution("bravo", "type-b", "immediate-time-advance-grant-fed")
+
+    factory = sender.get_time_factory()
+    sender.enable_time_regulation(factory.make_interval(1.0))
+    receiver.enable_time_constrained()
+    drain(sender, receiver)
+
+    sender.time_advance_request(factory.make_time(4.0))
+    receiver.time_advance_request_available(factory.make_time(4.0))
+    drain(sender, receiver)
+
+    assert sender_fed.last_callback("timeAdvanceGrant") is not None
+    assert receiver_fed.last_callback("timeAdvanceGrant") is not None
+    assert receiver_fed.captured == [
+        CallNotAllowedFromWithinCallback,
+        CallNotAllowedFromWithinCallback,
+        CallNotAllowedFromWithinCallback,
+        CallNotAllowedFromWithinCallback,
+        CallNotAllowedFromWithinCallback,
+    ]
+
+    receiver.resign_federation_execution(ResignAction.NO_ACTION)
+    sender.resign_federation_execution(ResignAction.NO_ACTION)
+    sender.destroy_federation_execution("immediate-time-advance-grant-fed")
