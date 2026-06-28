@@ -72,6 +72,7 @@ bucket families:
 | Bucket | Canonical owner file |
 | --- | --- |
 | framework and architecture reconciliation | `hla1516_framework_detailed_reconciliation.csv` |
+| framework bounded-family reading | `docs/requirements/ieee-1516-2010/framework_bounded_family.md` |
 | federation management | `hla1516_1_fm_detailed_reconciliation.csv` |
 | declaration management | `hla1516_1_dm_detailed_reconciliation.csv` |
 | object management | `hla1516_1_om_detailed_reconciliation.csv` |
@@ -115,6 +116,12 @@ granularity limit rather than a vague federation-management gap, use:
 
 - `docs/requirements/ieee-1516-2010/federation_management_bounded_family.md`
 
+For the human-facing explanation in the framework bounded-family note for the
+remaining `CAP-FW` architectural family and why the framework rows stay partial
+even though neighboring executable service families are strongly covered, use:
+
+- `docs/requirements/ieee-1516-2010/framework_bounded_family.md`
+
 For the human-facing explanation of the final `CAP-DM` closeout reading and
 how Clause 5 is now fully mapped through intentionally narrowed direct-guard
 claims, use:
@@ -133,10 +140,10 @@ claims, use:
 
 - `docs/requirements/ieee-1516-2010/ownership_management_bounded_family.md`
 
-For the human-facing explanation of the remaining `CAP-TM` partial family and
-why the Clause 8 tail is now an explicit bounded
-`PRE/EXC/EXC_API` plus one broad overview-row granularity limit rather than a
-vague time-management gap, use:
+For the human-facing explanation in the time-management closeout reading for
+the final `CAP-TM` closeout state and how Clause 8 is now fully mapped at the
+owner-ledger level while the narrower RO/TSO backend split stays owned
+separately, use:
 
 - `docs/requirements/ieee-1516-2010/time_management_bounded_family.md`
 

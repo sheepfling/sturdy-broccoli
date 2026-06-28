@@ -170,12 +170,13 @@ For 2010 work, the usual ownership pattern is:
 - canonical closure or status row in the family CSV or `traceability_matrix.csv`
 - backend split in a linked companion artifact such as `requirements/2010/hla1516_1_priority_backend_resolution.csv` when backend truth differs by runtime even though the owner row is already closed for the repo-supported claim
 - bounded mixed-backend final-state note in [`mixed_backend_priority_boundaries.md`](mixed_backend_priority_boundaries.md) when the question is how to read those canonical pass rows honestly without flattening vendor divergence
+- framework bounded-family note in [`framework_bounded_family.md`](framework_bounded_family.md) when the question is why the remaining `IEEE 1516-2010` framework rows stay partial even though the neighboring executable service families are already strongly covered
 - bounded support-services family note in [`support_services_bounded_family.md`](support_services_bounded_family.md) when the question is why Clause 10 still has a narrow `PRE/EXC/EXC_API` partial tail even though service, signature, MOM, and main negative-path coverage are already strong
 - bounded federation-management family note in [`federation_management_bounded_family.md`](federation_management_bounded_family.md) when the question is why Clause 4 still has a mixed `ARG/EFF/CB_ORD/EXC` partial tail even though most lifecycle, synchronization, and save/restore services are already strongly covered
 - bounded declaration-management family note in [`declaration_management_bounded_family.md`](declaration_management_bounded_family.md) when the question is how to read Clause 5 as fully mapped through intentionally narrowed direct-guard claims instead of the older partial-tail framing
 - bounded object-management family note in [`object_management_bounded_family.md`](object_management_bounded_family.md) when the question is how to read Clause 6 as fully mapped through direct runtime witnesses and supported-subset boundaries instead of the older partial-tail framing
 - bounded ownership-management family note in [`ownership_management_bounded_family.md`](ownership_management_bounded_family.md) when the question is how to read Clause 7 as fully mapped through intentionally narrowed direct-guard claims instead of the older partial-tail framing
-- bounded time-management family note in [`time_management_bounded_family.md`](time_management_bounded_family.md) when the question is why Clause 8 still has a `PRE/EXC/EXC_API` partial tail plus one broad overview row even though most direct logical-time, lookahead, callback-order, retraction, and query behavior is already strongly covered
+- time-management closeout reading in [`time_management_bounded_family.md`](time_management_bounded_family.md) when the question is how Clause 8 is now fully mapped at the owner-ledger level while the narrower RO/TSO backend split stays owned in the priority companion artifacts
 - bounded data-distribution-management family note in [`data_distribution_management_bounded_family.md`](data_distribution_management_bounded_family.md) when the question is why Clause 9 still has a `PRE/EXC/EXC_API` partial tail even though most direct region lifecycle, overlap-routing, DDM-gated routing, and MOM behavior is already strongly covered
 - bounded OMT/XML family note in [`omt_xml_bounded_family.md`](omt_xml_bounded_family.md) when the question is how the imported XML element or type rows remain partial while the Annex B normalization story is already closed on the supported common subset
 - primary proof shard or focused command from [`../../test_surface.md`](../../test_surface.md)
@@ -210,6 +211,7 @@ Use this index when the question is "which single document or ledger owns this
 | Bucket | Canonical owner doc | Primary shard | Typical view tags |
 | --- | --- | --- | --- |
 | framework and architecture reconciliation | `../../../requirements/2010/hla1516_framework_detailed_reconciliation.csv` | `unit-foundation` | `2010-core`, `setup-preflight` |
+| framework bounded-family reading | `framework_bounded_family.md` | `unit-foundation` | `2010-core`, `setup-preflight`, `fom-omt` |
 | federation-management clause and family rows | `../../../requirements/2010/hla1516_1_fm_detailed_reconciliation.csv` | `unit-scenarios-light` | `2010-core`, `scenarios`, `save-restore` |
 | federation-management bounded partial-family reading | `federation_management_bounded_family.md` | `unit-scenarios-light` | `2010-core`, `scenarios`, `save-restore` |
 | declaration-management clause and family rows | `../../../requirements/2010/hla1516_1_dm_detailed_reconciliation.csv` | `unit-foundation` | `2010-core`, `setup-preflight` |
@@ -219,7 +221,7 @@ Use this index when the question is "which single document or ledger owns this
 | ownership-management clause and family rows | `../../../requirements/2010/hla1516_1_own_detailed_reconciliation.csv` | `unit-scenarios-light` | `2010-core`, `ownership`, `scenarios` |
 | ownership-management bounded family reading | `ownership_management_bounded_family.md` | `unit-scenarios-light` | `2010-core`, `ownership`, `scenarios` |
 | time-management clause and family rows | `../../../requirements/2010/hla1516_1_tm_detailed_reconciliation.csv` | `unit-python-core` | `2010-core`, `time` |
-| time-management bounded partial-family reading | `time_management_bounded_family.md` | `unit-python-core` | `2010-core`, `time` |
+| time-management closeout reading | `time_management_bounded_family.md` | `unit-python-core` | `2010-core`, `time` |
 | DDM clause and family rows | `../../../requirements/2010/hla1516_1_ddm_detailed_reconciliation.csv` | `unit-python-core` | `2010-core`, `time`, `scenarios` |
 | DDM bounded partial-family reading | `data_distribution_management_bounded_family.md` | `unit-python-core` | `2010-core`, `time`, `scenarios` |
 | support-services clause and family rows | `../../../requirements/2010/hla1516_1_sup_detailed_reconciliation.csv` | `unit-python-core` | `2010-core`, `setup-preflight` |

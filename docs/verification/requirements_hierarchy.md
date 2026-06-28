@@ -55,6 +55,7 @@ Treat these as the canonical 2010 owner surfaces behind the hierarchy view:
 | Bucket | Canonical owner doc |
 | --- | --- |
 | framework and architecture reconciliation | `requirements/2010/hla1516_framework_detailed_reconciliation.csv` |
+| framework bounded-family reading | `docs/requirements/ieee-1516-2010/framework_bounded_family.md` |
 | federation management | `requirements/2010/hla1516_1_fm_detailed_reconciliation.csv` |
 | declaration management | `requirements/2010/hla1516_1_dm_detailed_reconciliation.csv` |
 | declaration-management bounded partial-family reading | `docs/requirements/ieee-1516-2010/declaration_management_bounded_family.md` |
@@ -62,7 +63,7 @@ Treat these as the canonical 2010 owner surfaces behind the hierarchy view:
 | ownership management | `requirements/2010/hla1516_1_own_detailed_reconciliation.csv` |
 | ownership-management bounded partial-family reading | `docs/requirements/ieee-1516-2010/ownership_management_bounded_family.md` |
 | time management | `requirements/2010/hla1516_1_tm_detailed_reconciliation.csv` |
-| time-management bounded partial-family reading | `docs/requirements/ieee-1516-2010/time_management_bounded_family.md` |
+| time-management closeout reading | `docs/requirements/ieee-1516-2010/time_management_bounded_family.md` |
 | data distribution management | `requirements/2010/hla1516_1_ddm_detailed_reconciliation.csv` |
 | data-distribution-management bounded partial-family reading | `docs/requirements/ieee-1516-2010/data_distribution_management_bounded_family.md` |
 | support services | `requirements/2010/hla1516_1_sup_detailed_reconciliation.csv` |
