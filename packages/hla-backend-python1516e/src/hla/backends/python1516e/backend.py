@@ -206,6 +206,7 @@ class PythonRTIBackend(
         action_name = self._enum_name(automatic_resign)
 
         if target.ambassador is not None:
+            target.disconnect_pending_after_connection_lost = True
             self._deliver(target, "connectionLost", fault_description)
 
         self._send_mom_report(
@@ -256,6 +257,17 @@ class PythonRTIBackend(
         target.published_interactions.clear()
         target.subscribed_interactions.clear()
         target.interaction_interest_classes.clear()
+
+    def _finalize_connection_lost_disconnect(self, federate: FederateState) -> None:
+        federate.disconnect_pending_after_connection_lost = False
+        federate.connected = False
+        federate.ambassador = None
+        federate.queue.clear()
+        federate.ro_message_queue.clear()
+        federate.tso_message_heap.clear()
+        federate.retraction_messages.clear()
+        federate.delivered_retraction_messages.clear()
+        federate.retractable_messages.clear()
 
     def _enum_name(self, value: Any) -> str:
         return _enum_name(value)

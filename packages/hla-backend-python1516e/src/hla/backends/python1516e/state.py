@@ -196,6 +196,7 @@ class FederateState:
     ambassador: Any | None = None
     callback_model: CallbackModel = CallbackModel.HLA_EVOKED
     connected: bool = False
+    disconnect_pending_after_connection_lost: bool = False
     local_settings_designator: str | None = None
     handle: FederateHandle | None = None
     name: str | None = None

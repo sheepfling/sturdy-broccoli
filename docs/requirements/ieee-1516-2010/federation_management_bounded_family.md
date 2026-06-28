@@ -79,13 +79,12 @@ keep describing `CAP-FM` as vague or structurally unfinished.
 
 The current owner ledger has `632` federation-management packet rows:
 
-- `619 mapped`
-- `13 partial`
+- `628 mapped`
+- `4 partial`
 
-The remaining `13 partial` rows cluster into stable categories:
+The remaining `4 partial` rows cluster into stable categories:
 
-- `9 ARG`
-- `1 EFF`
+- `1 ARG`
 - `3 OVW`
 
 Residual bounded row kinds in that last group:
@@ -94,41 +93,27 @@ Residual bounded row kinds in that last group:
 
 ## What The Categories Mean
 
-### Argument-decomposition tail
+### Argument tail
 
-The `9 ARG` rows are the remaining imported packet argument slices that do not yet
-map cleanly onto one direct row in
-`hla1516_1_clause_4_fm_service_decomposition.csv`.
+This is the single remaining argument-tail row for `CAP-FM`.
 
-This is primarily a harmonization-granularity limit, not evidence that the
-underlying services are absent.
+The single remaining `ARG` row is the imported create-federation optional
+logical-time-implementation slice that still claims the default should be
+`HLAfloat64Time` when omitted.
 
-Core lifecycle, synchronization, and save/restore argument rows are now
-directly mapped for create, destroy, registration, announcement, achievement,
-completion, and the save/restore callback/status families. This is the
-remaining argument-harmonization tail for `CAP-FM`.
+That row stays `partial` because the current Python 2010 lane honestly proves
+time-factory selection from the merged federation model instead of that broader
+default-time statement.
 
-### Lost-connection callback/fault-surface tail
-
-The small `EFF` remainder is now concentrated around the connection-lost
-surface.
-
-Typical pattern:
-
-- the generated callback surface and section mapping are present
-- the repo now drives a concrete runtime loss trigger and direct observer
-  witness
-- the only remaining executable semantic row is `HLA1516.1-FM-4_4-EFF-001`
-- the current Python 2010 backend proves callback delivery and execution
-  membership teardown, but it does not yet prove a full disconnected-state
-  transition for the lost victim
+Connect, join, resign, and federation-synchronized argument rows are now
+directly mapped for the current Python 2010 lane.
 
 ### Residual overview and harmonization tail
 
 The last `4` rows are the small bounded remainder:
 
 - broad overview rows
-- one connection-lost disconnected-state effect row
+- one create-time logical-time-default argument row
 
 These rows are already explicit enough to review honestly, but they are not yet
 standalone exhaustive service proofs.
@@ -143,9 +128,13 @@ including:
   completion paths
 - save and restore request, status, outcome, abort, and callback families
 - direct runtime `connectionLost` callback delivery, lost-federate MOM
-  reporting, and post-loss execution-membership teardown
+  reporting, post-loss execution-membership teardown, and direct
+  disconnected-state transition after `connectionLost` delivery
+- direct disconnected-state transition after `connectionLost` delivery
 - direct joined-live precondition coverage and callback-model dispatch
   coverage for `connectionLost`
+- direct connect, join-generated-name, resign-directive, and
+  federation-synchronized payload argument coverage
 - direct callback-failure wrapping for `connectionLost` and
   `reportFederationExecutions`, plus MOM service-reporting visibility for
   `listFederationExecutions`

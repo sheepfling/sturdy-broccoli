@@ -62,6 +62,8 @@ class _FederationMembershipContext(Protocol):
 
     def _remove_federate_from_synchronization_points(self, federation: "FederationState", handle: FederateHandle) -> None: ...
 
+    def _svc_unconditionalAttributeOwnershipDivestiture(self, theObject: Any, theAttributes: Iterable[Any]) -> None: ...
+
 
 if TYPE_CHECKING:
     class _FederationMembershipMixinBase(_FederationMembershipContext):
@@ -202,24 +204,32 @@ class PythonRTIFederationMembershipMixin(_FederationMembershipMixinBase):
                             stale_attrs.append(attr)
                 for attr in stale_attrs:
                     obj.attribute_candidates.pop(attr, None)
-        divesting_actions = {
-            "UNCONDITIONALLY_DIVEST_ATTRIBUTES",
+        delete_object_actions = {
             "DELETE_OBJECTS",
             "DELETE_OBJECTS_THEN_DIVEST",
-            "CANCEL_PENDING_OWNERSHIP_ACQUISITIONS",
             "CANCEL_THEN_DELETE_THEN_DIVEST",
-            "DIVEST_ATTRIBUTES_THEN_DELETE",
         }
-        if owns_attributes and action_name not in divesting_actions:
-            raise FederateOwnsAttributes(repr(handle))
-        if action_name in {
-            "DELETE_OBJECTS",
+        attribute_divesting_actions = {
+            "UNCONDITIONALLY_DIVEST_ATTRIBUTES",
             "DELETE_OBJECTS_THEN_DIVEST",
             "CANCEL_THEN_DELETE_THEN_DIVEST",
-        }:
+        }
+        if owns_attributes and action_name not in (delete_object_actions | attribute_divesting_actions):
+            raise FederateOwnsAttributes(repr(handle))
+        if action_name in delete_object_actions:
             to_remove = [obj for obj in federation.objects.values() if obj.owner == handle]
             for obj in to_remove:
                 self._remove_object(obj, b"resign")
+        if action_name in attribute_divesting_actions:
+            for obj in tuple(federation.objects.values()):
+                object_def = self.engine.object_class_for_handle(obj.class_handle)
+                owned_attrs = {
+                    attr
+                    for attr in object_def.attribute_names
+                    if obj.attribute_owners.get(attr, obj.owner) == handle
+                }
+                if owned_attrs:
+                    self._svc_unconditionalAttributeOwnershipDivestiture(obj.handle, owned_attrs)
         self._remove_federate_from_synchronization_points(federation, handle)
         mom_handle = federation.mom_federate_objects.pop(handle, None)
         if mom_handle is not None:

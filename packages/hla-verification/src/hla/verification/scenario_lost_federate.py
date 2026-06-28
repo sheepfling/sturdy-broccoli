@@ -194,6 +194,7 @@ def run_lost_federate_mom_scenario(
         "removal": removal,
         "victim_callback_pending_before_drain": victim_callback_pending_before_drain,
         "victim_connection_lost": victim_connection_lost,
+        "victim_connected_after_loss": getattr(victim_rti.backend.state, "connected", None),
         "victim_post_loss_resign_error": victim_post_loss_resign_error,
         "object_instance_not_known": object_instance_not_known,
     }

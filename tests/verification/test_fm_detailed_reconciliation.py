@@ -53,7 +53,7 @@ def test_fm_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 632
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 619, "partial": 13}
+        {"mapped": 628, "partial": 4}
     )
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
@@ -64,7 +64,8 @@ def test_fm_detailed_reconciliation_spot_checks_key_rows():
     rows = {row["packet_requirement_id"]: row for row in _read_rows()}
 
     assert rows["HLA1516.1-FM-4_2-SVC-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-FM-4_2-ARG-001"]["current_status"] == "partial"
+    assert rows["HLA1516.1-FM-4_2-ARG-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_2-ARG-002"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_5-ARG-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_8-ARG-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_11-ARG-002"]["current_status"] == "mapped"
@@ -83,16 +84,21 @@ def test_fm_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-FM-4_4-FEDCB-001-ORD"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_4-FEDCB-001-SIG"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_4-PRE-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_4-EFF-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_7-EXC-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_7-EXC-002"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_7-RTIAPI-001-MOM"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_7-RTIAPI-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_7-RTIAPI-001-EXC"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_8-EXC-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_9-ARG-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_9-ARG-004"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_10-ARG-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_8-FEDCB-001-ORD"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_12-FEDCB-001-ORD"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_13-FEDCB-001-ORD"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_15-FEDCB-001-ORD"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_15-ARG-002"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_17-FEDCB-001-ORD"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_20-FEDCB-001-ORD"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_23-FEDCB-001-ORD"]["current_status"] == "mapped"
@@ -126,13 +132,13 @@ def test_fm_connection_lost_rows_point_to_direct_runtime_loss_witness() -> None:
         assert row["current_test_id"] == direct_test
         assert row["notes"].startswith("Direct ")
 
-    partial_row = rows["HLA1516.1-FM-4_4-EFF-001"]
-    assert partial_row["current_status"] == "partial"
-    assert partial_row["current_test_id"] == direct_test
-    assert "does not prove a full disconnected-state transition" in partial_row["notes"]
+    effect_row = rows["HLA1516.1-FM-4_4-EFF-001"]
+    assert effect_row["current_status"] == "mapped"
+    assert effect_row["current_test_id"] == direct_test
+    assert "final disconnected not-connected state" in effect_row["notes"]
 
 
-def test_fm_only_remaining_executable_semantic_partial_is_connection_lost_disconnect_effect() -> None:
+def test_fm_no_remaining_executable_semantic_partials() -> None:
     rows = _read_rows()
     executable_partial_ids = {
         row["packet_requirement_id"]
@@ -140,7 +146,44 @@ def test_fm_only_remaining_executable_semantic_partial_is_connection_lost_discon
         if row["current_status"] == "partial"
         and row["reconciliation_kind"] not in {"ARG", "OVW"}
     }
-    assert executable_partial_ids == {"HLA1516.1-FM-4_4-EFF-001"}
+    assert executable_partial_ids == set()
+
+
+def test_fm_new_argument_rows_point_to_direct_runtime_witnesses() -> None:
+    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+
+    assert rows["HLA1516.1-FM-4_2-ARG-001"]["current_test_id"] == (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_connect_create_and_join_apply_positive_lifecycle_effects"
+    )
+    assert rows["HLA1516.1-FM-4_2-ARG-002"]["current_test_id"] == (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_connect_create_and_join_apply_positive_lifecycle_effects"
+    )
+    assert rows["HLA1516.1-FM-4_9-ARG-001"]["current_test_id"] == (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_join_federation_execution_generates_unique_name_when_omitted"
+    )
+    assert rows["HLA1516.1-FM-4_10-ARG-001"]["current_test_id"].endswith(
+        "test_resign_unconditionally_divests_owned_attributes_before_membership_teardown"
+    )
+    assert rows["HLA1516.1-FM-4_15-ARG-002"]["current_test_id"] == (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_synchronization_lifecycle_states_are_visible_in_mom_summary"
+    )
+
+
+def test_fm_remaining_create_time_argument_partial_is_explicitly_narrowed() -> None:
+    row = {
+        candidate["packet_requirement_id"]: candidate for candidate in _read_rows()
+    }["HLA1516.1-FM-4_5-ARG-004"]
+
+    assert row["current_status"] == "partial"
+    assert (
+        "test_create_federation_execution_accepts_explicit_logical_time_implementation"
+        in row["current_test_id"]
+    )
+    assert "overclaims an unconditional omitted-argument fallback to HLAfloat64Time" in row["notes"]
 
 
 def test_fm_callback_order_rows_use_direct_callback_model_witnesses() -> None:
@@ -238,7 +281,11 @@ def test_fm_overview_rows_anchor_to_owner_surface_plus_live_evidence() -> None:
         "tests/backends/test_python_backend_federation_extended.py::"
         "test_disconnect_requires_resign_and_marks_backend_not_connected"
     ) in lifecycle_refs
-    assert "disconnected-state loss effect is not fully proved" in lifecycle_row["notes"]
+    assert (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_force_federate_loss_delivers_connection_lost_and_clears_execution_membership"
+    ) in lifecycle_refs
+    assert "lost-federate disconnected-state teardown" in lifecycle_row["notes"]
 
     modules_row = rows["HLA1516.1-FM-OVERVIEW-002"]
     assert modules_row["current_status"] == "partial"

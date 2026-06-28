@@ -160,7 +160,8 @@ def test_force_federate_loss_delivers_connection_lost_and_clears_execution_membe
 
     assert summary["victim_callback_pending_before_drain"] is True
     assert summary["victim_connection_lost"].args == (config.fault_description,)
-    assert type(summary["victim_post_loss_resign_error"]).__name__ == "FederateNotExecutionMember"
+    assert summary["victim_connected_after_loss"] is False
+    assert type(summary["victim_post_loss_resign_error"]).__name__ == "NotConnected"
     assert summary["loss_record"].args[1]
     assert summary["removal"].args[0] == summary["object_instance"]
 
@@ -180,8 +181,13 @@ def test_force_federate_loss_requires_joined_live_victim_and_honors_callback_mod
 
     observer.backend.force_federate_loss(evoked_handle, "evoked loss")
     assert evoked_fed.last_callback("connectionLost") is None
-    drain(observer, evoked_victim)
+    drain(observer)
+    try:
+        evoked_victim.evoke_multiple_callbacks(0.0, 0.0)
+    except NotConnected:
+        pass
     assert evoked_fed.last_callback("connectionLost").args == ("evoked loss",)
+    assert evoked_victim.backend.state.connected is False
 
     immediate_victim = rti_ambassador(engine=engine)
     immediate_fed = RecordingFederateAmbassador()
@@ -190,6 +196,7 @@ def test_force_federate_loss_requires_joined_live_victim_and_honors_callback_mod
 
     observer.backend.force_federate_loss(immediate_handle, "immediate loss")
     assert immediate_fed.last_callback("connectionLost").args == ("immediate loss",)
+    assert immediate_victim.backend.state.connected is False
 
     with pytest.raises(FederateNotExecutionMember):
         observer.backend.force_federate_loss(immediate_handle, "immediate loss retry")
@@ -207,8 +214,6 @@ def test_force_federate_loss_requires_joined_live_victim_and_honors_callback_mod
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     observer.destroy_federation_execution("loss-callback-model-fed")
     observer.disconnect()
-    evoked_victim.disconnect()
-    immediate_victim.disconnect()
 
 
 @pytest.mark.requirements("HLA1516.1-FM-4.3-001")
@@ -570,6 +575,31 @@ def test_create_federation_execution_applies_full_effect_vector(tmp_path):
     creator.disconnect()
 
 
+def test_create_federation_execution_accepts_explicit_logical_time_implementation(tmp_path):
+    engine = InMemoryRTIEngine()
+    creator = rti_ambassador(engine=engine)
+    creator.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+
+    int_time_fom = _write_minimal_fom_module(
+        tmp_path,
+        "create-explicit-time",
+        "CreateExplicitTimeModel",
+        "CreateExplicitTimeObject",
+        time_type="HLAinteger64BE",
+    )
+    creator.create_federation_execution(
+        "create-explicit-time-fed",
+        [int_time_fom],
+        "HLAfloat64Time",
+    )
+
+    federation = engine.federations["create-explicit-time-fed"]
+    assert federation.time_factory.get_name() == "HLAfloat64Time"
+
+    creator.destroy_federation_execution("create-explicit-time-fed")
+    creator.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FI-030")
 def test_join_federation_execution_applies_full_effect_vector(tmp_path):
     engine = InMemoryRTIEngine()
@@ -599,6 +629,27 @@ def test_join_federation_execution_applies_full_effect_vector(tmp_path):
 
     joiner.resign_federation_execution(ResignAction.NO_ACTION)
     creator.destroy_federation_execution("join-effects-fed")
+    creator.disconnect()
+    joiner.disconnect()
+
+
+def test_join_federation_execution_generates_unique_name_when_omitted():
+    engine = InMemoryRTIEngine()
+    creator = rti_ambassador(engine=engine)
+    creator.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    creator.create_federation_execution("join-generated-name-fed", "TargetRadarFOMmodule.xml")
+
+    joiner = rti_ambassador(engine=engine)
+    joiner.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    handle = joiner.join_federation_execution("type-a", "join-generated-name-fed")
+    federation = engine.federations["join-generated-name-fed"]
+
+    assert handle == joiner.backend.state.handle
+    assert joiner.backend.state.name == f"federate-{joiner.backend.state.backend_id}"
+    assert federation.federates[handle].name == joiner.backend.state.name
+
+    joiner.resign_federation_execution(ResignAction.NO_ACTION)
+    creator.destroy_federation_execution("join-generated-name-fed")
     creator.disconnect()
     joiner.disconnect()
 
@@ -1908,6 +1959,32 @@ def test_resign_canceling_directives_clear_pending_acquisition_requests(resign_a
 
     owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     owner.destroy_federation_execution(f"resign-cancel-pending-{resign_action.name.lower()}-fed")
+
+
+def test_resign_unconditionally_divests_owned_attributes_before_membership_teardown():
+    _, owner, observer, _owner_fed, observer_fed, _h1, _h2 = joined_pair(
+        "resign-unconditional-divest-fed"
+    )
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+
+    owner.publish_object_class_attributes(cls, {attr})
+    observer.subscribe_object_class_attributes(cls, {attr})
+    obj = owner.register_object_instance(cls, "Owned-Unconditional-Divest")
+    drain(owner, observer)
+
+    owner.resign_federation_execution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
+
+    observer.query_attribute_ownership(obj, attr)
+    drain(observer)
+
+    assert observer_fed.last_callback("attributeIsNotOwned") is not None
+    assert observer_fed.last_callback("attributeIsNotOwned").args == (obj, attr)
+    assert owner.backend.state.handle is None
+    assert owner.backend.state.federation is None
+
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.destroy_federation_execution("resign-unconditional-divest-fed")
 
 
 def test_resign_federation_execution_removes_mom_federate_object_and_refreshes_summary():

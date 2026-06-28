@@ -35,6 +35,8 @@ class _CallbacksContext(Protocol):
         notify: bool,
     ) -> None: ...
 
+    def _finalize_connection_lost_disconnect(self, federate: FederateState) -> None: ...
+
 
 if TYPE_CHECKING:
     class _CallbacksMixinBase(_CallbacksContext):
@@ -72,6 +74,8 @@ class PythonRTICallbacksMixin(_CallbacksMixinBase):
             raise FederateInternalError(f"Python FederateAmbassador.{method_name} failed: {exc}", cause=exc) from exc
         finally:
             target.in_callback = False
+        if method_name == "connectionLost" and target.disconnect_pending_after_connection_lost:
+            self._finalize_connection_lost_disconnect(target)
 
     def _svc_enableCallbacks(self) -> None:
         self._require_connected()

@@ -79,14 +79,14 @@ reframe the residual framework rows as vague or unowned.
 
 The current owner ledger has `53` framework packet rows:
 
-- `12 mapped`
-- `41 partial`
+- `18 mapped`
+- `35 partial`
 
-The remaining `41 partial` rows cluster into stable categories:
+The remaining `35 partial` rows cluster into stable categories:
 
-- `12 FW_RULE_DETAIL`
-- `21 DET`
-- `8 partial`
+- `10 FW_RULE_DETAIL`
+- `18 DET`
+- `7 partial`
 
 ## What The Categories Mean
 
@@ -113,10 +113,10 @@ examples include:
 - `HLA1516-FW-5_2-DET-001` through `HLA1516-FW-5_2-DET-003`
   because ownership and MOM tests prove the RTI-owned versus federate-owned
   split, but not every full framework implication
-- `HLA1516-FW-5_3-DET-001` through `HLA1516-FW-5_3-DET-004`
-  because exchange and declaration routing are directly exercised, but the
-  broader federate-responsibility framing is still wider than the direct
-  witnesses
+- `HLA1516-FW-5_3-DET-004`
+  because RTI-mediated exchange and declaration gating are now directly mapped,
+  while the broader federate-responsibility statement about substantive data
+  correctness remains wider than the direct witnesses
 - `HLA1516-FW-6_1-DET-001` through `HLA1516-FW-6_5-DET-002`
   because OMT parsing, SOM fixtures, publish or subscribe routing,
   ownership-transfer behavior, update-rate metadata, and time helpers are all
@@ -125,9 +125,9 @@ examples include:
 
 ### Umbrella framework rows
 
-The `partial` rows such as `HLA1516-RULE-002`, `HLA1516-RULE-003`,
-`HLA1516-RULE-004`, `HLA1516-RULE-006`, `HLA1516-RULE-007`,
-`HLA1516-RULE-008`, `HLA1516-RULE-009`, and `HLA1516-RULE-010` are umbrella
+The `partial` rows such as `HLA1516-RULE-002`, `HLA1516-RULE-004`,
+`HLA1516-RULE-006`, `HLA1516-RULE-007`, `HLA1516-RULE-008`,
+`HLA1516-RULE-009`, and `HLA1516-RULE-010` are umbrella
 rules that intentionally stay partial until the broader architectural claim has
 direct owner-level evidence rather than only adjacent clause-level support.
 
@@ -143,6 +143,15 @@ surface, including:
 - OMT and SOM parsing support on maintained fixtures
 - publish or subscribe, ownership-transfer, and time-coordination behavior that
   these framework rows reference indirectly
+
+Rule 3 and its direct exchange/detail slices are now mapped because the current
+DM/DDM routing and declaration-gating tests directly prove RTI-mediated
+exchange through the standard runtime path.
+
+Rule 8's direct ownership-transfer capability row is also now mapped because
+the negotiated ownership runtime tests directly prove offer acquire cancel and
+completion flows for dynamic object-attribute ownership transfer, while the
+broader SOM-framed umbrella rows remain partial.
 
 Primary evidence anchors:
 

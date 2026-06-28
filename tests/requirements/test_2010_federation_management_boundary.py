@@ -14,10 +14,9 @@ def test_federation_management_partial_tail_current_shape_is_stable() -> None:
     rows = list(csv.DictReader(LEDGER.open(newline="", encoding="utf-8")))
     partial_rows = [row for row in rows if row["current_status"] == "partial"]
 
-    assert len(partial_rows) == 13
+    assert len(partial_rows) == 4
     assert Counter(row["reconciliation_kind"] for row in partial_rows) == {
-        "ARG": 9,
-        "EFF": 1,
+        "ARG": 1,
         "OVW": 3,
     }
 
@@ -30,10 +29,9 @@ def test_federation_management_boundary_doc_records_current_family_shape() -> No
     assert "## Default Final Stance" in text
     assert "## Exit Condition" in text
     assert "canonical final reading for the current `CAP-FM`" in text
-    assert "`619 mapped`" in text
-    assert "`13 partial`" in text
-    assert "`9 ARG`" in text
-    assert "`1 EFF`" in text
+    assert "`628 mapped`" in text
+    assert "`4 partial`" in text
+    assert "`1 ARG`" in text
     assert "`3 OVW`" in text
     assert "The last `4` rows are the small bounded remainder:" in text
     assert "`./tools/test-focus run execution-membership`" in text
@@ -55,16 +53,13 @@ def test_federation_management_boundary_doc_records_current_family_shape() -> No
     assert "test_request_attribute_value_update_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore" in text
     assert "test_python_backend_join_precondition_matrix" in text
     assert "test_python_backend_resign_precondition_matrix" in text
-    assert "Lost-connection callback/fault-surface tail" in text
-    assert "argument-harmonization tail" in text
+    assert "single remaining argument-tail row" in text
     assert (
-        "Core lifecycle, synchronization, and save/restore argument rows are now directly mapped"
+        "Connect, join, resign, and federation-synchronized argument rows are now directly mapped"
         in normalized
     )
-    assert "the only remaining executable semantic row is `HLA1516.1-FM-4_4-EFF-001`" in text
-    assert "membership teardown, but it does not yet prove a full disconnected-state" in text
-    assert "transition for the lost victim" in text
     assert "direct runtime `connectionLost` callback delivery" in text
+    assert "direct disconnected-state transition after `connectionLost` delivery" in text
     assert "direct joined-live precondition coverage and callback-model dispatch" in text
     assert "direct `RTIinternalError` coverage for corrupted `listFederationExecutions`" in text
     assert "test_force_federate_loss_delivers_connection_lost_and_clears_execution_membership" in text

@@ -20,10 +20,10 @@ def test_framework_partial_tail_current_shape_is_stable() -> None:
 
     assert len(rows) == 53
     assert Counter(row["current_status"] for row in rows) == {
-        "partial": 41,
-        "mapped": 12,
+        "partial": 35,
+        "mapped": 18,
     }
-    assert kind_counts == {"DET": 21, "FW_RULE_DETAIL": 12, "partial": 8}
+    assert kind_counts == {"DET": 18, "FW_RULE_DETAIL": 10, "partial": 7}
 
 
 def test_framework_boundary_doc_records_current_family_shape() -> None:
@@ -34,11 +34,11 @@ def test_framework_boundary_doc_records_current_family_shape() -> None:
     assert "## Exit Condition" in text
     assert "canonical final reading for the current `CAP-FW`" in text
     assert "`53` framework packet rows" in text
-    assert "`12 mapped`" in text
-    assert "`41 partial`" in text
-    assert "`12 FW_RULE_DETAIL`" in text
-    assert "`21 DET`" in text
-    assert "`8 partial`" in text
+    assert "`18 mapped`" in text
+    assert "`35 partial`" in text
+    assert "`10 FW_RULE_DETAIL`" in text
+    assert "`18 DET`" in text
+    assert "`7 partial`" in text
     assert "`requirements/2010/hla1516_framework_detailed_reconciliation.csv`" in text
     assert "`requirements/2010/traceability_matrix.csv`" in text
     assert "`requirements/2010/hla_1516_master_harmonization_index_v1_0.csv`" in text
@@ -78,9 +78,14 @@ def test_framework_partial_rows_anchor_to_expected_evidence_clusters() -> None:
     assert "RTI-owned management state" in rows["HLA1516-FW-5_2-DET-001"]["notes"]
     assert "test_python_rti_query_attribute_ownership_reports_rti_for_mom_owned_attribute" in rows["HLA1516-FW-5_2-DET-001"]["current_test_id"]
 
-    assert rows["HLA1516-FW-RULE_3_RTI_EXCHANGE-007"]["current_status"] == "partial"
-    assert "RTI-mediated exchange is directly exercised" in rows["HLA1516-FW-RULE_3_RTI_EXCHANGE-007"]["notes"]
+    assert rows["HLA1516-FW-RULE_3_RTI_EXCHANGE-007"]["current_status"] == "mapped"
+    assert "RTI services during federation execution" in rows["HLA1516-FW-RULE_3_RTI_EXCHANGE-007"]["notes"]
     assert "test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions" in rows["HLA1516-FW-RULE_3_RTI_EXCHANGE-007"]["current_test_id"]
+    assert rows["HLA1516-FW-5_3-DET-004"]["current_status"] == "partial"
+    assert "substantive correctness" in rows["HLA1516-FW-5_3-DET-004"]["requirement_text"]
+    assert rows["HLA1516-FW-RULE_8_OWNERSHIP-012"]["current_status"] == "mapped"
+    assert "dynamic object-attribute ownership transfer" in rows["HLA1516-FW-RULE_8_OWNERSHIP-012"]["notes"]
+    assert rows["HLA1516-RULE-008"]["current_status"] == "partial"
 
     assert rows["HLA1516-FW-RULE_6_SOM-010"]["current_status"] == "partial"
     assert "SOM parsing evidence" in rows["HLA1516-FW-RULE_6_SOM-010"]["notes"]
