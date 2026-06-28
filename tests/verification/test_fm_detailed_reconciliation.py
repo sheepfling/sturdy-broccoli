@@ -139,6 +139,51 @@ def test_fm_connection_lost_precondition_and_callback_model_rows_use_direct_back
         assert row["notes"].startswith("Direct ")
 
 
+def test_fm_overview_rows_anchor_to_owner_surface_plus_live_evidence() -> None:
+    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+
+    lifecycle_row = rows["HLA1516.1-FM-OVERVIEW-001"]
+    assert lifecycle_row["current_status"] == "partial"
+    lifecycle_refs = {item.strip() for item in lifecycle_row["current_test_id"].split(";") if item.strip()}
+    assert "docs/requirements/ieee-1516-2010/federation_management_bounded_family.md" in lifecycle_refs
+    assert "requirements/2010/hla1516_framework_detailed_reconciliation.csv" in lifecycle_refs
+    assert (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_connect_create_and_join_apply_positive_lifecycle_effects"
+    ) in lifecycle_refs
+    assert (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_disconnect_requires_resign_and_marks_backend_not_connected"
+    ) in lifecycle_refs
+    assert "disconnected-state loss effect is not fully proved" in lifecycle_row["notes"]
+
+    modules_row = rows["HLA1516.1-FM-OVERVIEW-002"]
+    assert modules_row["current_status"] == "partial"
+    module_refs = {item.strip() for item in modules_row["current_test_id"].split(";") if item.strip()}
+    assert "docs/requirements/ieee-1516-2010/federation_management_bounded_family.md" in module_refs
+    assert "requirements/2010/hla1516_framework_detailed_reconciliation.csv" in module_refs
+    assert (
+        "tests/factories/test_fom_omt_parsing.py::"
+        "test_merge_with_standard_mim_preserves_standard_mom_definitions_and_catalog_metadata"
+    ) in module_refs
+    assert "direct FOM/MIM witnesses prove active FDD assembly" in modules_row["notes"]
+
+    lost_row = rows["HLA1516.1-FM-OVERVIEW-003"]
+    assert lost_row["current_status"] == "partial"
+    lost_refs = {item.strip() for item in lost_row["current_test_id"].split(";") if item.strip()}
+    assert "docs/requirements/ieee-1516-2010/federation_management_bounded_family.md" in lost_refs
+    assert "requirements/2010/hla1516_framework_detailed_reconciliation.csv" in lost_refs
+    assert (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_force_federate_loss_delivers_connection_lost_and_clears_execution_membership"
+    ) in lost_refs
+    assert (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_force_federate_loss_requires_joined_live_victim_and_honors_callback_model"
+    ) in lost_refs
+    assert "not every framework-level lost-federate consequence is isolated" in lost_row["notes"]
+
+
 def test_fm_list_and_report_exception_and_mom_rows_use_direct_backend_witnesses() -> None:
     rows = {row["packet_requirement_id"]: row for row in _read_rows()}
     callback_failure_test = (
