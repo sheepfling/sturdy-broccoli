@@ -54,6 +54,7 @@ from hla.rti1516e.datatypes import (
 
 from tests.backends.python_backend_extended_support import *
 from tests.backends.python_backend_extended_support import (
+    _ImmediateDisableModifyRetractAmbassador,
     _ImmediateAsyncDeliveryAmbassador,
     _ImmediateConstrainedPendingAmbassador,
     _ImmediateOrderTypeAmbassador,
@@ -1739,3 +1740,38 @@ def test_hla_immediate_callbacks_block_order_type_services():
 
     rti.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     rti.destroy_federation_execution("immediate-order-type-fed")
+
+
+def test_hla_immediate_callbacks_block_disable_modify_and_retract_services():
+    engine = InMemoryRTIEngine()
+    rti = rti_ambassador(engine=engine)
+    fed = _ImmediateDisableModifyRetractAmbassador(rti)
+
+    rti.connect(fed, CallbackModel.HLA_IMMEDIATE)
+    rti.create_federation_execution("immediate-disable-modify-retract-fed", "TargetRadarFOMmodule.xml")
+    rti.join_federation_execution("alpha", "type-a", "immediate-disable-modify-retract-fed")
+
+    factory = rti.get_time_factory()
+    rti.enable_time_regulation(factory.make_interval(1.0))
+    rti.enable_time_constrained()
+
+    cls = rti.get_object_class_handle("HLAobjectRoot.Target")
+    attr = rti.get_attribute_handle(cls, "Position")
+    rti.publish_object_class_attributes(cls, {attr})
+    obj = rti.register_object_instance(cls, "Immediate-Disable-Modify-Retract")
+    result = rti.update_attribute_values(obj, {attr: b"queued"}, b"tag", factory.make_time(5.0))
+    assert result is not None
+    fed.retraction_handle = result.handle
+
+    rti.register_federation_synchronization_point("IMMEDIATE-DISABLE-MODIFY-RETRACT", b"x")
+
+    assert fed.last_callback("synchronizationPointRegistrationSucceeded") is not None
+    assert fed.captured == [
+        CallNotAllowedFromWithinCallback,
+        CallNotAllowedFromWithinCallback,
+        CallNotAllowedFromWithinCallback,
+        CallNotAllowedFromWithinCallback,
+    ]
+
+    rti.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    rti.destroy_federation_execution("immediate-disable-modify-retract-fed")

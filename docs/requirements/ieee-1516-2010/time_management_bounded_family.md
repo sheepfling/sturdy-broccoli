@@ -2,19 +2,19 @@
 
 Use this page when the question is:
 
-- why does the 2010 Clause 8 time-management family still carry `partial`
-  rows even though the repo already has strong direct time, lookahead,
+- why does the 2010 time-management owner ledger still carry any `partial`
+  row even though the repo already has strong direct time, lookahead,
   GALT/LITS, retraction, MOM, and callback-order evidence?
-- which single document owns the remaining `CAP-TM` partial pattern?
-- are those partial rows still vague, or already in an explicit bounded final
+- which single document owns the remaining `CAP-TM` residual partial pattern?
+- is that partial row still vague, or already in an explicit bounded final
   state?
 
 Short answer:
 
-- the remaining `CAP-TM` partial rows are already in an explicit bounded family
+- the remaining `CAP-TM` partial row is already in an explicit bounded family
   state
-- the canonical owner ledger stays `partial` for those rows
-- the bounded reasons are now structured and reviewable instead of implied
+- the canonical owner ledger stays `partial` for that row
+- the bounded reason is structured and reviewable instead of implied
 
 ## Owner Surface
 
@@ -36,10 +36,11 @@ Short answer:
 
 ## Final Claim Rule
 
-- keep the remaining Clause 8 family rows `partial` when the repo already
-  proves the main service surface, signature shape, callback order, lookahead,
-  GALT/LITS queries, retraction, and representative MOM visibility, but does
-  not yet prove every imported packet slice as a one-row exhaustive witness
+- keep the remaining overview row `partial` only where the repo already proves
+  the executable Clause 8 service surface, signature shape, callback order,
+  lookahead, GALT/LITS queries, retraction, and representative MOM visibility,
+  but the canonical sentence still compresses a broader cross-backend ordered-
+  delivery story than one row can honestly claim as a direct exhaustive witness
 - do not describe these rows as missing time-management services
 - do not describe these rows as unsupported logical-time behavior
 - do not flatten the family into `mapped` merely because the primary time and
@@ -51,10 +52,9 @@ Short answer:
 
 - this owner note is the canonical final reading for the current `CAP-TM`
   partial family
-- the remaining rows are not waiting on wording cleanup; they are already in
-  their intended bounded supported-scope presentation
-- the unresolved part is only optional future precondition-envelope isolation,
-  exception-envelope isolation, or sharper overview decomposition, not
+- the remaining row is not waiting on wording cleanup; it is already in its
+  intended bounded supported-scope presentation
+- the unresolved part is only optional future overview decomposition, not
   ambiguity about whether the currently exercised Clause 8 service surface
   exists
 - keep the family rows `partial` in
@@ -65,42 +65,14 @@ Short answer:
 
 The current owner ledger has `301` time-management packet rows:
 
-- `292 mapped`
-- `9 partial`
+- `300 mapped`
+- `1 partial`
 
-The remaining `9 partial` rows cluster into stable categories:
+The remaining `1 partial` row clusters into stable categories:
 
-- `4 PRE`
-- `2 EXC`
-- `2 EXC_API`
 - `1 OVW`
 
 ## What The Categories Mean
-
-### Precondition-envelope tail
-
-The `4 PRE` rows mostly state a broader service-precondition universe than the
-current isolated witnesses prove directly for one row at a time.
-
-Typical pattern:
-
-- key not-connected, not-joined, save/restore, invalid-lookahead, pending, and
-  disabled-state guards are already proven
-- the packet row still claims a larger clause-level precondition envelope than
-  the direct witness currently isolates
-
-### Exception-envelope tail
-
-The `2 EXC` and `2 EXC_API` rows usually keep a broader failure envelope than
-the current tests isolate directly.
-
-Typical pattern:
-
-- representative standard exceptions are already exercised on the direct time
-  lane
-- the packet row still claims the full exception universe, including broader
-  internal-error or full service-wide failure combinations, as one exhaustive
-  witness
 
 ### Residual overview tail
 
@@ -126,6 +98,7 @@ purposes unless one of these becomes true:
 
 1. the remaining `PRE`, `EXC`, `EXC_API`, or overview rows gain new direct
    isolated witnesses
+   In the current state, only the overview row remains.
 2. the repo decides to make a stronger one-row-per-packet Clause 8 claim
 3. the current family owner ledger stops being the right canonical location for
    the bounded Clause 8 time-management story

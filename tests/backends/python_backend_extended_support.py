@@ -200,3 +200,33 @@ class _ImmediateOrderTypeAmbassador(RecordingFederateAmbassador):
             CallNotAllowedFromWithinCallback,
             lambda: self.rti.change_interaction_order_type(self.interaction, OrderType.TIMESTAMP),
         )
+
+
+class _ImmediateDisableModifyRetractAmbassador(RecordingFederateAmbassador):
+    def __init__(self, rti, retraction_handle=None):
+        super().__init__()
+        self.rti = rti
+        self.retraction_handle = retraction_handle
+        self.captured: list[type[BaseException]] = []
+
+    def _capture(self, exc_type, fn):
+        try:
+            fn()
+        except exc_type:
+            self.captured.append(exc_type)
+        else:  # pragma: no cover - defensive
+            raise AssertionError(f"expected {exc_type.__name__}")
+
+    def synchronizationPointRegistrationSucceeded(self, label):
+        super().synchronizationPointRegistrationSucceeded(label)
+        factory = HLAfloat64TimeFactory()
+        self._capture(CallNotAllowedFromWithinCallback, self.rti.disable_time_regulation)
+        self._capture(CallNotAllowedFromWithinCallback, self.rti.disable_time_constrained)
+        self._capture(
+            CallNotAllowedFromWithinCallback,
+            lambda: self.rti.modify_lookahead(factory.make_interval(2.0)),
+        )
+        self._capture(
+            CallNotAllowedFromWithinCallback,
+            lambda: self.rti.retract(self.retraction_handle),
+        )

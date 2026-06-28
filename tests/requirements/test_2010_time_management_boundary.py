@@ -15,13 +15,8 @@ def test_time_management_partial_tail_is_only_pre_exc_exc_api_and_one_overview()
     rows = list(csv.DictReader(LEDGER.open(newline="", encoding="utf-8")))
     partial_rows = [row for row in rows if row["current_status"] == "partial"]
 
-    assert len(partial_rows) == 9
-    assert Counter(row["reconciliation_kind"] for row in partial_rows) == {
-        "PRE": 4,
-        "EXC": 2,
-        "EXC_API": 2,
-        "OVW": 1,
-    }
+    assert len(partial_rows) == 1
+    assert Counter(row["reconciliation_kind"] for row in partial_rows) == {"OVW": 1}
 
 
 def test_time_management_boundary_doc_records_current_family_shape() -> None:
@@ -31,11 +26,8 @@ def test_time_management_boundary_doc_records_current_family_shape() -> None:
     assert "## Default Final Stance" in text
     assert "## Exit Condition" in text
     assert "canonical final reading for the current `CAP-TM`" in text
-    assert "`292 mapped`" in text
-    assert "`9 partial`" in text
-    assert "`4 PRE`" in text
-    assert "`2 EXC`" in text
-    assert "`2 EXC_API`" in text
+    assert "`300 mapped`" in text
+    assert "`1 partial`" in text
     assert "`1 OVW`" in text
     assert "mixed_backend_priority_boundaries.md" in text
     assert "`./tools/test-focus run time`" in text
@@ -51,20 +43,4 @@ def test_time_management_clause8_tail_uses_explicit_pre_and_exception_notes() ->
     rows = list(csv.DictReader(CLAUSE8_LEDGER.open(newline="", encoding="utf-8")))
     partial_rows = [row for row in rows if row["current_status"] == "partial"]
 
-    assert len(partial_rows) == 6
-    for row in partial_rows:
-        if row["reconciliation_kind"] == "PRE":
-            assert "applicable precondition surface" in row["notes"]
-        elif row["reconciliation_kind"] == "EXC":
-            assert "standard exception surface" in row["notes"]
-
-    by_id = {row["packet_requirement_id"]: row for row in partial_rows}
-    assert "negative-lookahead, pending-advance, and regulation-state guards" in by_id[
-        "HLA1516.1-TM-8_19-MODIFYLOOKAHEAD-PRE-001"
-    ]["notes"]
-    assert "message-retraction-handle validation" in by_id[
-        "HLA1516.1-TM-8_21-RETRACT-EXC-001"
-    ]["notes"]
-    assert "already-disabled constrained-state" in by_id[
-        "HLA1516.1-TM-8_7-DISABLETIMECONSTRAINED-PRE-001"
-    ]["notes"]
+    assert len(partial_rows) == 0
