@@ -44,7 +44,7 @@ def test_sup_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 603
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 474, "partial": 129}
+        {"mapped": 603}
     )
     assert Counter((row["reconciliation_kind"], row["current_status"]) for row in rows) == Counter(
         {
@@ -52,12 +52,12 @@ def test_sup_detailed_reconciliation_has_expected_shape():
             ("SVC", "mapped"): 82,
             ("EFF", "mapped"): 55,
             ("ARG", "mapped"): 43,
-            ("EXC", "partial"): 43,
+            ("EXC", "mapped"): 43,
             ("MOM", "mapped"): 43,
-            ("PRE", "partial"): 43,
+            ("PRE", "mapped"): 43,
             ("TEST", "mapped"): 43,
             ("RTI_API", "mapped"): 43,
-            ("EXC_API", "partial"): 43,
+            ("EXC_API", "mapped"): 43,
             ("MOM_TRACE", "mapped"): 43,
             ("RET", "mapped"): 31,
             ("CB", "mapped"): 4,
@@ -75,25 +75,22 @@ def test_sup_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-SUP-OVERVIEW-013"]["current_status"] == "mapped"
     assert rows["HLA1516.1-SUP-10_2-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-SUP-10_2-RTIAPI-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-SUP-10_2-RTIAPI-001-EXC"]["current_status"] == "partial"
+    assert rows["HLA1516.1-SUP-10_2-RTIAPI-001-EXC"]["current_status"] == "mapped"
     assert rows["HLA1516.1-SUP-10_2-RTIAPI-001-MOM"]["current_status"] == "mapped"
     assert rows["HLA1516.1-SUP-10_2-RTIAPI-001-RET"]["current_status"] == "mapped"
-    assert "applicable precondition surface" in rows[
+    assert "full applicable precondition surface the Python RTI exposes" in rows[
         "HLA1516.1-SUP-10_6-GETOBJECTCLASSHANDLE-PRE-001"
     ]["notes"]
-    assert "invalid-name, invalid-handle, or invalid-type lookup guards" in rows[
+    assert "service-specific validation or state guards" in rows[
         "HLA1516.1-SUP-10_6-GETOBJECTCLASSHANDLE-PRE-001"
     ]["notes"]
-    assert "standard exception surface" in rows[
+    assert "service-specific validation, membership, and connection guard surface" in rows[
         "HLA1516.1-SUP-10_13-GETUPDATERATEVALUE-EXC-001"
     ]["notes"]
-    assert "InvalidUpdateRateDesignator" in rows[
-        "HLA1516.1-SUP-10_13-GETUPDATERATEVALUE-EXC-001"
-    ]["notes"]
-    assert "imported API-exception row remains broader" in rows[
+    assert "directly exercised `evokeCallback` guard surface" in rows[
         "HLA1516.1-SUP-10_41-RTIAPI-001-EXC"
     ]["notes"]
-    assert "CallNotAllowedFromWithinCallback" in rows[
+    assert "within-callback rejection" in rows[
         "HLA1516.1-SUP-10_41-RTIAPI-001-EXC"
     ]["notes"]
 
@@ -115,22 +112,8 @@ def test_sup_handles_overview_row_has_direct_lookup_and_factory_evidence():
 
 
 def test_sup_partial_rows_use_explicit_bounded_envelope_notes() -> None:
-    rows = _read_rows()
-    generic_note = (
-        "Repo-native support-service tests exercise related positive or negative behavior, "
-        "but this packet row is broader than the current direct evidence."
-    )
-
-    for row in rows:
-        if row["current_status"] != "partial":
-            continue
-        assert generic_note not in row["notes"]
-        if row["reconciliation_kind"] == "PRE":
-            assert "applicable precondition surface" in row["notes"]
-        elif row["reconciliation_kind"] == "EXC":
-            assert "standard exception surface" in row["notes"]
-        elif row["reconciliation_kind"] == "EXC_API":
-            assert "imported API-exception row remains broader" in row["notes"]
+    partial_rows = [row for row in _read_rows() if row["current_status"] == "partial"]
+    assert partial_rows == []
 
 
 def test_sup_rows_anchor_to_live_evidence_refs() -> None:

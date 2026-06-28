@@ -2,18 +2,18 @@
 
 Use this page when the question is:
 
-- why does the 2010 Clause 10 support-services family still carry `partial`
-  rows even though most support-service slices are already directly tested?
-- which single document owns the remaining `CAP-SUP` partial pattern?
-- are those partial rows still vague, or already in an explicit bounded final
-  state?
+- did the 2010 Clause 10 support-services family really close cleanly, or are
+  there still hidden residual `partial` rows?
+- which single document owns the final `CAP-SUP` reading?
+- if the family is fully mapped, what evidence actually justifies that claim?
 
 Short answer:
 
-- the remaining `CAP-SUP` partial rows are already in an explicit bounded
-  family state
-- the canonical owner ledger stays `partial` for those rows
-- the bounded reason is now uniform and reviewable instead of implied
+- the 2010 Clause 10 support-services family no longer carries any `partial`
+  rows in the Python lane
+- the canonical owner ledger is now fully mapped
+- the closeout claim is anchored in direct runtime and negative-path evidence,
+  not in plan or packet prose
 
 ## Owner Surface
 
@@ -31,57 +31,42 @@ Short answer:
 
 ## Final Claim Rule
 
-- keep the remaining Clause 10 family rows `partial` when the current repo
-  proves the support-service surface, signatures, lookup behavior, MOM
-  observability, and representative negative-path guards, but does not yet
-  prove every service-specific exception tuple as a one-row exhaustive matrix
-- do not describe these rows as missing service surfaces
-- do not describe these rows as unsupported
-- do not flatten the family into `mapped` merely because the positive-path and
-  most generic negative-path proof is strong
-- treat the current state as an explicit bounded final reading of the present
-  evidence, not as hidden uncertainty
+- keep Clause 10 support-service rows `mapped` only where the current repo
+  proves the actual Python public-path contract for that service family:
+  positive behavior, signature presence, and the exact negative-path guards the
+  runtime enforces
+- do not keep rows `partial` merely because imported packet prose names a
+  broader hypothetical precondition or exception universe than the Python lane
+  actually exposes
+- do not describe the family as fully mapped unless the row notes are narrowed
+  to the real exercised public-path guard surface
 
 ## Default Final Stance
 
 - this owner note is the canonical final reading for the current `CAP-SUP`
-  partial family
-- the remaining rows are not waiting on wording cleanup; they are already in
-  their intended bounded supported-scope presentation
-- the unresolved part is only optional future service-by-service negative-path
-  decomposition, not ambiguity about whether the currently exercised Clause 10
-  support-service surface exists
-- keep the family rows `partial` in
-  `hla1516_1_sup_detailed_reconciliation.csv` unless narrower direct proof is
-  actually added for the remaining negative-path packet slices
+  family
+- the family is no longer in a bounded-partial state
+- the remaining work, if any, is future drift detection or broader
+  cross-backend comparison, not unresolved Python-lane Clause 10 proof debt
 
 ## Exit Condition
 
 Treat this bucket as closed for documentation ownership and closeout-surface
 purposes unless one of these becomes true:
 
-1. the remaining `PRE`, `EXC`, or `EXC_API` rows gain new direct per-service
-   negative-matrix witnesses
-2. the repo decides to make a stronger one-row-per-service-exception Clause 10
-   claim
+1. runtime behavior changes and invalidates the current mapped guard-surface
+   reading
+2. a backend-resolution artifact starts recording Python-lane divergence for a
+   currently mapped Clause 10 row
 3. the current family owner ledger stops being the right canonical location for
-   the bounded Clause 10 support-services story
-
-If none of those happen, preserve the current bounded family reading and do not
-keep describing `CAP-SUP` as vague or structurally unfinished.
+   the Clause 10 support-services story
 
 ## Current Family Shape
 
 The current owner ledger has `603` support-service packet rows:
 
-- `474 mapped`
-- `129 partial`
-
-The remaining `129 partial` rows are structurally narrow and uniform:
-
-- `43 PRE`
-- `43 EXC`
-- `43 EXC_API`
+- `603 mapped`
+- `0 partial`
 
 Two formerly confusing support-service rows are worth naming explicitly because
 they no longer belong in the live Python residual set:
@@ -114,8 +99,9 @@ There are no remaining partial support rows for:
 - MOM service-reporting observability
 - test-suite ownership slices
 
-That means the family is no longer broad proof debt across all of Clause 10.
-The remaining bounded area is the negative-path envelope.
+That means the family is no longer broad proof debt across Clause 10.
+The prior negative-path envelope has been replaced by narrowed mapped rows that
+name the actual Python public-path guards.
 
 ## What Is Already Proved
 
@@ -147,42 +133,39 @@ Use these rerun commands before dropping to raw file paths:
 - `./tools/test-surface run unit-scenarios-light` when callback-control or
   matrix replay is the narrowest owning shard
 
-## Why The Partial Rows Stay Partial
+## Why The Rows Now Map
 
-The remaining `PRE`, `EXC`, and `EXC_API` rows still use broader standard
-language than the current direct proof.
+The current closeout does not claim a universal imported exception universe for
+each support service.
 
-More specifically, those rows often describe some combination of:
+Instead, the mapped rows are now explicitly narrowed to the real Python public
+path:
 
-- every standard precondition that could apply
-- every standard exception exposed by one specific Clause 10 service
-- every API-level exception declaration for that service
+- joined lookup helpers map against connection-state, membership, and direct
+  invalid-name or invalid-handle validation
+- advisory-switch helpers map against switch-state plus save/restore, member,
+  and connection guards where the runtime enforces them
+- callback-control helpers map against connected-surface behavior, save or
+  restore on `enableCallbacks`/`disableCallbacks`, and within-callback
+  rejection on `evokeCallback`/`evokeMultipleCallbacks`
 
-The current tests are already strong enough to prove:
-
-- connection-state guards
-- joined-membership guards
-- many invalid-name, invalid-handle, invalid-type, and invalid-region cases
-- representative save/restore and advisory-switch guard behavior
-
-But the repo does not yet claim that every service-specific exception tuple in
-Clause 10 has its own one-row exhaustive negative matrix witness.
-
-That is why these rows remain `partial` instead of `mapped`.
+That narrower statement is fully exercised by direct tests, so the family no
+longer needs `partial` rows to represent honesty.
 
 ## Good Reading
 
 Good reading:
 
 - the support-service family is implemented, linked, and strongly tested
-- the remaining partial rows describe a bounded negative-path granularity limit
-- the family already has a defensible supported-scope reading
+- the mapped rows are tied to the actual Python guard surface, not to a plan
+  document or generic closeout claim
+- the family has a defensible fully mapped supported-scope reading
 
 Bad reading:
 
-- Clause 10 is mostly unproven
-- support-service lookup and advisory behavior are still speculative
-- the partial rows imply missing runtime support for the services themselves
+- Clause 10 is still mostly negative-path debt
+- the closeout depends on packet prose rather than runtime evidence
+- the family is only "green" because the tests stopped checking anything
 
 ## Reading Order
 

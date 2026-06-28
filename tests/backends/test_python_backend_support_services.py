@@ -545,6 +545,26 @@ def test_support_set_range_bounds_rejects_foreign_region_owner():
     owner.destroy_federation_execution("support-foreign-region-fed")
 
 
+def test_support_callback_controls_reject_not_connected_but_allow_connected_unjoined_state():
+    rti = rti_ambassador(engine=InMemoryRTIEngine())
+
+    with pytest.raises(NotConnected):
+        rti.enable_callbacks()
+    with pytest.raises(NotConnected):
+        rti.disable_callbacks()
+    with pytest.raises(NotConnected):
+        rti.evoke_callback(0.0)
+    with pytest.raises(NotConnected):
+        rti.evoke_multiple_callbacks(0.0, 0.0)
+
+    rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    rti.enable_callbacks()
+    rti.disable_callbacks()
+    assert rti.evoke_callback(0.0) is False
+    assert rti.evoke_multiple_callbacks(0.0, 0.0) is False
+    rti.disconnect()
+
+
 def test_support_runtime_service_inquiries_and_factories_require_active_membership():
     _, owner, acquirer, _owner_fed, _acquirer_fed, _h1, _h2 = joined_pair("support-runtime-membership-fed")
 
