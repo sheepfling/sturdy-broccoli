@@ -21,10 +21,10 @@ def test_api_partial_tail_current_shape_is_stable() -> None:
 
     assert len(rows) == 614
     assert Counter(row["current_status"] for row in rows) == {
-        "partial": 385,
-        "mapped": 229,
+        "partial": 331,
+        "mapped": 283,
     }
-    assert kind_counts == {"WSDL_OP": 308, "CPP_CLASS": 71, "CLAUSE12_13_DETAIL": 6}
+    assert kind_counts == {"WSDL_OP": 308, "CPP_CLASS": 17, "CLAUSE12_13_DETAIL": 6}
 
 
 def test_api_boundary_doc_records_current_family_shape() -> None:
@@ -33,10 +33,10 @@ def test_api_boundary_doc_records_current_family_shape() -> None:
     for snippet in (
         "2010 API-Binding Bounded Family",
         "`614` packet rows",
-        "`229 mapped`",
-        "`385 partial`",
+        "`283 mapped`",
+        "`331 partial`",
         "`308 WSDL_OP`",
-        "`71 CPP_CLASS`",
+        "`17 CPP_CLASS`",
         "`6 CLAUSE12_13_DETAIL`",
         "## Residual Read Rule",
         "## Residual Exit Rule",
@@ -50,6 +50,9 @@ def test_api_boundary_doc_records_current_family_shape() -> None:
         "`RTIambassadorFactory.h`",
         "`NullFederateAmbassador.h`",
         "`LogicalTimeFactory.h`",
+        "`Handle.h`",
+        "`VariableLengthData.h`",
+        "`EncodingExceptions.h`",
         "`HLA1516.1-API_WSDL-013`",
         "`HLA1516.1-API_CPP_NORMATIVE-017`",
         "`HLA1516.1-API_WS_NORMATIVE-018`",

@@ -51,13 +51,13 @@ Short answer:
 
 The current API owner ledger has `614` packet rows:
 
-- `229 mapped`
-- `385 partial`
+- `283 mapped`
+- `331 partial`
 
-The remaining `385 partial` rows cluster into stable categories:
+The remaining `331 partial` rows cluster into stable categories:
 
 - `308 WSDL_OP`
-- `71 CPP_CLASS`
+- `17 CPP_CLASS`
 - `6 CLAUSE12_13_DETAIL`
 
 ## What The Categories Mean
@@ -73,7 +73,7 @@ or verify a live WSDL-backed runtime surface for each operation.
 
 ### C++ header-token catalog tail
 
-The `71 CPP_CLASS` residual rows are imported C++ catalog or class/header token rows
+The `17 CPP_CLASS` residual rows are imported C++ catalog or class/header token rows
 that still lack their own direct witness.
 
 These rows remain `partial` because the repo preserves the imported C++ catalog
@@ -81,7 +81,7 @@ and source-derived ambassador method metadata, but does not yet maintain one
 curated executable or static witness per header-level token.
 
 Several header-declaration rows are no longer in that residual tail. The repo
-now directly maps a small class-declaration cluster where the carried official
+now directly maps a larger declaration cluster where the carried official
 2010 C++ API archive itself proves the expected declarations in:
 
 - `RTIambassadorFactory.h`
@@ -90,6 +90,23 @@ now directly maps a small class-declaration cluster where the carried official
 - `HLAfloat64TimeFactory.h`
 - `HLAinteger64TimeFactory.h`
 - `LogicalTime.h`
+- `Handle.h`
+- `Typedefs.h`
+- `RangeBounds.h`
+- `Exception.h`
+- `VariableLengthData.h`
+- `DataElement.h`
+- `BasicDataElements.h`
+- `EncodingExceptions.h`
+- `HLAfixedArray.h`
+- `HLAfixedRecord.h`
+- `HLAopaqueData.h`
+- `HLAvariableArray.h`
+- `HLAvariantRecord.h`
+- `HLAfloat64Time.h`
+- `HLAfloat64Interval.h`
+- `HLAinteger64Time.h`
+- `HLAinteger64Interval.h`
 
 ### Broad binding and clause-detail rows
 
@@ -166,6 +183,8 @@ Primary evidence anchors:
 Good reading:
 
 - the generated 2010 ambassador method surface is already mapped
+- a substantial subset of the imported C++ declaration catalog is now directly
+  mapped from the carried official archive
 - the remaining partial rows are imported binding-catalog or broad
   cross-binding residuals
 - the API family has an honest bounded final-state reading instead of an
