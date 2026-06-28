@@ -19,6 +19,8 @@ The 2025 traceability and source-trace block lives in [`../2025/`](../2025/).
 Treat this as the single source-side list for the 2010 edition:
 
 - `README.md`: edition front door for the 2010 source-side surface
+- `canonical_requirements.json`: canonical row-level requirement truth for 2010
+- `backend_resolution.json`: canonical backend-resolution companion for 2010
 - `hla1516_framework_rules.csv`: framework and architecture rule seeds
 - `hla1516_framework_detailed_reconciliation.csv`: detailed framework reconciliation
 - `hla1516_clause_12_save_restore.csv`: clause-level save/restore tranche
@@ -54,15 +56,16 @@ Treat this as the single source-side list for the 2010 edition:
 - `hla_1516_master_harmonization_index_v1_0.csv`: imported-master harmonization index
 - `hla_1516_packet_hookup_status_v1_0.csv`: packet hookup status ledger
 - `requirement_id_registry.yaml`: stable requirement ID registry
-- `traceability_matrix.csv`: top-level traceability bridge
+- `traceability_matrix.csv`: generated or legacy top-level traceability bridge
 
 ## Reading Order
 
 Use this order:
 
-1. `traceability_matrix.csv` for the broad bridge
-2. one clause or family reconciliation file for the area you care about
-3. `hla_1516_master_harmonization_index_v1_0.csv` only when you need the whole imported-master view
+1. `canonical_requirements.json` for the primary row-level requirement surface
+2. `backend_resolution.json` when backend truth differs by runtime
+3. `traceability_matrix.csv` or one clause or family reconciliation file only when you need a generated or legacy projection
+4. `hla_1516_master_harmonization_index_v1_0.csv` only when you need the whole imported-master view
 
 ## Canonical Owner Surfaces
 
@@ -71,6 +74,8 @@ bucket families:
 
 | Bucket | Canonical owner file |
 | --- | --- |
+| canonical 2010 requirement catalog | `canonical_requirements.json` |
+| canonical 2010 backend-resolution catalog | `backend_resolution.json` |
 | framework and architecture reconciliation | `hla1516_framework_detailed_reconciliation.csv` |
 | framework bounded-family reading | `docs/requirements/ieee-1516-2010/framework_bounded_family.md` |
 | federation management | `hla1516_1_fm_detailed_reconciliation.csv` |
@@ -90,7 +95,8 @@ bucket families:
 | bounded mixed-backend runtime split for priority rows | `hla1516_1_priority_backend_resolution.csv` |
 
 If a future edit changes status for one of these families, update the canonical
-owner file first, then reflect the change in `traceability_matrix.csv`,
+JSON catalog first, then reflect the change in any generated or legacy
+projection such as `traceability_matrix.csv`,
 `hla_1516_master_harmonization_index_v1_0.csv`, and the relevant verification
 artifact.
 

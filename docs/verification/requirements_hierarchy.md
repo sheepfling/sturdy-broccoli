@@ -36,6 +36,10 @@ owner surfaces instead:
   for the 2010 reader-facing front door
 - [`../../requirements/2010/README.md`](../../requirements/2010/README.md)
   for the 2010 source-side owner ledger inventory
+- [`../../requirements/2010/canonical_requirements.json`](../../requirements/2010/canonical_requirements.json)
+  for canonical 2010 row-level requirement truth
+- [`../../requirements/2010/backend_resolution.json`](../../requirements/2010/backend_resolution.json)
+  for canonical 2010 backend-resolution truth
 - [`requirement_compliance_exports.md`](requirement_compliance_exports.md) when
   you need generated spreadsheet summaries downstream of the owner ledgers
 
@@ -54,6 +58,8 @@ Treat these as the canonical 2010 owner surfaces behind the hierarchy view:
 
 | Bucket | Canonical owner doc |
 | --- | --- |
+| canonical 2010 requirement catalog | `requirements/2010/canonical_requirements.json` |
+| canonical 2010 backend-resolution catalog | `requirements/2010/backend_resolution.json` |
 | framework and architecture reconciliation | `requirements/2010/hla1516_framework_detailed_reconciliation.csv` |
 | framework bounded-family reading | `docs/requirements/ieee-1516-2010/framework_bounded_family.md` |
 | federation management | `requirements/2010/hla1516_1_fm_detailed_reconciliation.csv` |
@@ -75,15 +81,15 @@ Treat these as the canonical 2010 owner surfaces behind the hierarchy view:
 | OMT family | `requirements/2010/hla1516_2_omt_detailed_reconciliation.csv` |
 | XML family | `requirements/2010/hla1516_xml_detailed_reconciliation.csv` |
 | legacy OMT/XML bridge artifact | `requirements/2010/hla1516_2_omt_xml_detailed_reconciliation.csv` |
-| broad bridge and status rollup | `requirements/2010/traceability_matrix.csv` |
+| broad bridge and status rollup projection | `requirements/2010/traceability_matrix.csv` |
 
 Use this page as a reader-facing hierarchy, but update the canonical owner row
 first when a 2010 requirement family changes canonical status.
 
 When backend support differs, record that in separate backend-resolution
-columns or linked owner artifacts such as `requirements_matrix_2010.*` or
-backend disposition ledgers rather than compressing it into one hierarchy
-status word.
+columns or linked owner artifacts such as
+`requirements/2010/backend_resolution.json`. Older matrix or backend
+disposition exports are downstream projections rather than primary truth.
 
 ## Verification Features
 
@@ -164,7 +170,9 @@ status word.
   next (`fom_parser`, `fom_validator`, `fom_merger`, `mim_loader`,
   `xml_serializer`) and what proof shape is expected.
 - The detailed clause rows are in [`requirements/2010/hla1516_2_priority_omt.csv`](../../requirements/2010/hla1516_2_priority_omt.csv).
-- The bridge from requirement rows to code and tests is in [`requirements/2010/traceability_matrix.csv`](../../requirements/2010/traceability_matrix.csv).
+- The canonical 2010 requirement rows live in [`requirements/2010/canonical_requirements.json`](../../requirements/2010/canonical_requirements.json).
+- The canonical 2010 backend-resolution rows live in [`requirements/2010/backend_resolution.json`](../../requirements/2010/backend_resolution.json).
+- The older bridge projection from requirement rows to code and tests is in [`requirements/2010/traceability_matrix.csv`](../../requirements/2010/traceability_matrix.csv).
 
 ## OMT Lexicon
 

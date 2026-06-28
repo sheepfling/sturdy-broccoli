@@ -11,12 +11,16 @@ Start here, then continue into:
 1. [`../../../requirements/2025/README.md`](../../../requirements/2025/README.md)
 2. [`../../verification/README.md`](../../verification/README.md)
 3. [`../../spec_reading_map.md`](../../spec_reading_map.md)
-4. one bounded proof note or 2025 source packet from the family you care about
+4. [`../../../requirements/2025/canonical_requirements.json`](../../../requirements/2025/canonical_requirements.json)
+5. [`../../../requirements/2025/backend_resolution.json`](../../../requirements/2025/backend_resolution.json)
+6. one bounded proof note or generated or legacy projection from the family you care about
 
 Use this reading rule:
 
 - this README is the human-facing front door for the 2025 requirement surface
 - `requirements/2025/README.md` is the collected source-side inventory
+- `requirements/2025/canonical_requirements.json` is the canonical row-level requirement truth for 2025
+- `requirements/2025/backend_resolution.json` is the canonical backend-resolution companion for 2025
 - `verification/README.md` explains where executable or generated proof artifacts live
 - `spec_reading_map.md` tells you which proof note or requirement packet to read first for a concrete standards question
 
@@ -56,8 +60,10 @@ That edition inventory covers:
 Use this order:
 
 1. open the 2025 source-side inventory
-2. pick one requirement packet, bounded proof note, or closure ledger
-3. open `verification/README.md` when you need the proof packet or executable evidence side
+2. read `canonical_requirements.json` for the primary row-level requirement surface
+3. read `backend_resolution.json` when backend or route truth differs from canonical status
+4. pick one bounded proof note or generated or legacy projection only when you need a narrower family or historical packet view
+5. open `verification/README.md` when you need the proof packet or executable evidence side
 
 ## Basic Execution Rules
 
@@ -89,8 +95,13 @@ already covers the basic federation-execution state rules:
 
 Primary owner surfaces:
 
+- `requirements/2025/canonical_requirements.json` for the canonical 2025
+  requirement rows
+- `requirements/2025/backend_resolution.json` for the separate backend and
+  route truth across Python, Java/C++, hosted FedPro, and Pitch proto HLA 4 /
+  `202X`
 - `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
-  for the grouped 2025 service disposition rows
+  as a generated legacy projection for row-shaped harmonization review
 - [`../execution_membership_rules.md`](../execution_membership_rules.md) for
   one cross-edition index covering join, destroy, update, delete, query, and
   region-gated not-joined rules
@@ -173,13 +184,16 @@ Use the shared matrix model from
 [`../../plans/requirements_remaining_closure.md`](../../plans/requirements_remaining_closure.md):
 
 - `shards` are the executable ownership units
-- `views` are overlapping audit, harmonization, or finish-line cuts across shards
+- `views` are overlapping audit, harmonization, or closeout-reporting cuts
+  across shards
 - every 2025 requirement bucket should have one narrowest primary shard first
 - widen to hosted or broader lanes only when the requirement claim actually crosses that boundary
 
 For 2025 work, the usual ownership pattern is:
 
 - source packet or harmonization row in [`../../../requirements/2025/README.md`](../../../requirements/2025/README.md)
+- canonical closure row in `requirements/2025/canonical_requirements.json`
+- backend or route split in `requirements/2025/backend_resolution.json`
 - canonical claim or boundary note in one bounded proof note under this directory
 - primary proof shard or lane from [`../../test_surface.md`](../../test_surface.md)
 - generated or executable proof artifact from [`../../verification/README.md`](../../verification/README.md)
@@ -191,17 +205,18 @@ Preferred closure-table columns:
 | `Requirement family` | grouped FI, OMT, framework, binding, or harmonization bucket |
 | `Requirement IDs` | exact 2025 IDs or grouped worklist rows |
 | `Canonical status` | `planned`, `partial`, `covered`, `duplicate/umbrella`, or `retired/legacy-only` |
-| `Backend resolution` | separate backend-resolution columns or a linked backend-resolution artifact such as the harmonization ledger, FI binding matrix, hosted-route boundary note, or `pitch_202x_resolution` field for Pitch's vendor-branded proto HLA 4 / `202X` surface |
+| `Backend resolution` | separate backend-resolution columns or a linked backend-resolution artifact such as `requirements/2025/backend_resolution.json`; older harmonization or binding CSVs are projections, not canonical truth |
 | `Primary shard` | first canonical owning shard |
-| `Widen to` | broader lane only if hosted parity, finish-line, or cross-surface proof is required |
-| `View tags` | overlapping audit cuts such as `transport`, `ownership`, `time`, `java-shim`, `cpp-shim`, `setup-preflight`, or `finish-line` |
+| `Widen to` | broader lane only if hosted parity, closeout reporting, or cross-surface proof is required |
+| `View tags` | overlapping audit cuts such as `transport`, `ownership`, `time`, `java-shim`, `cpp-shim`, `setup-preflight`, or `closeout-reporting` |
 | `Evidence artifact` | bounded proof note, ledger, packet, JSON, or generated route-parity artifact |
 | `Boundary note` | honest supported-scope note when the proof is narrower than the full standard wording |
 
 Practical rule:
 
 - keep 2025 closeout owned by shards
-- use views to answer cross-bucket questions such as transport, bindings, setup, or finish-line coverage
+- use views to answer cross-bucket questions such as transport, bindings,
+  setup, or closeout/export coverage
 - do not let a view replace shard ownership in repo-green, route parity, or requirements status changes
 - keep canonical requirement closure separate from backend or route-specific support
 - when a vendor labels its surface differently, such as Pitch proto HLA 4 / `202X`,
@@ -236,22 +251,27 @@ Current closeout reading:
   denominator unless the repo deliberately funds broader row-by-row proof or
   compatibility work
 
-Use these owner companions for the current honest `100%` program:
+Use these canonical owner companions for the current honest `100%` reading:
 
-- [`../../plans/PLN-004_python_rti_100_percent_compliance_plan.md`](../../plans/PLN-004_python_rti_100_percent_compliance_plan.md)
-- [`../../plans/2025_python_rti_100_percent_worklist.md`](../../plans/2025_python_rti_100_percent_worklist.md)
-- [`../../plans/2025_python_rti_umbrella_decomposition_worklist.md`](../../plans/2025_python_rti_umbrella_decomposition_worklist.md)
-- [`../../plans/requirements_completion_audit.md`](../../plans/requirements_completion_audit.md)
+- [`../../../requirements/2025/canonical_requirements.json`](../../../requirements/2025/canonical_requirements.json)
+- [`../../../requirements/2025/backend_resolution.json`](../../../requirements/2025/backend_resolution.json)
+- [`../../../requirements/2025/harmonization/hla_2025_requirement_coverage_rollup.json`](../../../requirements/2025/harmonization/hla_2025_requirement_coverage_rollup.json)
+- [`../../../requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv`](../../../requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv)
+- [`binding_and_hosted_route_boundaries.md`](binding_and_hosted_route_boundaries.md)
+- [`callback_binding_deltas.md`](callback_binding_deltas.md)
+- [`framework_rules.md`](framework_rules.md)
+- [`retired_legacy_mapping.md`](retired_legacy_mapping.md)
 
 Reading rule:
 
 1. use this README for the canonical 2025 requirement owner map
-2. use `2025_python_rti_100_percent_worklist.md` for the exact non-covered row
-   inventory and denominator rule
-3. use `2025_python_rti_umbrella_decomposition_worklist.md` only if leadership
-   wants literal `691 / 691 covered`
-4. use `requirements_completion_audit.md` for the current honest answer to
-   whether the broader closeout program is actually finished
+2. use `canonical_requirements.json` for the exact row-by-row disposition
+   inventory and owner evidence paths
+3. use `backend_resolution.json` for backend- and route-resolution truth
+4. use `hla_2025_requirement_coverage_rollup.json` for the active denominator
+   and grouped disposition counts
+5. use the linked boundary owner docs when the row is `duplicate/umbrella`,
+   `retired/legacy-only`, or route-limited rather than directly covered
 
 Requirement-test rule:
 
@@ -268,18 +288,19 @@ Use this index when the question is not "what service row proves this?" but
 
 | Bucket | Canonical owner doc | Primary shard | Typical view tags |
 | --- | --- | --- | --- |
-| framework umbrella rows | `framework_rules.md` | `unit-python-2025-core` | `2025-core`, `finish-line`, `scenarios` |
+| framework umbrella rows | `framework_rules.md` | `unit-python-2025-core` | `2025-core`, `closeout-reporting`, `scenarios` |
 | callback/configuration/binding delta umbrellas | `callback_binding_deltas.md` | `unit-shim-tooling` | `2025-core`, `java-shim`, `cpp-shim`, `transport` |
-| binding and hosted-route boundary rows | `binding_and_hosted_route_boundaries.md` | `unit-transport-local` | `2025-core`, `transport`, `finish-line` |
-| Pitch proto HLA 4 / `202X` backend-resolution lane | `pitch_202x_bounded_comparison.md` | `unit-transport-local` | `2025-core`, `transport`, `java-shim`, `finish-line` |
-| legacy-alias and non-claim perimeter around the main runtime lane | `python1516_2025_exclusion_boundaries.md` | `unit-foundation` | `2025-core`, `setup-preflight`, `finish-line` |
+| binding and hosted-route boundary rows | `binding_and_hosted_route_boundaries.md` | `unit-transport-local` | `2025-core`, `transport`, `closeout-reporting` |
+| Pitch proto HLA 4 / `202X` backend-resolution lane | `pitch_202x_bounded_comparison.md` | `unit-transport-local` | `2025-core`, `transport`, `java-shim`, `closeout-reporting` |
+| legacy-alias and non-claim perimeter around the main runtime lane | `python1516_2025_exclusion_boundaries.md` | `unit-foundation` | `2025-core`, `setup-preflight`, `closeout-reporting` |
 | retired and legacy-only mapping rows | `retired_legacy_mapping.md` | `unit-foundation` | `2025-core`, `setup-preflight` |
 
 Reading rule:
 
 1. start with the owner doc above
 2. then open the linked bounded proof or harmonization ledger
-3. only after that widen to route parity, finish-line, or generated packet artifacts
+3. only after that widen to route parity, closeout/reporting exports, or
+   generated packet artifacts
 
 ## Files
 
@@ -361,8 +382,8 @@ requirement-facing evidence map for:
 - explicit bounded-extension, legacy-only, and wrapper-only shim boundaries so
   the main 2025 Python RTI claim stays narrow enough to defend
 - one explicit exclusion map that gathers the non-claim areas around the main
-  `python1516_2025` runtime lane so those boundaries stay auditable outside the
-  generated finish-line bundle
+  `python1516_2025` runtime lane so those boundaries stay auditable outside
+  generated closeout/export bundles
 
 For code ownership, read those proof notes against the extracted
 `hla-backend-python1516-2025` runtime layout rather than against the thin public
@@ -392,10 +413,9 @@ rather than the next missing implementation frontier by itself.
 - [`../../../requirements/2025/README.md`](../../../requirements/2025/README.md)
 - [`../../verification/README.md`](../../verification/README.md)
 - [`../../verification/requirement_compliance_exports.md`](../../verification/requirement_compliance_exports.md)
-- [`../../plans/PLN-004_python_rti_100_percent_compliance_plan.md`](../../plans/PLN-004_python_rti_100_percent_compliance_plan.md)
-- [`../../plans/2025_python_rti_100_percent_worklist.md`](../../plans/2025_python_rti_100_percent_worklist.md)
-- [`../../plans/2025_python_rti_umbrella_decomposition_worklist.md`](../../plans/2025_python_rti_umbrella_decomposition_worklist.md)
-- [`../../plans/requirements_completion_audit.md`](../../plans/requirements_completion_audit.md)
+- [`../../../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`](../../../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv)
+- [`../../../requirements/2025/harmonization/hla_2025_requirement_coverage_rollup.json`](../../../requirements/2025/harmonization/hla_2025_requirement_coverage_rollup.json)
+- [`../../../requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv`](../../../requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv)
 - [`../../plans/requirements_remaining_closure.md`](../../plans/requirements_remaining_closure.md)
 - [`../../test_surface.md`](../../test_surface.md)
 - [`../../spec_reading_map.md`](../../spec_reading_map.md)

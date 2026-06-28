@@ -60,7 +60,12 @@ The export is a secondary presentation layer over canonical repo-owned sources.
 
 ### 2010 / 1516e
 
-Canonical source:
+Canonical sources:
+
+- `requirements/2010/canonical_requirements.json`
+- `requirements/2010/backend_resolution.json`
+
+Generated projection still used by some downstream workflows:
 
 - `analysis/compliance/requirements_matrix_2010.csv`
 
@@ -115,7 +120,12 @@ That keeps manager-facing packet review separate from:
 
 ### 2025 / 1516_2025
 
-Canonical source:
+Canonical sources:
+
+- `requirements/2025/canonical_requirements.json`
+- `requirements/2025/backend_resolution.json`
+
+Generated grouped projection still used by some downstream workflows:
 
 - `requirements/2025/harmonization/hla_2025_harmonization_worklist.csv`
 

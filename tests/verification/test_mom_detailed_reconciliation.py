@@ -4,18 +4,36 @@ import csv
 from collections import Counter
 from pathlib import Path
 
+from hla.verification.repo_internal.requirements import load_2010_reconciliation_rows
 
-RECONCILIATION_PATH = (
-    Path(__file__).resolve().parents[2]
-    / "requirements"
-    / "2010"
-    / "hla1516_1_mom_detailed_reconciliation.csv"
-)
+try:
+    from reconciliation_truth_sources import assert_rows_do_not_use_closeout_truth_sources
+except ModuleNotFoundError:
+    from tests.reconciliation_truth_sources import assert_rows_do_not_use_closeout_truth_sources
+
+
+ROOT = Path(__file__).resolve().parents[2]
+RECONCILIATION_PATH = ROOT / "requirements" / "2010" / "hla1516_1_mom_detailed_reconciliation.csv"
 
 
 def _read_rows() -> list[dict[str, str]]:
     with RECONCILIATION_PATH.open(newline="", encoding="utf-8") as handle:
         return list(csv.DictReader(handle))
+
+
+def _typed_rows_by_id() -> dict[str, object]:
+    return {
+        row.source_requirement_id: row
+        for row in load_2010_reconciliation_rows(
+            ROOT,
+            "requirements/2010/hla1516_1_mom_detailed_reconciliation.csv",
+            "docs/requirements/ieee-1516-2010/support_services_bounded_family.md",
+        )
+    }
+
+
+def _split_refs(refs: str) -> list[str]:
+    return [item.strip() for item in refs.split(";") if item.strip()]
 
 
 def test_mom_detailed_reconciliation_has_expected_shape():
@@ -55,3 +73,14 @@ def test_mom_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-MIM-PARAM-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-MIM-DT-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-MIM_NORMATIVE-020"]["current_status"] == "mapped"
+
+
+def test_mom_rows_preserve_typed_evidence_refs() -> None:
+    typed_rows = _typed_rows_by_id()
+    for row in _read_rows():
+        references = _split_refs(row["current_test_id"])
+        assert typed_rows[row["packet_requirement_id"]].evidence_refs == tuple(references)
+
+
+def test_mom_rows_do_not_use_plan_or_closeout_packets_as_truth_sources() -> None:
+    assert_rows_do_not_use_closeout_truth_sources(_read_rows())

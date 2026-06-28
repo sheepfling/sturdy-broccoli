@@ -6,21 +6,17 @@ import zipfile
 from collections import Counter
 from pathlib import Path
 
+from hla.verification.repo_internal.requirements import load_2010_reconciliation_rows
 
-RECONCILIATION_PATH = (
-    Path(__file__).resolve().parents[2]
-    / "requirements"
-    / "2010"
-    / "hla1516_1_api_detailed_reconciliation.csv"
-)
-CPP_API_ZIP = (
-    Path(__file__).resolve().parents[2]
-    / "specs"
-    / "ieee-1516-2010"
-    / "hla_specs"
-    / "1516.1-2010_downloads"
-    / "IEEE1516-2010_C++_API.zip"
-)
+try:
+    from reconciliation_truth_sources import assert_rows_do_not_use_closeout_truth_sources
+except ModuleNotFoundError:
+    from tests.reconciliation_truth_sources import assert_rows_do_not_use_closeout_truth_sources
+
+
+ROOT = Path(__file__).resolve().parents[2]
+RECONCILIATION_PATH = ROOT / "requirements" / "2010" / "hla1516_1_api_detailed_reconciliation.csv"
+CPP_API_ZIP = ROOT / "specs" / "ieee-1516-2010" / "hla_specs" / "1516.1-2010_downloads" / "IEEE1516-2010_C++_API.zip"
 PROMOTED_CPP_CLASS_CLUSTER = {
     "HLA1516.1-CPP-12_12-DATAELEMENT-258",
     "HLA1516.1-CPP-12_12-ENCODABLEDATATYPE-254",
@@ -82,6 +78,21 @@ PROMOTED_CPP_CLASS_CLUSTER = {
 def _read_rows() -> list[dict[str, str]]:
     with RECONCILIATION_PATH.open(newline="", encoding="utf-8") as handle:
         return list(csv.DictReader(handle))
+
+
+def _typed_rows_by_id() -> dict[str, object]:
+    return {
+        row.source_requirement_id: row
+        for row in load_2010_reconciliation_rows(
+            ROOT,
+            "requirements/2010/hla1516_1_api_detailed_reconciliation.csv",
+            "docs/requirements/ieee-1516-2010/api_binding_bounded_family.md",
+        )
+    }
+
+
+def _split_refs(refs: str) -> list[str]:
+    return [item.strip() for item in refs.split(";") if item.strip()]
 
 
 def test_api_detailed_reconciliation_has_expected_shape():
@@ -180,6 +191,13 @@ def test_api_partial_rows_carry_explicit_canonical_residual_dispositions() -> No
         ]
 
 
+def test_api_rows_preserve_typed_evidence_refs() -> None:
+    typed_rows = _typed_rows_by_id()
+    for row in _read_rows():
+        references = _split_refs(row["current_test_id"])
+        assert typed_rows[row["packet_requirement_id"]].evidence_refs == tuple(references)
+
+
 def test_selected_cpp_catalog_cluster_rows_are_declared_in_the_official_2010_cpp_api_headers() -> None:
     with zipfile.ZipFile(CPP_API_ZIP) as zf:
         names = set(zf.namelist())
@@ -206,3 +224,7 @@ def test_selected_cpp_catalog_cluster_rows_are_declared_in_the_official_2010_cpp
             row["current_test_id"]
             == "tests/verification/test_api_detailed_reconciliation.py::test_selected_cpp_catalog_cluster_rows_are_declared_in_the_official_2010_cpp_api_headers"
         )
+
+
+def test_api_rows_do_not_use_plan_or_closeout_packets_as_truth_sources() -> None:
+    assert_rows_do_not_use_closeout_truth_sources(_read_rows())

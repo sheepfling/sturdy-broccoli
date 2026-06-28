@@ -6,6 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 REQUIREMENTS_TEST_DIR = ROOT / "tests" / "requirements"
 VERIFICATION_TEST_DIR = ROOT / "tests" / "verification"
+TOP_LEVEL_TEST_DIR = ROOT / "tests"
 
 _READ_METHODS = {"read_text", "read_bytes", "open"}
 _FORBIDDEN_EXPR_SNIPPETS = (
@@ -37,6 +38,55 @@ _SELECTED_VERIFICATION_FILES = {
     "test_requirements_ledger_v013.py",
 }
 
+_SELECTED_TOP_LEVEL_POLICY_FILES = {
+    "test_backend_compliance_discovery_policy.py",
+    "test_generated_requirement_dispositions.py",
+}
+
+_SINGLE_SOURCE_SCRIPT_FILES = {
+    "generate_requirement_compliance_spreadsheets.py",
+    "generate_normalized_requirement_artifacts.py",
+}
+
+_FORBIDDEN_SINGLE_SOURCE_SCRIPT_SNIPPETS = (
+    "analysis/compliance/requirements_matrix_2010.csv",
+    "requirements/2025/harmonization/hla_2025_harmonization_worklist.csv",
+    "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv",
+)
+
+_REQUIREMENT_ENTRYPOINT_DOC_EXPECTATIONS = {
+    "docs/requirements/ieee-1516-2010/README.md": (
+        "requirements/2010/canonical_requirements.json",
+        "requirements/2010/backend_resolution.json",
+        "generated or legacy",
+    ),
+    "docs/requirements/ieee-1516-2025/README.md": (
+        "requirements/2025/canonical_requirements.json",
+        "requirements/2025/backend_resolution.json",
+        "generated legacy projection",
+    ),
+    "requirements/2010/README.md": (
+        "canonical_requirements.json",
+        "backend_resolution.json",
+        "generated or legacy",
+    ),
+    "requirements/2025/README.md": (
+        "canonical_requirements.json",
+        "backend_resolution.json",
+        "generated or legacy",
+    ),
+    "requirements/README.md": (
+        "2010/canonical_requirements.json",
+        "2025/canonical_requirements.json",
+        "generated or legacy projections",
+    ),
+    "scripts/README.md": (
+        "requirements/2010/canonical_requirements.json",
+        "requirements/2025/backend_resolution.json",
+        "generated whole-spec 2010 matrix",
+    ),
+}
+
 _FORBIDDEN_VERIFICATION_EXPR_SNIPPETS = (
     "ROOT/'analysis'/'compliance'/'requirements_matrix_2010.csv'",
     "project_root/'analysis'/'compliance'/'requirements_matrix_2010.csv'",
@@ -48,6 +98,9 @@ _FORBIDDEN_VERIFICATION_EXPR_SNIPPETS = (
 
 _FORBIDDEN_VERIFICATION_TEST_NAMES = {
     "test_backend_compliance_catalog_mirrors_generated_requirement_disposition_packet_summaries",
+    "test_committed_vendor_backlog_markdown_matches_json_packet",
+    "test_generated_requirement_disposition_markdown_summary_tables_match_json_packets",
+    "test_generated_requirement_disposition_markdown_row_tables_match_json_packets",
 }
 
 
@@ -154,5 +207,49 @@ def test_selected_verification_tests_do_not_police_checked_in_closeout_packets()
                 expr_text = _resolve_expr(child.func.value, local_assignments)
                 if any(snippet in expr_text for snippet in _FORBIDDEN_VERIFICATION_EXPR_SNIPPETS):
                     violations.append(f"{path.relative_to(ROOT)}::{node.name} -> {expr_text}")
+
+    assert violations == []
+
+
+def test_selected_top_level_policy_tests_do_not_reintroduce_packet_policing_names() -> None:
+    violations: list[str] = []
+
+    for path in sorted(TOP_LEVEL_TEST_DIR.glob("test_*.py")):
+        if path.name not in _SELECTED_TOP_LEVEL_POLICY_FILES:
+            continue
+        module = ast.parse(path.read_text(encoding="utf-8"))
+
+        for node in module.body:
+            if not isinstance(node, ast.FunctionDef):
+                continue
+            if node.name in _FORBIDDEN_VERIFICATION_TEST_NAMES:
+                violations.append(f"{path.relative_to(ROOT)}::{node.name}")
+
+    assert violations == []
+
+
+def test_selected_scripts_use_canonical_requirement_and_backend_json_surfaces() -> None:
+    violations: list[str] = []
+
+    scripts_dir = ROOT / "scripts"
+    for path in sorted(scripts_dir.glob("*.py")):
+        if path.name not in _SINGLE_SOURCE_SCRIPT_FILES:
+            continue
+        text = path.read_text(encoding="utf-8")
+        for snippet in _FORBIDDEN_SINGLE_SOURCE_SCRIPT_SNIPPETS:
+            if snippet in text:
+                violations.append(f"{path.relative_to(ROOT)} -> {snippet}")
+
+    assert violations == []
+
+
+def test_requirement_entrypoint_docs_keep_canonical_json_surfaces_primary() -> None:
+    violations: list[str] = []
+
+    for relative_path, snippets in _REQUIREMENT_ENTRYPOINT_DOC_EXPECTATIONS.items():
+        text = (ROOT / relative_path).read_text(encoding="utf-8")
+        for snippet in snippets:
+            if snippet not in text:
+                violations.append(f"{relative_path} -> missing {snippet}")
 
     assert violations == []

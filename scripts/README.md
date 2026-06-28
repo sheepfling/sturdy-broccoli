@@ -218,7 +218,7 @@ These are reference families, not parallel front doors.
 - `run_two_federate_suite.py`: composite two-federate artifact packet through the repo-level workspace wrapper, including vendor launcher injection when vendor packages are installed plus the trial-safe time-window future-exclusion and restore-state proofs
 - `run_target_radar_backend_matrix.py`: target/radar backend diagnostic packet
 - `run_target_radar_proof.py`: target/radar proof packet
-- `run_spec2025_finish_line.py`: checked-in IEEE 1516.1-2025 finish-line, verification-matrix, and route-parity artifact refresh
+- `run_spec2025_finish_line.py`: checked-in IEEE 1516.1-2025 closeout-reporting, verification-matrix, and route-parity artifact refresh
 - `generate_fom_overview.py`: merged FOM/MIM tree and matrix overview packet, with optional interactive HTML output via `--html`
 - `generate_compliance_artifacts.py`: compliance and requirements packet
 - `update_rti_options_matrix.py`: generated backend-alias section for `docs/rti_options_and_test_matrix.md`
@@ -234,7 +234,11 @@ When `generate_compliance_artifacts.py` finishes, the best operator entrypoints 
 - `analysis/compliance/verification_assets.json`: named verification slices and their evidence
 - `analysis/compliance/verification_traceability.csv`: flat clause-to-asset traceability
 - `analysis/compliance/requirements_ledger.csv`: requirement-level pass/partial/fail ledger
-- `analysis/compliance/requirements_matrix_2010.csv`: whole-spec matrix spanning section areas, service rows, and verification slices
+- `requirements/2010/canonical_requirements.json`: canonical 2010 requirement truth surface
+- `requirements/2010/backend_resolution.json`: canonical 2010 backend-resolution surface
+- `requirements/2025/canonical_requirements.json`: canonical 2025 requirement truth surface
+- `requirements/2025/backend_resolution.json`: canonical 2025 backend-resolution surface
+- `analysis/compliance/requirements_matrix_2010.csv`: generated whole-spec 2010 matrix spanning section areas, service rows, and verification slices
 - `analysis/compliance/python_requirement_disposition.md`: generated Python backend requirement disposition packet
 - `analysis/compliance/certi_requirement_disposition.md`: generated aggregate CERTI family requirement disposition packet
 - `analysis/compliance/certi-native_requirement_disposition.md`: generated explicit CERTI native-runtime requirement disposition packet

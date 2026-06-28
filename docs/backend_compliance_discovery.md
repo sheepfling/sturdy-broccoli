@@ -6,8 +6,9 @@ Use this page when the question is:
 - where vendor parity is passing, partial, divergent, or not yet matrixed
 - which generated artifact to open next for one backend or one spec slice
 
-This page is centered on the generated 2010/vendor compliance packet. It is not
-the main discovery surface for the current IEEE 1516.1-2025 Python RTI
+This page is centered on generated backend/vendor compliance projections. It is
+not itself the primary requirement-truth surface for either edition, and it is
+not the main discovery surface for the current IEEE 1516.1-2025 Python RTI
 closeout.
 
 For the main 2025 Python RTI lane, start instead with:
@@ -64,7 +65,15 @@ Filter the ranked backlog directly:
 ## What The Command Reads
 
 The discovery command does not generate new compliance claims. It reads the
-existing packet and presents it in one place.
+canonical requirement surfaces plus generated compliance projections and
+presents them in one place.
+
+Canonical requirement-truth context:
+
+- `requirements/2010/canonical_requirements.json`
+- `requirements/2010/backend_resolution.json`
+- `requirements/2025/canonical_requirements.json`
+- `requirements/2025/backend_resolution.json`
 
 Primary sources:
 
@@ -121,7 +130,7 @@ After the discovery summary:
 - Open `analysis/compliance/pitch-jpype_requirement_disposition.md` or `analysis/compliance/pitch-py4j_requirement_disposition.md` when you need backend-specific requirement rows for one Pitch bridge profile.
 - Open `analysis/compliance/certi-native_requirement_disposition.md` when you need the generated explicit CERTI native-runtime profile view.
 - Open `analysis/compliance/portico_requirement_disposition.md`, `analysis/compliance/portico-jpype_requirement_disposition.md`, or `analysis/compliance/portico-py4j_requirement_disposition.md` when you need the generated explicit Portico requirement views; the JPype and Py4J profiles currently inherit the same family-level projection because Portico remains install-dependent and no profile-specific requirement evidence is generated yet.
-- Open `analysis/compliance/requirements_matrix_2010.csv` when you need clause and requirement rows with vendor notes merged into the spec catalog.
+- Open `analysis/compliance/requirements_matrix_2010.csv` when you need a generated 2010 clause-and-requirement projection with vendor notes merged into the spec catalog.
 - Open `analysis/compliance/vendor_discovery_backlog.md` when you want the ranked next vendor/backend discovery work across all current artifacts.
 - Open `docs/backend_conformance_matrix.md` when you want the manual clause-level narrative for Python, CERTI, and Pitch.
 
@@ -134,6 +143,12 @@ Recommended loop:
 3. Filter to the backend, section, or priority you care about.
 4. Open the specific matrix or evidence row named by the discovery output.
 5. Implement or rerun the matching focused vendor test only after the artifact view is clear.
+
+Requirement-truth rule:
+
+- change requirement ownership or backend truth in the canonical JSON catalogs first
+- then regenerate or reread the compliance projections
+- do not treat discovery output or generated matrix files as the primary owner surface
 
 ## Best Next Vendor Work
 

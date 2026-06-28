@@ -10,12 +10,16 @@ Start here, then continue into:
 
 1. [`../../../requirements/2010/README.md`](../../../requirements/2010/README.md)
 2. [`../../verification/README.md`](../../verification/README.md)
-3. one focused 2010 source ledger or reconciliation file from the family you care about
+3. [`../../../requirements/2010/canonical_requirements.json`](../../../requirements/2010/canonical_requirements.json)
+4. [`../../../requirements/2010/backend_resolution.json`](../../../requirements/2010/backend_resolution.json)
+5. one focused generated or legacy family projection when you need the older CSV form
 
 Use this reading rule:
 
 - this README is the human-facing front door for the 2010 requirement surface
 - `requirements/2010/README.md` is the collected source-side inventory
+- `requirements/2010/canonical_requirements.json` is the canonical row-level requirement truth for 2010
+- `requirements/2010/backend_resolution.json` is the canonical backend-resolution companion for 2010
 - `verification/README.md` explains where proof packets, clause matrices, and generated evidence live
 
 ## Edition Inventory
@@ -36,8 +40,10 @@ That edition inventory covers:
 Use this order:
 
 1. open the 2010 source-side inventory
-2. pick one requirement family or clause ledger
-3. open `verification/README.md` when you need the proof packet or executable evidence side
+2. read `canonical_requirements.json` for the primary row-level requirement surface
+3. read `backend_resolution.json` when backend truth differs by runtime
+4. pick one generated or legacy family projection only when you need the older clause- or family-specific CSV form
+5. open `verification/README.md` when you need the proof packet or executable evidence side
 
 ## Basic Execution Rules
 
@@ -69,10 +75,15 @@ already covers the basic federation-execution state rules:
 
 Primary owner surfaces:
 
-- `requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv` for the
-  Clause 4 service-level `PRE`, `EFF`, and `EXC` rows
-- `requirements/2010/hla1516_1_fm_detailed_reconciliation.csv` for the
-  canonical 2010 federation-management closure rows
+- `requirements/2010/canonical_requirements.json` for the canonical 2010
+  requirement rows
+- `requirements/2010/backend_resolution.json` for the separate backend truth
+  across Python, CERTI, Portico, Pitch, and shim/runtime variants
+- `requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv` as a
+  generated family projection for Clause 4 service-level `PRE`, `EFF`, and
+  `EXC` rows
+- `requirements/2010/hla1516_1_fm_detailed_reconciliation.csv` as a generated
+  family projection for federation-management closure rows
 - [`../execution_membership_rules.md`](../execution_membership_rules.md) for
   one cross-edition index covering join, destroy, update, delete, query, and
   region-gated not-joined rules
@@ -168,8 +179,8 @@ Use the shared matrix model from
 For 2010 work, the usual ownership pattern is:
 
 - source requirement family in [`../../../requirements/2010/README.md`](../../../requirements/2010/README.md)
-- canonical closure or status row in the family CSV or `traceability_matrix.csv`
-- backend split in a linked companion artifact such as `requirements/2010/hla1516_1_priority_backend_resolution.csv` when backend truth differs by runtime even though the owner row is already closed for the repo-supported claim
+- canonical closure or status row in `requirements/2010/canonical_requirements.json`
+- backend split in `requirements/2010/backend_resolution.json`, with older CSV companions such as `requirements/2010/hla1516_1_priority_backend_resolution.csv` treated as generated or legacy projections when a narrower family view is still useful
 - bounded mixed-backend final-state note in [`mixed_backend_priority_boundaries.md`](mixed_backend_priority_boundaries.md) when the question is how to read those canonical pass rows honestly without flattening vendor divergence
 - framework bounded-family note in [`framework_bounded_family.md`](framework_bounded_family.md) when the question is why the remaining `IEEE 1516-2010` framework rows stay partial even though the neighboring executable service families are already strongly covered
 - bounded support-services family note in [`support_services_bounded_family.md`](support_services_bounded_family.md) when the question is why Clause 10 still has a narrow `PRE/EXC/EXC_API` partial tail even though service, signature, MOM, and main negative-path coverage are already strong
@@ -192,7 +203,7 @@ Preferred closure-table columns:
 | `Requirement family` | clause or capability family being closed |
 | `Requirement IDs` | exact 2010 IDs or grouped clause rows |
 | `Canonical status` | `planned`, `partial`, or `mapped` |
-| `Backend resolution` | separate backend-specific result columns or a linked backend-resolution artifact such as `requirements_matrix_2010.*` or generated backend disposition ledgers |
+| `Backend resolution` | separate backend-specific result columns or a linked backend-resolution artifact such as `requirements/2010/backend_resolution.json`; older matrix or CSV projections are secondary views, not truth |
 | `Primary shard` | first canonical owning shard |
 | `Widen to` | broader lane only if the requirement boundary requires it |
 | `View tags` | overlapping audit cuts such as `ownership`, `time`, `fom-omt`, or `setup-preflight` |
@@ -213,6 +224,8 @@ Use this index when the question is "which single document or ledger owns this
 
 | Bucket | Canonical owner doc | Primary shard | Typical view tags |
 | --- | --- | --- | --- |
+| canonical 2010 requirement catalog | `../../../requirements/2010/canonical_requirements.json` | `edition-wide` | `2010-core`, `source-truth` |
+| canonical 2010 backend-resolution catalog | `../../../requirements/2010/backend_resolution.json` | `edition-wide` | `2010-core`, `backend-resolution` |
 | framework and architecture reconciliation | `../../../requirements/2010/hla1516_framework_detailed_reconciliation.csv` | `unit-foundation` | `2010-core`, `setup-preflight` |
 | framework bounded-family reading | `framework_bounded_family.md` | `unit-foundation` | `2010-core`, `setup-preflight`, `fom-omt` |
 | federation-management clause and family rows | `../../../requirements/2010/hla1516_1_fm_detailed_reconciliation.csv` | `unit-scenarios-light` | `2010-core`, `scenarios`, `save-restore` |
@@ -244,8 +257,8 @@ Use this index when the question is "which single document or ledger owns this
 
 Reading rule:
 
-1. start with the canonical owner doc above
-2. then open the supporting proof artifact or packet from `verification/README.md`
+1. start with the canonical JSON catalogs above when the question is about requirement truth or backend truth
+2. then open the relevant family projection or supporting proof artifact from `verification/README.md`
 3. only after that widen to broader scenario, OMT, or cross-family views
 
 ## Honest 100 Percent Reading

@@ -14,7 +14,7 @@ Start here, in order:
 2. [`../docs/requirements/ieee-1516-2025/README.md`](../docs/requirements/ieee-1516-2025/README.md) for the 2025 edition front door
 3. [`../docs/verification/README.md`](../docs/verification/README.md)
 4. [`../docs/plans/requirements_completion_audit.md`](../docs/plans/requirements_completion_audit.md) when the question is whether the closeout is actually finished yet
-5. this source-side `requirements/` tree when you need the raw ledgers and reconciliation material
+5. this source-side `requirements/` tree when you need the canonical JSON catalogs first, then any generated or legacy projections
 
 The layout is intentionally edition-separated:
 
@@ -28,8 +28,12 @@ Use one of these, then stay inside that edition:
 
 - `2010` human-facing front door: [`../docs/requirements/ieee-1516-2010/README.md`](../docs/requirements/ieee-1516-2010/README.md)
 - `2010` source-side collected inventory: [`2010/README.md`](2010/README.md)
+- `2010` canonical row-level truth: [`2010/canonical_requirements.json`](2010/canonical_requirements.json)
+- `2010` canonical backend-resolution truth: [`2010/backend_resolution.json`](2010/backend_resolution.json)
 - `2025` human-facing front door: [`../docs/requirements/ieee-1516-2025/README.md`](../docs/requirements/ieee-1516-2025/README.md)
 - `2025` source-side collected inventory: [`2025/README.md`](2025/README.md)
+- `2025` canonical row-level truth: [`2025/canonical_requirements.json`](2025/canonical_requirements.json)
+- `2025` canonical backend-resolution truth: [`2025/backend_resolution.json`](2025/backend_resolution.json)
 
 Use it to track the three standards as three requirement sources:
 
@@ -98,7 +102,7 @@ into the committed import tree; see the import README for the policy note.
 
 Use the files together like this:
 
-`requirements/2010/*.csv -> analysis/compliance/requirements_matrix_2010.* -> tests/verification/*`
+`canonical_requirements.json + backend_resolution.json -> generated projections -> tests/verification/*`
 
 ## Honest Test Rule
 
