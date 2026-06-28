@@ -14,14 +14,12 @@ def test_federation_management_partial_tail_current_shape_is_stable() -> None:
     rows = list(csv.DictReader(LEDGER.open(newline="", encoding="utf-8")))
     partial_rows = [row for row in rows if row["current_status"] == "partial"]
 
-    assert len(partial_rows) == 65
+    assert len(partial_rows) == 62
     assert Counter(row["reconciliation_kind"] for row in partial_rows) == {
         "ARG": 42,
-        "CB_ORD": 17,
+        "CB_ORD": 16,
         "EFF": 1,
         "OVW": 3,
-        "CB": 1,
-        "PRE": 1,
     }
 
 
@@ -33,14 +31,12 @@ def test_federation_management_boundary_doc_records_current_family_shape() -> No
     assert "## Default Final Stance" in text
     assert "## Exit Condition" in text
     assert "canonical final reading for the current `CAP-FM`" in text
-    assert "`567 mapped`" in text
-    assert "`65 partial`" in text
+    assert "`570 mapped`" in text
+    assert "`62 partial`" in text
     assert "`42 ARG`" in text
-    assert "`17 CB_ORD`" in text
+    assert "`16 CB_ORD`" in text
     assert "`1 EFF`" in text
     assert "`3 OVW`" in text
-    assert "`1 CB`" in text
-    assert "`1 PRE`" in text
     assert "`./tools/test-focus run execution-membership`" in text
     assert "`./tools/test-focus run backends`" in text
     assert "`./tools/test-surface run unit-scenarios-light`" in text
@@ -63,8 +59,10 @@ def test_federation_management_boundary_doc_records_current_family_shape() -> No
     assert "Lost-connection callback/fault-surface tail" in text
     assert "argument-harmonization tail" in text
     assert "direct runtime `connectionLost` callback delivery" in text
+    assert "direct joined-live precondition coverage and callback-model dispatch" in text
     assert "direct `RTIinternalError` coverage for corrupted `listFederationExecutions`" in text
     assert "test_force_federate_loss_delivers_connection_lost_and_clears_execution_membership" in text
+    assert "test_force_federate_loss_requires_joined_live_victim_and_honors_callback_model" in text
     assert "test_connection_lost_and_report_federation_executions_wrap_callback_failures_as_federate_internal_error" in text
     assert "test_list_federation_executions_is_observable_through_mom_service_invocation_reporting" in text
     assert "test_list_federation_executions_surfaces_rti_internal_error_for_corrupt_runtime_state" in text

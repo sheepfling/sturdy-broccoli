@@ -165,6 +165,52 @@ def test_force_federate_loss_delivers_connection_lost_and_clears_execution_membe
     assert summary["removal"].args[0] == summary["object_instance"]
 
 
+def test_force_federate_loss_requires_joined_live_victim_and_honors_callback_model():
+    engine = InMemoryRTIEngine()
+
+    observer = rti_ambassador(engine=engine)
+    observer.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    observer.create_federation_execution("loss-callback-model-fed", "TargetRadarFOMmodule.xml")
+    observer.join_federation_execution("observer", "type-a", "loss-callback-model-fed")
+
+    evoked_victim = rti_ambassador(engine=engine)
+    evoked_fed = RecordingFederateAmbassador()
+    evoked_victim.connect(evoked_fed, CallbackModel.HLA_EVOKED)
+    evoked_handle = evoked_victim.join_federation_execution("victim-evoked", "type-b", "loss-callback-model-fed")
+
+    observer.backend.force_federate_loss(evoked_handle, "evoked loss")
+    assert evoked_fed.last_callback("connectionLost") is None
+    drain(observer, evoked_victim)
+    assert evoked_fed.last_callback("connectionLost").args == ("evoked loss",)
+
+    immediate_victim = rti_ambassador(engine=engine)
+    immediate_fed = RecordingFederateAmbassador()
+    immediate_victim.connect(immediate_fed, CallbackModel.HLA_IMMEDIATE)
+    immediate_handle = immediate_victim.join_federation_execution("victim-immediate", "type-c", "loss-callback-model-fed")
+
+    observer.backend.force_federate_loss(immediate_handle, "immediate loss")
+    assert immediate_fed.last_callback("connectionLost").args == ("immediate loss",)
+
+    with pytest.raises(FederateNotExecutionMember):
+        observer.backend.force_federate_loss(immediate_handle, "immediate loss retry")
+    assert [record.args for record in immediate_fed.callbacks_named("connectionLost")] == [("immediate loss",)]
+
+    stray = rti_ambassador(engine=engine)
+    stray.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    stray_handle = stray.join_federation_execution("victim-stray", "type-d", "loss-callback-model-fed")
+    stray.resign_federation_execution(ResignAction.NO_ACTION)
+    stray.disconnect()
+
+    with pytest.raises(FederateNotExecutionMember):
+        observer.backend.force_federate_loss(stray_handle, "disconnected loss")
+
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.destroy_federation_execution("loss-callback-model-fed")
+    observer.disconnect()
+    evoked_victim.disconnect()
+    immediate_victim.disconnect()
+
+
 @pytest.mark.requirements("HLA1516.1-FM-4.3-001")
 def test_disconnect_is_observable_through_mom_service_invocation_reporting():
     engine, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("fm-disconnect-mom-report-fed")

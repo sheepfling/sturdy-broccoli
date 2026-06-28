@@ -79,21 +79,19 @@ keep describing `CAP-FM` as vague or structurally unfinished.
 
 The current owner ledger has `632` federation-management packet rows:
 
-- `567 mapped`
-- `65 partial`
+- `570 mapped`
+- `62 partial`
 
-The remaining `65 partial` rows cluster into stable categories:
+The remaining `62 partial` rows cluster into stable categories:
 
 - `42 ARG`
-- `17 CB_ORD`
+- `16 CB_ORD`
 - `1 EFF`
 - `5` residual overview, callback-surface, or traceability-bounded rows
 
 Residual bounded row kinds in that last group:
 
 - `3 OVW`
-- `1 CB`
-- `1 PRE`
 
 ## What The Categories Mean
 
@@ -110,8 +108,8 @@ This is the current argument-harmonization tail for `CAP-FM`.
 
 ### Lost-connection callback/fault-surface tail
 
-The small `EFF`, `CB`, and `PRE` remainder is now concentrated around the
-connection-lost surface.
+The small `EFF` remainder is now concentrated around the connection-lost
+surface.
 
 Typical pattern:
 
@@ -124,7 +122,7 @@ Typical pattern:
 
 ### Callback-order breadth tail
 
-The `17 CB_ORD` rows are mostly callback-order or callback-model breadth rows.
+The `16 CB_ORD` rows are mostly callback-order or callback-model breadth rows.
 
 These are not callback-delivery gaps.
 They are rows where:
@@ -157,6 +155,8 @@ including:
 - save and restore request, status, outcome, abort, and callback families
 - direct runtime `connectionLost` callback delivery, lost-federate MOM
   reporting, and post-loss execution-membership teardown
+- direct joined-live precondition coverage and callback-model dispatch
+  coverage for `connectionLost`
 - direct callback-failure wrapping for `connectionLost` and
   `reportFederationExecutions`, plus MOM service-reporting visibility for
   `listFederationExecutions`
@@ -174,6 +174,7 @@ Primary evidence anchors:
 
 - `tests/backends/test_python_backend_federation_extended.py`
 - `tests/backends/test_python_backend_federation_extended.py::test_force_federate_loss_delivers_connection_lost_and_clears_execution_membership`
+- `tests/backends/test_python_backend_federation_extended.py::test_force_federate_loss_requires_joined_live_victim_and_honors_callback_model`
 - `tests/backends/test_python_backend_federation_extended.py::test_connection_lost_and_report_federation_executions_wrap_callback_failures_as_federate_internal_error`
 - `tests/backends/test_python_backend_federation_extended.py::test_list_federation_executions_is_observable_through_mom_service_invocation_reporting`
 - `tests/backends/test_python_backend_federation_extended.py::test_list_federation_executions_surfaces_rti_internal_error_for_corrupt_runtime_state`

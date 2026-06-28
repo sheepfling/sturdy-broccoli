@@ -53,7 +53,7 @@ def test_fm_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 632
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 567, "partial": 65}
+        {"mapped": 570, "partial": 62}
     )
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
@@ -70,9 +70,12 @@ def test_fm_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-FM-4_3-RTIAPI-001-MOM"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_4-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_4-ARG-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_4-CB-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_4-EXC-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_4-FEDCB-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_4-FEDCB-001-ORD"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_4-FEDCB-001-SIG"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-FM-4_4-PRE-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_7-EXC-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_7-EXC-002"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_7-RTIAPI-001-MOM"]["current_status"] == "mapped"
@@ -109,6 +112,31 @@ def test_fm_connection_lost_rows_point_to_direct_runtime_loss_witness() -> None:
     assert partial_row["current_status"] == "partial"
     assert partial_row["current_test_id"] == direct_test
     assert "does not prove a full disconnected-state transition" in partial_row["notes"]
+
+
+def test_fm_connection_lost_precondition_and_callback_model_rows_use_direct_backend_witness() -> None:
+    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    model_test = (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_force_federate_loss_requires_joined_live_victim_and_honors_callback_model"
+    )
+
+    for packet_id in (
+        "HLA1516.1-FM-4_4-CB-001",
+        "HLA1516.1-FM-4_4-FEDCB-001-ORD",
+        "HLA1516.1-FM-4_4-PRE-001",
+    ):
+        row = rows[packet_id]
+        assert row["current_status"] == "mapped"
+        if packet_id == "HLA1516.1-FM-4_4-CB-001":
+            assert row["current_test_id"] == (
+                model_test
+                + ";tests/verification/test_spec_traceability_all_methods.py::"
+                "test_all_generated_ambassador_methods_are_section_mapped"
+            )
+        else:
+            assert row["current_test_id"] == model_test
+        assert row["notes"].startswith("Direct ")
 
 
 def test_fm_list_and_report_exception_and_mom_rows_use_direct_backend_witnesses() -> None:
