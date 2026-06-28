@@ -14,10 +14,9 @@ def test_federation_management_partial_tail_current_shape_is_stable() -> None:
     rows = list(csv.DictReader(LEDGER.open(newline="", encoding="utf-8")))
     partial_rows = [row for row in rows if row["current_status"] == "partial"]
 
-    assert len(partial_rows) == 2
+    assert len(partial_rows) == 1
     assert Counter(row["reconciliation_kind"] for row in partial_rows) == {
         "ARG": 1,
-        "OVW": 1,
     }
 
 
@@ -29,11 +28,10 @@ def test_federation_management_boundary_doc_records_current_family_shape() -> No
     assert "## Default Final Stance" in text
     assert "## Exit Condition" in text
     assert "canonical final reading for the current `CAP-FM`" in text
-    assert "`630 mapped`" in text
-    assert "`2 partial`" in text
+    assert "`631 mapped`" in text
+    assert "`1 partial`" in text
     assert "`1 ARG`" in text
-    assert "`1 OVW`" in text
-    assert "The last `2` rows are the small bounded remainder:" in text
+    assert "The last `1` row is the small bounded remainder:" in text
     assert "`./tools/test-focus run execution-membership`" in text
     assert "`./tools/test-focus run backends`" in text
     assert "`./tools/test-surface run unit-scenarios-light`" in text
@@ -61,11 +59,14 @@ def test_federation_management_boundary_doc_records_current_family_shape() -> No
     assert "direct runtime `connectionLost` callback delivery" in text
     assert "direct connected, joined, resigned, and disconnected lifecycle-state" in text
     assert "direct current-FDD maintenance with supplied FOM modules plus accepted" in text
+    assert "direct lost-federate automatic-resign cleanup for pending acquisitions" in text
     assert "direct disconnected-state transition after `connectionLost` delivery" in text
     assert "direct joined-live precondition coverage and callback-model dispatch" in text
     assert "direct `RTIinternalError` coverage for corrupted `listFederationExecutions`" in text
     assert "test_force_federate_loss_delivers_connection_lost_and_clears_execution_membership" in text
     assert "test_force_federate_loss_requires_joined_live_victim_and_honors_callback_model" in text
+    assert "test_force_federate_loss_honors_cancel_delete_divest_automatic_resign_cleanup" in text
+    assert "test_force_federate_loss_honors_unconditional_divest_automatic_resign_cleanup" in text
     assert "test_federation_management_lifecycle_states_cover_connected_joined_resigned_and_disconnected" in text
     assert "test_create_federation_execution_maintains_current_fdd_modules_and_standard_mim" in text
     assert "test_connection_lost_and_report_federation_executions_wrap_callback_failures_as_federate_internal_error" in text

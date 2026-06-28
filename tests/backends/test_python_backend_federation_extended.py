@@ -216,6 +216,120 @@ def test_force_federate_loss_requires_joined_live_victim_and_honors_callback_mod
     observer.disconnect()
 
 
+def test_force_federate_loss_honors_cancel_delete_divest_automatic_resign_cleanup():
+    engine = InMemoryRTIEngine()
+
+    source = rti_ambassador(engine=engine)
+    observer = rti_ambassador(engine=engine)
+    victim = rti_ambassador(engine=engine)
+    source.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    observer.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    victim.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+
+    source.create_federation_execution("loss-cancel-delete-fed", "TargetRadarFOMmodule.xml")
+    source.join_federation_execution("source", "type-a", "loss-cancel-delete-fed")
+    observer.join_federation_execution("observer", "type-b", "loss-cancel-delete-fed")
+    victim_handle = victim.join_federation_execution("victim", "type-c", "loss-cancel-delete-fed")
+    federation = source.backend.state.federation
+    assert federation is not None
+
+    cls = source.get_object_class_handle("HLAobjectRoot.Target")
+    attr = source.get_attribute_handle(cls, "Position")
+    dim = source.get_dimension_handle("HLAdefaultRoutingSpace")
+
+    source.publish_object_class_attributes(cls, {attr})
+    victim.publish_object_class_attributes(cls, {attr})
+    observer.subscribe_object_class_attributes(cls, {attr})
+    victim.subscribe_object_class_attributes(cls, {attr})
+
+    source_obj = source.register_object_instance(cls, "Loss-Pending-Acquisition")
+    victim_obj = victim.register_object_instance(cls, "Loss-Owned-Delete")
+    drain(source, observer, victim)
+
+    victim.attribute_ownership_acquisition(source_obj, {attr}, b"req")
+    drain(source, observer, victim)
+    assert victim_handle in federation.objects[source_obj].attribute_candidates[attr]
+
+    victim_region = victim.create_region({dim})
+    victim.set_range_bounds(victim_region, dim, RangeBounds(1, 5))
+    victim.commit_region_modifications({victim_region})
+    victim.subscribe_object_class_attributes_with_regions(
+        cls,
+        [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({victim_region}))],
+    )
+
+    victim.set_automatic_resign_directive(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
+    observer.backend.force_federate_loss(victim_handle, "cancel/delete/divest loss")
+    drain(source, observer)
+    try:
+        victim.evoke_multiple_callbacks(0.0, 0.0)
+    except NotConnected:
+        pass
+
+    assert victim.backend.state.handle is None
+    assert victim.backend.state.federation is None
+    assert victim.backend.state.regions == {}
+    assert victim.backend.state.object_region_subscriptions == {}
+    assert victim.backend.state.interaction_region_subscriptions == {}
+    assert victim_handle not in federation.federates
+    assert victim_region not in federation.region_owners
+    assert source_obj in federation.objects
+    assert victim_obj not in federation.objects
+    assert federation.objects[source_obj].attribute_candidates.get(attr, set()) == set()
+
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    source.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    source.destroy_federation_execution("loss-cancel-delete-fed")
+    observer.disconnect()
+    source.disconnect()
+
+
+def test_force_federate_loss_honors_unconditional_divest_automatic_resign_cleanup():
+    engine = InMemoryRTIEngine()
+
+    observer = rti_ambassador(engine=engine)
+    victim = rti_ambassador(engine=engine)
+    observer_fed = RecordingFederateAmbassador()
+    observer.connect(observer_fed, CallbackModel.HLA_EVOKED)
+    victim.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+
+    observer.create_federation_execution("loss-divest-fed", "TargetRadarFOMmodule.xml")
+    observer.join_federation_execution("observer", "type-a", "loss-divest-fed")
+    victim_handle = victim.join_federation_execution("victim", "type-b", "loss-divest-fed")
+    federation = observer.backend.state.federation
+    assert federation is not None
+
+    cls = victim.get_object_class_handle("HLAobjectRoot.Target")
+    attr = victim.get_attribute_handle(cls, "Position")
+    victim.publish_object_class_attributes(cls, {attr})
+    observer.subscribe_object_class_attributes(cls, {attr})
+    obj = victim.register_object_instance(cls, "Loss-Unconditional-Divest")
+    drain(observer, victim)
+
+    victim.set_automatic_resign_directive(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
+    observer.backend.force_federate_loss(victim_handle, "unconditional-divest loss")
+    drain(observer)
+    try:
+        victim.evoke_multiple_callbacks(0.0, 0.0)
+    except NotConnected:
+        pass
+
+    observer.query_attribute_ownership(obj, attr)
+    drain(observer)
+
+    assert obj in federation.objects
+    assert federation.objects[obj].attribute_owners.get(attr) is None
+    assert observer_fed.last_callback("attributeIsNotOwned") is not None
+    assert observer_fed.last_callback("attributeIsNotOwned").args == (obj, attr)
+    assert victim.backend.state.handle is None
+    assert victim.backend.state.federation is None
+    assert victim_handle not in federation.federates
+
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.destroy_federation_execution("loss-divest-fed")
+    observer.disconnect()
+
+
 @pytest.mark.requirements("HLA1516.1-FM-4.3-001")
 def test_disconnect_is_observable_through_mom_service_invocation_reporting():
     engine, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("fm-disconnect-mom-report-fed")

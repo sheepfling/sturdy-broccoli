@@ -79,17 +79,16 @@ keep describing `CAP-FM` as vague or structurally unfinished.
 
 The current owner ledger has `632` federation-management packet rows:
 
-- `630 mapped`
-- `2 partial`
+- `631 mapped`
+- `1 partial`
 
-The remaining `2 partial` rows cluster into stable categories:
+The remaining `1 partial` row clusters into a stable category:
 
 - `1 ARG`
-- `1 OVW`
 
 Residual bounded row kinds in that last group:
 
-- `1 OVW`
+- none
 
 ## What The Categories Mean
 
@@ -110,13 +109,14 @@ directly mapped for the current Python 2010 lane.
 
 ### Residual overview and harmonization tail
 
-The last `2` rows are the small bounded remainder:
+The last `1` row is the small bounded remainder:
 
-- one broad lost-federate overview row
 - one create-time logical-time-default argument row
 
-These rows are already explicit enough to review honestly, but they are not yet
-standalone exhaustive service proofs.
+The lost-federate overview row is now directly mapped through loss-trigger,
+callback-model, membership-teardown, pending-acquisition-cancellation, owned-
+object-delete, and unconditional-divest cleanup witnesses. The only remaining
+bounded FM row is the create-time logical-time-default argument mismatch.
 
 ## What Is Already Proved
 
@@ -130,6 +130,8 @@ including:
 - direct runtime `connectionLost` callback delivery, lost-federate MOM
   reporting, post-loss execution-membership teardown, and direct
   disconnected-state transition after `connectionLost` delivery
+- direct lost-federate automatic-resign cleanup for pending acquisitions,
+  owned-object deletion, and unconditional attribute divestiture
 - direct connected, joined, resigned, and disconnected lifecycle-state
   management for the Python 2010 lane
 - direct current-FDD maintenance with supplied FOM modules plus accepted
@@ -157,6 +159,8 @@ Primary evidence anchors:
 - `tests/backends/test_python_backend_federation_extended.py`
 - `tests/backends/test_python_backend_federation_extended.py::test_force_federate_loss_delivers_connection_lost_and_clears_execution_membership`
 - `tests/backends/test_python_backend_federation_extended.py::test_force_federate_loss_requires_joined_live_victim_and_honors_callback_model`
+- `tests/backends/test_python_backend_federation_extended.py::test_force_federate_loss_honors_cancel_delete_divest_automatic_resign_cleanup`
+- `tests/backends/test_python_backend_federation_extended.py::test_force_federate_loss_honors_unconditional_divest_automatic_resign_cleanup`
 - `tests/backends/test_python_backend_federation_extended.py::test_federation_management_lifecycle_states_cover_connected_joined_resigned_and_disconnected`
 - `tests/backends/test_python_backend_federation_extended.py::test_create_federation_execution_maintains_current_fdd_modules_and_standard_mim`
 - `tests/backends/test_python_backend_federation_extended.py::test_connection_lost_and_report_federation_executions_wrap_callback_failures_as_federate_internal_error`

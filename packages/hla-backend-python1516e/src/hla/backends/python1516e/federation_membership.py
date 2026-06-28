@@ -110,6 +110,122 @@ def _parse_join_args(args: tuple[Any, ...]) -> tuple[str, str, str, tuple[Any, .
 class PythonRTIFederationMembershipMixin(_FederationMembershipMixinBase):
     """Federation join/resign services."""
 
+    def _apply_departure_resign_action(
+        self,
+        federation: "FederationState",
+        federate: "FederateState",
+        action_name: str,
+        *,
+        removal_tag: bytes,
+    ) -> None:
+        handle = federate.handle
+        assert handle is not None
+        cancel_pending_acquisition_actions = {
+            "CANCEL_PENDING_OWNERSHIP_ACQUISITIONS",
+            "CANCEL_THEN_DELETE_THEN_DIVEST",
+        }
+        owns_attributes = False
+        acquisition_pending = False
+        for obj in federation.objects.values():
+            if any(handle in candidates for candidates in obj.attribute_candidates.values()):
+                acquisition_pending = True
+                break
+            if obj.owner == handle:
+                owns_attributes = True
+                break
+            if any(owner == handle for owner in obj.attribute_owners.values()):
+                owns_attributes = True
+                break
+        if acquisition_pending and action_name not in cancel_pending_acquisition_actions:
+            raise OwnershipAcquisitionPending(repr(handle))
+        if acquisition_pending:
+            for obj in federation.objects.values():
+                stale_attrs = []
+                for attr, candidates in obj.attribute_candidates.items():
+                    if handle in candidates:
+                        candidates.discard(handle)
+                        if not candidates:
+                            stale_attrs.append(attr)
+                for attr in stale_attrs:
+                    obj.attribute_candidates.pop(attr, None)
+        delete_object_actions = {
+            "DELETE_OBJECTS",
+            "DELETE_OBJECTS_THEN_DIVEST",
+            "CANCEL_THEN_DELETE_THEN_DIVEST",
+        }
+        attribute_divesting_actions = {
+            "UNCONDITIONALLY_DIVEST_ATTRIBUTES",
+            "DELETE_OBJECTS_THEN_DIVEST",
+            "CANCEL_THEN_DELETE_THEN_DIVEST",
+        }
+        if owns_attributes and action_name not in (delete_object_actions | attribute_divesting_actions):
+            raise FederateOwnsAttributes(repr(handle))
+        if action_name in delete_object_actions:
+            to_remove = [obj for obj in federation.objects.values() if obj.owner == handle]
+            for obj in to_remove:
+                self._remove_object(obj, removal_tag)
+        if action_name in attribute_divesting_actions:
+            for obj in tuple(federation.objects.values()):
+                object_def = self.engine.object_class_for_handle(obj.class_handle)
+                owned_attrs = {
+                    attr
+                    for attr in object_def.attribute_names
+                    if obj.attribute_owners.get(attr, obj.owner) == handle
+                }
+                for attr in owned_attrs:
+                    old_owner = obj.attribute_owners.get(attr, obj.owner)
+                    if self._attribute_has_candidates(obj, attr):
+                        new_owner = self._pop_first_candidate(obj, attr)
+                        self._complete_immediate_attribute_transfer(
+                            federation,
+                            obj,
+                            attr,
+                            new_owner,
+                            old_owner=old_owner,
+                            acquisition_tag=b"",
+                            notify_previous_owner=False,
+                        )
+                    else:
+                        obj.attribute_owners[attr] = None
+                        obj.attribute_divesting.discard(attr)
+
+    def _finalize_departed_federate_membership(
+        self,
+        federation: "FederationState",
+        federate: "FederateState",
+    ) -> None:
+        handle = federate.handle
+        assert handle is not None
+        self._remove_federate_from_synchronization_points(federation, handle)
+        mom_handle = federation.mom_federate_objects.pop(handle, None)
+        if mom_handle is not None:
+            mom_instance = federation.objects.pop(mom_handle, None)
+            if mom_instance is not None:
+                federation.object_names.pop(mom_instance.name, None)
+        for region in tuple(federate.regions):
+            federation.region_owners.pop(region, None)
+        federation.federates.pop(handle, None)
+        self._process_time_advances(federation)
+        self._refresh_all_mom_objects(federation, notify=True)
+        federate.last_reporting_handle = handle
+        federate.last_reporting_name = federate.name
+        federate.last_reporting_federation = federation
+        federate.handle = None
+        federate.name = None
+        federate.federate_type = None
+        federate.federation = None
+        federate.published_objects.clear()
+        federate.subscribed_objects.clear()
+        federate.registration_interest_classes.clear()
+        federate.published_interactions.clear()
+        federate.subscribed_interactions.clear()
+        federate.interaction_interest_classes.clear()
+        federate.regions.clear()
+        federate.region_bounds.clear()
+        federate.update_regions.clear()
+        federate.object_region_subscriptions.clear()
+        federate.interaction_region_subscriptions.clear()
+
     def _svc_joinFederationExecution(self, *args: Any) -> FederateHandle:
         self._require_connected()
         if self.state.handle is not None:
@@ -174,88 +290,10 @@ class PythonRTIFederationMembershipMixin(_FederationMembershipMixinBase):
 
             raise InvalidResignAction(repr(resignAction))
         action_name = self._enum_name(resignAction)
-        handle = self.state.handle
-        assert handle is not None
-        cancel_pending_acquisition_actions = {
-            "CANCEL_PENDING_OWNERSHIP_ACQUISITIONS",
-            "CANCEL_THEN_DELETE_THEN_DIVEST",
-        }
-        owns_attributes = False
-        acquisition_pending = False
-        for obj in federation.objects.values():
-            if any(handle in candidates for candidates in obj.attribute_candidates.values()):
-                acquisition_pending = True
-                break
-            if obj.owner == handle:
-                owns_attributes = True
-                break
-            if any(owner == handle for owner in obj.attribute_owners.values()):
-                owns_attributes = True
-                break
-        if acquisition_pending and action_name not in cancel_pending_acquisition_actions:
-            raise OwnershipAcquisitionPending(repr(handle))
-        if acquisition_pending:
-            for obj in federation.objects.values():
-                stale_attrs = []
-                for attr, candidates in obj.attribute_candidates.items():
-                    if handle in candidates:
-                        candidates.discard(handle)
-                        if not candidates:
-                            stale_attrs.append(attr)
-                for attr in stale_attrs:
-                    obj.attribute_candidates.pop(attr, None)
-        delete_object_actions = {
-            "DELETE_OBJECTS",
-            "DELETE_OBJECTS_THEN_DIVEST",
-            "CANCEL_THEN_DELETE_THEN_DIVEST",
-        }
-        attribute_divesting_actions = {
-            "UNCONDITIONALLY_DIVEST_ATTRIBUTES",
-            "DELETE_OBJECTS_THEN_DIVEST",
-            "CANCEL_THEN_DELETE_THEN_DIVEST",
-        }
-        if owns_attributes and action_name not in (delete_object_actions | attribute_divesting_actions):
-            raise FederateOwnsAttributes(repr(handle))
-        if action_name in delete_object_actions:
-            to_remove = [obj for obj in federation.objects.values() if obj.owner == handle]
-            for obj in to_remove:
-                self._remove_object(obj, b"resign")
-        if action_name in attribute_divesting_actions:
-            for obj in tuple(federation.objects.values()):
-                object_def = self.engine.object_class_for_handle(obj.class_handle)
-                owned_attrs = {
-                    attr
-                    for attr in object_def.attribute_names
-                    if obj.attribute_owners.get(attr, obj.owner) == handle
-                }
-                if owned_attrs:
-                    self._svc_unconditionalAttributeOwnershipDivestiture(obj.handle, owned_attrs)
-        self._remove_federate_from_synchronization_points(federation, handle)
-        mom_handle = federation.mom_federate_objects.pop(handle, None)
-        if mom_handle is not None:
-            mom_instance = federation.objects.pop(mom_handle, None)
-            if mom_instance is not None:
-                federation.object_names.pop(mom_instance.name, None)
-        for region in tuple(self.state.regions):
-            federation.region_owners.pop(region, None)
-        federation.federates.pop(handle, None)
-        self._process_time_advances(federation)
-        self._refresh_all_mom_objects(federation, notify=True)
-        self.state.last_reporting_handle = handle
-        self.state.last_reporting_name = self.state.name
-        self.state.last_reporting_federation = federation
-        self.state.handle = None
-        self.state.name = None
-        self.state.federate_type = None
-        self.state.federation = None
-        self.state.published_objects.clear()
-        self.state.subscribed_objects.clear()
-        self.state.registration_interest_classes.clear()
-        self.state.published_interactions.clear()
-        self.state.subscribed_interactions.clear()
-        self.state.interaction_interest_classes.clear()
-        self.state.regions.clear()
-        self.state.region_bounds.clear()
-        self.state.update_regions.clear()
-        self.state.object_region_subscriptions.clear()
-        self.state.interaction_region_subscriptions.clear()
+        self._apply_departure_resign_action(
+            federation,
+            self.state,
+            action_name,
+            removal_tag=b"resign",
+        )
+        self._finalize_departed_federate_membership(federation, self.state)

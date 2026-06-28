@@ -220,43 +220,29 @@ class PythonRTIBackend(
             },
         )
 
-        if action_name in {
-            "DELETE_OBJECTS",
-            "DELETE_OBJECTS_THEN_DIVEST",
-            "CANCEL_THEN_DELETE_THEN_DIVEST",
-        }:
-            to_remove = [obj for obj in federation.objects.values() if obj.owner == lost_handle]
-            for obj in to_remove:
-                self._remove_object_with_producer(
-                    federation,
-                    obj,
-                    b"lost",
-                    producing_federate=lost_handle,
-                )
+        original_remove_object = self._remove_object
 
-        self._remove_federate_from_synchronization_points(federation, lost_handle)
-        mom_handle = federation.mom_federate_objects.pop(lost_handle, None)
-        if mom_handle is not None:
-            mom_instance = federation.objects.pop(mom_handle, None)
-            if mom_instance is not None:
-                federation.object_names.pop(mom_instance.name, None)
-        federation.federates.pop(lost_handle, None)
-        self._process_time_advances(federation)
-        self._refresh_all_mom_objects(federation, notify=True)
+        def _remove_object_with_loss_producer(instance: Any, tag: bytes, *, timestamp: Any | None = None, retraction_handle: Any | None = None) -> None:
+            self._remove_object_with_producer(
+                federation,
+                instance,
+                tag,
+                timestamp=timestamp,
+                retraction_handle=retraction_handle,
+                producing_federate=lost_handle,
+            )
 
-        target.last_reporting_handle = lost_handle
-        target.last_reporting_name = lost_name
-        target.last_reporting_federation = federation
-        target.handle = None
-        target.name = None
-        target.federate_type = None
-        target.federation = None
-        target.published_objects.clear()
-        target.subscribed_objects.clear()
-        target.registration_interest_classes.clear()
-        target.published_interactions.clear()
-        target.subscribed_interactions.clear()
-        target.interaction_interest_classes.clear()
+        self._remove_object = _remove_object_with_loss_producer
+        try:
+            self._apply_departure_resign_action(
+                federation,
+                target,
+                action_name,
+                removal_tag=b"lost",
+            )
+        finally:
+            self._remove_object = original_remove_object
+        self._finalize_departed_federate_membership(federation, target)
 
     def _finalize_connection_lost_disconnect(self, federate: FederateState) -> None:
         federate.disconnect_pending_after_connection_lost = False

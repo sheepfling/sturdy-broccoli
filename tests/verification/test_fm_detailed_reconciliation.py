@@ -53,7 +53,7 @@ def test_fm_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 632
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 630, "partial": 2}
+        {"mapped": 631, "partial": 1}
     )
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
@@ -210,11 +210,15 @@ def test_fm_remaining_create_time_argument_partial_is_explicitly_narrowed() -> N
     assert "overclaims an unconditional omitted-argument fallback to HLAfloat64Time" in row["notes"]
 
 
-def test_fm_lost_federate_overview_remains_the_only_residual_overview_partial() -> None:
+def test_fm_create_time_argument_row_is_the_only_remaining_partial() -> None:
     rows = {candidate["packet_requirement_id"]: candidate for candidate in _read_rows()}
 
-    assert rows["HLA1516.1-FM-OVERVIEW-003"]["current_status"] == "partial"
-    assert "framework-level lost-federate consequence" in rows["HLA1516.1-FM-OVERVIEW-003"]["notes"]
+    partial_ids = {
+        packet_id
+        for packet_id, row in rows.items()
+        if row["current_status"] == "partial"
+    }
+    assert partial_ids == {"HLA1516.1-FM-4_5-ARG-004"}
 
 
 def test_fm_callback_order_rows_use_direct_callback_model_witnesses() -> None:
@@ -326,10 +330,8 @@ def test_fm_overview_rows_anchor_to_owner_surface_plus_live_evidence() -> None:
     assert "supplied FOM modules together with an accepted standard MIM surface" in modules_row["notes"]
 
     lost_row = rows["HLA1516.1-FM-OVERVIEW-003"]
-    assert lost_row["current_status"] == "partial"
+    assert lost_row["current_status"] == "mapped"
     lost_refs = {item.strip() for item in lost_row["current_test_id"].split(";") if item.strip()}
-    assert "docs/requirements/ieee-1516-2010/federation_management_bounded_family.md" in lost_refs
-    assert "requirements/2010/hla1516_framework_detailed_reconciliation.csv" in lost_refs
     assert (
         "tests/backends/test_python_backend_federation_extended.py::"
         "test_force_federate_loss_delivers_connection_lost_and_clears_execution_membership"
@@ -338,7 +340,15 @@ def test_fm_overview_rows_anchor_to_owner_surface_plus_live_evidence() -> None:
         "tests/backends/test_python_backend_federation_extended.py::"
         "test_force_federate_loss_requires_joined_live_victim_and_honors_callback_model"
     ) in lost_refs
-    assert "not every framework-level lost-federate consequence is isolated" in lost_row["notes"]
+    assert (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_force_federate_loss_honors_cancel_delete_divest_automatic_resign_cleanup"
+    ) in lost_refs
+    assert (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_force_federate_loss_honors_unconditional_divest_automatic_resign_cleanup"
+    ) in lost_refs
+    assert "automatic-resign ownership semantics" in lost_row["notes"]
 
 
 def test_fm_list_and_report_exception_and_mom_rows_use_direct_backend_witnesses() -> None:
