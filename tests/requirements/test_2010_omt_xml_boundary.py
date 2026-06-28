@@ -56,12 +56,18 @@ def test_omt_xml_boundary_doc_records_current_family_shape() -> None:
             "`1 CLAUSE12_13_DETAIL`",
             "`60 mapped`",
             "`0 partial`",
+            "`requirements/2010/hla1516_xml_detailed_reconciliation.csv`",
+            "`requirements/2010/hla1516_2_omt_detailed_reconciliation.csv`",
+            "`requirements/2010/hla1516_2_omt_xml_detailed_reconciliation.csv`",
+            "`requirements/2010/traceability_matrix.csv`",
+            "`docs/verification/requirement_compliance_exports.md`",
             "`assess_omt_conformance`",
             "linear (...)` and `linearEnumerated (...)",
             "Normalize Federate Handle service",
             "Normalize Service Group service",
         ],
     )
+    assert "../../plans/requirements_gap_register.md" not in text
 
 
 def test_omt_and_xml_owner_surfaces_are_split_in_front_doors() -> None:

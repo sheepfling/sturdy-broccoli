@@ -28,5 +28,9 @@ def test_ownership_management_boundary_doc_records_current_family_shape() -> Non
     assert "`225 mapped`" in text
     assert "`0 partial`" in text
     assert "the owner ledger no longer carries any remaining Ownership `partial` rows" in text
+    assert "`requirements/2010/hla1516_1_own_detailed_reconciliation.csv`" in text
+    assert "`requirements/2010/traceability_matrix.csv`" in text
+    assert "`docs/verification/requirement_compliance_exports.md`" in text
     assert "`./tools/test-focus run backends`" in text
     assert "`./tools/test-surface run unit-scenarios-light`" in text
+    assert "../../plans/requirements_gap_register.md" not in text

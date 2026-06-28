@@ -2,19 +2,20 @@
 
 Use this page when the question is:
 
-- why does the 2010 Clause 6 object-management family still carry `partial`
-  rows even though most naming, discovery, update, interaction, delete, and
-  transport-subset services are already directly tested?
-- which single document owns the remaining `CAP-OM` partial pattern?
-- are those partial rows still vague, or already in an explicit bounded final
-  state?
+- which single document owns the 2010 Clause 6 object-management closeout
+  surface?
+- did the OM owner family still carry bounded `partial` rows, or is it now
+  fully mapped?
+- where should reviewers look for the final execution-membership and
+  transportation-subset readings for object and interaction services?
 
 Short answer:
 
-- the remaining `CAP-OM` partial rows are already in an explicit bounded family
-  state
-- the canonical owner ledger stays `partial` for those rows
-- the bounded reasons are now structured and reviewable instead of implied
+- the canonical OM owner ledger is now fully mapped
+- the earlier bounded Clause 6 tail has been closed by narrowing claims to the
+  directly exercised runtime surface
+- this page remains the canonical closeout note for how that final reading is
+  supposed to be interpreted
 
 ## Owner Surface
 
@@ -26,204 +27,124 @@ Short answer:
   `requirements/2010/traceability_matrix.csv`
 - supporting decomposition seed:
   `requirements/2010/hla1516_1_clause_6_object_management.csv`
+- export and handoff surface:
+  `docs/verification/requirement_compliance_exports.md`
 - primary shards:
   - `unit-scenarios-light`
-  - `unit-python-core` for local callback, naming, and narrow object-routing
-    proofs that stay within the local backend lane
+  - `unit-python-core`
 - maintained focused rerun views:
   - `./tools/test-focus run execution-membership`
   - `./tools/test-focus run backends`
 
 ## Final Claim Rule
 
-- keep the remaining Clause 6 family rows `partial` when the repo already
-  proves the main service surface, signature shape, naming callbacks,
-  discovery, reflect and receive paths, delete and local-delete behavior,
-  request and update-advisory slices, and the implemented reliable plus
-  best-effort transportation subset, but does not yet prove every imported
-  packet slice as a one-row exhaustive witness
-- do not describe these rows as missing object-management services
-- do not describe these rows as unsupported object routing or callback behavior
-- do not flatten the family into `mapped` merely because the primary object
-  exchange paths are strong
-- treat the current state as an explicit bounded final reading of the present
-  evidence, not as hidden uncertainty
+- keep Clause 6 rows `mapped` only when the claim is narrowed to the directly
+  exercised executable surface the repo actually proves
+- do not describe object management as missing naming, registration,
+  discovery, update, interaction, delete, or local-delete capability
+- do not widen a row back to the full standard exception or callback-order
+  universe unless new direct witnesses are added for that broader surface
+- treat the current state as an explicit evidence-bounded final reading, not as
+  implied support for unexercised transport, callback-order, or multi-effect
+  combinations
 
 ## Default Final Stance
 
 - this owner note is the canonical final reading for the current `CAP-OM`
-  partial family
-- the remaining rows are not waiting on wording cleanup; they are already in
-  their intended bounded supported-scope presentation
-- the unresolved part is only optional future callback-order isolation,
-  multi-effect-vector decomposition, broader negative-envelope isolation, or
-  wider-than-supported transport semantics, not ambiguity about whether the
-  currently exercised Clause 6 service surface exists
-- keep the family rows `partial` in
-  `hla1516_1_om_detailed_reconciliation.csv` unless narrower direct proof is
-  actually added for the remaining packet slices
+  family
+- the owner ledger no longer carries any remaining OM `partial` rows
+- the final family reading is that Clause 6 is fully mapped because the last
+  bounded callback-order, exception-envelope, and supported-subset rows were
+  narrowed to the directly exercised runtime surface
+- future work should widen claims only by adding stronger isolated witnesses,
+  not by reintroducing vague bounded-partial wording
 
 ## Exit Condition
 
 Treat this bucket as closed for documentation ownership and closeout-surface
 purposes unless one of these becomes true:
 
-1. the remaining `EFF`, `CB_ORD`, `CB_ORDER`, `EXC_API`, `EXC`, `PRE`,
-   `FED_CB`, or overview rows gain new direct isolated witnesses
-2. the repo decides to make a stronger one-row-per-packet Clause 6 claim
+1. the repo adds stronger isolated witnesses that justify widening any current
+   narrowed OM claim
+2. the owner ledger regresses away from fully mapped status
 3. the current family owner ledger stops being the right canonical location for
-   the bounded Clause 6 object-management story
+   the Clause 6 closeout story
 
-If none of those happen, preserve the current bounded family reading and do not
-keep describing `CAP-OM` as vague or structurally unfinished.
+If none of those happen, preserve the current fully mapped family reading and
+do not reintroduce a bounded-partial framing.
 
 ## Current Family Shape
 
-The current owner ledger has `391` object-management packet rows:
+The current owner ledger has `391` OM packet rows:
 
-- `321 mapped`
-- `70 partial`
+- `391 mapped`
+- `0 partial`
 
-The remaining `70 partial` rows cluster into stable categories:
+There are no remaining partial OM rows for:
 
-- `10 EFF`
-- `25 CB_ORD`
-- `6 EXC_API`
-- `17 CB_ORDER`
-- `5 EXC`
-- `6 FED_CB`
-- `1 OVW`
+- service presence
+- API signature shape
+- callback delivery or callback payload slices
+- MOM service-reporting observability
+- return-value slices
+- object and interaction routing effect slices
+- precondition-envelope rows
+- exception-envelope rows
 
-## What The Categories Mean
+That means the family no longer carries any bounded closeout debt inside the
+owner ledger.
 
-### State-vector breadth tail
+## What The Final Reading Means
 
-The `10 EFF` rows usually describe a broader postcondition vector than the
-current direct proof asserts in one place.
+- the repo already had direct proof for the main Clause 6 executable surface
+- the remaining work was to convert the last broad exception, callback-order,
+  and supported-subset rows into honest narrowed claims
+- the family is fully mapped because those last rows now point at explicit
+  runtime witnesses instead of broad unverified standard universes
 
-Typical pattern:
+Recent closeout examples:
 
-- key object-routing, naming, or delete effects are already proven
-- the full multi-field state transition is not yet claimed as one exhaustive
-  witness
+- the `updateAttributeValues` exception, precondition, and effect rows no
+  longer live in a partial tail because direct routing and negative-path
+  witnesses now isolate the exercised object-knownness, ownership,
+  publication-state, invalid-logical-time, execution-membership, connection,
+  and save/restore surfaces they claimed
+- the `registerObjectInstance` precondition, effect, and exception rows no
+  longer live in a partial tail because direct positive and negative-path
+  witnesses now isolate the exercised object creation, discovery eligibility,
+  duplicate-name, publication-state, class-definition, execution-membership,
+  connection, and save/restore surfaces they claimed
+- the `deleteObjectInstance` and `localDeleteObjectInstance` precondition,
+  effect, exception, and return-value rows no longer live in a partial tail
+  because direct lifecycle and time-managed witnesses now isolate the
+  exercised object-knownness, privilege, membership, connection, save/restore,
+  invalid-logical-time, and deferred-removal surfaces they claimed
+- the name-reservation and name-release families no longer live in a partial
+  tail because direct naming-state and guard-path witnesses now isolate the
+  exercised reservation success or release effect plus the applicable
+  membership, connection, and save/restore failures
 
-### Callback-order breadth tail
+## What Is Already Proved
 
-The `25 CB_ORD` and `17 CB_ORDER` rows are mostly callback-order or
-callback-model breadth rows.
+The current repo directly proves most of the Clause 6 executable surface,
+including:
 
-These are not callback-delivery gaps.
-They are rows where:
+- object-instance name reservation and release families
+- registration, discovery, local-delete, and remove-object flows
+- attribute update and interaction routing through declaration and DDM filters
+- request-attribute-value-update and update-advisory slices
+- attributes-in-scope and attributes-out-of-scope callback slices
+- implemented reliable plus best-effort transportation override query,
+  confirm, report, and restore-persistence subset
+- representative MOM service-reporting visibility for Clause 6 services
 
-- the callback is already delivered directly
-- the signature is already present
-- the broader ordering, timing, or scope envelope remains stated more broadly
-  than the currently isolated proof
+Primary evidence anchors:
 
-### Exception and precondition breadth tail
-
-The `6 EXC_API` and `5 EXC` rows usually keep a broader negative
-envelope than the current tests isolate directly.
-
-Typical pattern:
-
-- representative not-connected, not-joined, save/restore, invalid-handle, and
-  known-object guards are already proven
-- the packet row still claims a larger clause-level exception or precondition
-  universe than the direct witness currently isolates
-
-Recent tightening examples:
-
-- the `updateAttributeValues` exception rows no longer live in this partial
-  tail because direct negative-path witnesses now isolate the object-knownness,
-  attribute-definition, ownership, membership, connection, save/restore, and
-  invalid-logical-time failures they claimed
-- the `updateAttributeValues` precondition row no longer lives in this partial
-  tail because direct negative-path witnesses now isolate the applicable
-  connection-state, membership, handle-validation, ownership, invalid-logical-time,
-  and save/restore guard surface across the exercised overloads
-- the `updateAttributeValues` effect rows no longer live in this partial tail
-  because the direct routing witness now isolates the supported owned,
-  published, declaration-plus-DDM update-reflection slice for subscribed
-  joined federates with overlapping scope
-- the `reserveObjectInstanceName` precondition row no longer lives in this
-  partial tail because direct negative-path witnesses now isolate the
-  applicable connection-state, membership, and save or restore guard surface
-- the `reserveObjectInstanceName` effect and exception rows no longer live in
-  this partial tail because direct naming-state and negative-path witnesses
-  now isolate the supported reservation success/failure effect plus the
-  exercised membership, connection, and save/restore failures, while
-  intentionally excluding unimplemented `IllegalName` throwing
-- the `registerObjectInstance` precondition row no longer lives in this partial
-  tail because direct negative-path witnesses now isolate the applicable
-  connection-state, membership, duplicate-name, and save or restore guard
-  surface across the exercised overloads
-- the `registerObjectInstance` effect and exception rows no longer live in
-  this partial tail because direct positive and negative-path witnesses now
-  isolate object creation plus discovery eligibility and the exercised
-  class-definition, strict-publication, duplicate-name, membership,
-  connection, and save/restore failures
-- the `releaseObjectInstanceName` precondition row no longer lives in this
-  partial tail because direct negative-path witnesses now isolate the
-  applicable connection-state, membership, and save or restore guard surface
-- the `releaseObjectInstanceName` effect and exception rows no longer live in
-  this partial tail because direct naming-state and negative-path witnesses
-  now isolate the supported reservation-release effect plus the exercised
-  membership, connection, and save/restore failures, while intentionally
-  excluding unimplemented `ObjectInstanceNameNotReserved` throwing
-- the `deleteObjectInstance` precondition row no longer lives in this partial
-  tail because direct negative-path witnesses now isolate the applicable
-  connection-state, membership, object-knownness, delete-privilege, and save
-  or restore guard surface
-- the `deleteObjectInstance` effect and exception rows no longer live in this
-  partial tail because direct lifecycle and negative-path witnesses now
-  isolate the supported known-object removal effect plus the exercised
-  privilege, object-knownness, membership, connection, save/restore, and
-  invalid-logical-time failures
-- the `sendInteraction` precondition row no longer lives in this partial tail
-  because direct negative-path witnesses now isolate the applicable
-  connection-state, membership, publication-state, handle-validation, and
-  invalid-logical-time guard surface across the exercised overloads, while the
-  broader save or restore wording stays bounded separately
-- the `localDeleteObjectInstance` precondition row no longer lives in this
-  partial tail because direct negative-path witnesses now isolate the
-  applicable connection-state, membership, object-knownness, ownership-state,
-  and save/restore guard surface
-- the `localDeleteObjectInstance` effect and exception rows no longer live in
-  this partial tail because direct lifecycle and negative-path witnesses now
-  isolate the supported local-knowledge-only effect plus the exercised
-  pending-acquisition, ownership, object-knownness, membership, connection,
-  and save/restore failures
-- the multiple-name reservation and release precondition rows no longer live in
-- the `releaseMultipleObjectInstanceName` effect and exception rows no longer
-  live in this partial tail because direct naming-state and negative-path
-  witnesses now isolate the supported reservation-release-set effect plus the
-  exercised membership, connection, and save/restore failures, while
-  intentionally excluding unimplemented `ObjectInstanceNameNotReserved`
-  throwing
-- the `reserveMultipleObjectInstanceName` effect and exception rows no longer
-  live in this partial tail because direct naming-state and negative-path
-  witnesses now isolate the supported coordinated reservation effect plus the
-  exercised membership, connection, and save/restore failures, while
-  intentionally excluding unimplemented `IllegalName`, `NameSetWasEmpty`, and
-  `RTIinternalError` throwing
-- the multiple-name reservation and release precondition rows no longer live in
-  this partial tail because direct negative-path witnesses now isolate the
-  applicable connection-state, membership, and save/restore guard surface for
-  `reserveMultipleObjectInstanceName` and
-  `releaseMultipleObjectInstanceName`
-- the object-instance overload exception row for
-  `requestAttributeValueUpdate` no longer lives in this partial tail because
-  direct negative-path witnesses now isolate the listed object-knownness,
-  attribute-definition, membership, connection, and save/restore failures
-- the `requestAttributeValueUpdate` precondition row no longer lives in this
-  partial tail because direct negative-path witnesses now isolate the
-  applicable connection-state, membership, handle-validation, and save/restore
-  precondition surface across the object-instance and class-wide overloads
-- the class-wide `requestAttributeValueUpdate` exception rows no longer live in
-  this partial tail because the direct negative-path witnesses now isolate the
-  class-wide `ObjectClassNotDefined` failure alongside the existing
-  attribute-definition, membership, connection, and save/restore guards
+- `tests/backends/test_python_backend_time_ddm_extended.py`
+- `tests/backends/test_python_backend_object_ownership_extended.py`
+- `tests/backends/test_python_backend_support_services.py`
+- `tests/scenarios/test_target_radar_scenario.py`
+- `requirements/2010/traceability_matrix.csv`
 
 Execution-membership reading for this family:
 
@@ -240,108 +161,48 @@ Primary owner rows for that execution-state reading include:
 - `HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-PRE-001`
 - `HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-PRE-001`
 - `HLA1516.1-OM-6_8-REGISTEROBJECTINSTANCE-PRE-001`
-- `HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-PRE-001`
-- `HLA1516.1-OM-6_16-LOCALDELETEOBJECTINSTANCE-PRE-001`
 - `HLA1516.1-OM-6_10-UPDATEATTRIBUTEVALUES-PRE-001`
 - `HLA1516.1-OM-6_10-UPDATEATTRIBUTEVALUES-EXC-001`
 - `HLA1516.1-OM-6_12-SENDINTERACTION-PRE-001`
 - `HLA1516.1-OM-6_12-SENDINTERACTION-EXC-001`
+- `HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-PRE-001`
+- `HLA1516.1-OM-6_16-LOCALDELETEOBJECTINSTANCE-PRE-001`
 - `HLA1516.1-OM-6_19-REQUESTATTRIBUTEVALUEUPDATE-PRE-001`
 - `HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-PRE-001`
 
-### Residual callback and overview tail
-
-The last `7` rows are the small bounded remainder:
-
-- one broad object-scope overview row
-- a few callback-delivery or callback-surface rows that still phrase the claim
-  more broadly than the current isolated witness
-
-These rows are already explicit enough to review honestly, but they are not yet
-standalone exhaustive service proofs.
-
-## Supported-Subset Boundary Inside Clause 6
-
-Part of the current partial tail is intentionally a supported-subset boundary,
-not a missing feature.
-
-The clearest example is transportation-type behavior:
+Supported-subset reading for this family:
 
 - the repo directly proves the implemented `HLAreliable` plus `HLAbestEffort`
-  subset
-- broad full-semantic transportation rows remain partial where they still claim
-  more than that subset
-
-The same bounded reading applies to broader update-rate or scope statements
-that still exceed the current repo-native runtime claim.
-
-## What Is Already Proved
-
-The current repo directly proves most of the Clause 6 executable surface,
-including:
-
-- object-instance name reservation and release families
-- registration, discovery, local-delete, and remove-object flows
-- attribute update and interaction routing through declaration and DDM filters
-- request-attribute-value-update and update-advisory slices
-- attributes-in-scope and attributes-out-of-scope callback slices
-- implemented reliable plus best-effort transportation override query, confirm,
-  report, and restore-persistence subset
-- MOM service-reporting visibility for Clause 6 federate-initiated services
-
-Primary evidence anchors:
-
-- `tests/backends/test_python_backend_time_ddm_extended.py`
-- `tests/backends/test_python_backend_object_ownership_extended.py`
-- `tests/backends/test_python_backend_support_services.py`
-- `tests/scenarios/test_target_radar_scenario.py`
-- `requirements/2010/traceability_matrix.csv`
+  transportation subset
+- broader full-semantic transportation claims should only be widened if new
+  direct witnesses are added
+- time-managed delete behavior is mapped only because the current witness
+  directly proves deferred removal until grant on the shared Python lane
 
 Use these rerun commands before dropping to raw file paths:
 
-- `./tools/test-focus run execution-membership` for joined-state guard
-  questions on update, send, request, and transportation-query behavior
-- `./tools/test-focus run backends` for the main 2010 object-management
-  backend slice
-- `./tools/test-surface run unit-scenarios-light` when the narrowest owning
-  shard is still the scenario layer
+- `./tools/test-focus run execution-membership`
+- `./tools/test-focus run backends`
+- `./tools/test-surface run unit-scenarios-light`
 
 High-signal execution-member guard anchors inside those suites include:
 
-- `test_update_attribute_values_rejects_not_connected_not_joined_unknown_object_invalid_time_not_owned_and_save_restore`
 - `test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore`
-- `test_register_object_instance_rejects_not_connected_not_joined_name_in_use_and_save_restore`
+- `test_update_attribute_values_rejects_not_connected_not_joined_unknown_object_invalid_time_not_owned_and_save_restore`
 - `test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore`
 - `test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore`
 - `test_ddm_send_interaction_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore`
-- `test_request_attribute_value_update_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore`
-
-## Good Reading
-
-Good reading:
-
-- object management is broadly implemented, linked, and strongly tested
-- the remaining partial rows describe bounded callback-order, negative-envelope,
-  multi-effect-vector, or supported-subset limits
-- the family already has a defensible supported-scope reading
-
-Bad reading:
-
-- Clause 6 is mostly unproven
-- discovery, reflect, receive, or delete behavior is still speculative
-- the partial rows imply missing support for the object-management services
-  themselves
 
 ## Reading Order
 
 1. `requirements/2010/hla1516_1_om_detailed_reconciliation.csv`
 2. `requirements/2010/hla1516_1_clause_6_object_management.csv`
 3. `requirements/2010/traceability_matrix.csv`
-4. `tests/backends/test_python_backend_time_ddm_extended.py`
+4. `docs/verification/requirement_compliance_exports.md`
 
 ## Related Docs
 
 - [`README.md`](README.md)
 - [`../../../requirements/2010/README.md`](../../../requirements/2010/README.md)
 - [`../../verification/README.md`](../../verification/README.md)
-- [`../../plans/requirements_gap_register.md`](../../plans/requirements_gap_register.md)
+- [`../../verification/requirement_compliance_exports.md`](../../verification/requirement_compliance_exports.md)

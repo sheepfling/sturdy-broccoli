@@ -116,21 +116,20 @@ granularity limit rather than a vague federation-management gap, use:
 - `docs/requirements/ieee-1516-2010/federation_management_bounded_family.md`
 
 For the human-facing explanation of the final `CAP-DM` closeout reading and
-why the Clause 5 PRE/EXC/EXC_API tail is now fully mapped only through
-intentionally narrowed direct-guard claims, use:
+how Clause 5 is now fully mapped through intentionally narrowed direct-guard
+claims, use:
 
 - `docs/requirements/ieee-1516-2010/declaration_management_bounded_family.md`
 
-For the human-facing explanation of the remaining `CAP-OM` partial family and
-why the Clause 6 tail is now an explicit bounded
-`EFF/CB_ORD/CB_ORDER/EXC_API/EXC/PRE` and supported-subset granularity limit
-rather than a vague object-management gap, use:
+For the human-facing explanation of the final `CAP-OM` closeout reading and
+how Clause 6 is now fully mapped through direct runtime witnesses plus
+supported-subset boundaries, use:
 
 - `docs/requirements/ieee-1516-2010/object_management_bounded_family.md`
 
 For the human-facing explanation of the final `CAP-OWN` closeout reading and
-why the Clause 7 PRE/EXC/EXC_API tail is now fully mapped only through
-intentionally narrowed direct-guard claims, use:
+how Clause 7 is now fully mapped through intentionally narrowed direct-guard
+claims, use:
 
 - `docs/requirements/ieee-1516-2010/ownership_management_bounded_family.md`
 
@@ -149,7 +148,8 @@ management gap, use:
 - `docs/requirements/ieee-1516-2010/data_distribution_management_bounded_family.md`
 
 For the human-facing explanation of how the separate `CAP-XML` atom-granularity
-tail and small Annex B `CAP-OMT` normalization tail fit together as one bounded
-final-state reading rather than a vague parser or schema-support gap, use:
+tail and the now-closed common-subset Annex B `CAP-OMT` normalization story fit
+together as one bounded final-state reading rather than a vague parser or
+schema-support gap, use:
 
 - `docs/requirements/ieee-1516-2010/omt_xml_bounded_family.md`

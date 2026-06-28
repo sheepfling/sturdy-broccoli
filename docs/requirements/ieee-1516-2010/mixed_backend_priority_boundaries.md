@@ -20,6 +20,10 @@ Short answer:
   `requirements/2010/hla1516_1_priority_backend_resolution.csv`
 - primary owner rows:
   `requirements/2010/hla1516_1_priority_clauses_4_8_11.csv`
+- broad bridge:
+  `requirements/2010/traceability_matrix.csv`
+- export and handoff surface:
+  `docs/verification/requirement_compliance_exports.md`
 - primary shards:
   - `unit-scenarios-light` for lost-federate rows
   - `unit-python-core` for the RO/TSO ordering row
@@ -107,4 +111,4 @@ Bad shape:
 - [`README.md`](README.md)
 - [`../../../requirements/2010/README.md`](../../../requirements/2010/README.md)
 - [`../../verification/README.md`](../../verification/README.md)
-- [`../../plans/requirements_gap_register.md`](../../plans/requirements_gap_register.md)
+- [`../../verification/requirement_compliance_exports.md`](../../verification/requirement_compliance_exports.md)

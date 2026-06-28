@@ -27,6 +27,8 @@ Short answer:
   `requirements/2010/traceability_matrix.csv`
 - imported-master companion:
   `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv`
+- export and handoff surface:
+  `docs/verification/requirement_compliance_exports.md`
 - primary shard:
   - `unit-scenarios-light`
 - wider ownership-family view only when needed:
@@ -194,4 +196,4 @@ Bad reading:
 - [`README.md`](README.md)
 - [`../../../requirements/2010/README.md`](../../../requirements/2010/README.md)
 - [`../../verification/README.md`](../../verification/README.md)
-- [`../../plans/requirements_gap_register.md`](../../plans/requirements_gap_register.md)
+- [`../../verification/requirement_compliance_exports.md`](../../verification/requirement_compliance_exports.md)

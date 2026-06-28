@@ -25,8 +25,12 @@ Short answer:
 - canonical source owners:
   - `requirements/2010/hla1516_xml_detailed_reconciliation.csv`
   - `requirements/2010/hla1516_2_omt_detailed_reconciliation.csv`
+- hybrid imported closeout ledger:
+  `requirements/2010/hla1516_2_omt_xml_detailed_reconciliation.csv`
 - broad bridge:
   `requirements/2010/traceability_matrix.csv`
+- export and handoff surface:
+  `docs/verification/requirement_compliance_exports.md`
 - primary shards:
   - `unit-fom-tooling`
   - `unit-python-core` only where MOM catalog or parser-fed runtime metadata
@@ -159,13 +163,13 @@ Bad reading:
 
 1. `requirements/2010/hla1516_xml_detailed_reconciliation.csv`
 2. `requirements/2010/hla1516_2_omt_detailed_reconciliation.csv`
-3. `requirements/2010/traceability_matrix.csv`
-4. `tests/factories/test_fom_omt_parsing.py`
-5. `tests/factories/test_fom_validate.py`
+3. `requirements/2010/hla1516_2_omt_xml_detailed_reconciliation.csv`
+4. `requirements/2010/traceability_matrix.csv`
+5. `docs/verification/requirement_compliance_exports.md`
 
 ## Related Docs
 
 - [`README.md`](README.md)
 - [`../../../requirements/2010/README.md`](../../../requirements/2010/README.md)
 - [`../../verification/README.md`](../../verification/README.md)
-- [`../../plans/requirements_gap_register.md`](../../plans/requirements_gap_register.md)
+- [`../../verification/requirement_compliance_exports.md`](../../verification/requirement_compliance_exports.md)
