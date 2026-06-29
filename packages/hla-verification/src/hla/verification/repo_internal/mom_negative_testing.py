@@ -13,16 +13,6 @@ from dataclasses import dataclass, field
 from typing import Any, Mapping
 
 import hla.fom.mom as hla_mom
-from hla.fom import FOMCatalog, FOMResolver
-from hla.rti1516e.handles import (
-    AttributeHandle,
-    DimensionHandle,
-    InteractionClassHandle,
-    ObjectClassHandle,
-    ObjectInstanceHandle,
-    ParameterHandle,
-    TransportationTypeHandle,
-)
 from hla.backends.python1516e.mom_catalog import (
     MOM_BOOL_PARAMETERS,
     MOM_FLOAT_PARAMETERS,
@@ -32,6 +22,16 @@ from hla.backends.python1516e.mom_catalog import (
     MOMInteractionRule,
     build_mom_exposure_model,
     build_negative_matrix,
+)
+from hla.fom import FOMCatalog, FOMResolver
+from hla.rti1516e.handles import (
+    AttributeHandle,
+    DimensionHandle,
+    InteractionClassHandle,
+    ObjectClassHandle,
+    ObjectInstanceHandle,
+    ParameterHandle,
+    TransportationTypeHandle,
 )
 
 EXPECTED_MOM_EXCEPTION_BY_CASE: dict[str, str] = {

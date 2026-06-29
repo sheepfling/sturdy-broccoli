@@ -6,7 +6,6 @@ from typing import Sequence
 
 from .siso_pitch_micro_parity import SisoPitchMicroParityPaths, write_siso_pitch_micro_parity_artifacts
 
-
 REAL_PITCH_2010_BACKENDS = ("pitch-jpype", "pitch-py4j")
 
 

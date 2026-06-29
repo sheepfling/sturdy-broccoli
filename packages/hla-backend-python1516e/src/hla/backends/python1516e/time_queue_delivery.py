@@ -4,9 +4,9 @@ from __future__ import annotations
 import heapq
 from typing import TYPE_CHECKING, Any, Protocol
 
+from hla.backends.common import time_management as tm
 from hla.rti1516e.enums import OrderType
 from hla.rti1516e.handles import FederateHandle, MessageRetractionHandle
-from hla.backends.common import time_management as tm
 
 from .state import CallbackEvent, FederateState, FederationState, QueuedTimeMessage
 from .time_queue_grants import PythonRTITimeQueueGrantMixin, _time_lt, _time_value

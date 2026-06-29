@@ -3,11 +3,10 @@ from __future__ import annotations
 import csv
 import json
 import os
+from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from collections import defaultdict
 from typing import Iterable
-
 
 KNOWN_PACKET_PARENT_GAPS = frozenset(
     {

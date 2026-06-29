@@ -6,12 +6,12 @@ from dataclasses import dataclass, field
 from importlib import import_module
 from typing import Any, Sequence, cast
 
+from hla.backends.common.invocation import JavaInvocationResolverName
 from hla.bridges.java.common import BackendUnavailableError
 from hla.bridges.java.common.java_bridge_base import JavaBridge
 from hla.bridges.java.common.java_callbacks import PythonFederateAmbassadorDispatcher
-from hla.bridges.java.common.java_runtime import ensure_java_home
 from hla.bridges.java.common.java_intake import JavaApiProfile
-from hla.backends.common.invocation import JavaInvocationResolverName
+from hla.bridges.java.common.java_runtime import ensure_java_home
 
 
 @dataclass(frozen=True)
@@ -154,38 +154,7 @@ class JPypeBridge(JavaBridge):
         return self.new_list(values)
 
     def logical_time(self, value: Any, *, rti_ambassador: Any | None = None) -> Any:
-        try:
-            HLAfloat64Interval = self.python_binding.python_type("HLAfloat64Interval")
-            HLAfloat64Time = self.python_binding.python_type("HLAfloat64Time")
-            HLAinteger64Interval = self.python_binding.python_type("HLAinteger64Interval")
-            HLAinteger64Time = self.python_binding.python_type("HLAinteger64Time")
-
-            if rti_ambassador is not None:
-                try:
-                    factory = rti_ambassador.getTimeFactory()
-                    if isinstance(value, (HLAinteger64Time, HLAfloat64Time)) and hasattr(factory, "makeTime"):
-                        raw = int(value.value) if isinstance(value, HLAinteger64Time) else float(value.value)
-                        return factory.makeTime(raw)
-                    if isinstance(value, (HLAinteger64Interval, HLAfloat64Interval)) and hasattr(factory, "makeInterval"):
-                        raw = int(value.value) if isinstance(value, HLAinteger64Interval) else float(value.value)
-                        return factory.makeInterval(raw)
-                    if isinstance(value, (HLAinteger64Interval, HLAfloat64Interval)) and getattr(value, "is_zero")():
-                        return factory.makeZero()
-                    if isinstance(value, (HLAinteger64Interval, HLAfloat64Interval)) and getattr(value, "is_epsilon")():
-                        return factory.makeEpsilon()
-                except Exception:
-                    pass
-            if isinstance(value, HLAinteger64Time):
-                return self.JClass(f"{self.api_profile.java_package}.HLAinteger64Time")(int(value.value))
-            if isinstance(value, HLAinteger64Interval):
-                return self.JClass(f"{self.api_profile.java_package}.HLAinteger64Interval")(int(value.value))
-            if isinstance(value, HLAfloat64Time):
-                return self.JClass(f"{self.api_profile.java_package}.HLAfloat64Time")(float(value.value))
-            if isinstance(value, HLAfloat64Interval):
-                return self.JClass(f"{self.api_profile.java_package}.HLAfloat64Interval")(float(value.value))
-        except Exception:
-            return value
-        return value
+        return super().logical_time(value, rti_ambassador=rti_ambassador)
 
     def range_bounds(self, value: Any) -> Any:
         try:

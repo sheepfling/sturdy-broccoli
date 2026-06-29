@@ -92,10 +92,23 @@ Primary sources:
 - `analysis/compliance/portico-jpype_requirement_disposition.json`
 - `analysis/compliance/portico-py4j_requirement_disposition.json`
 - `analysis/compliance/pitch_requirement_disposition.json`
+- `analysis/compliance/pitch_requirement_disposition_canonical.json`
 - `analysis/compliance/pitch-jpype_requirement_disposition.json`
 - `analysis/compliance/pitch-py4j_requirement_disposition.json`
 - `analysis/compliance/requirements_matrix_2010.json`
 - `analysis/compliance/vendor_discovery_backlog.json`
+
+Artifact-class rule:
+
+- `analysis/compliance/requirements_matrix_2010.json` is a generated `projection`
+  over the canonical 2010 requirement and backend-resolution catalogs, not a
+  primary truth surface
+- `analysis/compliance/pitch_requirement_disposition.json` is a legacy mixed
+  projection that still carries section and verification-slice rows
+- `analysis/compliance/pitch_requirement_disposition_canonical.json` is the
+  leaf-only backend-disposition packet keyed to the canonical 2010 denominator
+- `analysis/compliance/vendor_discovery_backlog.json` is a generated backlog
+  view, not a requirement owner surface
 
 Context sources:
 
@@ -132,10 +145,12 @@ After the discovery summary:
 - Open `analysis/compliance/pitch_backend_matrix.md` for the focused Pitch real-runtime view.
 - Open `analysis/compliance/pitch_requirement_disposition.md` for aggregate Pitch family requirement dispositions and split-profile clause summaries.
 - Open `analysis/compliance/certi_requirement_disposition.md` for the aggregate CERTI family requirement disposition view before drilling into one runtime or Java bridge profile.
+- Open `analysis/compliance/pitch_requirement_disposition_canonical.json` when you need the leaf-only Pitch requirement surface keyed to the canonical 2010 denominator.
+- Open `analysis/compliance/pitch_requirement_disposition.json` only when you intentionally need the legacy mixed projection that still carries section and verification-slice rows.
 - Open `analysis/compliance/pitch-jpype_requirement_disposition.md` or `analysis/compliance/pitch-py4j_requirement_disposition.md` when you need backend-specific requirement rows for one Pitch bridge profile.
 - Open `analysis/compliance/certi-native_requirement_disposition.md` when you need the generated explicit CERTI native-runtime profile view.
 - Open `analysis/compliance/portico_requirement_disposition.md`, `analysis/compliance/portico-jpype_requirement_disposition.md`, or `analysis/compliance/portico-py4j_requirement_disposition.md` when you need the generated explicit Portico requirement views; the JPype and Py4J profiles currently inherit the same family-level projection because Portico remains install-dependent and no profile-specific requirement evidence is generated yet.
-- Open `analysis/compliance/requirements_matrix_2010.csv` when you need a generated 2010 clause-and-requirement projection with vendor notes merged into the spec catalog.
+- Open `analysis/compliance/requirements_matrix_2010.csv` when you need a generated 2010 clause-and-requirement projection with vendor notes merged into the spec catalog; do not treat it as the canonical denominator.
 - Open `analysis/compliance/vendor_discovery_backlog.md` when you want the ranked next vendor/backend discovery work across all current artifacts.
 - Open `docs/backend_conformance_matrix.md` when you want the manual clause-level narrative for Python, CERTI, and Pitch.
 

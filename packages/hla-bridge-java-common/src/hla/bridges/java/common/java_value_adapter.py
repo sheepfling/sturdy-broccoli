@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import os
 from collections.abc import Iterable as CollectionsIterable
-from collections.abc import Mapping as CollectionsMapping
 from enum import Enum
 from typing import Any, Iterable, Mapping, cast
 
@@ -27,7 +26,15 @@ from hla.backends.common.java_invocation_scoring import (
     _JAVA_HANDLE_SET_TYPES,
     _JAVA_HANDLE_VALUE_MAP_TYPES,
 )
+
 from .java_binding_profile import PythonJavaBindingProfile
+from .java_logical_time import (
+    JavaLogicalTimeAdapter,
+    JavaLogicalTimeFactoryAdapter,
+    JavaLogicalTimeIntervalAdapter,
+    java_logical_time_to_bytes,
+    wrap_java_logical_time_factory,
+)
 
 
 def _maybe_call_noarg(obj: Any, *names: str) -> Any:
@@ -143,6 +150,7 @@ class GenericJavaValueAdapter(ValueConverter):
         self.python_binding = bridge.python_binding
         self.rti_ambassador = rti_ambassador
         self.java_encoder_oracle = java_encoder_oracle
+        self._logical_time_factory_adapter: JavaLogicalTimeFactoryAdapter | None = None
 
     def _conversion_error(self, expected_type_name: str, value: Any, detail: str) -> BackendConversionError:
         return BackendConversionError(
@@ -275,6 +283,21 @@ class GenericJavaValueAdapter(ValueConverter):
 class HLAJavaValueAdapter(GenericJavaValueAdapter):
     """HLA semantic adapter layered on top of generic Java runtime conversion."""
 
+    def _java_time_factory(self) -> JavaLogicalTimeFactoryAdapter | None:
+        if self.rti_ambassador is None:
+            return None
+        if self._logical_time_factory_adapter is None:
+            try:
+                java_factory = self.bridge.call(self.rti_ambassador, "getTimeFactory")
+            except Exception:
+                return None
+            self._logical_time_factory_adapter = wrap_java_logical_time_factory(
+                self.bridge,
+                java_factory,
+                self.python_binding,
+            )
+        return self._logical_time_factory_adapter
+
     def _data_element_factory_method(self, value: Any) -> str | None:
         if type(value).__name__ in {"HLAfixedRecord", "HLAfixedArray", "HLAvariableArray", "HLAvariantRecord", "HLAextendableVariantRecord"}:
             return None
@@ -394,7 +417,12 @@ class HLAJavaValueAdapter(GenericJavaValueAdapter):
                     strict_container_shapes=strict_container_shapes,
                 ),
             )
+        if isinstance(value, (JavaLogicalTimeAdapter, JavaLogicalTimeIntervalAdapter)):
+            return value.java_value
         if isinstance(value, logical_time_types):
+            factory = self._java_time_factory()
+            if factory is not None:
+                return factory.to_java_value(value)
             return self.bridge.logical_time(value, rti_ambassador=self.rti_ambassador)
         return super().to_backend(
             value,
@@ -407,6 +435,8 @@ class HLAJavaValueAdapter(GenericJavaValueAdapter):
             return None
 
         expected = _clean_java_type(expected_type_name)
+        if expected == "LogicalTimeFactory":
+            return wrap_java_logical_time_factory(self.bridge, value, self.python_binding)
         expected_handle_type = None if expected in _JAVA_COMPOSITE_DATATYPE_NAMES else handle_type_from_java_type_name(expected)
         if expected_handle_type is not None:
             return self.handle_registry.to_python(expected_handle_type, value)
@@ -542,7 +572,7 @@ class HLAJavaValueAdapter(GenericJavaValueAdapter):
                 except KeyError:
                     pass
 
-        logical_time = self._from_backend_logical_time(value, simple_name=simple_name)
+        logical_time = self._from_backend_logical_time(value, expected_type_name=expected, simple_name=simple_name)
         if logical_time is not None:
             return logical_time
 
@@ -568,22 +598,34 @@ class HLAJavaValueAdapter(GenericJavaValueAdapter):
 
         return super().from_backend(value, expected_type_name=expected_type_name)
 
-    def _from_backend_logical_time(self, value: Any, *, simple_name: str | None) -> Any | None:
-        class_text = " ".join(filter(None, [simple_name, self.bridge.full_class_name(value)]))
-        if not any(token in class_text for token in ("HLAinteger64Time", "HLAinteger64Interval", "HLAfloat64Time", "HLAfloat64Interval")):
+    def _from_backend_logical_time(self, value: Any, *, expected_type_name: str | None, simple_name: str | None) -> Any | None:
+        class_text = " ".join(filter(None, [expected_type_name, simple_name, self.bridge.full_class_name(value)]))
+        is_expected_logical_time = expected_type_name in {"LogicalTime", "LogicalTimeInterval"}
+        is_named_builtin = any(token in class_text for token in ("HLAinteger64Time", "HLAinteger64Interval", "HLAfloat64Time", "HLAfloat64Interval"))
+        if not is_expected_logical_time and not is_named_builtin:
             return None
 
-        raw = _maybe_call_noarg(value, "getValue", "value", "longValue", "doubleValue")
-        if raw is None:
-            return None
-        if "HLAinteger64Time" in class_text:
-            return self.python_binding.python_type("HLAinteger64Time")(int(raw))
-        if "HLAinteger64Interval" in class_text:
-            return self.python_binding.python_type("HLAinteger64Interval")(int(raw))
-        if "HLAfloat64Time" in class_text:
-            return self.python_binding.python_type("HLAfloat64Time")(float(raw))
-        if "HLAfloat64Interval" in class_text:
-            return self.python_binding.python_type("HLAfloat64Interval")(float(raw))
+        factory = self._java_time_factory()
+        is_interval = expected_type_name == "LogicalTimeInterval" or "Interval" in class_text
+        if factory is not None:
+            try:
+                encoded = java_logical_time_to_bytes(self.bridge, value)
+                return factory.decodeInterval(encoded) if is_interval else factory.decodeTime(encoded)
+            except Exception:
+                return factory.from_java_interval(value) if is_interval else factory.from_java_time(value)
+
+        if is_named_builtin:
+            raw = _maybe_call_noarg(value, "getValue", "value", "longValue", "doubleValue")
+            if raw is None:
+                return None
+            if "HLAinteger64Time" in class_text:
+                return self.python_binding.python_type("HLAinteger64Time")(int(raw))
+            if "HLAinteger64Interval" in class_text:
+                return self.python_binding.python_type("HLAinteger64Interval")(int(raw))
+            if "HLAfloat64Time" in class_text:
+                return self.python_binding.python_type("HLAfloat64Time")(float(raw))
+            if "HLAfloat64Interval" in class_text:
+                return self.python_binding.python_type("HLAfloat64Interval")(float(raw))
         return None
 
     def _from_backend_range_bounds(self, value: Any, *, expected_type_name: str | None, simple_name: str | None) -> Any | None:
@@ -670,7 +712,10 @@ class HLAJavaValueAdapter(GenericJavaValueAdapter):
             raw_time = self.bridge.public_field(value, "logicalTime")
         if raw_time is None:
             raw_time = _maybe_call_noarg(value, "getTime", "getLogicalTime")
-        return self.python_binding.python_type("TimeQueryReturn")(bool(valid), self.from_backend(raw_time) if raw_time is not None else None)
+        return self.python_binding.python_type("TimeQueryReturn")(
+            bool(valid),
+            self.from_backend(raw_time, expected_type_name="LogicalTime") if raw_time is not None else None,
+        )
 
     def _from_backend_message_retraction_return(
         self,

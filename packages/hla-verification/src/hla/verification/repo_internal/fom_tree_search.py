@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable, Mapping
+from typing import Any, Iterable
 from urllib.parse import quote
 
 from hla.verification.repo_internal.fom_corpus_classification import classify_edition_scope

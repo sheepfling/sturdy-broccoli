@@ -12,7 +12,6 @@ import re
 from pathlib import Path
 from typing import Any
 
-
 _BACKLOG_PRIORITY_RULES: tuple[tuple[str, int, str], ...] = (
     ("vendor-divergent", 1, "investigate or isolate with focused vendor test"),
     ("blocked", 2, "unblock capability or document the hard backend limitation"),
@@ -244,6 +243,7 @@ def build_backend_compliance_catalog(project_root: str | Path | None = None) -> 
     portico_jpype_disposition_path = compliance_dir / "portico-jpype_requirement_disposition.json"
     portico_py4j_disposition_path = compliance_dir / "portico-py4j_requirement_disposition.json"
     pitch_disposition_path = compliance_dir / "pitch_requirement_disposition.json"
+    pitch_canonical_disposition_path = compliance_dir / "pitch_requirement_disposition_canonical.json"
     pitch_jpype_disposition_path = compliance_dir / "pitch-jpype_requirement_disposition.json"
     pitch_py4j_disposition_path = compliance_dir / "pitch-py4j_requirement_disposition.json"
 
@@ -265,6 +265,11 @@ def build_backend_compliance_catalog(project_root: str | Path | None = None) -> 
     portico_jpype_disposition = _load_json(portico_jpype_disposition_path) if portico_jpype_disposition_path.exists() else {"summary": {}, "rows": []}
     portico_py4j_disposition = _load_json(portico_py4j_disposition_path) if portico_py4j_disposition_path.exists() else {"summary": {}, "rows": []}
     pitch_disposition = _load_json(pitch_disposition_path) if pitch_disposition_path.exists() else {"summary": {}, "rows": []}
+    pitch_canonical_disposition = (
+        _load_json(pitch_canonical_disposition_path)
+        if pitch_canonical_disposition_path.exists()
+        else {"summary": {}, "rows": []}
+    )
     pitch_jpype_disposition = _load_json(pitch_jpype_disposition_path) if pitch_jpype_disposition_path.exists() else {"summary": {}, "rows": []}
     pitch_py4j_disposition = _load_json(pitch_py4j_disposition_path) if pitch_py4j_disposition_path.exists() else {"summary": {}, "rows": []}
     python_disposition_summary = _summary_view(python_disposition)
@@ -277,8 +282,10 @@ def build_backend_compliance_catalog(project_root: str | Path | None = None) -> 
     portico_jpype_disposition_summary = _summary_view(portico_jpype_disposition)
     portico_py4j_disposition_summary = _summary_view(portico_py4j_disposition)
     pitch_disposition_summary = _summary_view(pitch_disposition)
+    pitch_canonical_disposition_summary = _summary_view(pitch_canonical_disposition)
     pitch_jpype_disposition_summary = _summary_view(pitch_jpype_disposition)
     pitch_py4j_disposition_summary = _summary_view(pitch_py4j_disposition)
+    requirements_summary = _summary_view(requirements)
 
     backends: dict[str, dict[str, Any]] = {}
 
@@ -422,6 +429,9 @@ def build_backend_compliance_catalog(project_root: str | Path | None = None) -> 
             "portico_jpype_requirement_disposition_row_count": portico_jpype_disposition_summary.get("row_count", len(portico_jpype_disposition.get("rows", ()))),
             "portico_py4j_requirement_disposition_row_count": portico_py4j_disposition_summary.get("row_count", len(portico_py4j_disposition.get("rows", ()))),
             "pitch_requirement_disposition_row_count": pitch_disposition_summary.get("row_count", len(pitch_disposition.get("rows", ()))),
+            "pitch_canonical_requirement_disposition_row_count": pitch_canonical_disposition_summary.get(
+                "row_count", len(pitch_canonical_disposition.get("rows", ()))
+            ),
             "pitch_jpype_requirement_disposition_row_count": pitch_jpype_disposition_summary.get("row_count", len(pitch_jpype_disposition.get("rows", ()))),
             "pitch_py4j_requirement_disposition_row_count": pitch_py4j_disposition_summary.get("row_count", len(pitch_py4j_disposition.get("rows", ()))),
         },
@@ -442,11 +452,40 @@ def build_backend_compliance_catalog(project_root: str | Path | None = None) -> 
                 "analysis/compliance/portico-jpype_requirement_disposition.json",
                 "analysis/compliance/portico-py4j_requirement_disposition.json",
                 "analysis/compliance/pitch_requirement_disposition.json",
+                "analysis/compliance/pitch_requirement_disposition_canonical.json",
                 "analysis/compliance/pitch-jpype_requirement_disposition.json",
                 "analysis/compliance/pitch-py4j_requirement_disposition.json",
                 "analysis/compliance/requirements_matrix_2010.json",
                 "analysis/compliance/vendor_discovery_backlog.json",
             ],
+        },
+        "canonical_requirement_surfaces": [
+            "requirements/2010/canonical_requirements.json",
+            "requirements/2010/backend_resolution.json",
+            "requirements/2025/canonical_requirements.json",
+            "requirements/2025/backend_resolution.json",
+        ],
+        "source_artifact_classes": {
+            "analysis/compliance/core_backend_matrix.json": "projection",
+            "analysis/compliance/section8_backend_matrix.json": "projection",
+            "analysis/compliance/pitch_backend_matrix.json": "projection",
+            "analysis/compliance/python_requirement_disposition.json": "backend-disposition",
+            "analysis/compliance/python1516e_requirement_disposition.json": "backend-disposition",
+            "analysis/compliance/certi_requirement_disposition.json": "backend-disposition",
+            "analysis/compliance/certi-native_requirement_disposition.json": "backend-disposition",
+            "analysis/compliance/certi-jpype_requirement_disposition.json": "backend-disposition",
+            "analysis/compliance/certi-py4j_requirement_disposition.json": "backend-disposition",
+            "analysis/compliance/portico_requirement_disposition.json": "backend-disposition",
+            "analysis/compliance/portico-jpype_requirement_disposition.json": "backend-disposition",
+            "analysis/compliance/portico-py4j_requirement_disposition.json": "backend-disposition",
+            "analysis/compliance/pitch_requirement_disposition.json": "legacy-mixed-projection",
+            "analysis/compliance/pitch_requirement_disposition_canonical.json": "backend-disposition",
+            "analysis/compliance/pitch-jpype_requirement_disposition.json": "backend-disposition",
+            "analysis/compliance/pitch-py4j_requirement_disposition.json": "backend-disposition",
+            "analysis/compliance/requirements_matrix_2010.json": str(requirements_summary.get("artifact_class", "projection")),
+            "analysis/compliance/vendor_discovery_backlog.json": "generated-backlog",
+            "docs/backend_conformance_matrix.md": "operator-context",
+            "docs/rti_options_and_test_matrix.md": "operator-context",
         },
         "source_artifacts": [
             "analysis/compliance/core_backend_matrix.json",
@@ -462,6 +501,7 @@ def build_backend_compliance_catalog(project_root: str | Path | None = None) -> 
             "analysis/compliance/portico-jpype_requirement_disposition.json",
             "analysis/compliance/portico-py4j_requirement_disposition.json",
             "analysis/compliance/pitch_requirement_disposition.json",
+            "analysis/compliance/pitch_requirement_disposition_canonical.json",
             "analysis/compliance/pitch-jpype_requirement_disposition.json",
             "analysis/compliance/pitch-py4j_requirement_disposition.json",
             "analysis/compliance/requirements_matrix_2010.json",
@@ -469,6 +509,14 @@ def build_backend_compliance_catalog(project_root: str | Path | None = None) -> 
             "docs/backend_conformance_matrix.md",
             "docs/rti_options_and_test_matrix.md",
         ],
+        "requirements_matrix_projection_summary": {
+            "artifact_class": str(requirements_summary.get("artifact_class", "")),
+            "canonical_requirement_artifact": str(requirements_summary.get("canonical_requirement_artifact", "")),
+            "canonical_backend_resolution_artifact": str(requirements_summary.get("canonical_backend_resolution_artifact", "")),
+            "projection_rollup_artifact": str(requirements_summary.get("projection_rollup_artifact", "")),
+            "projection_basis": str(requirements_summary.get("projection_basis", "")),
+            "row_count": int(requirements_summary.get("row_count", len(requirements.get("rows", ())))),
+        },
         "requirements_vendor_summary": {
             key: _sorted_counts(value) for key, value in requirement_vendor_summary.items()
         },
@@ -482,6 +530,7 @@ def build_backend_compliance_catalog(project_root: str | Path | None = None) -> 
         "portico_jpype_requirement_disposition_summary": portico_jpype_disposition_summary,
         "portico_py4j_requirement_disposition_summary": portico_py4j_disposition_summary,
         "pitch_requirement_disposition_summary": pitch_disposition_summary,
+        "pitch_canonical_requirement_disposition_summary": pitch_canonical_disposition_summary,
         "pitch_jpype_requirement_disposition_summary": pitch_jpype_disposition_summary,
         "pitch_py4j_requirement_disposition_summary": pitch_py4j_disposition_summary,
         "backends": backend_rows,
@@ -496,6 +545,10 @@ def build_vendor_discovery_backlog(project_root: str | Path | None = None) -> di
     requirements = _load_json(compliance_dir / "requirements_matrix_2010.json")
     pitch_disposition_path = compliance_dir / "pitch_requirement_disposition.json"
     pitch_disposition = _load_json(pitch_disposition_path) if pitch_disposition_path.exists() else {"rows": []}
+    pitch_canonical_disposition_path = compliance_dir / "pitch_requirement_disposition_canonical.json"
+    pitch_canonical_disposition = (
+        _load_json(pitch_canonical_disposition_path) if pitch_canonical_disposition_path.exists() else pitch_disposition
+    )
     portico_disposition_path = compliance_dir / "portico_requirement_disposition.json"
     portico_jpype_disposition_path = compliance_dir / "portico-jpype_requirement_disposition.json"
     portico_py4j_disposition_path = compliance_dir / "portico-py4j_requirement_disposition.json"
@@ -507,7 +560,7 @@ def build_vendor_discovery_backlog(project_root: str | Path | None = None) -> di
     pitch_requirement_backlog_statuses = {"blocked", "vendor-divergent", "not-yet-tested", "classification-required"}
     pitch_requirement_targets = {
         (backend_id, str(row.get("section_ref", "")))
-        for row in pitch_disposition.get("rows", [])
+        for row in pitch_canonical_disposition.get("rows", [])
         for backend_id, disposition_key in (
             ("pitch-jpype", "pitch_jpype_disposition"),
             ("pitch-py4j", "pitch_py4j_disposition"),
@@ -589,7 +642,7 @@ def build_vendor_discovery_backlog(project_root: str | Path | None = None) -> di
             }
         )
 
-    for row in pitch_disposition.get("rows", []):
+    for row in pitch_canonical_disposition.get("rows", []):
         status = str(row.get("pitch_disposition", ""))
         if status not in pitch_requirement_backlog_statuses:
             continue
@@ -605,7 +658,7 @@ def build_vendor_discovery_backlog(project_root: str | Path | None = None) -> di
                 "section_ref": section_ref,
                 "section_root": _section_root(section_ref),
                 "current_status": status,
-                "source_artifact": "analysis/compliance/pitch_requirement_disposition.json",
+                "source_artifact": "analysis/compliance/pitch_requirement_disposition_canonical.json",
                 "evidence_tests": [str(item) for item in row.get("evidence_refs", [])],
                 "rationale": str(row.get("notes", "")),
                 "recommended_next_action": action,
@@ -637,7 +690,7 @@ def build_vendor_discovery_backlog(project_root: str | Path | None = None) -> di
                     "section_ref": section_ref,
                     "section_root": _section_root(section_ref),
                     "current_status": profile_status,
-                    "source_artifact": "analysis/compliance/pitch_requirement_disposition.json",
+                    "source_artifact": "analysis/compliance/pitch_requirement_disposition_canonical.json",
                     "evidence_tests": list(profile_evidence),
                     "rationale": str(row.get("notes", "")),
                     "recommended_next_action": profile_action,
@@ -825,8 +878,6 @@ def render_backend_compliance_catalog_text(
     portico_disposition = catalog.get("portico_requirement_disposition_summary", {})
     portico_jpype_disposition = catalog.get("portico_jpype_requirement_disposition_summary", {})
     portico_py4j_disposition = catalog.get("portico_py4j_requirement_disposition_summary", {})
-    pitch_jpype_disposition = catalog.get("pitch_jpype_requirement_disposition_summary", {})
-    pitch_py4j_disposition = catalog.get("pitch_py4j_requirement_disposition_summary", {})
     for label, summary in (
         ("python_requirement_dispositions", python_disposition),
         ("certi_requirement_dispositions", certi_disposition),

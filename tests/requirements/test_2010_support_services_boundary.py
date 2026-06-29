@@ -34,8 +34,11 @@ def test_support_services_boundary_doc_records_current_family_shape() -> None:
     assert "There are no remaining partial support rows for:" in text
     assert "`./tools/test-focus run backends`" in text
     assert "`./tools/test-surface run unit-scenarios-light`" in text
+    assert "requirements/2010/canonical_requirements.json" in text
+    assert "requirements/2010/backend_resolution.json" in text
     assert "requirements/2010/hla1516_1_sup_detailed_reconciliation.csv" in text
     assert "requirements/2010/traceability_matrix.csv" in text
+    assert "generated projection bridge" in text
     assert "docs/verification/requirement_compliance_exports.md" in text
     assert "analysis/compliance/requirements_matrix_2010.csv" not in text
     assert "analysis/compliance/requirements_ledger.csv" not in text

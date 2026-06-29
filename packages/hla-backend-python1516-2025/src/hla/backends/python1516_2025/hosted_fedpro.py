@@ -1,9 +1,8 @@
 """Hosted FedPro 2025 ambassador over the main python1516_2025 runtime lane."""
 from __future__ import annotations
 
-from importlib.resources import files
-from pathlib import Path
 import re
+from pathlib import Path
 from types import SimpleNamespace
 from typing import Any, Callable, NoReturn
 
@@ -397,13 +396,17 @@ class FedPro2025RTIAmbassador:
     def _decode_time(kind: str, value: str):
         if kind == "HLAfloat64Time":
             return HLAfloat64Time(float(value))
-        return HLAinteger64Time(int(value))
+        if kind == "HLAinteger64Time":
+            return HLAinteger64Time(int(value))
+        raise RTIinternalError(f"Hosted FedPro only supports HLAinteger64Time and HLAfloat64Time logical time values; got {kind}")
 
     @staticmethod
     def _decode_interval(kind: str, value: str):
         if kind == "HLAfloat64Interval":
             return HLAfloat64Interval(float(value))
-        return HLAinteger64Interval(int(value))
+        if kind == "HLAinteger64Interval":
+            return HLAinteger64Interval(int(value))
+        raise RTIinternalError(f"Hosted FedPro only supports HLAinteger64Interval and HLAfloat64Interval logical intervals; got {kind}")
 
     @staticmethod
     def _callback_model_name(model: Any) -> str:
@@ -413,6 +416,11 @@ class FedPro2025RTIAmbassador:
     def _time_kind_and_value(value: Any) -> tuple[str, str]:
         kind = type(value).__name__
         scalar = getattr(value, "value", value)
+        if kind not in {"HLAinteger64Time", "HLAfloat64Time", "HLAinteger64Interval", "HLAfloat64Interval"}:
+            raise RTIinternalError(
+                "Hosted FedPro only supports HLAinteger64Time and HLAfloat64Time logical time values; "
+                f"got {kind}"
+            )
         return kind, str(scalar)
 
     @staticmethod

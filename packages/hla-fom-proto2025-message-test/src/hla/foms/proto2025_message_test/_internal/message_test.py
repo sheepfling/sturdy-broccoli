@@ -1,15 +1,15 @@
 """Repo-internal executable showcase scenario for Proto2025 MessageTest."""
 from __future__ import annotations
 
-from collections.abc import Callable
 import uuid
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
 from hla.backends.common import RecordingFederateAmbassador
+from hla.fom.proto2025 import scenario_fom_paths
 from hla.rti1516_2025.enums import CallbackModel, ResignAction
 from hla.runtime.rti1516_2025_factory import create_rti_ambassador
-from hla.fom.proto2025 import scenario_fom_paths
 
 
 def _drain(*rtis: Any, rounds: int = 25) -> None:

@@ -8,6 +8,7 @@ from .loaders import (
     build_2025_backend_resolution_catalog,
     build_2025_canonical_requirement_catalog,
     load_2010_backend_resolution_rows,
+    load_2010_canonical_backend_requirement_rows,
     load_2010_fm_reconciliation_rows,
     load_2010_reconciliation_rows,
     load_2025_backend_group_rows,
@@ -31,19 +32,21 @@ from .loaders import (
 from .models import (
     BackendResolutionCatalog,
     BackendResolutionRow,
+    CanonicalBackendRequirementRow,
     CanonicalRequirementRow,
     CanonicalRowTriageArtifact,
     CanonicalRowTriageEntry,
     NormalizedRequirementCatalog,
-    RequirementMappingRow,
     RequirementArtifactSurvey,
     RequirementArtifactSurveyEntry,
+    RequirementMappingRow,
 )
 from .survey import survey_requirement_artifacts, write_requirement_artifact_survey
 
 __all__ = [
     "BackendResolutionCatalog",
     "BackendResolutionRow",
+    "CanonicalBackendRequirementRow",
     "CanonicalRequirementRow",
     "CanonicalRowTriageArtifact",
     "CanonicalRowTriageEntry",
@@ -58,6 +61,7 @@ __all__ = [
     "build_2025_backend_resolution_catalog",
     "build_2025_canonical_requirement_catalog",
     "load_2010_backend_resolution_rows",
+    "load_2010_canonical_backend_requirement_rows",
     "load_2010_fm_reconciliation_rows",
     "load_2010_reconciliation_rows",
     "load_2025_backend_group_rows",

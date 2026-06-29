@@ -15,7 +15,7 @@ Read this after:
 - [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md)
 - [`java_bridge_wrapping_guide.md`](java_bridge_wrapping_guide.md)
 
-Keep [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md)
+Keep [`java_bridge_adaptation_policy.md`](java_bridge_adaptation_policy.md)
 next to this page when debugging overloads that involve `byte[]`,
 `LogicalTime`, handle-value maps, or credentials.
 
@@ -250,7 +250,7 @@ Most byte bugs here come from one of these:
    handling
 
 When investigating these, read this page together with
-[`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md),
+[`java_bridge_adaptation_policy.md`](java_bridge_adaptation_policy.md),
 because some apparent byte bugs are really overload-selection bugs involving
 `byte[]`.
 
@@ -259,5 +259,5 @@ because some apparent byte bugs are really overload-selection bugs involving
 1. [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md)
 2. [`java_bridge_wrapping_guide.md`](java_bridge_wrapping_guide.md)
 3. [`java_bridge_encoding_and_bytes.md`](java_bridge_encoding_and_bytes.md)
-4. [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md)
+4. [`java_bridge_adaptation_policy.md`](java_bridge_adaptation_policy.md)
 5. [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md)

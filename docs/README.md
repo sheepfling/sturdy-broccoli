@@ -13,7 +13,7 @@ Use this rule:
 
 If you are not sure where to start, use one of these first:
 
-- `Java bridge highlight`: [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md), [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md), [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md), [`reference/java_interface_spec_mapping.md`](reference/java_interface_spec_mapping.md)
+- `Java bridge highlight`: [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md), [`java_bridge_adaptation_policy.md`](java_bridge_adaptation_policy.md), [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md), [`reference/java_interface_spec_mapping.md`](reference/java_interface_spec_mapping.md)
 - `Testing`: [`repo_green_quickstart.md`](repo_green_quickstart.md), [`test_surface.md`](test_surface.md), [`local_verification_commands.md`](local_verification_commands.md), [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
 - `Testing ownership model`: [`verification/shard_registry.md`](verification/shard_registry.md), [`verification/view_registry.md`](verification/view_registry.md)
 - `Requirements verification flow`: [`verification/requirements_verification_flow.md`](verification/requirements_verification_flow.md)
@@ -44,7 +44,7 @@ Practical routing rule:
 | get a new machine or junior setup to repo-green | `Testing` -> [`repo_green_quickstart.md`](repo_green_quickstart.md) -> [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md) |
 | run the first pure-Python example | `2010 | 2025` -> [`first_run.md`](first_run.md) |
 | choose among backend, transport, and FOM lanes from one page | `Backend | Transport | FOM` -> [`backend_transport_fom_selection_guide.md`](backend_transport_fom_selection_guide.md) |
-| understand the repository's Java bridge story from a manager or new-maintainer angle | `Java bridge highlight` -> [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md) -> [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md) |
+| understand the repository's Java bridge story from a manager or new-maintainer angle | `Java bridge highlight` -> [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md) -> [`java_bridge_adaptation_policy.md`](java_bridge_adaptation_policy.md) |
 | wrap a Java RTI with JPype or Py4J as lightly as possible | `Backend` -> [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md) |
 | inspect the full Java HLA interface-to-route mapping in one deterministic reference | `Backend` -> [`reference/java_interface_spec_mapping.md`](reference/java_interface_spec_mapping.md) |
 | inspect the canonical 2010 HLA service and callback contract table | `Backend` -> [`reference/hla_interface_contracts.md`](reference/hla_interface_contracts.md) |
@@ -88,7 +88,7 @@ If you already know what you need, pick a lane:
 
 - `Java bridge highlight` -> shortest path into the repo's Java wrapping model:
   [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md),
-  [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md),
+  [`java_bridge_adaptation_policy.md`](java_bridge_adaptation_policy.md),
   [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md),
   [`reference/java_interface_spec_mapping.md`](reference/java_interface_spec_mapping.md)
 - `Routing` -> choose among the three main work surfaces first:
@@ -165,7 +165,7 @@ If you already know what you need, pick a lane:
   [`reference/java_interface_spec_mapping.md`](reference/java_interface_spec_mapping.md),
   [`java_bridge_wrapping_guide.md`](java_bridge_wrapping_guide.md),
   [`java_bridge_encoding_and_bytes.md`](java_bridge_encoding_and_bytes.md),
-  [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md),
+  [`java_bridge_adaptation_policy.md`](java_bridge_adaptation_policy.md),
   [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md)
 - `Backend` -> investigate a native Pitch HLA4/202X route beyond the current adapter-backed 2025 path:
   [`pitch_hla4_native_investigation.md`](pitch_hla4_native_investigation.md)
@@ -222,7 +222,7 @@ Use these when you need structure, not onboarding:
 - [reference/hla_interface_contracts.md](reference/hla_interface_contracts.md): canonical 2010 HLA service and callback contract table with generated alias signatures
 - [java_bridge_wrapping_guide.md](java_bridge_wrapping_guide.md): fuller JPype/Py4J wrapping guide
 - [java_bridge_encoding_and_bytes.md](java_bridge_encoding_and_bytes.md): Java encoder, `byte[]`, `userSuppliedTag`, and JPype/Py4J byte-preservation guide
-- [java_bridge_overload_resolution.md](java_bridge_overload_resolution.md): how shared Python-side overload selection and callback signature handling keep JPype and Py4J aligned
+- [java_bridge_adaptation_policy.md](java_bridge_adaptation_policy.md): shared overload, value-adaptation, callback, byte, logical-time, and JPype/Py4J policy
 - [java_rti_adaptation_architecture.md](java_rti_adaptation_architecture.md): management-readable Java RTI adaptation architecture
 - [python_route_wrapping_guide.md](python_route_wrapping_guide.md): keep 2010 and 2025 Python wrapper examples aligned at the factory/import edge
 - [pitch_hla4_native_investigation.md](pitch_hla4_native_investigation.md): spike map for native Pitch HLA4/202X JPype and Py4J routes beyond the current adapter-backed 2025 path

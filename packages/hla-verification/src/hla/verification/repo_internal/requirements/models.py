@@ -297,6 +297,8 @@ class RequirementMappingRow:
     source_requirement_id: str
     canonical_requirement_id: str
     mapping_kind: str
+    current_status: str
+    requirement_text: str
     mapping_notes: str
     source_packet_file: str
     owner_doc: str
@@ -309,6 +311,8 @@ class RequirementMappingRow:
             source_requirement_id=_string(payload.get("source_requirement_id")),
             canonical_requirement_id=_string(payload.get("canonical_requirement_id")),
             mapping_kind=_string(payload.get("mapping_kind")),
+            current_status=_string(payload.get("current_status")),
+            requirement_text=_string(payload.get("requirement_text")),
             mapping_notes=_string(payload.get("mapping_notes")),
             source_packet_file=_string(payload.get("source_packet_file")),
             owner_doc=_string(payload.get("owner_doc")),
@@ -321,6 +325,8 @@ class RequirementMappingRow:
             "source_requirement_id": self.source_requirement_id,
             "canonical_requirement_id": self.canonical_requirement_id,
             "mapping_kind": self.mapping_kind,
+            "current_status": self.current_status,
+            "requirement_text": self.requirement_text,
             "mapping_notes": self.mapping_notes,
             "source_packet_file": self.source_packet_file,
             "owner_doc": self.owner_doc,
@@ -409,4 +415,69 @@ class BackendResolutionCatalog:
             "generated_from": list(self.generated_from),
             "row_count": self.row_count,
             "rows": [row.to_mapping() for row in self.rows],
+        }
+
+
+@dataclass(frozen=True, slots=True)
+class CanonicalBackendRequirementRow:
+    edition: str
+    requirement_id: str
+    source_document: str
+    clause: str
+    service_group: str
+    service_or_check: str
+    row_kind: str
+    canonical_status: str
+    canonical_status_reason: str
+    owner_doc: str
+    primary_test_shard: str
+    primary_command: str
+    requirement_evidence_refs: tuple[str, ...]
+    backend_evidence_refs: tuple[str, ...]
+    boundary_note: str
+    backend_fields: dict[str, str]
+
+    @classmethod
+    def from_rows(
+        cls,
+        requirement_row: CanonicalRequirementRow,
+        backend_row: BackendResolutionRow,
+    ) -> CanonicalBackendRequirementRow:
+        return cls(
+            edition=requirement_row.edition,
+            requirement_id=requirement_row.requirement_id,
+            source_document=requirement_row.source_document,
+            clause=requirement_row.clause,
+            service_group=requirement_row.service_group,
+            service_or_check=requirement_row.service_or_check,
+            row_kind=requirement_row.row_kind,
+            canonical_status=requirement_row.canonical_status,
+            canonical_status_reason=requirement_row.canonical_status_reason,
+            owner_doc=requirement_row.owner_doc,
+            primary_test_shard=requirement_row.primary_test_shard,
+            primary_command=requirement_row.primary_command,
+            requirement_evidence_refs=requirement_row.evidence_refs,
+            backend_evidence_refs=backend_row.evidence_refs,
+            boundary_note=backend_row.boundary_note or requirement_row.boundary_note,
+            backend_fields=dict(backend_row.backend_fields),
+        )
+
+    def to_mapping(self) -> dict[str, object]:
+        return {
+            "edition": self.edition,
+            "requirement_id": self.requirement_id,
+            "source_document": self.source_document,
+            "clause": self.clause,
+            "service_group": self.service_group,
+            "service_or_check": self.service_or_check,
+            "row_kind": self.row_kind,
+            "canonical_status": self.canonical_status,
+            "canonical_status_reason": self.canonical_status_reason,
+            "owner_doc": self.owner_doc,
+            "primary_test_shard": self.primary_test_shard,
+            "primary_command": self.primary_command,
+            "requirement_evidence_refs": list(self.requirement_evidence_refs),
+            "backend_evidence_refs": list(self.backend_evidence_refs),
+            "boundary_note": self.boundary_note,
+            "backend_fields": dict(self.backend_fields),
         }

@@ -9,8 +9,6 @@ from typing import Any, Mapping
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel, ConfigDict, Field
-
 from hla.verification.repo_internal.fom_workbench import write_fom_workbench_html
 from hla.verification.repo_internal.verification.federate_service_fastapi import federate_service_contract_json
 from hla.verification.repo_internal.verification.hla_studio_index import (
@@ -19,6 +17,7 @@ from hla.verification.repo_internal.verification.hla_studio_index import (
     relative_href,
     write_hla_studio_index,
 )
+from pydantic import BaseModel, ConfigDict, Field
 
 from .runtime_observer_core import (
     RUNTIME_OBSERVER_EVENT_SCHEMA_VERSION,

@@ -16,6 +16,7 @@ from .java_shim_types import (
     JavaInteractionClassHandle,
     JavaLikeException,
     JavaLikeObject,
+    JavaLogicalTimeFactory,
     JavaObjectClassHandle,
     JavaObjectInstanceHandle,
     JavaParameterHandle,
@@ -84,6 +85,10 @@ class InProcessJavaRTIShim:
         if self.federation_name is None or self.federate_handle is None:
             raise JavaLikeException("FederateNotExecutionMember", "Federate has not joined a federation")
 
+    def getTimeFactory(self) -> JavaLogicalTimeFactory:  # noqa: N802
+        self._require_connected()
+        return JavaLogicalTimeFactory(self.logical_time_name)
+
     def connect(self, federateReference: Any, callbackModel: Any, localSettingsDesignator: str | None = None) -> None:
         if self.connected:
             raise JavaLikeException("AlreadyConnected", "RTI shim is already connected")
@@ -99,6 +104,14 @@ class InProcessJavaRTIShim:
     def createFederationExecution(self, federationExecutionName: str, *unused: Any) -> None:
         self._require_connected()
         self.federation_name = str(federationExecutionName)
+        self.logical_time_name = next(
+            (
+                str(value)
+                for value in unused
+                if str(value) in {"HLAinteger64Time", "HLAfloat64Time"}
+            ),
+            "HLAinteger64Time",
+        )
 
     def destroyFederationExecution(self, federationExecutionName: str) -> None:
         self._require_connected()

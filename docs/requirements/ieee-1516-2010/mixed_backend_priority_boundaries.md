@@ -16,11 +16,15 @@ Short answer:
 
 - canonical owner doc:
   `docs/requirements/ieee-1516-2010/mixed_backend_priority_boundaries.md`
-- canonical source companion:
+- edition-wide canonical requirement truth:
+  `requirements/2010/canonical_requirements.json`
+- edition-wide backend-resolution companion:
+  `requirements/2010/backend_resolution.json`
+- legacy priority backend projection:
   `requirements/2010/hla1516_1_priority_backend_resolution.csv`
-- primary owner rows:
+- legacy clause projection seed:
   `requirements/2010/hla1516_1_priority_clauses_4_8_11.csv`
-- broad bridge:
+- generated projection bridge:
   `requirements/2010/traceability_matrix.csv`
 - export and handoff surface:
   `docs/verification/requirement_compliance_exports.md`
@@ -101,10 +105,12 @@ Bad shape:
 
 ## Reading Order
 
-1. `requirements/2010/hla1516_1_priority_clauses_4_8_11.csv`
-2. `requirements/2010/hla1516_1_priority_backend_resolution.csv`
-3. `requirements/2010/traceability_matrix.csv`
-4. the owning shard command named in the companion ledger
+1. `requirements/2010/canonical_requirements.json`
+2. `requirements/2010/backend_resolution.json`
+3. `requirements/2010/hla1516_1_priority_clauses_4_8_11.csv`
+4. `requirements/2010/hla1516_1_priority_backend_resolution.csv`
+5. `requirements/2010/traceability_matrix.csv`
+6. the owning shard command named in the companion ledger
 
 ## Related Docs
 

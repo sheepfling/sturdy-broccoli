@@ -1,13 +1,13 @@
 """Shared multi-federate Java-shaped shim kernel facade."""
 from __future__ import annotations
 
+from typing import Callable, TypeVar
+
 from .java_shim_records import (
     SharedJavaFederationRecord,
     SharedJavaObjectRecord,
     SharedJavaSynchronizationPoint,
 )
-from typing import Callable, TypeVar
-
 from .java_shim_types import (
     JavaAttributeHandle,
     JavaDimensionHandle,
@@ -17,7 +17,6 @@ from .java_shim_types import (
     JavaRegionHandle,
     JavaTransportationTypeHandle,
 )
-
 
 TJavaShimHandle = TypeVar("TJavaShimHandle")
 

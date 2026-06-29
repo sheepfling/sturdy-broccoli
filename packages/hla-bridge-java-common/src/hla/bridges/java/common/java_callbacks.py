@@ -4,6 +4,7 @@ from __future__ import annotations
 from typing import Any
 
 from hla.backends.common import CALLBACK_METHOD_NAMES, Invocation, clean_java_type_name
+
 from .java_binding_profile import load_python_java_binding_profile
 
 _DEFAULT_BINDING = load_python_java_binding_profile("2010")

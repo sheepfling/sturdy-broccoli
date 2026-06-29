@@ -11,7 +11,6 @@ from hla.verification.repo_internal.fom_inventory import default_load_set_record
 from hla.verification.repo_internal.fom_roundtrip import build_fom_roundtrip
 from hla.verification.repo_internal.siso_corpus import is_default_scope_record
 
-
 _DEFAULT_2025_EXTENSION_FAMILIES = {
     "proto2025-message-test",
     "proto2025-space-lite",

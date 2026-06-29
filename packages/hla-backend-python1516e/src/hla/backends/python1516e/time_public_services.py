@@ -3,10 +3,11 @@ from __future__ import annotations
 
 from typing import Any, Iterable
 
+from hla.rti1516e.datatypes import TimeQueryReturn
 from hla.rti1516e.enums import OrderType
 from hla.rti1516e.exceptions import (
-    InTimeAdvancingState,
     InteractionClassNotPublished,
+    InTimeAdvancingState,
     InvalidInteractionClassHandle,
     InvalidLookahead,
     InvalidMessageRetractionHandle,
@@ -25,7 +26,6 @@ from hla.rti1516e.handles import (
     MessageRetractionHandle,
     ObjectInstanceHandle,
 )
-from hla.rti1516e.datatypes import TimeQueryReturn
 
 from .time_validation import PythonRTITimeValidationMixin, _time_value
 

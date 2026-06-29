@@ -13,8 +13,8 @@ from __future__ import annotations
 
 from typing import Any, Iterable
 
-from hla.rti1516e.encoding import HLAboolean, HLAinteger32BE, HLAopaqueData, HLAunicodeString
 from hla.fom import FOMModule, InteractionClassSpec, ObjectClassSpec
+from hla.rti1516e.encoding import HLAboolean, HLAinteger32BE, HLAopaqueData, HLAunicodeString
 
 MOM_OBJECT_ROOT = "HLAobjectRoot.HLAmanager"
 MOM_INTERACTION_ROOT = "HLAinteractionRoot.HLAmanager"

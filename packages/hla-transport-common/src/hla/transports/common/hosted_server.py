@@ -4,17 +4,8 @@ from __future__ import annotations
 from collections import deque
 from typing import Any, Sequence, cast
 
-from .transport_codecs import (
-    decode_bytes,
-    decode_handle_set,
-    decode_handle_value_map,
-    encode_bytes,
-    federate_handle_set_spec,
-    handle_set_spec,
-    handle_value_map_spec,
-)
-
-from .transport import TransportRequest, TransportResponse
+from hla.backends.common import RecordingFederateAmbassador
+from hla.rti1516e.datatypes import AttributeRegionAssociation, FederateHandleSaveStatusPair, FederateRestoreStatus, RangeBounds
 from hla.rti1516e.enums import (
     CallbackModel,
     OrderType,
@@ -40,9 +31,24 @@ from hla.rti1516e.handles import (
     RegionHandle,
     RegionHandleSet,
 )
-from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
-from hla.rti1516e.datatypes import AttributeRegionAssociation, FederateHandleSaveStatusPair, FederateRestoreStatus, RangeBounds
-from hla.backends.common import RecordingFederateAmbassador
+from hla.rti1516e.time import (
+    HLAfloat64Interval,
+    HLAfloat64Time,
+    HLAinteger64Interval,
+    HLAinteger64Time,
+    get_logical_time_factory,
+)
+
+from .transport import TransportRequest, TransportResponse
+from .transport_codecs import (
+    decode_bytes,
+    decode_handle_set,
+    decode_handle_value_map,
+    encode_bytes,
+    federate_handle_set_spec,
+    handle_set_spec,
+    handle_value_map_spec,
+)
 
 
 def _logical_time_name(value: Any) -> str:
@@ -65,10 +71,58 @@ def _logical_scalar(value: Any) -> str:
     raw = getattr(value, "value", value)
     if isinstance(value, (HLAinteger64Time, HLAinteger64Interval)):
         return str(int(raw))
-    return str(float(raw))
+    if isinstance(value, (HLAfloat64Time, HLAfloat64Interval)):
+        return str(float(raw))
+    encode = getattr(value, "encode", None)
+    if callable(encode):
+        try:
+            encoded = encode()
+        except TypeError:
+            encoded_length = getattr(value, "encodedLength", None) or getattr(value, "encoded_length", None)
+            if not callable(encoded_length):
+                raise
+            buffer = bytearray(int(cast(Any, encoded_length)()))
+            result = encode(buffer, 0)
+            encoded = buffer if result is None else result
+        if isinstance(encoded, bytes):
+            payload = encoded
+        elif isinstance(encoded, bytearray):
+            payload = bytes(encoded)
+        elif isinstance(encoded, memoryview):
+            payload = encoded.tobytes()
+        else:
+            raise ValueError(f"Unsupported encoded logical time payload: {type(encoded).__name__}")
+        return f"encoded:{payload.hex()}"
+    raise ValueError(f"Unsupported non-scalar logical time value: {type(value).__name__}")
 
 
-def _decode_logical_time(type_name: str, raw: Any) -> Any:
+def _decode_encoded_logical_value(type_name: str, raw: Any, *, is_interval: bool, factory: Any | None = None) -> Any:
+    text = str(raw)
+    if not text.startswith("encoded:"):
+        return None
+    data = bytes.fromhex(text.split(":", 1)[1])
+    resolved_factory = factory
+    if resolved_factory is None:
+        family_name = type_name.removesuffix("Interval")
+        try:
+            resolved_factory = get_logical_time_factory(family_name)
+        except Exception:
+            resolved_factory = None
+    if resolved_factory is None:
+        raise ValueError(f"Cannot decode encoded logical time without factory for {type_name}")
+    method_name = "decodeInterval" if is_interval else "decodeTime"
+    method = getattr(resolved_factory, method_name, None)
+    if not callable(method):
+        method = getattr(resolved_factory, "decode_interval" if is_interval else "decode_time", None)
+    if not callable(method):
+        raise ValueError(f"Logical time factory {resolved_factory!r} cannot decode {type_name}")
+    return method(data, 0)
+
+
+def _decode_logical_time(type_name: str, raw: Any, *, factory: Any | None = None) -> Any:
+    encoded = _decode_encoded_logical_value(type_name, raw, is_interval=False, factory=factory)
+    if encoded is not None:
+        return encoded
     if type_name == "HLAinteger64Time":
         return HLAinteger64Time(int(raw))
     if type_name == "HLAfloat64Time":
@@ -76,7 +130,10 @@ def _decode_logical_time(type_name: str, raw: Any) -> Any:
     raise ValueError(f"Unsupported logical time type: {type_name}")
 
 
-def _decode_logical_interval(type_name: str, raw: Any) -> Any:
+def _decode_logical_interval(type_name: str, raw: Any, *, factory: Any | None = None) -> Any:
+    encoded = _decode_encoded_logical_value(type_name, raw, is_interval=True, factory=factory)
+    if encoded is not None:
+        return encoded
     if type_name == "HLAinteger64Interval":
         return HLAinteger64Interval(int(raw))
     if type_name == "HLAfloat64Interval":
@@ -246,6 +303,22 @@ class HostedRTICommandProcessor:
         except Exception:
             pass
 
+    def _time_factory(self) -> Any | None:
+        for name in ("get_time_factory", "getTimeFactory"):
+            method = getattr(self.rti, name, None)
+            if callable(method):
+                try:
+                    return method()
+                except Exception:
+                    return None
+        return None
+
+    def _decode_logical_time(self, type_name: str, raw: Any) -> Any:
+        return _decode_logical_time(type_name, raw, factory=self._time_factory())
+
+    def _decode_logical_interval(self, type_name: str, raw: Any) -> Any:
+        return _decode_logical_interval(type_name, raw, factory=self._time_factory())
+
     def handle_request(self, request: TransportRequest) -> TransportResponse:
         command = request.command
         fields = cast(Sequence[Any], request.fields)
@@ -305,7 +378,7 @@ class HostedRTICommandProcessor:
         if command == "REQUEST_FEDERATION_SAVE":
             label = str(fields[0])
             if len(fields) >= 3:
-                self.rti.request_federation_save(label, _decode_logical_time(str(fields[1]), fields[2]))
+                self.rti.request_federation_save(label, self._decode_logical_time(str(fields[1]), fields[2]))
             else:
                 self.rti.request_federation_save(label)
             return TransportResponse()
@@ -466,7 +539,7 @@ class HostedRTICommandProcessor:
                 ObjectInstanceHandle(int(fields[0])),
                 decode_handle_value_map(str(fields[1]), AttributeHandle, AttributeHandleValueMap),
                 decode_bytes(str(fields[2])),
-                _decode_logical_time(str(fields[3]), fields[4]),
+                self._decode_logical_time(str(fields[3]), fields[4]),
             )
             if handle is None:
                 return TransportResponse()
@@ -527,7 +600,7 @@ class HostedRTICommandProcessor:
                 InteractionClassHandle(int(fields[0])),
                 decode_handle_value_map(str(fields[1]), ParameterHandle, ParameterHandleValueMap),
                 decode_bytes(str(fields[2])),
-                _decode_logical_time(str(fields[3]), fields[4]),
+                self._decode_logical_time(str(fields[3]), fields[4]),
             )
             if handle is None:
                 return TransportResponse()
@@ -554,7 +627,7 @@ class HostedRTICommandProcessor:
             )
             return TransportResponse()
         if command == "ENABLE_TIME_REGULATION":
-            self.rti.enable_time_regulation(_decode_logical_interval(str(fields[0]), fields[1]))
+            self.rti.enable_time_regulation(self._decode_logical_interval(str(fields[0]), fields[1]))
             return TransportResponse()
         if command == "ENABLE_TIME_CONSTRAINED":
             self.rti.enable_time_constrained()
@@ -572,7 +645,7 @@ class HostedRTICommandProcessor:
             lookahead = self.rti.query_lookahead()
             return TransportResponse(fields=(_logical_interval_name(lookahead), _logical_scalar(lookahead)))
         if command == "MODIFY_LOOKAHEAD":
-            self.rti.modify_lookahead(_decode_logical_interval(str(fields[0]), fields[1]))
+            self.rti.modify_lookahead(self._decode_logical_interval(str(fields[0]), fields[1]))
             return TransportResponse()
         if command == "ENABLE_ASYNCHRONOUS_DELIVERY":
             self.rti.enable_asynchronous_delivery()
@@ -672,19 +745,19 @@ class HostedRTICommandProcessor:
             self.rti.change_interaction_order_type(InteractionClassHandle(int(fields[0])), OrderType[str(fields[1])])
             return TransportResponse()
         if command == "TIME_ADVANCE_REQUEST":
-            self.rti.time_advance_request(_decode_logical_time(str(fields[0]), fields[1]))
+            self.rti.time_advance_request(self._decode_logical_time(str(fields[0]), fields[1]))
             return TransportResponse()
         if command == "TIME_ADVANCE_REQUEST_AVAILABLE":
-            self.rti.time_advance_request_available(_decode_logical_time(str(fields[0]), fields[1]))
+            self.rti.time_advance_request_available(self._decode_logical_time(str(fields[0]), fields[1]))
             return TransportResponse()
         if command == "NEXT_MESSAGE_REQUEST":
-            self.rti.next_message_request(_decode_logical_time(str(fields[0]), fields[1]))
+            self.rti.next_message_request(self._decode_logical_time(str(fields[0]), fields[1]))
             return TransportResponse()
         if command == "NEXT_MESSAGE_REQUEST_AVAILABLE":
-            self.rti.next_message_request_available(_decode_logical_time(str(fields[0]), fields[1]))
+            self.rti.next_message_request_available(self._decode_logical_time(str(fields[0]), fields[1]))
             return TransportResponse()
         if command == "FLUSH_QUEUE_REQUEST":
-            self.rti.flush_queue_request(_decode_logical_time(str(fields[0]), fields[1]))
+            self.rti.flush_queue_request(self._decode_logical_time(str(fields[0]), fields[1]))
             return TransportResponse()
         if command == "QUERY_GALT":
             query = self.rti.query_galt()

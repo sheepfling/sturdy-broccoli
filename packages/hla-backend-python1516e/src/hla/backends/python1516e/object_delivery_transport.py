@@ -3,8 +3,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Mapping, Protocol
 
-from hla.rti1516e.exceptions import CouldNotDecode, InvalidTransportationType
 from hla.fom import validate_encoded_datatype_value
+from hla.rti1516e.exceptions import CouldNotDecode, InvalidTransportationType
 from hla.rti1516e.handles import (
     AttributeHandle,
     InteractionClassHandle,

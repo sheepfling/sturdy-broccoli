@@ -58,8 +58,11 @@ def test_federation_management_boundary_doc_records_current_family_shape() -> No
     assert "test_list_federation_executions_surfaces_rti_internal_error_for_corrupt_runtime_state" in text
     assert "test_request_federation_save_latest_scheduled_request_supersedes_prior_requested_save" in text
     assert "test_resign_canceling_directives_clear_pending_acquisition_requests" in text
+    assert "requirements/2010/canonical_requirements.json" in text
+    assert "requirements/2010/backend_resolution.json" in text
     assert "requirements/2010/hla1516_1_fm_detailed_reconciliation.csv" in text
     assert "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv" in text
     assert "requirements/2010/traceability_matrix.csv" in text
+    assert "generated projection bridge" in text
     assert "requirement_compliance_exports.md" in text
     assert "../../plans/requirements_gap_register.md" not in text

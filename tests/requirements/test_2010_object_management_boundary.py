@@ -25,8 +25,11 @@ def test_object_management_boundary_doc_records_current_family_shape() -> None:
     assert "canonical final reading for the current `CAP-OM`" in text
     assert "`391 mapped`" in text
     assert "`0 partial`" in text
+    assert "`requirements/2010/canonical_requirements.json`" in text
+    assert "`requirements/2010/backend_resolution.json`" in text
     assert "`requirements/2010/hla1516_1_om_detailed_reconciliation.csv`" in text
     assert "`requirements/2010/traceability_matrix.csv`" in text
+    assert "generated projection bridge" in text
     assert "`docs/verification/requirement_compliance_exports.md`" in text
     assert "`./tools/test-focus run execution-membership`" in text
     assert "`./tools/test-focus run backends`" in text

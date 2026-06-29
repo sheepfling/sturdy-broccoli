@@ -1,8 +1,8 @@
-# Java Bridge Overload Resolution
+# Java Bridge Adaptation Policy
 
 Use this page when the question is not just "how do I start JPype or Py4J?"
-but "how does the repo make the right Java call when the standard HLA Java API
-has multiple overloads with similar names and awkward parameter families?"
+but "how does the repo make the right Java call and keep Python-facing HLA
+values coherent across JPype and Py4J?"
 
 This document belongs to the backend and route wrapping surface described in
 [`work_surfaces.md`](work_surfaces.md).
@@ -111,6 +111,7 @@ The shared Java adaptation layer is now intentionally split into these modules:
 | `java_invocation_routes.py` | weighted and deterministic Java route policy |
 | `java_bridge_base.py` | route-neutral `JavaBridge` base abstraction and low-level Java object helpers |
 | `java_value_adapter.py` | generic Java runtime adaptation plus HLA semantic adaptation |
+| `java_logical_time.py` | Java `LogicalTimeFactory` and logical-time value wrappers |
 | `java_callbacks.py` | callback signature lookup and `PythonFederateAmbassadorDispatcher` |
 | `java_encoding.py` | `JavaEncoderOracle` and `JavaVendorEncoding` |
 | `java_common.py` | backend composition, invocation execution, and exception translation |
@@ -121,6 +122,7 @@ ASCII view:
 JPype | Py4J runtime
   -> JavaBridge implementations
   -> HLAJavaValueAdapter / GenericJavaValueAdapter
+  -> JavaLogicalTimeFactoryAdapter when logical time is involved
   -> PythonFederateAmbassadorDispatcher
   -> JavaEncoderOracle / JavaVendorEncoding
   -> JavaRTIBackend
@@ -138,6 +140,7 @@ owns it.
 | Py4J-only gateway/proxy/call mechanics | `py4j/runtime.py` | `java_bridge_base.py` |
 | generic Python `list/set/dict/bytes/enum` conversion | `java_value_adapter.py` via `GenericJavaValueAdapter` | `java_bridge_base.py` |
 | HLA handle/time/config/auth/container conversion | `java_value_adapter.py` via `HLAJavaValueAdapter` | `java_binding_profile.py` |
+| logical-time factories or custom logical-time values | `java_logical_time.py` | `java_value_adapter.py` |
 | callback argument normalization or callback signature expectations | `java_callbacks.py` | `java_value_adapter.py` |
 | HLA encoder-factory materialization or vendor byte encoding | `java_encoding.py` | `java_value_adapter.py` |
 | backend invocation composition or Java exception translation | `java_common.py` | `invocation.py` |
@@ -153,6 +156,7 @@ Use this table when the symptom is clear but the owning module is not.
 | deterministic route rejects an ambiguous shape | `java_invocation_policy.py` | fail-closed route entries are intentionally explicit there |
 | Python `list`, `set`, `frozenset`, or `dict` lands in the wrong Java container family | `java_value_adapter.py` via `GenericJavaValueAdapter` | generic container materialization and normalization live there |
 | handle sets, handle maps, logical time, auth, or config values wrap incorrectly | `java_value_adapter.py` via `HLAJavaValueAdapter` | HLA semantic conversion is separate from generic container conversion |
+| Java `getTimeFactory()` returns an unusable Python object | `java_logical_time.py` | Java logical-time factory wrapping is centralized there |
 | callback arguments arrive with the wrong Python shape | `java_callbacks.py` | callback signature expectations and callback dispatch live there |
 | `byte[]`, `userSuppliedTag`, or encoder payloads do not round-trip cleanly | `java_encoding.py` | byte-preservation and encoder materialization are isolated there |
 | JPype-only bridge behavior differs from Py4J | `jpype/runtime.py` | route-local in-process materialization belongs there after shared resolution |
@@ -382,7 +386,7 @@ Important characteristics:
 | overload selection | Python resolver chooses the Java shape first | direct JVM object call after resolution | gateway call after resolution |
 | keyword / snake-case mapping | shared | same | same |
 | handle-set / map conversion | shared converter policy | materialize direct Java collections or RTI factories | materialize gateway-backed Java collections or RTI factories |
-| logical time conversion | shared expected type names | direct class construction or RTI time factory use | gateway-backed class construction or RTI time factory use |
+| logical time conversion | shared RTI `LogicalTimeFactory` wrapper | Java factory encode/decode through JPype objects | Java factory encode/decode through gateway objects |
 | failure mode if shape is ambiguous | fail closed in shared resolver | same | same |
 
 ## Helper: How Python Values Are Wrapped To Java
@@ -438,8 +442,60 @@ Typical examples:
   available, otherwise a generic Java set
 - Python mapping of handle -> `bytes` -> RTI-owned handle-value map when the
   RTI factory is available, otherwise a generic Java map
-- Python logical-time wrapper -> RTI time-factory object when possible,
-  otherwise the standard Java logical-time class
+- Python logical-time wrapper -> the current RTI `LogicalTimeFactory`
+  encode/decode path; if the factory is unavailable, the bridge fails rather
+  than constructing a guessed standard Java time class
+
+### Logical Time Factories
+
+Logical time is not treated as a scalar bridge convenience. The Java standard
+allows each federation to select a logical-time implementation, and vendors can
+provide concrete time classes beyond the built-in integer and float families.
+
+For Java routes, the bridge therefore uses the RTI's factory as the source of
+truth:
+
+- `getTimeFactory()` returns a Python-facing `JavaLogicalTimeFactoryAdapter`
+- outbound Python logical-time values are encoded to bytes and decoded by the
+  Java factory through `decodeTime(...)` or `decodeInterval(...)`
+- inbound Java logical-time values are encoded from the Java object and decoded
+  through the wrapped factory
+- built-in `HLAinteger64Time` and `HLAfloat64Time` values still normalize to
+  native Python time classes for compatibility
+- unknown vendor time implementations become opaque Java-backed Python wrappers
+  instead of being forced through `int`, `float`, or class-name guesses
+
+The adapter surface mirrors the standard factory names:
+
+- `getName()` / `get_name()`
+- `decodeTime(...)` / `decode_time(...)`
+- `decodeInterval(...)` / `decode_interval(...)`
+- `makeInitial()`, `makeFinal()`, `makeZero()`, `makeEpsilon()`
+- `makeTime(...)` and `makeInterval(...)` when the vendor factory supports
+  scalar construction
+
+This policy is intentionally shared by JPype and Py4J. JPype owns in-process
+object calls and Py4J owns gateway calls, but neither route owns logical-time
+type inference. Both routes pass through `HLAJavaValueAdapter` and
+`JavaLogicalTimeFactoryAdapter`.
+
+The in-process Java shim also exposes `getTimeFactory()` so shim tests exercise
+the same factory path. Non-Java transports have a different contract: common
+hosted transport can carry non-built-in logical time as encoded bytes when a
+factory is available; CERTI, hosted FedPro, and fake gRPC routes fail explicitly
+for unsupported custom logical-time implementations rather than silently
+coercing them to built-in scalar time.
+
+Regression coverage for this policy is split deliberately:
+
+- [`../packages/hla-bridge-java-common/tests/test_java_logical_time_adapters.py`](../packages/hla-bridge-java-common/tests/test_java_logical_time_adapters.py)
+  covers built-in integer, built-in float, and unknown/opaque factory behavior
+  through the shared adapter and the in-process JPype/Py4J shim profiles.
+- [`../packages/hla-bridge-java-common/tests/test_java_logical_time_live_bridges.py`](../packages/hla-bridge-java-common/tests/test_java_logical_time_live_bridges.py)
+  is an optional live-Java integration fixture. When JPype, Py4J, and a working
+  JDK are present, it compiles a small `Quirk128Time` Java factory and verifies
+  that both real bridge routes use the same opaque wrapper path instead of
+  scalar-casting an unknown logical-time implementation.
 
 ### Generic Collection Fallbacks
 

@@ -10,7 +10,6 @@ from typing import Any
 from hla.backends.common import BackendInfo
 from hla.rti.plugin_api import BackendRequest
 
-
 FACTORY_NAME = "Java 2025 Standard Shim"
 DEFAULT_JAR = Path(
     os.environ.get(

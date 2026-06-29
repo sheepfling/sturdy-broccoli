@@ -20,7 +20,7 @@ Primary entry points:
 - [2025_python_rti_100_percent_worklist.md](2025_python_rti_100_percent_worklist.md): exact non-covered `2025` row inventory and recommended denominator rule for honest `100%` reporting
 - [2025_python_rti_umbrella_decomposition_worklist.md](2025_python_rti_umbrella_decomposition_worklist.md): exact decomposition map for the 22 `2025` umbrella rows if leadership wants narrower direct claims
 - [2010_python_rti_bounded_family_execution_worklist.md](2010_python_rti_bounded_family_execution_worklist.md): exact execution map for the remaining bounded `2010` mixed-backend and partial-family surfaces
-- [imported_requirements_backlog_v1_0.md](imported_requirements_backlog_v1_0.md): generated implementation queues keyed to open requirement rows and acceptance tests
+- [imported_requirements_backlog_v1_0.md](imported_requirements_backlog_v1_0.md): generated mapping-bridge backlog projection keyed to any remaining bridge-level queue items, not canonical requirement truth
 - [requirements_remaining_closure.md](requirements_remaining_closure.md): exact remaining 2010 bounded closeout rows, the current 2025 grouped-closeout and final-claim boundary state, and the canonical shard-versus-view matrix model
 - [requirements_completion_audit.md](requirements_completion_audit.md): current-state audit of what still blocks a truthful cross-edition completion claim
 - [requirements_gap_register.md](requirements_gap_register.md): bucket-by-bucket register of the exact missing proof needed to finish closeout

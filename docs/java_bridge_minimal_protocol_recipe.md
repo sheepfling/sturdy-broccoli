@@ -11,7 +11,7 @@ This document belongs to the backend and route wrapping surface described in
 [`work_surfaces.md`](work_surfaces.md).
 
 If your real question is overload choice rather than bootstrap shape, read
-[`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md)
+[`java_bridge_adaptation_policy.md`](java_bridge_adaptation_policy.md)
 after this page.
 
 If your real question is exact byte preservation across JPype or Py4J, read
@@ -215,5 +215,5 @@ Choose Py4J when you specifically need:
 4. `examples/py4j_java_rti_2025.py`
 5. `docs/java_bridge_wrapping_guide.md`
 6. `docs/java_bridge_encoding_and_bytes.md`
-7. `docs/java_bridge_overload_resolution.md`
+7. `docs/java_bridge_adaptation_policy.md`
 8. `docs/java_rti_adaptation_architecture.md`

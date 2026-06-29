@@ -1,25 +1,15 @@
 """Python 2025 backend runtime exports."""
 from __future__ import annotations
 
+from .attribute_scope_runtime import (
+    deliver_forced_remove_callbacks,
+    evaluate_attribute_scope_advisories,
+)
 from .backend import (
     HostedPython2025Backend,
     Python2025BackendInfo,
     Python2025BackendScaffold,
     create_python2025_backend,
-)
-from .attribute_scope_runtime import (
-    deliver_forced_remove_callbacks,
-    evaluate_attribute_scope_advisories,
-)
-from .catalog_runtime import (
-    attribute_handles,
-    interaction_class_name,
-    object_class_name,
-    object_instance_record,
-    object_instance_record_known,
-    parameter_handles,
-    synchronization_required_federates,
-    transportation_handle_by_name,
 )
 from .callback_runtime import (
     QueuedCallback,
@@ -38,6 +28,27 @@ from .callback_runtime import (
     evoke_multiple_callbacks,
     force_connection_lost,
 )
+from .catalog_runtime import (
+    attribute_handles,
+    interaction_class_name,
+    object_class_name,
+    object_instance_record,
+    object_instance_record_known,
+    parameter_handles,
+    synchronization_required_federates,
+    transportation_handle_by_name,
+)
+from .ddm_default_attribute_policy import (
+    attribute_order_for,
+    attribute_transportation_for,
+    default_order_for,
+    default_transportation_for,
+    ranges_overlap,
+    reflectable_attribute_names_for_subscriber,
+    region_owner_key,
+    region_sets_overlap,
+    regions_overlap_pair,
+)
 from .declaration_management_runtime import (
     publish_object_class_attributes,
     release_multiple_object_instance_names,
@@ -50,6 +61,7 @@ from .declaration_management_runtime import (
     unsubscribe_object_class,
     unsubscribe_object_class_attributes,
 )
+from .directed_interaction_boundary import matching_directed_interaction_targets
 from .federation_management_runtime import (
     connect,
     create_federation_execution,
@@ -63,18 +75,6 @@ from .federation_management_runtime import (
     register_federation_synchronization_point,
     resign_federation_execution,
     synchronization_point_achieved,
-)
-from .directed_interaction_boundary import matching_directed_interaction_targets
-from .ddm_default_attribute_policy import (
-    attribute_order_for,
-    attribute_transportation_for,
-    default_order_for,
-    default_transportation_for,
-    ranges_overlap,
-    reflectable_attribute_names_for_subscriber,
-    region_owner_key,
-    region_sets_overlap,
-    regions_overlap_pair,
 )
 from .interaction_policy_runtime import (
     coerce_order_type,
@@ -136,20 +136,15 @@ from .mom_runtime import (
     send_mom_subscription_reports,
     send_mom_transport_count_report,
 )
-from .save_restore_lifecycle import (
-    abort_federation_restore,
-    abort_federation_save,
-    capture_federation_save_snapshot,
-    complete_restore,
-    complete_save,
-    federate_save_begun,
-    process_scheduled_save,
-    query_federation_restore_status,
-    query_federation_save_status,
-    request_federation_restore,
-    request_federation_save,
-    restore_federation_save_snapshot,
-    start_federation_save,
+from .object_instance_runtime import (
+    delete_object_instance,
+    deliver_value_update_requests,
+    local_delete_object_instance,
+    register_object_instance,
+    request_attribute_value_update,
+    request_instance_attribute_value_update,
+    set_internal_object_attribute_values,
+    update_attribute_values,
 )
 from .object_model_runtime import (
     attribute_name_by_handle,
@@ -161,16 +156,7 @@ from .object_model_runtime import (
     published_attributes_for_current_federate,
     subscribed_discovery_class_name,
 )
-from .object_instance_runtime import (
-    delete_object_instance,
-    deliver_value_update_requests,
-    local_delete_object_instance,
-    register_object_instance,
-    request_attribute_value_update,
-    request_instance_attribute_value_update,
-    set_internal_object_attribute_values,
-    update_attribute_values,
-)
+from .object_reflection_runtime import fanout_attribute_update, group_source_values_by_transport
 from .object_region_runtime import (
     associate_regions_for_updates,
     attribute_region_pairs,
@@ -185,8 +171,8 @@ from .object_region_runtime import (
     get_range_bounds,
     object_instance_region_values,
     query_attribute_transportation_type,
-    register_object_instance_with_regions,
     region_values_from_handles,
+    register_object_instance_with_regions,
     request_attribute_transportation_type_change,
     set_range_bounds,
     subscribe_object_class_attributes_with_regions,
@@ -206,7 +192,45 @@ from .ownership_runtime import (
     query_attribute_ownership,
     unconditional_attribute_ownership_divestiture,
 )
-from .object_reflection_runtime import fanout_attribute_update, group_source_values_by_transport
+from .save_restore_lifecycle import (
+    abort_federation_restore,
+    abort_federation_save,
+    capture_federation_save_snapshot,
+    complete_restore,
+    complete_save,
+    federate_save_begun,
+    process_scheduled_save,
+    query_federation_restore_status,
+    query_federation_save_status,
+    request_federation_restore,
+    request_federation_save,
+    restore_federation_save_snapshot,
+    start_federation_save,
+)
+from .support_lookup_runtime import (
+    get_attribute_handle,
+    get_attribute_name,
+    get_available_dimensions_for_interaction_class,
+    get_available_dimensions_for_object_class,
+    get_dimension_handle,
+    get_dimension_name,
+    get_dimension_upper_bound,
+    get_federate_handle,
+    get_federate_name,
+    get_interaction_class_handle,
+    get_interaction_class_name,
+    get_known_object_class_handle,
+    get_object_class_handle,
+    get_object_class_name,
+    get_object_instance_handle,
+    get_object_instance_name,
+    get_order_name,
+    get_order_type,
+    get_parameter_handle,
+    get_parameter_name,
+    get_transportation_type_handle,
+    get_transportation_type_name,
+)
 from .support_policy_runtime import (
     get_automatic_resign_directive,
     get_switch,
@@ -247,30 +271,6 @@ from .support_services_runtime import (
     make_region_handle_factory,
     make_region_handle_set_factory,
     make_transportation_type_handle_factory,
-)
-from .support_lookup_runtime import (
-    get_attribute_handle,
-    get_attribute_name,
-    get_available_dimensions_for_interaction_class,
-    get_available_dimensions_for_object_class,
-    get_dimension_handle,
-    get_dimension_name,
-    get_dimension_upper_bound,
-    get_federate_handle,
-    get_federate_name,
-    get_interaction_class_handle,
-    get_interaction_class_name,
-    get_known_object_class_handle,
-    get_object_class_handle,
-    get_object_class_name,
-    get_object_instance_handle,
-    get_object_instance_name,
-    get_order_name,
-    get_order_type,
-    get_parameter_handle,
-    get_parameter_name,
-    get_transportation_type_handle,
-    get_transportation_type_name,
 )
 from .time_management_runtime import (
     build_time_management_federation,
@@ -317,6 +317,9 @@ __all__ = [
     "build_time_management_federation",
     "build_time_management_state",
     "capture_federation_save_snapshot",
+    "change_attribute_order_type",
+    "change_default_attribute_order_type",
+    "change_default_attribute_transportation_type",
     "change_interaction_order_type",
     "coerce_order_type",
     "coerce_range_bounds",
@@ -335,6 +338,16 @@ __all__ = [
     "deliver_forced_remove_callbacks",
     "deliver_due_tso_callbacks_for_request",
     "deliver_value_update_requests",
+    "decode_attribute_handle",
+    "decode_dimension_handle",
+    "decode_federate_handle",
+    "decode_handle",
+    "decode_interaction_class_handle",
+    "decode_message_retraction_handle",
+    "decode_object_class_handle",
+    "decode_object_instance_handle",
+    "decode_parameter_handle",
+    "decode_region_handle",
     "disable_time_constrained",
     "disable_time_regulation",
     "delete_object_instance",
@@ -382,6 +395,7 @@ __all__ = [
     "get_order_type",
     "get_parameter_handle",
     "get_parameter_name",
+    "get_range_bounds",
     "get_switch",
     "get_transportation_type_handle",
     "get_transportation_type_name",
@@ -398,6 +412,24 @@ __all__ = [
     "list_federation_executions",
     "matching_directed_interaction_targets",
     "matching_object_publishers",
+    "make_attribute_handle_factory",
+    "make_attribute_handle_set_factory",
+    "make_attribute_handle_value_map_factory",
+    "make_attribute_set_region_set_pair_list_factory",
+    "make_dimension_handle_factory",
+    "make_dimension_handle_set_factory",
+    "make_federate_handle_factory",
+    "make_federate_handle_set_factory",
+    "make_interaction_class_handle_factory",
+    "make_interaction_class_handle_set_factory",
+    "make_message_retraction_handle_factory",
+    "make_object_class_handle_factory",
+    "make_object_instance_handle_factory",
+    "make_parameter_handle_factory",
+    "make_parameter_handle_value_map_factory",
+    "make_region_handle_factory",
+    "make_region_handle_set_factory",
+    "make_transportation_type_handle_factory",
     "modify_lookahead",
     "MOM_REQUEST_TO_REPORT",
     "HostedPython2025Backend",

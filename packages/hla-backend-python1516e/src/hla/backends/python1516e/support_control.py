@@ -9,11 +9,11 @@ from hla.rti1516e.enums import OrderType, ResignAction, ServiceGroup
 from hla.rti1516e.exceptions import (
     AttributeRelevanceAdvisorySwitchIsOff,
     AttributeRelevanceAdvisorySwitchIsOn,
-    InvalidAttributeHandle,
     AttributeScopeAdvisorySwitchIsOff,
     AttributeScopeAdvisorySwitchIsOn,
     InteractionRelevanceAdvisorySwitchIsOff,
     InteractionRelevanceAdvisorySwitchIsOn,
+    InvalidAttributeHandle,
     InvalidFederateHandle,
     InvalidOrderName,
     InvalidOrderType,

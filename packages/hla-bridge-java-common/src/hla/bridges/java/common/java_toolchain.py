@@ -9,7 +9,6 @@ from typing import Any
 
 from .java_runtime import discover_java_home_with_source, discover_java_tool
 
-
 JAVA_2010_JAR = Path(
     os.environ.get(
         "HLA_X_JAVA_STANDARD_2010_JAR",

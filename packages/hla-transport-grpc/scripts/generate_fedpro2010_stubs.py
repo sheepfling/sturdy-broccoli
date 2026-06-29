@@ -2,11 +2,10 @@
 """Generate the HLA 1516e-2010 FedPro-style gRPC Python stubs."""
 from __future__ import annotations
 
-from pathlib import Path
 import re
 import subprocess
 import sys
-
+from pathlib import Path
 
 ROOT = Path.cwd()
 PACKAGE_ROOT = ROOT / "packages" / "hla-transport-grpc"

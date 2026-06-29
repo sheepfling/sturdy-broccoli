@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from importlib import import_module
 from dataclasses import dataclass, field, replace
+from importlib import import_module
 from typing import Any, Mapping
 
 from hla.backends.common import BackendInfo

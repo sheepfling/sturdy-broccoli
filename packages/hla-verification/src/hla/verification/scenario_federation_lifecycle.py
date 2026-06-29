@@ -7,6 +7,30 @@ from pathlib import Path
 from typing import Any
 
 import hla.fom.mom as mom
+from hla.rti1516_2025.exceptions import (
+    AlreadyConnected as AlreadyConnected2025,
+)
+from hla.rti1516_2025.exceptions import (
+    CouldNotOpenFOM as CouldNotOpenFOM2025,
+)
+from hla.rti1516_2025.exceptions import (
+    ErrorReadingFOM as ErrorReadingFOM2025,
+)
+from hla.rti1516_2025.exceptions import (
+    FederateIsExecutionMember as FederateIsExecutionMember2025,
+)
+from hla.rti1516_2025.exceptions import (
+    FederatesCurrentlyJoined as FederatesCurrentlyJoined2025,
+)
+from hla.rti1516_2025.exceptions import (
+    FederationExecutionAlreadyExists as FederationExecutionAlreadyExists2025,
+)
+from hla.rti1516_2025.exceptions import (
+    FederationExecutionDoesNotExist as FederationExecutionDoesNotExist2025,
+)
+from hla.rti1516_2025.exceptions import (
+    InconsistentFOM as InconsistentFOM2025,
+)
 from hla.rti1516e.enums import CallbackModel, ResignAction
 from hla.rti1516e.exceptions import (
     AlreadyConnected,
@@ -18,16 +42,7 @@ from hla.rti1516e.exceptions import (
     FederationExecutionDoesNotExist,
     InconsistentFDD,
 )
-from hla.rti1516_2025.exceptions import (
-    AlreadyConnected as AlreadyConnected2025,
-    CouldNotOpenFOM as CouldNotOpenFOM2025,
-    ErrorReadingFOM as ErrorReadingFOM2025,
-    FederateIsExecutionMember as FederateIsExecutionMember2025,
-    FederatesCurrentlyJoined as FederatesCurrentlyJoined2025,
-    FederationExecutionAlreadyExists as FederationExecutionAlreadyExists2025,
-    FederationExecutionDoesNotExist as FederationExecutionDoesNotExist2025,
-    InconsistentFOM as InconsistentFOM2025,
-)
+
 from .scenario_support import drain_callbacks, wait_for_callback, wait_for_callback_count
 
 

@@ -12,7 +12,7 @@ from hla.verification.repo_internal.fom_schema_baseline import (
     FOMSchemaBaselineCase,
     load_fom_schema_baseline_cases,
 )
-from hla.verification.repo_internal.fom_validate import build_fom_validation, write_fom_validation
+from hla.verification.repo_internal.fom_validate import write_fom_validation
 from hla.verification.repo_internal.fom_workbench import write_fom_workbench_html, write_fom_workbench_snapshot
 
 

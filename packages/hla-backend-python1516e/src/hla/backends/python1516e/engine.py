@@ -4,6 +4,7 @@ from __future__ import annotations
 from threading import RLock
 from typing import Any, Iterable
 
+from hla.fom import FOMModule, FOMResolver
 from hla.rti1516e.exceptions import (
     AttributeNotDefined,
     InteractionParameterNotDefined,
@@ -11,7 +12,6 @@ from hla.rti1516e.exceptions import (
     InvalidInteractionClassHandle,
     InvalidObjectClassHandle,
 )
-from hla.fom import FOMModule, FOMResolver
 from hla.rti1516e.handles import (
     AttributeHandle,
     DimensionHandle,
@@ -25,6 +25,7 @@ from hla.rti1516e.handles import (
     TransportationTypeHandle,
 )
 from hla.rti1516e.time import DEFAULT_TIME_FACTORY_REGISTRY, TimeFactoryRegistry
+
 from .state import FederateState, FederationState, InteractionClassDef, ObjectClassDef
 
 

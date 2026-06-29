@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any, Mapping, Protocol, cast
 
 from hla.rti1516e.exceptions import InvalidInteractionClassHandle, InvalidObjectClassHandle
 from hla.rti1516e.handles import AttributeHandle, InteractionClassHandle, ObjectClassHandle, RegionHandle
+
 from .state import RTI_FEDERATE_HANDLE, FederateState, ObjectInstance
 
 if TYPE_CHECKING:

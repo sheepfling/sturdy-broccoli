@@ -9,6 +9,7 @@ from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import runtime_version as _runtime_version
 from google.protobuf import symbol_database as _symbol_database
 from google.protobuf.internal import builder as _builder
+
 _runtime_version.ValidateProtobufRuntimeVersion(
     _runtime_version.Domain.PUBLIC,
     6,
@@ -22,8 +23,6 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
-from hla.transports.grpc.fedpro2025 import RTIambassador_2025_pb2 as RTIambassador__2025__pb2
-from hla.transports.grpc.fedpro2025 import FederateAmbassador_2025_pb2 as FederateAmbassador__2025__pb2
 
 
 DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19HLA2025RTITransport.proto\x12\x13rti1516_2025.fedpro\x1a\x18RTIambassador_2025.proto\x1a\x1d\x46\x65\x64\x65rateAmbassador_2025.proto2\xc1\x01\n\x14HLA2025FedProGateway\x12K\n\x04\x43\x61ll\x12 .rti1516_2025.fedpro.CallRequest\x1a!.rti1516_2025.fedpro.CallResponse\x12\\\n\rEvokeCallback\x12%.rti1516_2025.fedpro.CallbackResponse\x1a$.rti1516_2025.fedpro.CallbackRequestB\x1b\n\x17hla.rti1516_2025.fedproP\x01\x62\x06proto3')

@@ -1,7 +1,7 @@
 """Shared vendor-runtime process helper package."""
 from __future__ import annotations
-# pyright: reportUnsupportedDunderAll=false
 
+# pyright: reportUnsupportedDunderAll=false
 from .intake import INTAKE_STATUS_LADDER, IntakeArtifact, IntakeCheck, intake_status_from_checks
 from .plugin_api import (
     BACKEND_ENTRY_POINT_GROUP,

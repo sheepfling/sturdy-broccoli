@@ -4,9 +4,9 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
+from hla.rti1516_2025.exceptions import ObjectInstanceNotKnown as ObjectInstanceNotKnown2025
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.exceptions import ObjectInstanceNotKnown
-from hla.rti1516_2025.exceptions import ObjectInstanceNotKnown as ObjectInstanceNotKnown2025
 
 from .scenario_support import drain_callbacks_pair, register_named_object_instance
 

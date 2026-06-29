@@ -3,20 +3,20 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Iterable, Protocol
 
+from hla.fom import standard_mim_module
+from hla.rti1516e import NullFederateAmbassador
+from hla.rti1516e.datatypes import FederationExecutionInformation
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.exceptions import (
     AlreadyConnected,
     DesignatorIsHLAstandardMIM,
     FederateIsExecutionMember,
+    FederatesCurrentlyJoined,
     FederationExecutionAlreadyExists,
     FederationExecutionDoesNotExist,
-    FederatesCurrentlyJoined,
     RTIinternalError,
 )
-from hla.fom import standard_mim_module
-from hla.rti1516e import NullFederateAmbassador
 from hla.rti1516e.time import HLAfloat64TimeFactory, TimeFactoryRegistry
-from hla.rti1516e.datatypes import FederationExecutionInformation
 
 from . import mom_catalog as mom_table
 from .state import FederationState

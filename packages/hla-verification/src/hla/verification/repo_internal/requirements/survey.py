@@ -21,6 +21,25 @@ def _classify_csv(path: str, header: list[str]) -> tuple[str, str, str]:
     header_set = set(header)
     if "/history/" in path_lower or "docs/evidence/hla2010_python_verification_evidence" in path_lower:
         return "historical", "historical packet or evidence archive", _edition_for_path(path)
+    if path.startswith("requirements/2010/"):
+        if path == "requirements/2010/canonical_requirements.csv":
+            return "canonical-requirement", "normalized canonical export", "2010"
+        if path == "requirements/2010/backend_resolution.csv":
+            return "backend-resolution", "canonical backend-resolution companion surface", "2010"
+        if path.endswith("traceability_matrix.csv") or "priority_backend_resolution" in path_lower:
+            return "projection", "2010 generated or bounded projection surface downstream of canonical truth", "2010"
+        if "detailed_reconciliation" in path_lower:
+            return "mapping-bridge", "2010 mapping bridge from imported or legacy requirement rows onto canonical repo claims", "2010"
+        if (
+            "clause_" in path_lower
+            or "priority_clauses" in path_lower
+            or path.endswith("hla1516_1_federate_interface.csv")
+            or path.endswith("hla1516_2_omt.csv")
+            or path.endswith("hla1516_framework_rules.csv")
+            or path.endswith("hla_1516_master_harmonization_index_v1_0.csv")
+            or path.endswith("hla_1516_packet_hookup_status_v1_0.csv")
+        ):
+            return "import-history", "2010 imported or packet-derived historical requirement ledger retained for audit and reconstruction", "2010"
     if {"packet_requirement_id", "curated_requirement_id"} <= header_set:
         return "requirement-mapping", "2010 detailed reconciliation bridge shape", "2010"
     if path.endswith("hla_2025_requirement_disposition_ledger.csv"):
@@ -29,7 +48,11 @@ def _classify_csv(path: str, header: list[str]) -> tuple[str, str, str]:
         return "canonical-requirement", "normalized canonical export", _edition_for_path(path)
     if path.endswith("hla_2025_harmonization_worklist.csv"):
         return "grouped-view", "2025 grouped closeout worklist", "2025"
-    if "backend_resolution" in path_lower or "pitch_202x" in path_lower or path.endswith("hla_2025_fi_binding_surface_matrix.csv"):
+    if (
+        ("backend_resolution" in path_lower and not path.startswith("requirements/2010/"))
+        or "pitch_202x" in path_lower
+        or path.endswith("hla_2025_fi_binding_surface_matrix.csv")
+    ):
         return "backend-resolution", "backend or binding resolution companion surface", _edition_for_path(path)
     if "executable_test" in path_lower or {"executable_test_id", "parent_requirement_id"} <= header_set:
         return "executable-verification", "executable verification backlog or packet", "2025"
@@ -46,6 +69,13 @@ def _classify_json(path: str, payload: Any) -> tuple[str, str, str]:
     path_lower = path.lower()
     if "/history/" in path_lower or "docs/evidence/hla2010_python_verification_evidence" in path_lower:
         return "historical", "historical packet or evidence archive", _edition_for_path(path)
+    if path.startswith("requirements/2010/"):
+        if path.endswith("backend_resolution.json"):
+            return "backend-resolution", "canonical backend-resolution companion surface", "2010"
+        if path.endswith("canonical_row_triage.json"):
+            return "projection", "2010 canonical row normalization triage projection over canonical truth", "2010"
+        if path.endswith("canonical_projection_rows.json"):
+            return "projection", "2010 demoted rollup projection over canonical truth", "2010"
     if path.endswith("canonical_row_triage.json"):
         return "grouped-view", "2010 canonical row normalization triage view", "2010"
     if path.endswith("canonical_projection_rows.json"):

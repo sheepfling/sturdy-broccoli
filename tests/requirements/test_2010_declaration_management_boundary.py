@@ -28,8 +28,11 @@ def test_declaration_management_boundary_doc_records_current_family_shape() -> N
     assert "`212 mapped`" in text
     assert "`0 partial`" in text
     assert "the owner ledger no longer carries any remaining DM `partial` rows" in text
+    assert "`requirements/2010/canonical_requirements.json`" in text
+    assert "`requirements/2010/backend_resolution.json`" in text
     assert "`requirements/2010/hla1516_1_dm_detailed_reconciliation.csv`" in text
     assert "`requirements/2010/traceability_matrix.csv`" in text
+    assert "generated projection bridge" in text
     assert "`docs/verification/requirement_compliance_exports.md`" in text
     assert "`./tools/test-focus run backends`" in text
     assert "`./tools/test-surface run unit-scenarios-light`" in text

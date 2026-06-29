@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, Iterable, Protocol
 
 from hla.rti1516e.exceptions import FederateServiceInvocationsAreBeingReportedViaMOM, InvalidUpdateRateDesignator
 from hla.rti1516e.handles import AttributeHandle, InteractionClassHandle, ObjectClassHandle
+
 from .state import FederateState
 
 if TYPE_CHECKING:

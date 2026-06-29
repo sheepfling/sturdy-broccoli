@@ -3,9 +3,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Protocol
 
+from hla.rti1516e.datatypes import FederateHandleSaveStatusPair, FederateRestoreStatus
 from hla.rti1516e.enums import RestoreFailureReason, RestoreStatus, SaveFailureReason, SaveStatus
 from hla.rti1516e.exceptions import LogicalTimeAlreadyPassed
-from hla.rti1516e.datatypes import FederateHandleSaveStatusPair, FederateRestoreStatus
 
 from .save_restore_state import PythonRTISaveRestoreStateMixin
 

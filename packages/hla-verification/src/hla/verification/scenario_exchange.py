@@ -3,9 +3,15 @@ from __future__ import annotations
 
 from typing import Any
 
+from hla.backends.common import UnsupportedBackendService
 from hla.rti1516e.enums import CallbackModel, OrderType
 from hla.rti1516e.handles import FederateHandle
-from hla.backends.common import UnsupportedBackendService
+
+from .scenario_exchange_history import (
+    assert_two_federate_exchange_callback_history,
+    run_exchange_round,
+)
+from .scenario_exchange_types import ExchangeRoundConfig, TwoFederateExchangeConfig
 from .scenario_support import (
     drain_callbacks_pair,
     order_value,
@@ -13,11 +19,6 @@ from .scenario_support import (
     wait_for_callback,
     wait_for_callback_count_pair,
 )
-from .scenario_exchange_history import (
-    assert_two_federate_exchange_callback_history,
-    run_exchange_round,
-)
-from .scenario_exchange_types import ExchangeRoundConfig, TwoFederateExchangeConfig
 
 
 def _is_handle_like(value: Any) -> bool:

@@ -5,7 +5,7 @@ import copy
 from typing import TYPE_CHECKING, Any, Protocol
 
 from hla.rti1516e.enums import RestoreFailureReason, RestoreStatus, SaveFailureReason, SaveStatus
-from hla.rti1516e.exceptions import LogicalTimeAlreadyPassed, RestoreInProgress, SaveInProgress
+from hla.rti1516e.exceptions import RestoreInProgress, SaveInProgress
 
 from .state import FederateState, FederationState
 

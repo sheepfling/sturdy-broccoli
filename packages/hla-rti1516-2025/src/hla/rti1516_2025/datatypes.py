@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import NamedTuple
+
 from typing_extensions import Self
 
 from .enums import AdditionalSettingsResultCode, RestoreStatus, SaveStatus

@@ -9,6 +9,7 @@ from urllib.request import Request, urlopen
 
 from hla.backends.common import BackendUnavailableError
 from hla.transports.common import RTITransport, TransportRequest, TransportResponse, register_transport_factory
+
 from .client import RestTransportClientAdapter
 from .rest_transport_host import (
     CERTIRestServer,

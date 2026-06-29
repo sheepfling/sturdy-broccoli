@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal
-from typing import Any
+from typing import Any, Literal
 
+from hla.rti1516_2025.exceptions import RTIexception as RTIexception2025
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.exceptions import RTIexception
 from hla.rti1516e.handles import AttributeHandle, FederateHandle, ObjectInstanceHandle
-from hla.rti1516_2025.exceptions import RTIexception as RTIexception2025
+
 from .scenario_support import drain_callbacks_pair, register_named_object_instance, wait_for_callback, wait_for_callback_count
 
 

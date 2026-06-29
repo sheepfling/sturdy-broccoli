@@ -1,9 +1,9 @@
 """Factory helpers for JPype-backed Java RTI backends."""
 from __future__ import annotations
 
-from hla.bridges.java.common import BackendInfo, make_rti_ambassador
 from hla.backends.common import java_invocation_resolver
-from hla.backends.common.invocation import JavaInvocationResolverName
+from hla.bridges.java.common import BackendInfo, make_rti_ambassador
+
 from .adapter import JPypeRTIBackend
 from .runtime import JPypeBridge, JPypeConfig
 

@@ -235,7 +235,7 @@ If you need a specific lane or deeper task guide:
 - transport options and extension: [`docs/extending_ambassador_transports.md`](docs/extending_ambassador_transports.md), [`docs/transport_extension_playbook.md`](docs/transport_extension_playbook.md)
 - two-federate flow: [`docs/two_federate_quickstart.md`](docs/two_federate_quickstart.md)
 - standard Java/C++ shim route setup: [`docs/java_toolchain.md`](docs/java_toolchain.md), [`docs/cpp_toolchain.md`](docs/cpp_toolchain.md), [`docs/language_shim_routes.md`](docs/language_shim_routes.md)
-- Java bridge work: [`docs/java_bridge_minimal_protocol_recipe.md`](docs/java_bridge_minimal_protocol_recipe.md), [`docs/java_bridge_wrapping_guide.md`](docs/java_bridge_wrapping_guide.md), [`docs/java_bridge_overload_resolution.md`](docs/java_bridge_overload_resolution.md), [`docs/java_rti_adaptation_architecture.md`](docs/java_rti_adaptation_architecture.md)
+- Java bridge work: [`docs/java_bridge_minimal_protocol_recipe.md`](docs/java_bridge_minimal_protocol_recipe.md), [`docs/java_bridge_wrapping_guide.md`](docs/java_bridge_wrapping_guide.md), [`docs/java_bridge_adaptation_policy.md`](docs/java_bridge_adaptation_policy.md), [`docs/java_rti_adaptation_architecture.md`](docs/java_rti_adaptation_architecture.md)
 - package inventory: [`packages/README.md`](packages/README.md)
 - full docs index: [`docs/README.md`](docs/README.md)
 

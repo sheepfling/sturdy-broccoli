@@ -6,11 +6,10 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from threading import Thread
 from typing import Any, Mapping
 
-from hla.transports.common.hosted_server import HostedRTICommandProcessor
-
-from hla.transports.common import TransportRequest
 from hla.runtime.factory import create_rti_ambassador
 from hla.runtime.rti1516_2025_factory import create_rti_ambassador as create_2025_rti_ambassador
+from hla.transports.common import TransportRequest
+from hla.transports.common.hosted_server import HostedRTICommandProcessor
 
 from .client import RestTransportClientAdapter
 

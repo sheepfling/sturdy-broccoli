@@ -11,7 +11,6 @@ from hla.rti.plugin_api import BackendRequest
 
 from .backend import create_cpp_shim_backend
 
-
 REPORTS = {
     "2010": Path(os.environ.get("ROSETTA_CPP_STANDARD_2010_REPORT", os.environ.get("HLA_X_CPP_STANDARD_2010_REPORT", "docs/evidence/shim_routes/cpp-standard-2010.json"))),
     "2025": Path(os.environ.get("ROSETTA_CPP_STANDARD_2025_REPORT", os.environ.get("HLA_X_CPP_STANDARD_2025_REPORT", "docs/evidence/shim_routes/cpp-standard-2025.json"))),

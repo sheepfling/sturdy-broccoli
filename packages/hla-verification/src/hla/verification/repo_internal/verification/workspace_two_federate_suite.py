@@ -5,14 +5,13 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Callable
 
+from .two_federate_runtime_launchers import build_two_federate_runtime_launchers
 from .two_federate_suite_runner import (
     SuitePaths,
     run_python_two_federate_suite,
     run_two_federate_suite,
     write_two_federate_suite_artifacts,
 )
-
-from .two_federate_runtime_launchers import build_two_federate_runtime_launchers
 
 
 def run_workspace_two_federate_suite(

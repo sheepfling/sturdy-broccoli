@@ -10,8 +10,8 @@ from typing import Any
 from urllib.parse import parse_qs, urlparse
 
 from .runtime_observer_core import (
-    LiveRuntimeObserverSession,
     RUNTIME_OBSERVER_EVENT_SCHEMA_VERSION,
+    LiveRuntimeObserverSession,
     RuntimeObserverControl,
     RuntimeObserverSession,
     _derive_generic_inspectors,

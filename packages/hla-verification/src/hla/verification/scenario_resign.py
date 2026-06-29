@@ -4,6 +4,24 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
+from hla.rti1516_2025.exceptions import (
+    FederateNotExecutionMember as FederateNotExecutionMember2025,
+)
+from hla.rti1516_2025.exceptions import (
+    FederateOwnsAttributes as FederateOwnsAttributes2025,
+)
+from hla.rti1516_2025.exceptions import (
+    InvalidResignAction as InvalidResignAction2025,
+)
+from hla.rti1516_2025.exceptions import (
+    NotConnected as NotConnected2025,
+)
+from hla.rti1516_2025.exceptions import (
+    ObjectInstanceNotKnown as ObjectInstanceNotKnown2025,
+)
+from hla.rti1516_2025.exceptions import (
+    OwnershipAcquisitionPending as OwnershipAcquisitionPending2025,
+)
 from hla.rti1516e.enums import CallbackModel, ResignAction
 from hla.rti1516e.exceptions import (
     FederateNotExecutionMember,
@@ -12,14 +30,6 @@ from hla.rti1516e.exceptions import (
     NotConnected,
     ObjectInstanceNotKnown,
     OwnershipAcquisitionPending,
-)
-from hla.rti1516_2025.exceptions import (
-    FederateNotExecutionMember as FederateNotExecutionMember2025,
-    FederateOwnsAttributes as FederateOwnsAttributes2025,
-    InvalidResignAction as InvalidResignAction2025,
-    NotConnected as NotConnected2025,
-    ObjectInstanceNotKnown as ObjectInstanceNotKnown2025,
-    OwnershipAcquisitionPending as OwnershipAcquisitionPending2025,
 )
 
 from .scenario_support import drain_callbacks_pair, register_named_object_instance, wait_for_callback

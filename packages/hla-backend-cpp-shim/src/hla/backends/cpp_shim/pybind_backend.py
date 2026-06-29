@@ -1,9 +1,9 @@
 """Pybind route helpers for the C++ shim contest backend."""
 from __future__ import annotations
 
-from hla.rti.plugin_api import BackendRequest
-
 from typing import Any
+
+from hla.rti.plugin_api import BackendRequest
 
 from .backend import CppShimBackend, create_cpp_shim_backend
 from .loader import BindingTarget, LoadedBinding, binding_target_from_options, load_binding

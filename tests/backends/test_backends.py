@@ -9,7 +9,7 @@ from hla.backends.common import (
 )
 from hla.bridges.java.common import java_parameter_names, resolve_java_arguments
 from hla.rti1516e.enums import CallbackModel
-from hla.rti1516e.raw_api import API_METADATA
+from hla.rti1516e.api_metadata import API_METADATA
 
 
 def test_delegating_ambassador_is_concrete():

@@ -27985,6 +27985,8 @@
       "runtime-or-service-probe": 841,
       "section-summary-row": 9
     },
+    "canonical_backend_resolution_artifact": "requirements/2010/backend_resolution.json",
+    "canonical_requirement_artifact": "requirements/2010/canonical_requirements.json",
     "clause_summary": {
       "IEEE 1516-2010 unknown": {
         "classification-required": 3,
@@ -28379,7 +28381,9 @@
         "verified": 561
       }
     },
+    "projection_rollup_artifact": "requirements/2010/canonical_projection_rows.json",
     "row_count": 950,
-    "source_artifact": "analysis/compliance/requirements_matrix_2010.json"
+    "source_artifact": "analysis/compliance/requirements_matrix_2010.json",
+    "source_artifact_class": "projection"
   }
 }

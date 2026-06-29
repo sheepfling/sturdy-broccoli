@@ -5,15 +5,19 @@ from dataclasses import dataclass
 from importlib import resources
 from typing import Any
 
-from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
-from hla.rti1516e.exceptions import InvalidLogicalTime, TimeConstrainedAlreadyEnabled, TimeRegulationAlreadyEnabled
-from hla.rti1516e.datatypes import MessageRetractionReturn
 from hla.backends.common import RecordingFederateAmbassador
 from hla.rti1516_2025.exceptions import (
     InvalidLogicalTime as InvalidLogicalTime2025,
+)
+from hla.rti1516_2025.exceptions import (
     TimeConstrainedAlreadyEnabled as TimeConstrainedAlreadyEnabled2025,
+)
+from hla.rti1516_2025.exceptions import (
     TimeRegulationAlreadyEnabled as TimeRegulationAlreadyEnabled2025,
 )
+from hla.rti1516e.datatypes import MessageRetractionReturn
+from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
+from hla.rti1516e.exceptions import InvalidLogicalTime, TimeConstrainedAlreadyEnabled, TimeRegulationAlreadyEnabled
 
 
 def _is_message_retraction_return(value: Any) -> bool:

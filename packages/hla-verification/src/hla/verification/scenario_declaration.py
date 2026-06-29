@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Callable
 
+from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.exceptions import (
     AttributeNotDefined,
     AttributeNotPublished,
@@ -11,9 +12,9 @@ from hla.rti1516e.exceptions import (
     ObjectClassNotPublished,
     RTIexception,
 )
-from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.handles import FederateHandle
 from hla.rti1516e.time import HLAinteger64Interval
+
 from .scenario_support import (
     drain_callbacks_pair,
     register_named_object_instance,

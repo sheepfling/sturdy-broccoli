@@ -3,9 +3,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from hla.rti.plugin_api import BackendRequest
-
 from hla.backends.common.plugin_api import RTIBackendPlugin
+from hla.rti.plugin_api import BackendRequest
 
 
 def _java_shim_backend_factory(adapter: str, request: BackendRequest):

@@ -6,9 +6,9 @@ Sources: Java RtiFactory.java/RtiFactoryFactory.java and C++ RTIambassadorFactor
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from importlib.metadata import entry_points
 from os import getenv
 from typing import Iterable
-from importlib.metadata import entry_points
 
 from .encoding import EncoderFactory
 from .rti_ambassador import RTIambassador

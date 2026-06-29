@@ -1,15 +1,15 @@
 """Runtime and bridge helpers for Py4J-backed Java RTI backends."""
 from __future__ import annotations
-# pyright: reportCallIssue=false, reportAttributeAccessIssue=false, reportOptionalMemberAccess=false, reportOptionalCall=false, reportOptionalSubscript=false, reportMissingImports=false
 
+# pyright: reportCallIssue=false, reportAttributeAccessIssue=false, reportOptionalMemberAccess=false, reportOptionalCall=false, reportOptionalSubscript=false, reportMissingImports=false
 from dataclasses import dataclass, field
 from typing import Any, Mapping, Sequence
 
-from hla.bridges.java.common import CALLBACK_METHOD_NAMES, BackendUnavailableError
+from hla.backends.common.invocation import JavaInvocationResolverName
+from hla.bridges.java.common import BackendUnavailableError
 from hla.bridges.java.common.java_bridge_base import JavaBridge
 from hla.bridges.java.common.java_callbacks import PythonFederateAmbassadorDispatcher
 from hla.bridges.java.common.java_intake import JavaApiProfile
-from hla.backends.common.invocation import JavaInvocationResolverName
 
 
 @dataclass(frozen=True)
@@ -393,35 +393,7 @@ class Py4JBridge(JavaBridge):
         return self.new_list(values)
 
     def logical_time(self, value: Any, *, rti_ambassador: Any | None = None) -> Any:
-        try:
-            from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
-
-            if rti_ambassador is not None:
-                try:
-                    factory = rti_ambassador.getTimeFactory()
-                    if isinstance(value, (HLAinteger64Time, HLAfloat64Time)) and hasattr(factory, "makeTime"):
-                        raw = int(value.value) if isinstance(value, HLAinteger64Time) else float(value.value)
-                        return factory.makeTime(raw)
-                    if isinstance(value, (HLAinteger64Interval, HLAfloat64Interval)) and hasattr(factory, "makeInterval"):
-                        raw = int(value.value) if isinstance(value, HLAinteger64Interval) else float(value.value)
-                        return factory.makeInterval(raw)
-                    if isinstance(value, (HLAinteger64Interval, HLAfloat64Interval)) and getattr(value, "is_zero")():
-                        return factory.makeZero()
-                    if isinstance(value, (HLAinteger64Interval, HLAfloat64Interval)) and getattr(value, "is_epsilon")():
-                        return factory.makeEpsilon()
-                except Exception:
-                    pass
-            if isinstance(value, HLAinteger64Time):
-                return self.gateway.jvm.hla.rti1516e.HLAinteger64Time(int(value.value))
-            if isinstance(value, HLAinteger64Interval):
-                return self.gateway.jvm.hla.rti1516e.HLAinteger64Interval(int(value.value))
-            if isinstance(value, HLAfloat64Time):
-                return self.gateway.jvm.hla.rti1516e.HLAfloat64Time(float(value.value))
-            if isinstance(value, HLAfloat64Interval):
-                return self.gateway.jvm.hla.rti1516e.HLAfloat64Interval(float(value.value))
-        except Exception:
-            return value
-        return value
+        return super().logical_time(value, rti_ambassador=rti_ambassador)
 
     def range_bounds(self, value: Any) -> Any:
         try:

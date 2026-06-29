@@ -4,11 +4,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
+from hla.rti1516_2025.exceptions import AttributeNotOwned as AttributeNotOwned2025
+from hla.rti1516e.datatypes import AttributeRegionAssociation, RangeBounds
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.exceptions import AttributeNotOwned
-from hla.rti1516_2025.exceptions import AttributeNotOwned as AttributeNotOwned2025
-from hla.rti1516e.datatypes import RangeBounds
-from hla.rti1516e.datatypes import AttributeRegionAssociation
 from hla.rti1516e.handles import AttributeHandleSet, RegionHandleSet
 
 from .scenario_support import drain_callbacks_pair

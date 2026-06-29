@@ -3,9 +3,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from hla.rti.plugin_api import BackendRequest
-
 from hla.bridges.java.common import BackendInfo, BackendUnavailableError, RTIBackendPlugin
+from hla.rti.plugin_api import BackendRequest
 
 
 def _discover_portico_runtime() -> BackendInfo | None:
@@ -31,10 +30,9 @@ def _portico_jpype_backend_factory(request: BackendRequest):
 
 def _portico_py4j_backend_factory(request: BackendRequest):
     options: dict[str, Any] = dict(request.options)
-    from py4j.java_gateway import CallbackServerParameters, GatewayParameters, JavaGateway
-
     from hla.bridges.java.py4j import Py4JConfig, create_py4j_backend
     from hla.vendors.portico import launch_portico_py4j_gateway
+    from py4j.java_gateway import CallbackServerParameters, GatewayParameters, JavaGateway
 
     gateway = options.pop("gateway", None)
     if gateway is None:

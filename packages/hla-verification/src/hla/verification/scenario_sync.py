@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from hla.rti1516e.enums import CallbackModel, SynchronizationPointFailureReason
+
 from .scenario_support import drain_callbacks_pair, wait_for_callback, wait_for_callback_count
 
 

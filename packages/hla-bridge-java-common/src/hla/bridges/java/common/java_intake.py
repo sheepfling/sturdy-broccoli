@@ -6,11 +6,11 @@ profile, probes the standard factory path, and reports what was discovered.
 """
 from __future__ import annotations
 
-import json
 import importlib
+import json
 import os
 import re
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable, Sequence, cast
 
@@ -316,9 +316,9 @@ def _discover_py4j(request: JavaRtiIntakeRequest) -> JavaRtiIntakeReport:
     interfaces: tuple[str, ...] = ()
 
     try:
-        from py4j.java_gateway import CallbackServerParameters, GatewayParameters, JavaGateway, launch_gateway
-        from hla.bridges.java.common.py4j_support import reset_py4j_callback_client
         from hla.bridges.java.common.java_runtime import discover_java_tool
+        from hla.bridges.java.common.py4j_support import reset_py4j_callback_client
+        from py4j.java_gateway import CallbackServerParameters, GatewayParameters, JavaGateway, launch_gateway
 
         if request.gateway_port is None:
             java_path = discover_java_tool("java") or "java"

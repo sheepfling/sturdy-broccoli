@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from hla.backends.common import BackendInfo, make_rti_ambassador
+
 from .java_common import JavaRTIBackend
 from .java_shim_backend import InProcessJavaRTIShim, ShimJavaBridge
 from .java_shim_kernel import SharedJavaShimKernel

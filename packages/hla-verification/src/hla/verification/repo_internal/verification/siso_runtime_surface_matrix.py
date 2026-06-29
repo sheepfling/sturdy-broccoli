@@ -24,7 +24,6 @@ from .ui_surface_capture import (
     write_gallery_manifest,
 )
 
-
 SURFACE_PROFILES: tuple[dict[str, Any], ...] = (
     {
         "surface_profile": "runtime-only",

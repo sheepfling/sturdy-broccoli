@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from hla.rti1516e.raw_api import API_METADATA
+from hla.rti1516e.api_metadata import API_METADATA
 from hla.verification.repo_internal.verification.asset_plan import build_verification_plan
 from hla.verification.repo_internal.verification.repo_seed_artifacts import (
     build_requirements_ledger,

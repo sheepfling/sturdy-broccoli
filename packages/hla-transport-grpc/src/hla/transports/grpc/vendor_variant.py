@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Callable, Mapping, Sequence
+from typing import Any, Callable, Mapping
 
 from hla.backends.common import BackendUnavailableError
 from hla.transports.common import RTITransport, TransportError, TransportRequest, TransportResponse, register_transport_factory

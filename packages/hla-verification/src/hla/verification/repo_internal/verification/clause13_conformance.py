@@ -11,7 +11,6 @@ from hla.verification.repo_internal.verification.repo_seed_artifacts import (
     build_service_conformance_matrix,
 )
 
-
 DEFAULT_MARKER_PATHS = (
     "tests/backends/test_python_backend_federation_extended.py",
     "tests/backends/test_python_backend_object_ownership_extended.py",

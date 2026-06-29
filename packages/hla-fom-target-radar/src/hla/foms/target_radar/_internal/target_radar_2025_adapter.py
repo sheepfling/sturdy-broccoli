@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from importlib import import_module
 from importlib.resources import files
 from pathlib import Path
 from typing import Any

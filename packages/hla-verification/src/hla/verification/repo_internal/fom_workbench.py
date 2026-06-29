@@ -13,11 +13,15 @@ from pathlib import Path
 from typing import Any, Iterable, Mapping
 
 from hla.fom import FOMCatalog, FOMMergeError, FOMResolutionError, FOMResolver, merge_fom_modules
-from hla.verification.repo_internal.fom_inventory import FOMInventoryRecord, default_load_set_records, inventory_records
 from hla.verification.repo_internal.fom_corpus_classification import classify_edition_scope
+from hla.verification.repo_internal.fom_inventory import FOMInventoryRecord, default_load_set_records, inventory_records
 from hla.verification.repo_internal.fom_tree_search import (
     FOMSearchRow as FOMWorkbenchSearchRow,
+)
+from hla.verification.repo_internal.fom_tree_search import (
     FOMTreeNode as FOMWorkbenchNode,
+)
+from hla.verification.repo_internal.fom_tree_search import (
     build_fom_search_rows,
     build_fom_tree_nodes,
 )

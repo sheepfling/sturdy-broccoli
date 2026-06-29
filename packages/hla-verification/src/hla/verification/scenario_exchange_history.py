@@ -4,8 +4,9 @@ from __future__ import annotations
 from typing import Any, Mapping
 
 from hla.rti1516e.enums import OrderType
-from .scenario_support import advance_time_beyond, order_value, wait_for_callback_count_pair
+
 from .scenario_exchange_types import ExchangeRoundConfig, TwoFederateExchangeConfig
+from .scenario_support import advance_time_beyond, order_value, wait_for_callback_count_pair
 
 
 def _same_handle_value(left: Any, right: Any) -> bool:

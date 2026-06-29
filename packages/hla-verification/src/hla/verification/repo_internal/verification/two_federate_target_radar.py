@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from typing import Any, Callable
 
-from hla.rti1516e.time import HLAfloat64Time
-from hla.rti1516e.datatypes import RangeBounds
 from hla.foms.target_radar._internal import run_target_radar_scenario, target_radar_fom_path
+from hla.rti1516e.datatypes import RangeBounds
+from hla.rti1516e.time import HLAfloat64Time
 from hla.verification.scenario_target_radar_time import (
     TargetRadarFutureExclusionConfig,
     TargetRadarWindowRestoreConfig,

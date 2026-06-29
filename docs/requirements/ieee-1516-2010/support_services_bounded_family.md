@@ -19,9 +19,13 @@ Short answer:
 
 - canonical owner doc:
   `docs/requirements/ieee-1516-2010/support_services_bounded_family.md`
-- canonical source owner:
+- edition-wide canonical requirement truth:
+  `requirements/2010/canonical_requirements.json`
+- edition-wide backend-resolution companion:
+  `requirements/2010/backend_resolution.json`
+- family mapping bridge:
   `requirements/2010/hla1516_1_sup_detailed_reconciliation.csv`
-- broad bridge:
+- generated projection bridge:
   `requirements/2010/traceability_matrix.csv`
 - primary shards:
   - `unit-python-core`
@@ -169,10 +173,12 @@ Bad reading:
 
 ## Reading Order
 
-1. `requirements/2010/hla1516_1_sup_detailed_reconciliation.csv`
-2. `requirements/2010/traceability_matrix.csv`
-3. `tests/backends/test_python_backend_support_services.py`
-4. `tests/scenarios/test_support_services_backend_matrix.py`
+1. `requirements/2010/canonical_requirements.json`
+2. `requirements/2010/backend_resolution.json`
+3. `requirements/2010/hla1516_1_sup_detailed_reconciliation.csv`
+4. `requirements/2010/traceability_matrix.csv`
+5. `tests/backends/test_python_backend_support_services.py`
+6. `tests/scenarios/test_support_services_backend_matrix.py`
 
 ## Related Docs
 

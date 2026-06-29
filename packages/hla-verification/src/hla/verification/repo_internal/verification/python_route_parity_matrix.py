@@ -6,7 +6,6 @@ import csv
 from dataclasses import dataclass
 from pathlib import Path
 
-
 PYTHON_ROUTE_IDS = ("python-direct", "python-grpc")
 
 

@@ -4,6 +4,24 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
+from hla.rti1516_2025.exceptions import (
+    FederateAlreadyExecutionMember as FederateAlreadyExecutionMember2025,
+)
+from hla.rti1516_2025.exceptions import (
+    FederateNameAlreadyInUse as FederateNameAlreadyInUse2025,
+)
+from hla.rti1516_2025.exceptions import (
+    FederationExecutionDoesNotExist as FederationExecutionDoesNotExist2025,
+)
+from hla.rti1516_2025.exceptions import (
+    NotConnected as NotConnected2025,
+)
+from hla.rti1516_2025.exceptions import (
+    RestoreInProgress as RestoreInProgress2025,
+)
+from hla.rti1516_2025.exceptions import (
+    SaveInProgress as SaveInProgress2025,
+)
 from hla.rti1516e.enums import CallbackModel, ResignAction
 from hla.rti1516e.exceptions import (
     FederateAlreadyExecutionMember,
@@ -12,14 +30,6 @@ from hla.rti1516e.exceptions import (
     NotConnected,
     RestoreInProgress,
     SaveInProgress,
-)
-from hla.rti1516_2025.exceptions import (
-    FederateAlreadyExecutionMember as FederateAlreadyExecutionMember2025,
-    FederateNameAlreadyInUse as FederateNameAlreadyInUse2025,
-    FederationExecutionDoesNotExist as FederationExecutionDoesNotExist2025,
-    NotConnected as NotConnected2025,
-    RestoreInProgress as RestoreInProgress2025,
-    SaveInProgress as SaveInProgress2025,
 )
 
 from .scenario_support import drain_callbacks_pair, wait_for_callback

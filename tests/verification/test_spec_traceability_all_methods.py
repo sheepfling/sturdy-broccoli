@@ -1,4 +1,4 @@
-from hla.rti1516e.raw_api import API_METADATA
+from hla.rti1516e.api_metadata import API_METADATA
 from hla.spec.refs import FOM_REFERENCES, method_reference
 from hla.backends.common import DelegatingRTIAmbassador
 from hla.backends.python1516e import PythonRTIBackend

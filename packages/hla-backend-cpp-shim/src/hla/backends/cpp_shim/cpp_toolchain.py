@@ -8,7 +8,6 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
-
 CPP_2010_ARTIFACT = Path(
     os.environ.get(
         "HLA_X_CPP_STANDARD_2010_ARTIFACT",

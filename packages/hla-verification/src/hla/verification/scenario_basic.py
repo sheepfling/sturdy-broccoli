@@ -17,6 +17,7 @@ from hla.rti1516e.handles import (
     RegionHandle,
 )
 from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
+
 from .scenario_support import DemoFederate, drain_callbacks
 
 

@@ -54,7 +54,8 @@ Each package's `pyproject.toml` should declare only package-owned
 - `packages/hla-rti1516e/src/hla/rti1516e/spec_sources.py`: readable Java/C++ source references.
 - `packages/hla-rti1516e/src/hla/rti1516e/spec_refs.py`: clause and service references.
 - `packages/hla-rti1516e/src/hla/rti1516e/handles.py`, `datatypes.py`, `logical_time.py`, `enums.py`, `time.py`: HLA value types and runtime value helpers.
-- `packages/hla-rti1516e/src/hla/rti1516e/raw_api.py`: source-derived metadata scaffold.
+- `packages/hla-rti1516e/src/hla/rti1516e/api_metadata.py`: source-derived API metadata loader and canonical metadata surface.
+- `packages/hla-rti1516e/src/hla/rti1516e/raw_api.py`: legacy abstract ambassador scaffold that reuses `api_metadata`.
 
 ## Backend Abstractions
 

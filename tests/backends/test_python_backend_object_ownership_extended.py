@@ -7,9 +7,10 @@ from hla.backends.common import lower_camel_to_snake
 from hla.backends.python1516e.state import RTI_FEDERATE_HANDLE
 from tests.backends.python_backend_extended_support import *
 from hla.rti1516e import RTIambassador, NullFederateAmbassador
+from hla.rti1516e.federate_ambassador import FederateAmbassador
 from hla.rti1516e.exceptions import *
 from hla.rti1516e.handles import *
-from hla.rti1516e.raw_api import API_METADATA
+from hla.rti1516e.api_metadata import API_METADATA
 from hla.rti1516e.enums import OrderType, ResignAction, ServiceGroup
 from hla.verification.section8_matrix import run_section8_request_retraction_case, section8_matrix_config
 from hla.rti1516e.datatypes import AttributeRegionAssociation, RangeBounds
@@ -1990,7 +1991,7 @@ def test_clause_5_service_and_callback_signature_metadata_matches_source_binding
         assert [record["params"] for record in java_records] == expected_params
 
     for method_name, (service, expected_params) in federate_checks.items():
-        assert hasattr(NullFederateAmbassador, method_name)
+        assert hasattr(FederateAmbassador, method_name)
         java_records = [
             record for record in API_METADATA["FederateAmbassador"][method_name]
             if record["language"] == "java"
@@ -2148,7 +2149,7 @@ def test_clause_6_service_and_callback_signature_metadata_matches_source_binding
         assert [record["params"] for record in java_records] == expected_params
 
     for method_name, (service, expected_params) in federate_checks.items():
-        assert hasattr(NullFederateAmbassador, method_name)
+        assert hasattr(FederateAmbassador, method_name)
         java_records = [
             record for record in API_METADATA["FederateAmbassador"][method_name]
             if record["language"] == "java"
@@ -2266,7 +2267,7 @@ def test_clause_7_service_and_callback_signature_metadata_matches_source_binding
         assert [record["params"] for record in java_records] == expected_params
 
     for method_name, (service, expected_params) in federate_checks.items():
-        assert hasattr(NullFederateAmbassador, method_name)
+        assert hasattr(FederateAmbassador, method_name)
         java_records = [
             record for record in API_METADATA["FederateAmbassador"][method_name]
             if record["language"] == "java"
@@ -2324,7 +2325,7 @@ def test_clause_8_service_and_callback_signature_metadata_matches_source_binding
         assert [record["params"] for record in java_records] == expected_params
 
     for method_name, (service, expected_params) in federate_checks.items():
-        assert hasattr(NullFederateAmbassador, method_name)
+        assert hasattr(FederateAmbassador, method_name)
         java_records = [
             record for record in API_METADATA["FederateAmbassador"][method_name]
             if record["language"] == "java"

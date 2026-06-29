@@ -7,8 +7,8 @@ from typing import Any, Mapping
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.time import HLAfloat64Interval
 
-from .two_federate_suite_pairs import SuiteRecordingFederateAmbassador
 from .scenario_support import wait_for_callback, wait_for_callback_count_pair
+from .two_federate_suite_pairs import SuiteRecordingFederateAmbassador
 from .two_federate_suite_summary import _jsonable
 
 

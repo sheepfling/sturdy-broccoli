@@ -1,13 +1,11 @@
 """Entry point descriptor for the Pitch JPype RTI backend."""
 from __future__ import annotations
 
-from dataclasses import replace
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Any
 
-from hla.rti.plugin_api import BackendRequest
-
 from hla.bridges.java.common import BackendInfo, BackendUnavailableError, RTIBackendPlugin
+from hla.rti.plugin_api import BackendRequest
 
 from .factory import create_jpype_backend
 
@@ -142,9 +140,9 @@ def _pitch_native_202x_jpype_backend_factory(request: BackendRequest):
     options: dict[str, Any] = dict(request.options if hasattr(request, "options") else request)
     from hla.vendors.pitch import (
         discover_pitch_runtime,
+        pitch_fedpro_local_settings_designator,
         pitch_hla4_direct_classpath,
         pitch_hla4_fedpro_classpath,
-        pitch_fedpro_local_settings_designator,
     )
 
     pitch_home = options.pop("pitch_home", None)

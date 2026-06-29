@@ -6,12 +6,11 @@ implementations used by the Python shim and adapter layers.
 """
 
 from __future__ import annotations
-# pyright: reportIncompatibleMethodOverride=false, reportInvalidTypeArguments=false, reportGeneralTypeIssues=false
 
 import math
 import struct
 from dataclasses import dataclass
-from typing import Any, Generic, TypeVar
+from typing import Any, cast
 
 from .logical_time import (
     HLAfloat64Interval as HLAfloat64IntervalBase,
@@ -32,7 +31,13 @@ from .logical_time import (
     HLAinteger64TimeFactory as HLAinteger64TimeFactoryBase,
 )
 from .logical_time import (
+    LogicalTime as LogicalTimeBase,
+)
+from .logical_time import (
     LogicalTimeFactory,
+)
+from .logical_time import (
+    LogicalTimeInterval as LogicalTimeIntervalBase,
 )
 
 
@@ -49,23 +54,26 @@ class HLAinteger64Interval(HLAinteger64IntervalBase):
     def isEpsilon(self) -> bool:
         return self.value == 1
 
-    def __iadd__(self, addend: "HLAinteger64Interval") -> "HLAinteger64Interval":
+    def __iadd__(self, addend: LogicalTimeIntervalBase) -> "HLAinteger64Interval":
         return self.add(addend)
 
-    def __isub__(self, subtrahend: "HLAinteger64Interval") -> "HLAinteger64Interval":
+    def __isub__(self, subtrahend: LogicalTimeIntervalBase) -> "HLAinteger64Interval":
         return self.subtract(subtrahend)
 
     def __str__(self) -> str:
         return str(self.value)
 
-    def add(self, addend: "HLAinteger64Interval") -> "HLAinteger64Interval":
-        return HLAinteger64Interval(self.value + addend.value)
+    def add(self, addend: LogicalTimeIntervalBase) -> "HLAinteger64Interval":
+        other = cast(HLAinteger64IntervalBase, addend)
+        return HLAinteger64Interval(self.value + other.getValue())
 
-    def subtract(self, subtrahend: "HLAinteger64Interval") -> "HLAinteger64Interval":
-        return HLAinteger64Interval(self.value - subtrahend.value)
+    def subtract(self, subtrahend: LogicalTimeIntervalBase) -> "HLAinteger64Interval":
+        other = cast(HLAinteger64IntervalBase, subtrahend)
+        return HLAinteger64Interval(self.value - other.getValue())
 
-    def compareTo(self, other: "HLAinteger64Interval") -> int:
-        return (self.value > other.value) - (self.value < other.value)
+    def compareTo(self, other: LogicalTimeIntervalBase) -> int:
+        other_value = cast(HLAinteger64IntervalBase, other).getValue()
+        return (self.value > other_value) - (self.value < other_value)
 
     def encodedLength(self) -> int:
         return 8
@@ -97,29 +105,31 @@ class HLAinteger64Time(HLAinteger64TimeBase):
     def isFinal(self) -> bool:
         return self.value == self.FINAL
 
-    def __iadd__(self, val: HLAinteger64Interval) -> "HLAinteger64Time":
+    def __iadd__(self, val: HLAinteger64IntervalBase) -> "HLAinteger64Time":
         return self.add(val)
 
-    def __isub__(self, val: HLAinteger64Interval) -> "HLAinteger64Time":
+    def __isub__(self, val: HLAinteger64IntervalBase) -> "HLAinteger64Time":
         return self.subtract(val)
 
-    def __sub__(self, other: "HLAinteger64Time") -> HLAinteger64Interval:
+    def __sub__(self, other: LogicalTimeBase[HLAinteger64IntervalBase]) -> HLAinteger64Interval:
         return self.distance(other)
 
     def __str__(self) -> str:
         return str(self.value)
 
-    def add(self, val: HLAinteger64Interval) -> "HLAinteger64Time":
-        return HLAinteger64Time(self.value + val.value)
+    def add(self, val: HLAinteger64IntervalBase) -> "HLAinteger64Time":
+        return HLAinteger64Time(self.value + val.getValue())
 
-    def subtract(self, val: HLAinteger64Interval) -> "HLAinteger64Time":
-        return HLAinteger64Time(self.value - val.value)
+    def subtract(self, val: HLAinteger64IntervalBase) -> "HLAinteger64Time":
+        return HLAinteger64Time(self.value - val.getValue())
 
-    def distance(self, val: "HLAinteger64Time") -> HLAinteger64Interval:
-        return HLAinteger64Interval(self.value - val.value)
+    def distance(self, val: LogicalTimeBase[HLAinteger64IntervalBase]) -> HLAinteger64Interval:
+        other = cast(HLAinteger64TimeBase, val)
+        return HLAinteger64Interval(self.value - other.getValue())
 
-    def compareTo(self, other: "HLAinteger64Time") -> int:
-        return (self.value > other.value) - (self.value < other.value)
+    def compareTo(self, other: LogicalTimeBase[HLAinteger64IntervalBase]) -> int:
+        other_value = cast(HLAinteger64TimeBase, other).getValue()
+        return (self.value > other_value) - (self.value < other_value)
 
     def encodedLength(self) -> int:
         return 8
@@ -148,23 +158,26 @@ class HLAfloat64Interval(HLAfloat64IntervalBase):
     def isEpsilon(self) -> bool:
         return self.value == math.ulp(1.0)
 
-    def __iadd__(self, addend: "HLAfloat64Interval") -> "HLAfloat64Interval":
+    def __iadd__(self, addend: LogicalTimeIntervalBase) -> "HLAfloat64Interval":
         return self.add(addend)
 
-    def __isub__(self, subtrahend: "HLAfloat64Interval") -> "HLAfloat64Interval":
+    def __isub__(self, subtrahend: LogicalTimeIntervalBase) -> "HLAfloat64Interval":
         return self.subtract(subtrahend)
 
     def __str__(self) -> str:
         return str(self.value)
 
-    def add(self, addend: "HLAfloat64Interval") -> "HLAfloat64Interval":
-        return HLAfloat64Interval(self.value + addend.value)
+    def add(self, addend: LogicalTimeIntervalBase) -> "HLAfloat64Interval":
+        other = cast(HLAfloat64IntervalBase, addend)
+        return HLAfloat64Interval(self.value + other.getValue())
 
-    def subtract(self, subtrahend: "HLAfloat64Interval") -> "HLAfloat64Interval":
-        return HLAfloat64Interval(self.value - subtrahend.value)
+    def subtract(self, subtrahend: LogicalTimeIntervalBase) -> "HLAfloat64Interval":
+        other = cast(HLAfloat64IntervalBase, subtrahend)
+        return HLAfloat64Interval(self.value - other.getValue())
 
-    def compareTo(self, other: "HLAfloat64Interval") -> int:
-        return (self.value > other.value) - (self.value < other.value)
+    def compareTo(self, other: LogicalTimeIntervalBase) -> int:
+        other_value = cast(HLAfloat64IntervalBase, other).getValue()
+        return (self.value > other_value) - (self.value < other_value)
 
     def encodedLength(self) -> int:
         return 8
@@ -193,29 +206,31 @@ class HLAfloat64Time(HLAfloat64TimeBase):
     def isFinal(self) -> bool:
         return math.isinf(self.value) and self.value > 0
 
-    def __iadd__(self, val: HLAfloat64Interval) -> "HLAfloat64Time":
+    def __iadd__(self, val: HLAfloat64IntervalBase) -> "HLAfloat64Time":
         return self.add(val)
 
-    def __isub__(self, val: HLAfloat64Interval) -> "HLAfloat64Time":
+    def __isub__(self, val: HLAfloat64IntervalBase) -> "HLAfloat64Time":
         return self.subtract(val)
 
-    def __sub__(self, other: "HLAfloat64Time") -> HLAfloat64Interval:
+    def __sub__(self, other: LogicalTimeBase[HLAfloat64IntervalBase]) -> HLAfloat64Interval:
         return self.distance(other)
 
     def __str__(self) -> str:
         return str(self.value)
 
-    def add(self, val: HLAfloat64Interval) -> "HLAfloat64Time":
-        return HLAfloat64Time(self.value + val.value)
+    def add(self, val: HLAfloat64IntervalBase) -> "HLAfloat64Time":
+        return HLAfloat64Time(self.value + val.getValue())
 
-    def subtract(self, val: HLAfloat64Interval) -> "HLAfloat64Time":
-        return HLAfloat64Time(self.value - val.value)
+    def subtract(self, val: HLAfloat64IntervalBase) -> "HLAfloat64Time":
+        return HLAfloat64Time(self.value - val.getValue())
 
-    def distance(self, val: "HLAfloat64Time") -> HLAfloat64Interval:
-        return HLAfloat64Interval(self.value - val.value)
+    def distance(self, val: LogicalTimeBase[HLAfloat64IntervalBase]) -> HLAfloat64Interval:
+        other = cast(HLAfloat64TimeBase, val)
+        return HLAfloat64Interval(self.value - other.getValue())
 
-    def compareTo(self, other: "HLAfloat64Time") -> int:
-        return (self.value > other.value) - (self.value < other.value)
+    def compareTo(self, other: LogicalTimeBase[HLAfloat64IntervalBase]) -> int:
+        other_value = cast(HLAfloat64TimeBase, other).getValue()
+        return (self.value > other_value) - (self.value < other_value)
 
     def encodedLength(self) -> int:
         return 8
@@ -231,30 +246,20 @@ class HLAfloat64Time(HLAfloat64TimeBase):
         return cls(struct.unpack(">d", bytes(data[offset : offset + 8]))[0])
 
 
-TTime = TypeVar("TTime")
-TInterval = TypeVar("TInterval")
-
-
-class _LogicalTimeFactory(Generic[TTime, TInterval], LogicalTimeFactory[TTime, TInterval]):
-    name: str
-    time_type: type[Any]
-    interval_type: type[Any]
-
-    def decodeTime(self, buffer: bytes | bytearray | memoryview, offset: int = 0) -> TTime:
-        return self.time_type.decode(buffer, offset)
-
-    def decodeInterval(self, buffer: bytes | bytearray | memoryview, offset: int = 0) -> TInterval:
-        return self.interval_type.decode(buffer, offset)
-
-    def getName(self) -> str:
-        return self.name
-
-
-class HLAinteger64TimeFactory(_LogicalTimeFactory[HLAinteger64Time, HLAinteger64Interval], HLAinteger64TimeFactoryBase):
+class HLAinteger64TimeFactory(HLAinteger64TimeFactoryBase):
     NAME = "HLAinteger64Time"
     name = NAME
     time_type = HLAinteger64Time
     interval_type = HLAinteger64Interval
+
+    def decodeTime(self, buffer: bytes | bytearray | memoryview, offset: int = 0) -> HLAinteger64Time:
+        return self.time_type.decode(buffer, offset)
+
+    def decodeInterval(self, buffer: bytes | bytearray | memoryview, offset: int = 0) -> HLAinteger64Interval:
+        return self.interval_type.decode(buffer, offset)
+
+    def getName(self) -> str:
+        return self.name
 
     def makeInitial(self) -> HLAinteger64Time:
         return HLAinteger64Time(HLAinteger64Time.INITIAL)
@@ -275,11 +280,20 @@ class HLAinteger64TimeFactory(_LogicalTimeFactory[HLAinteger64Time, HLAinteger64
         return HLAinteger64Interval(int(value))
 
 
-class HLAfloat64TimeFactory(_LogicalTimeFactory[HLAfloat64Time, HLAfloat64Interval], HLAfloat64TimeFactoryBase):
+class HLAfloat64TimeFactory(HLAfloat64TimeFactoryBase):
     NAME = "HLAfloat64Time"
     name = NAME
     time_type = HLAfloat64Time
     interval_type = HLAfloat64Interval
+
+    def decodeTime(self, buffer: bytes | bytearray | memoryview, offset: int = 0) -> HLAfloat64Time:
+        return self.time_type.decode(buffer, offset)
+
+    def decodeInterval(self, buffer: bytes | bytearray | memoryview, offset: int = 0) -> HLAfloat64Interval:
+        return self.interval_type.decode(buffer, offset)
+
+    def getName(self) -> str:
+        return self.name
 
     def makeInitial(self) -> HLAfloat64Time:
         return HLAfloat64Time(0.0)

@@ -9,16 +9,14 @@ import zipfile
 from dataclasses import dataclass
 from importlib import resources
 from pathlib import Path
-from typing import Any, Iterable, Mapping
+from typing import Any, Iterable
 
 from google.protobuf import json_format
-
 from hla.fom import FOMCatalog, FOMModule, FOMResolver, merge_fom_modules, parse_fom_xml, serialize_fom_module
 from hla.transports.grpc.fedpro2010 import datatypes_pb2 as fedpro2010_datatypes
 from hla.transports.grpc.fedpro2025 import datatypes_2025_pb2 as fedpro2025_datatypes
-from hla.verification.repo_internal.fom_inventory import lookup_fom_inventory
 from hla.verification.repo_internal.fom_corpus_classification import classify_edition_scope
-
+from hla.verification.repo_internal.fom_inventory import lookup_fom_inventory
 
 TARGET_RADAR_FOM = Path(
     str(resources.files("hla.foms.target_radar").joinpath("resources").joinpath("foms").joinpath("TargetRadarFOMmodule.xml"))

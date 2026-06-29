@@ -5,13 +5,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Mapping, Protocol, cast
 
 import hla.fom.mom as hla_mom
+from hla.backends.common import UnsupportedBackendService
 from hla.rti1516e.enums import ResignAction
 from hla.rti1516e.exceptions import (
     InteractionClassNotDefined,
     InteractionClassNotPublished,
 )
 from hla.rti1516e.handles import ParameterHandle
-from hla.backends.common import UnsupportedBackendService
 
 from .mom_parameter_decoding import PythonRTIMomParameterDecodingMixin
 

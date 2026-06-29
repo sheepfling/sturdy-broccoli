@@ -10,7 +10,7 @@ If you need the architecture-level explanation of how the adaptation works,
 read `docs/java_rti_adaptation_architecture.md` next.
 
 If your main question is how the repo chooses the correct Java overload across
-JPype and Py4J, read `docs/java_bridge_overload_resolution.md`.
+JPype and Py4J, read `docs/java_bridge_adaptation_policy.md`.
 
 If your question is specifically about Java encoders, raw `byte[]` payloads,
 `userSuppliedTag`, or JPype versus Py4J byte-preservation quirks, read
@@ -100,7 +100,7 @@ The normalized wrapper surface on the Python side is the same:
 What is not left to the concrete route is overload policy. The repo resolves
 Java overload intent in Python first, then hands the chosen call shape to
 JPype or Py4J. That policy is described in
-[`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md).
+[`java_bridge_adaptation_policy.md`](java_bridge_adaptation_policy.md).
 
 The current implementation boundary is deliberate:
 
@@ -145,6 +145,6 @@ rti = implementation.create_rti_ambassador()
 4. `packages/hla-bridge-java-py4j/README.md`
 5. `docs/java_bridge_minimal_protocol_recipe.md`
 6. `docs/java_bridge_encoding_and_bytes.md`
-7. `docs/java_bridge_overload_resolution.md`
+7. `docs/java_bridge_adaptation_policy.md`
 8. `docs/java_rti_adaptation_architecture.md`
 9. `docs/language_shim_routes.md`

@@ -42,8 +42,11 @@ def test_ddm_boundary_doc_records_current_family_shape() -> None:
     assert "test_request_attribute_value_update_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore" in text
     assert "test_register_object_instance_with_regions_rejects_not_connected_not_joined_and_invalid_region" in text
     assert "`./tools/test-focus run execution-membership`" in text
+    assert "requirements/2010/canonical_requirements.json" in text
+    assert "requirements/2010/backend_resolution.json" in text
     assert "requirements/2010/hla1516_1_ddm_detailed_reconciliation.csv" in text
     assert "requirements/2010/traceability_matrix.csv" in text
+    assert "generated projection bridge" in text
     assert "requirements/2010/hla_1516_master_harmonization_index_v1_0.csv" in text
     assert "requirement_compliance_exports.md" in text
     assert "../../plans/requirements_gap_register.md" not in text

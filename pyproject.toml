@@ -47,4 +47,8 @@ extend-exclude = [
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
-per-file-ignores = { "tests/vendors/*.py" = ["F401", "F403", "F405", "I001"] }
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/vendors/*.py" = ["F401", "F403", "F405", "I001"]
+"*.pyi" = ["F403", "F405"]

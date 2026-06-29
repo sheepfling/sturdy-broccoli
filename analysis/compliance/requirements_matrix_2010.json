@@ -44651,6 +44651,10 @@
     }
   ],
   "summary": {
+    "artifact": "requirements-matrix-2010",
+    "artifact_class": "projection",
+    "canonical_backend_resolution_artifact": "requirements/2010/backend_resolution.json",
+    "canonical_requirement_artifact": "requirements/2010/canonical_requirements.json",
     "certi_runtime_disposition_counts": {
       "classification-required": 284,
       "not-applicable": 232,
@@ -44699,6 +44703,8 @@
       "classification-required": 847,
       "not-applicable": 103
     },
+    "projection_basis": "Legacy whole-spec 2010 review matrix spanning canonical leaf rows plus explicitly demoted rollup and grouping rows.",
+    "projection_rollup_artifact": "requirements/2010/canonical_projection_rows.json",
     "python_runtime_disposition_counts": {
       "not-applicable": 79,
       "verified": 871

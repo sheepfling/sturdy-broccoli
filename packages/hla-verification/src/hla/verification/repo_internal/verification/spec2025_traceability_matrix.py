@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import csv
 import json
-from pathlib import Path
 import re
+from pathlib import Path
 from typing import Any
 
 from hla.verification.repo_internal.requirements import load_2025_canonical_requirement_rows
@@ -34,7 +34,7 @@ def _read_traceability_packet_rows(project_root: Path) -> list[dict[str, str]]:
         return [
             {key: value or "" for key, value in row.items()}
             for row in csv.DictReader(handle)
-            if (value := row.get("pytest_candidate", "") or "").startswith(TRACEABILITY_PYTEST_PREFIX)
+            if (row.get("pytest_candidate", "") or "").startswith(TRACEABILITY_PYTEST_PREFIX)
         ]
 
 

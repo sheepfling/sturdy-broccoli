@@ -24,6 +24,7 @@ from hla.rti1516e.handles import (
     RegionHandle,
     TransportationTypeHandle,
 )
+
 from .base import BackendConversionError
 
 HANDLE_TYPES: tuple[type[Handle], ...] = (

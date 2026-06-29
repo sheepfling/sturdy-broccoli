@@ -29,8 +29,11 @@ def test_time_management_boundary_doc_records_current_family_shape() -> None:
     assert "mixed_backend_priority_boundaries.md" in text
     assert "`./tools/test-focus run time`" in text
     assert "`./tools/test-focus run backends`" in text
+    assert "requirements/2010/canonical_requirements.json" in text
+    assert "requirements/2010/backend_resolution.json" in text
     assert "requirements/2010/hla1516_1_tm_detailed_reconciliation.csv" in text
     assert "requirements/2010/traceability_matrix.csv" in text
+    assert "generated projection bridge" in text
     assert "requirements/2010/hla_1516_master_harmonization_index_v1_0.csv" in text
     assert "requirement_compliance_exports.md" in text
     assert "HLA1516.1-TM-8.1.2-003" in text

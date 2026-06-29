@@ -4,15 +4,14 @@ from __future__ import annotations
 
 import csv
 import json
-from typing import cast
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import Any, Mapping, Sequence, cast
 
-from hla.foms.target_radar._internal import make_target_radar_factory, run_target_radar_scenario, target_radar_fom_path
 from hla.backends.common import BackendUnavailableError, make_rti_ambassador
 from hla.bridges.java.common.java_shim_factory import create_shared_java_shim_backend
 from hla.bridges.java.common.java_shim_kernel import SharedJavaShimKernel
+from hla.foms.target_radar._internal import make_target_radar_factory, run_target_radar_scenario, target_radar_fom_path
 
 
 @dataclass(frozen=True)
@@ -85,10 +84,6 @@ def run_target_radar_backend_matrix(
     backend_options_by_kind: Mapping[str, Mapping[str, Any]] | None = None,
     federation_name_prefix: str = "target-radar-backend",
 ) -> dict[str, Any]:
-    skip_reason_hint = (
-        "If a backend is skipped or failed, the reason above should point to the missing runtime, "
-        "jar, classpath, or loopback/socket configuration that needs to be fixed."
-    )
     results: list[TargetRadarBackendResult] = []
     for backend in backends:
         options = _target_radar_backend_options(backend_options_by_kind, backend)

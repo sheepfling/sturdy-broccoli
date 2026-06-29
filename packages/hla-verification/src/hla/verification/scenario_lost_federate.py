@@ -6,13 +6,12 @@ from dataclasses import dataclass, field
 from typing import Any, Callable, cast
 
 import hla.fom.mom as hla_mom
-from hla.rti1516e.enums import CallbackModel, ResignAction
-from hla.rti1516e.exceptions import FederateNotExecutionMember
-from hla.rti1516e.exceptions import NotConnected as NotConnected2010
-from hla.rti1516e.exceptions import ObjectInstanceNotKnown
 from hla.rti1516_2025.exceptions import FederateNotExecutionMember as FederateNotExecutionMember2025
 from hla.rti1516_2025.exceptions import NotConnected as NotConnected2025
 from hla.rti1516_2025.exceptions import ObjectInstanceNotKnown as ObjectInstanceNotKnown2025
+from hla.rti1516e.enums import CallbackModel, ResignAction
+from hla.rti1516e.exceptions import FederateNotExecutionMember, ObjectInstanceNotKnown
+from hla.rti1516e.exceptions import NotConnected as NotConnected2010
 
 from .scenario_support import drain_callbacks, drain_callbacks_pair, register_named_object_instance, wait_for_callback
 
@@ -119,7 +118,7 @@ def run_lost_federate_mom_scenario(
     victim_attribute = victim_rti.get_attribute_handle(victim_object_class, config.attribute_name)
     victim_rti.set_automatic_resign_directive(config.automatic_resign_directive)
     victim_rti.publish_object_class_attributes(victim_object_class, {victim_attribute})
-    object_instance = register_named_object_instance(
+    register_named_object_instance(
         victim_rti,
         victim_federate,
         victim_object_class,

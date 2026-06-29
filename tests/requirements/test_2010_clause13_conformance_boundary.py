@@ -28,9 +28,12 @@ def test_clause13_conformance_closeout_doc_records_current_shape() -> None:
 
     for snippet in (
         "2010 Clause 13 Conformance Closeout",
+        "requirements/2010/canonical_requirements.json",
+        "requirements/2010/backend_resolution.json",
         "requirements/2010/hla1516_1_conf_detailed_reconciliation.csv",
         "docs/verification/clause13_conformance_packet.md",
         "docs/verification/clause13_conformance_packet.json",
+        "generated projection bridge",
         "`HLA1516.1-CONF_FEDERATE-014`",
         "`HLA1516.1-CONF_RTI-015`",
         "do not claim external standards certification",

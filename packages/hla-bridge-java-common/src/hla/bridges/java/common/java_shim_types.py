@@ -1,6 +1,8 @@
 """Java-shaped value types and conversion helpers for shim backends."""
 from __future__ import annotations
 
+import math
+import struct
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any
@@ -116,17 +118,165 @@ class JavaTransportationTypeHandle(JavaLikeObject):
 class JavaHLAinteger64Time(JavaLikeObject):
     def __init__(self, value: int): super().__init__("HLAinteger64Time", int(value))
 
+    def isInitial(self) -> bool:
+        return int(self.value) == 0
+
+    def isFinal(self) -> bool:
+        return int(self.value) == 2**63 - 1
+
+    def add(self, val: Any) -> "JavaHLAinteger64Time":
+        return JavaHLAinteger64Time(int(self.value) + int(time_value(val)))
+
+    def subtract(self, val: Any) -> "JavaHLAinteger64Time":
+        return JavaHLAinteger64Time(int(self.value) - int(time_value(val)))
+
+    def distance(self, val: Any) -> "JavaHLAinteger64Interval":
+        return JavaHLAinteger64Interval(int(self.value) - int(time_value(val)))
+
+    def compareTo(self, other: Any) -> int:
+        raw = int(time_value(other))
+        return (int(self.value) > raw) - (int(self.value) < raw)
+
+    def encodedLength(self) -> int:
+        return 8
+
+    def encode(self, buffer: Any, offset: int) -> None:
+        data = struct.pack(">q", int(self.value))
+        if isinstance(buffer, JavaByteArray):
+            buffer.value = buffer.value[:offset] + data + buffer.value[offset + 8 :]
+        else:
+            buffer[offset : offset + 8] = data
+
 
 class JavaHLAinteger64Interval(JavaLikeObject):
     def __init__(self, value: int): super().__init__("HLAinteger64Interval", int(value))
+
+    def isZero(self) -> bool:
+        return int(self.value) == 0
+
+    def isEpsilon(self) -> bool:
+        return int(self.value) == 1
+
+    def add(self, addend: Any) -> "JavaHLAinteger64Interval":
+        return JavaHLAinteger64Interval(int(self.value) + int(time_value(addend)))
+
+    def subtract(self, subtrahend: Any) -> "JavaHLAinteger64Interval":
+        return JavaHLAinteger64Interval(int(self.value) - int(time_value(subtrahend)))
+
+    def compareTo(self, other: Any) -> int:
+        raw = int(time_value(other))
+        return (int(self.value) > raw) - (int(self.value) < raw)
+
+    def encodedLength(self) -> int:
+        return 8
+
+    def encode(self, buffer: Any, offset: int) -> None:
+        data = struct.pack(">q", int(self.value))
+        if isinstance(buffer, JavaByteArray):
+            buffer.value = buffer.value[:offset] + data + buffer.value[offset + 8 :]
+        else:
+            buffer[offset : offset + 8] = data
 
 
 class JavaHLAfloat64Time(JavaLikeObject):
     def __init__(self, value: float): super().__init__("HLAfloat64Time", float(value))
 
+    def isInitial(self) -> bool:
+        return float(self.value) == 0.0
+
+    def isFinal(self) -> bool:
+        return math.isinf(float(self.value)) and float(self.value) > 0
+
+    def add(self, val: Any) -> "JavaHLAfloat64Time":
+        return JavaHLAfloat64Time(float(self.value) + float(time_value(val)))
+
+    def subtract(self, val: Any) -> "JavaHLAfloat64Time":
+        return JavaHLAfloat64Time(float(self.value) - float(time_value(val)))
+
+    def distance(self, val: Any) -> "JavaHLAfloat64Interval":
+        return JavaHLAfloat64Interval(float(self.value) - float(time_value(val)))
+
+    def compareTo(self, other: Any) -> int:
+        raw = float(time_value(other))
+        return (float(self.value) > raw) - (float(self.value) < raw)
+
+    def encodedLength(self) -> int:
+        return 8
+
+    def encode(self, buffer: Any, offset: int) -> None:
+        data = struct.pack(">d", float(self.value))
+        if isinstance(buffer, JavaByteArray):
+            buffer.value = buffer.value[:offset] + data + buffer.value[offset + 8 :]
+        else:
+            buffer[offset : offset + 8] = data
+
 
 class JavaHLAfloat64Interval(JavaLikeObject):
     def __init__(self, value: float): super().__init__("HLAfloat64Interval", float(value))
+
+    def isZero(self) -> bool:
+        return float(self.value) == 0.0
+
+    def isEpsilon(self) -> bool:
+        return float(self.value) == math.ulp(1.0)
+
+    def add(self, addend: Any) -> "JavaHLAfloat64Interval":
+        return JavaHLAfloat64Interval(float(self.value) + float(time_value(addend)))
+
+    def subtract(self, subtrahend: Any) -> "JavaHLAfloat64Interval":
+        return JavaHLAfloat64Interval(float(self.value) - float(time_value(subtrahend)))
+
+    def compareTo(self, other: Any) -> int:
+        raw = float(time_value(other))
+        return (float(self.value) > raw) - (float(self.value) < raw)
+
+    def encodedLength(self) -> int:
+        return 8
+
+    def encode(self, buffer: Any, offset: int) -> None:
+        data = struct.pack(">d", float(self.value))
+        if isinstance(buffer, JavaByteArray):
+            buffer.value = buffer.value[:offset] + data + buffer.value[offset + 8 :]
+        else:
+            buffer[offset : offset + 8] = data
+
+
+class JavaLogicalTimeFactory(JavaLikeObject):
+    def __init__(self, name: str):
+        super().__init__(f"{name}Factory", name)
+
+    def getName(self) -> str:
+        return str(self.value)
+
+    def decodeTime(self, buffer: Any, offset: int = 0) -> JavaLikeObject:
+        data = python_bytes(buffer)[offset : offset + 8]
+        if self.getName() == "HLAfloat64Time":
+            return JavaHLAfloat64Time(struct.unpack(">d", data)[0])
+        return JavaHLAinteger64Time(struct.unpack(">q", data)[0])
+
+    def decodeInterval(self, buffer: Any, offset: int = 0) -> JavaLikeObject:
+        data = python_bytes(buffer)[offset : offset + 8]
+        if self.getName() == "HLAfloat64Time":
+            return JavaHLAfloat64Interval(struct.unpack(">d", data)[0])
+        return JavaHLAinteger64Interval(struct.unpack(">q", data)[0])
+
+    def makeInitial(self) -> JavaLikeObject:
+        return JavaHLAfloat64Time(0.0) if self.getName() == "HLAfloat64Time" else JavaHLAinteger64Time(0)
+
+    def makeFinal(self) -> JavaLikeObject:
+        return JavaHLAfloat64Time(float("inf")) if self.getName() == "HLAfloat64Time" else JavaHLAinteger64Time(2**63 - 1)
+
+    def makeZero(self) -> JavaLikeObject:
+        return JavaHLAfloat64Interval(0.0) if self.getName() == "HLAfloat64Time" else JavaHLAinteger64Interval(0)
+
+    def makeEpsilon(self) -> JavaLikeObject:
+        return JavaHLAfloat64Interval(math.ulp(1.0)) if self.getName() == "HLAfloat64Time" else JavaHLAinteger64Interval(1)
+
+    def makeTime(self, value: Any) -> JavaLikeObject:
+        return JavaHLAfloat64Time(float(value)) if self.getName() == "HLAfloat64Time" else JavaHLAinteger64Time(int(value))
+
+    def makeInterval(self, value: Any) -> JavaLikeObject:
+        return JavaHLAfloat64Interval(float(value)) if self.getName() == "HLAfloat64Time" else JavaHLAinteger64Interval(int(value))
 
 
 class JavaRangeBounds(JavaLikeObject):
@@ -213,6 +363,7 @@ __all__ = [
     "JavaInteractionClassHandle",
     "JavaLikeException",
     "JavaLikeObject",
+    "JavaLogicalTimeFactory",
     "JavaObjectClassHandle",
     "JavaObjectInstanceHandle",
     "JavaParameterHandle",

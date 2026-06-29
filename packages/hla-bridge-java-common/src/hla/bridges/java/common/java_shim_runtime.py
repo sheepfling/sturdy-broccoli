@@ -19,6 +19,7 @@ from .java_shim_types import (
     JavaInteractionClassHandle,
     JavaLikeException,
     JavaLikeObject,
+    JavaLogicalTimeFactory,
     JavaObjectClassHandle,
     JavaObjectInstanceHandle,
     JavaParameterHandle,
@@ -78,6 +79,10 @@ class SharedInProcessJavaRTIShim:
 
     def _tag(self, value: Any) -> JavaByteArray:
         return JavaByteArray(python_bytes(value))
+
+    def getTimeFactory(self) -> JavaLogicalTimeFactory:  # noqa: N802
+        self._require_connected()
+        return JavaLogicalTimeFactory(self.logical_time_name)
 
     def connect(self, federateReference: Any, callbackModel: Any, localSettingsDesignator: str | None = None) -> None:
         if self.connected:

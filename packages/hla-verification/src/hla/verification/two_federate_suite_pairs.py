@@ -4,10 +4,10 @@ from __future__ import annotations
 from importlib import import_module
 from typing import Any
 
-from hla.rti1516e.enums import ResignAction
-from hla.rti1516e.handles import ObjectClassHandle, ObjectInstanceHandle
 from hla.backends.common import RecordingFederateAmbassador
 from hla.rti import create_rti_ambassador
+from hla.rti1516e.enums import ResignAction
+from hla.rti1516e.handles import ObjectClassHandle, ObjectInstanceHandle
 from hla.verification.two_federate_suite_timeline import TimelineRecorder
 
 

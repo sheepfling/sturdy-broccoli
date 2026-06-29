@@ -3,10 +3,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Protocol
 
+from hla.backends.common import time_management as tm
+from hla.rti1516e.datatypes import MessageRetractionReturn, TimeQueryReturn
 from hla.rti1516e.enums import OrderType
 from hla.rti1516e.handles import FederateHandle, MessageRetractionHandle
-from hla.rti1516e.datatypes import MessageRetractionReturn, TimeQueryReturn
-from hla.backends.common import time_management as tm
 
 from .state import CallbackEvent, FederateState, FederationState, TimeAdvanceRequestState, TimedMessage
 

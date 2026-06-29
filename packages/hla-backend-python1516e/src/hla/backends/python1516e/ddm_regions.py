@@ -5,13 +5,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Iterable, Mapping, Protocol, cast
 
 import hla.fom.mom as hla_mom
+from hla.rti1516e.datatypes import RangeBounds
 from hla.rti1516e.exceptions import (
     InvalidRegion,
     InvalidRegionContext,
     RegionNotCreatedByThisFederate,
 )
 from hla.rti1516e.handles import AttributeHandle, DimensionHandle, InteractionClassHandle, RegionHandle
-from hla.rti1516e.datatypes import RangeBounds
 
 from .state import FederateState, ObjectInstance
 

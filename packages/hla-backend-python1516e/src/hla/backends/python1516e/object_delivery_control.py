@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Iterable, Protocol, cast
 
+from hla.rti1516e.datatypes import MessageRetractionReturn
 from hla.rti1516e.enums import OrderType
 from hla.rti1516e.exceptions import (
     AttributeNotOwned,
@@ -20,7 +21,6 @@ from hla.rti1516e.handles import (
     ObjectInstanceHandle,
     TransportationTypeHandle,
 )
-from hla.rti1516e.datatypes import MessageRetractionReturn
 
 from .object_delivery_interactions import PythonRTIObjectInteractionDeliveryMixin
 from .state import CallbackEvent, ObjectInstance, SupplementalRemoveInfo

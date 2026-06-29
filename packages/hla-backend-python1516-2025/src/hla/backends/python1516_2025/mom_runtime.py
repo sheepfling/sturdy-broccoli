@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Iterable, Mapping
+from typing import Any, Mapping
 
 from hla.rti1516_2025.enums import OrderType
 from hla.rti1516_2025.exceptions import AttributeNotOwned, ObjectClassNotPublished

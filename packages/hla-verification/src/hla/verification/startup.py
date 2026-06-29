@@ -17,10 +17,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Iterable, Sequence
 
-from hla.rti1516e.enums import CallbackModel
-from hla.rti1516e.exceptions import FederationExecutionAlreadyExists, RTIexception
 from hla.rti1516_2025.exceptions import FederationExecutionAlreadyExists as FederationExecutionAlreadyExists2025
 from hla.rti1516e import NullFederateAmbassador
+from hla.rti1516e.enums import CallbackModel
+from hla.rti1516e.exceptions import FederationExecutionAlreadyExists, RTIexception
 from hla.rti1516e.handles import FederateHandle
 
 

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Mapping
+from typing import Any
 
 from hla.rti1516_2025.enums import OrderType, ResignAction
 from hla.rti1516_2025.handles import AttributeHandle, FederateHandle, ObjectClassHandle, ObjectInstanceHandle

@@ -6,12 +6,12 @@ adapters a single Python value model to convert from.
 
 """
 from __future__ import annotations
-# pyright: reportInvalidTypeVarUse=false
 
 import math
 import struct
 from dataclasses import dataclass
 from typing import Any, Generic, Protocol, TypeVar
+
 
 class LogicalTimeInterval(Protocol):
     def is_zero(self) -> bool: ...
@@ -21,7 +21,7 @@ class LogicalTimeInterval(Protocol):
     def encoded_length(self) -> int: ...
     def encode(self, buffer: bytearray | None = None, offset: int = 0): ...
 
-TInterval = TypeVar("TInterval", bound=LogicalTimeInterval)
+TInterval = TypeVar("TInterval", bound=LogicalTimeInterval, contravariant=True)
 
 class LogicalTime(Protocol[TInterval]):
     def is_initial(self) -> bool: ...

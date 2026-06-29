@@ -22,9 +22,13 @@ Short answer:
 
 - canonical owner doc:
   `docs/requirements/ieee-1516-2010/time_management_bounded_family.md`
-- canonical source owner:
+- edition-wide canonical requirement truth:
+  `requirements/2010/canonical_requirements.json`
+- edition-wide backend-resolution companion:
+  `requirements/2010/backend_resolution.json`
+- family mapping bridge:
   `requirements/2010/hla1516_1_tm_detailed_reconciliation.csv`
-- broad bridge:
+- generated projection bridge:
   `requirements/2010/traceability_matrix.csv`
 - imported-master companion:
   `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv`
@@ -146,11 +150,13 @@ Bad reading:
 
 ## Reading Order
 
-1. `requirements/2010/hla1516_1_tm_detailed_reconciliation.csv`
-2. `requirements/2010/traceability_matrix.csv`
-3. `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv`
-4. `tests/time/test_mom_mim_time_v10.py`
-5. `tests/time/test_mom_mim_and_time_semantics_v010.py`
+1. `requirements/2010/canonical_requirements.json`
+2. `requirements/2010/backend_resolution.json`
+3. `requirements/2010/hla1516_1_tm_detailed_reconciliation.csv`
+4. `requirements/2010/traceability_matrix.csv`
+5. `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv`
+6. `tests/time/test_mom_mim_time_v10.py`
+7. `tests/time/test_mom_mim_and_time_semantics_v010.py`
 
 ## Related Docs
 

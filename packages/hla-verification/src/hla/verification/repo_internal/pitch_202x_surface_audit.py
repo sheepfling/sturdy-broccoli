@@ -9,7 +9,6 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
-
 PITCH_RTI_202X_JAVA = Path("third_party/pitch/PITCH-prti1516e-manual/api/java/hla/rti1516_202X")
 REPO_RTI_2025_PY = Path("packages/hla-rti1516-2025/src/hla/rti1516_2025")
 BRIDGE_BLOCKER_FILES = (

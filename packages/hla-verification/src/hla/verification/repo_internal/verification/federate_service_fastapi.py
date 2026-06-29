@@ -14,11 +14,9 @@ from typing import Any, Literal
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
-from pydantic import BaseModel, Field
-
 from hla.backends.common import lower_camel_to_snake
-from hla.rti1516e.raw_api import API_METADATA
-
+from hla.rti1516e.api_metadata import API_METADATA
+from pydantic import BaseModel, Field
 
 FEDERATE_SERVICE_CONTRACT_VERSION = "1.0.0"
 FEDERATE_SERVICE_NAME = "federate-service"
@@ -412,7 +410,7 @@ def build_federate_service_contract() -> FederateServiceContract:
     return FederateServiceContract(
         service=FEDERATE_SERVICE_NAME,
         contract_version=FEDERATE_SERVICE_CONTRACT_VERSION,
-        generated_from="hla.rti1516e.raw_api.API_METADATA",
+        generated_from="hla.rti1516e.api_metadata.API_METADATA",
         interfaces={
             "RTIambassador": _build_interface_contract("RTIambassador"),
             "FederateAmbassador": _build_interface_contract("FederateAmbassador"),

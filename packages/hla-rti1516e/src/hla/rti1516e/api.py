@@ -1,7 +1,8 @@
 """Compatibility wrapper for the standard-facing HLA API facade."""
 from __future__ import annotations
 
-from .federate_ambassador import FederateAmbassador, NullFederateAmbassador
+from .ambassadors import NullFederateAmbassador
+from .federate_ambassador import FederateAmbassador
 from .rti_ambassador import RTIambassador
 
 RTIAmbassador = RTIambassador

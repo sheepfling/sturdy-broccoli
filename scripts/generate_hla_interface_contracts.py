@@ -13,7 +13,7 @@ import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 API_METADATA_SOURCE = "packages/hla-rti1516e/src/hla/rti1516e/api_metadata.json"
-BASE_PATH = ROOT / "packages" / "hla-backend-common" / "src" / "hla.backends.common" / "base.py"
+BASE_PATH = ROOT / "packages" / "hla-backend-common" / "src" / "hla" / "backends" / "common" / "base.py"
 DOC_PATH = ROOT / "docs" / "reference" / "hla_interface_contracts.md"
 
 GENERATED_HEADER = """# Generated from packages/hla-rti1516e/src/hla/rti1516e/api_metadata.json.
@@ -183,7 +183,7 @@ def python_type(java_type: str | None) -> str:
 
 def load_interfaces() -> dict[str, dict[str, dict[str, Any]]]:
     _bootstrap_source_checkout()
-    from hla.rti1516e.raw_api import API_METADATA
+    from hla.rti1516e.api_metadata import API_METADATA
 
     return API_METADATA
 

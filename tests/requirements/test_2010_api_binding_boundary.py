@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-import csv
 from collections import Counter
 from pathlib import Path
 
+from hla.verification.repo_internal.requirements import load_2010_reconciliation_rows, survey_requirement_artifacts
+
 
 ROOT = Path(__file__).resolve().parents[2]
-API_LEDGER = ROOT / "requirements/2010/hla1516_1_api_detailed_reconciliation.csv"
+API_LEDGER_REL = "requirements/2010/hla1516_1_api_detailed_reconciliation.csv"
 BOUNDARY_DOC = (
     ROOT / "docs/requirements/ieee-1516-2010/api_binding_bounded_family.md"
 )
@@ -14,17 +15,38 @@ FRONT_DOOR_DOC = ROOT / "docs/requirements/ieee-1516-2010/README.md"
 SOURCE_README = ROOT / "requirements/2010/README.md"
 
 
+def _typed_rows() -> list[object]:
+    return list(
+        load_2010_reconciliation_rows(
+            ROOT,
+            API_LEDGER_REL,
+            "docs/requirements/ieee-1516-2010/api_binding_bounded_family.md",
+        )
+    )
+
+
 def test_api_partial_tail_current_shape_is_stable() -> None:
-    rows = list(csv.DictReader(API_LEDGER.open(newline="", encoding="utf-8")))
-    partial_rows = [row for row in rows if row["current_status"] == "partial"]
-    kind_counts = Counter(row["reconciliation_kind"] for row in partial_rows)
+    rows = _typed_rows()
+    partial_rows = [row for row in rows if row.current_status == "partial"]
+    kind_counts = Counter(row.mapping_kind for row in partial_rows)
 
     assert len(rows) == 614
-    assert Counter(row["current_status"] for row in rows) == {
+    assert Counter(row.current_status for row in rows) == {
         "partial": 331,
         "mapped": 283,
     }
     assert kind_counts == {"WSDL_OP": 308, "CPP_CLASS": 17, "CLAUSE12_13_DETAIL": 6}
+
+
+def test_api_ledger_is_explicitly_classified_as_mapping_bridge() -> None:
+    survey = survey_requirement_artifacts(ROOT)
+    entries_by_path = {entry.path: entry for entry in survey.entries}
+    entry = entries_by_path[API_LEDGER_REL]
+
+    assert entry.family == "mapping-bridge"
+    assert entry.classification_basis == (
+        "2010 mapping bridge from imported or legacy requirement rows onto canonical repo claims"
+    )
 
 
 def test_api_boundary_doc_records_current_family_shape() -> None:
@@ -41,9 +63,12 @@ def test_api_boundary_doc_records_current_family_shape() -> None:
         "## Residual Read Rule",
         "## Residual Exit Rule",
         "`Canonical residual disposition:`",
+        "`requirements/2010/canonical_requirements.json`",
+        "`requirements/2010/backend_resolution.json`",
         "`requirements/2010/hla1516_1_api_detailed_reconciliation.csv`",
         "`requirements/2010/hla1516_1_conf_detailed_reconciliation.csv`",
         "`requirements/2010/traceability_matrix.csv`",
+        "generated projection bridge",
         "`tests/verification/test_spec_traceability_all_methods.py`",
         "`tests/verification/test_requirements_ledger_v013.py`",
         "`tests/factories/test_fom_time_factories.py`",

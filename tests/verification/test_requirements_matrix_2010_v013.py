@@ -103,6 +103,18 @@ def test_requirements_matrix_2010_covers_section_areas_service_rows_and_verifica
         assert by_id[requirement_id]["supported_subset_for"] == ""
 
 
+def test_requirements_matrix_2010_summary_marks_legacy_review_projection() -> None:
+    project_root = Path(__file__).resolve().parents[2]
+    matrix = build_requirements_matrix_2010(project_root, version="0.13.0")
+
+    assert matrix["summary"]["artifact"] == "requirements-matrix-2010"
+    assert matrix["summary"]["artifact_class"] == "projection"
+    assert matrix["summary"]["canonical_requirement_artifact"] == "requirements/2010/canonical_requirements.json"
+    assert matrix["summary"]["canonical_backend_resolution_artifact"] == "requirements/2010/backend_resolution.json"
+    assert matrix["summary"]["projection_rollup_artifact"] == "requirements/2010/canonical_projection_rows.json"
+    assert "canonical leaf rows plus explicitly demoted rollup and grouping rows" in matrix["summary"]["projection_basis"]
+
+
 def test_requirements_matrix_2010_uses_edition_qualified_2010_documents() -> None:
     project_root = Path(__file__).resolve().parents[2]
     matrix = build_requirements_matrix_2010(project_root, version="0.13.0")

@@ -5,11 +5,11 @@ import struct
 from dataclasses import dataclass
 from typing import Any
 
-from hla.runtime.factory import create_rti_ambassador
+from hla.rti1516_2025.exceptions import InvalidLogicalTime as InvalidLogicalTime2025
 from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
 from hla.rti1516e.exceptions import InvalidLogicalTime, RTIexception
 from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
-from hla.rti1516_2025.exceptions import InvalidLogicalTime as InvalidLogicalTime2025
+from hla.runtime.factory import create_rti_ambassador
 
 from .scenario_support import drain_callbacks_pair, wait_for_callback
 
@@ -2333,8 +2333,6 @@ def run_target_radar_time_window_core_scenario(
     initial_lits = radar_rti.query_lits()
     initial_galt = radar_rti.query_galt()
 
-    radar_grant_count = len(radar_federate.callbacks_named("timeAdvanceGrant"))
-    radar_receive_count = len(radar_federate.callbacks_named("receiveInteraction"))
     radar_rti.next_message_request(HLAinteger64Time(config.scan_window_end))
     drain_callbacks_pair(truth_rti, radar_rti, loops=64)
     first_grants = radar_federate.callbacks_named("timeAdvanceGrant")

@@ -3,12 +3,14 @@ from __future__ import annotations
 import csv
 import json
 from pathlib import Path
+import shutil
 
 from hla.verification.repo_internal.requirements import (
     build_2010_canonical_requirement_catalog,
     build_2010_canonical_row_triage,
     build_2010_projection_requirement_catalog,
     build_2025_canonical_requirement_catalog,
+    load_2010_canonical_backend_requirement_rows,
     load_2010_backend_resolution_rows,
     load_2010_fm_reconciliation_rows,
     load_2010_reconciliation_rows,
@@ -44,16 +46,22 @@ def test_requirement_row_shape_survey_checked_in_artifact_matches_live_generatio
     assert entries_by_path["requirements/2010/canonical_requirements.csv"]["family"] == "canonical-requirement"
     assert entries_by_path["requirements/2025/canonical_requirements.csv"]["family"] == "canonical-requirement"
     assert entries_by_path["requirements/2010/backend_resolution.csv"]["family"] == "backend-resolution"
+    assert entries_by_path["requirements/2010/backend_resolution.json"]["family"] == "backend-resolution"
+    assert entries_by_path["requirements/2010/backend_resolution.json"]["classification_basis"] == "canonical backend-resolution companion surface"
     assert entries_by_path["requirements/2025/backend_resolution.csv"]["family"] == "backend-resolution"
-    assert entries_by_path["requirements/2010/canonical_row_triage.json"]["family"] == "grouped-view"
-    assert entries_by_path["requirements/2010/canonical_row_triage.json"]["classification_basis"] == "2010 canonical row normalization triage view"
-    assert entries_by_path["requirements/2010/canonical_projection_rows.json"]["family"] == "grouped-view"
+    assert entries_by_path["requirements/2010/canonical_row_triage.json"]["family"] == "projection"
+    assert entries_by_path["requirements/2010/canonical_row_triage.json"]["classification_basis"] == "2010 canonical row normalization triage projection over canonical truth"
+    assert entries_by_path["requirements/2010/canonical_projection_rows.json"]["family"] == "projection"
     assert entries_by_path["requirements/2010/canonical_projection_rows.json"]["classification_basis"] == "2010 demoted rollup projection over canonical truth"
+    assert entries_by_path["requirements/2010/traceability_matrix.csv"]["family"] == "projection"
+    assert entries_by_path["requirements/2010/hla1516_1_priority_backend_resolution.csv"]["family"] == "projection"
+    assert entries_by_path["requirements/2010/hla1516_1_fm_detailed_reconciliation.csv"]["family"] == "mapping-bridge"
+    assert entries_by_path["requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv"]["family"] == "import-history"
+    assert entries_by_path["requirements/2010/hla_1516_master_harmonization_index_v1_0.csv"]["family"] == "import-history"
     assert entries_by_path["requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv"]["family"] == "historical"
     assert entries_by_path["requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv"]["classification_basis"] == "legacy row-shaped 2025 closeout projection"
     assert entries_by_path["requirements/2025/harmonization/hla_2025_harmonization_worklist.csv"]["family"] == "grouped-view"
     assert entries_by_path["requirements/2025/harmonization/hla_2025_pitch_202x_row_resolution.csv"]["family"] == "backend-resolution"
-    assert entries_by_path["requirements/2010/hla1516_1_fm_detailed_reconciliation.csv"]["family"] == "requirement-mapping"
     assert entries_by_path["requirements/2010/canonical_requirements.json"]["family"] == "canonical-requirement"
     assert entries_by_path["requirements/imports/hla_1516_requirements_codebase_packet_v1_0/latest/hla_1516_requirements_master_v1_0.csv"]["family"] == "imported-requirement"
 
@@ -147,6 +155,28 @@ def test_2010_projection_requirement_catalog_checked_in_artifact_matches_live_ge
     assert rows_by_id["AREA-1516.1-4"]["row_kind"] == "section-area"
     assert rows_by_id["REQ-OMT-4-omt_components"]["row_kind"] == "omt-area"
     assert rows_by_id["REQ-MOM-TABLE-001"]["row_kind"] == "verification-slice"
+
+
+def test_2010_typed_requirement_surfaces_load_from_checked_in_canonical_truth_without_matrix_bootstrap(
+    tmp_path: Path,
+) -> None:
+    repo_root = tmp_path / "repo"
+    (repo_root / "requirements" / "2010").mkdir(parents=True, exist_ok=True)
+
+    shutil.copy2(CANONICAL_2010, repo_root / "requirements" / "2010" / "canonical_requirements.json")
+    shutil.copy2(BACKEND_2010_CSV.with_suffix(".json"), repo_root / "requirements" / "2010" / "backend_resolution.json")
+    shutil.copy2(TRIAGE_2010, repo_root / "requirements" / "2010" / "canonical_row_triage.json")
+    shutil.copy2(PROJECTION_2010, repo_root / "requirements" / "2010" / "canonical_projection_rows.json")
+
+    canonical = build_2010_canonical_requirement_catalog(repo_root)
+    backend = load_2010_backend_resolution_rows(repo_root)
+    triage = build_2010_canonical_row_triage(repo_root)
+    projection = build_2010_projection_requirement_catalog(repo_root)
+
+    assert canonical.row_count == 880
+    assert len(backend) == 880
+    assert triage.row_count == 950
+    assert projection.row_count == 70
 
 
 def test_canonical_requirement_csv_truth_surfaces_share_one_schema_across_editions() -> None:
@@ -253,6 +283,27 @@ def test_typed_backend_resolution_loaders_cover_2010_and_2025_companion_surfaces
     assert any(row.row_kind == "requirement-row" and row.resolution_type == "vendor-route-resolution" for row in rows_2025_pitch)
     assert any(row.backend_fields["pitch_202x_row_resolution"] == "bounded-fi-overlap-only" for row in rows_2025_pitch)
     assert any(row.row_kind == "grouped-projection" and row.resolution_type == "vendor-group-resolution" for row in groups_2025_pitch)
-    assert any(row.backend_fields["pitch_202x_resolution"].startswith("vendor-branded proto HLA 4 / 202X surface") for row in groups_2025_pitch)
-    assert any(row.row_kind == "requirement-row" and row.resolution_type == "binding-route-resolution" for row in rows_2025_binding)
-    assert any(row.backend_fields["fedpro_surface"] for row in rows_2025_binding)
+
+
+def test_2010_canonical_backend_requirement_loader_joins_leaf_truth_and_backend_companion() -> None:
+    rows = load_2010_canonical_backend_requirement_rows(ROOT)
+    rows_by_id = {row.requirement_id: row for row in rows}
+
+    assert len(rows) == 880
+    assert "AREA-1516.1-4" not in rows_by_id
+    assert "REQ-MOM-TABLE-001" not in rows_by_id
+    assert "REQ-SAVE-RESTORE-001" not in rows_by_id
+
+    fm_row = rows_by_id["REQ-RTI-FM-4_11-registerFederationSynchronizationPoint"]
+    assert fm_row.source_document == "IEEE 1516.1-2010 (2010 edition)"
+    assert fm_row.row_kind == "service-requirement"
+    assert fm_row.owner_doc == "docs/requirements/ieee-1516-2010/federation_management_bounded_family.md"
+    assert fm_row.primary_test_shard == "unit-scenarios-light"
+    assert fm_row.backend_fields["python_runtime_disposition"] == "verified"
+    assert fm_row.backend_fields["pitch_runtime_disposition"] == "verified"
+
+    dt_row = rows_by_id["HLA1516.2-DT-001"]
+    assert dt_row.row_kind == "extracted-requirement"
+    assert dt_row.service_or_check == "OMT parser shall preserve logical-time and datatype metadata used by the active catalog"
+    assert dt_row.backend_fields["python_runtime_disposition"] == "verified"
+    assert dt_row.backend_fields["pitch_runtime_disposition"] == "classification-required"

@@ -24,7 +24,7 @@ Current plans:
 - [2025_python_rti_100_percent_worklist.md](2025_python_rti_100_percent_worklist.md): concrete 2025 denominator rule plus the exact 46 non-covered rows that block literal `691 / 691 covered`
 - [2025_python_rti_umbrella_decomposition_worklist.md](2025_python_rti_umbrella_decomposition_worklist.md): exact child-row, shard-owner, and promotion criteria for the 22 remaining 2025 umbrella rows
 - [2010_python_rti_bounded_family_execution_worklist.md](2010_python_rti_bounded_family_execution_worklist.md): exact owner-doc, companion-ledger, shard-owner, and tightening criteria for the remaining bounded 2010 families
-- [imported_requirements_backlog_v1_0.md](imported_requirements_backlog_v1_0.md): generated repo-native work queues from the harmonized requirements ledgers
+- [imported_requirements_backlog_v1_0.md](imported_requirements_backlog_v1_0.md): generated mapping-bridge backlog projection derived against the canonical 2010 requirement catalog
 - [requirements_finish_line.md](requirements_finish_line.md): the handoff note for finishing remaining requirement rows without overclaiming
 - [requirements_remaining_closure.md](requirements_remaining_closure.md): concrete remaining 2010/2025 proof debt, the canonical shard-versus-view matrix model, and the preferred closeout-table column shape
 - [requirements_completion_audit.md](requirements_completion_audit.md): current-state audit of what still blocks an honest full requirements-complete claim

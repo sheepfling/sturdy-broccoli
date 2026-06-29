@@ -5,6 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Sequence, cast
 
+from hla.backends.certi.real_rti_certi import CERTIRuntime, RuntimeProcess, discover_certi_runtime, launch_certi_rtig
+from hla.backends.common import BackendInfo, BackendUnavailableError, Invocation, RTIBackend, UnsupportedBackendService
+from hla.rti1516e.datatypes import AttributeRegionAssociation, MessageRetractionReturn, TimeQueryReturn
 from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
 from hla.rti1516e.exceptions import RTIexception, RTIinternalError
 from hla.rti1516e.handles import (
@@ -20,10 +23,8 @@ from hla.rti1516e.handles import (
     RegionHandle,
     RegionHandleSet,
 )
-from hla.rti1516e.datatypes import AttributeRegionAssociation, MessageRetractionReturn, TimeQueryReturn
-from hla.backends.common import BackendInfo, BackendUnavailableError, Invocation, RTIBackend, UnsupportedBackendService
 from hla.transports.common import RTITransport, SubprocessLineTransport, TransportError, TransportRequest
-from hla.backends.certi.real_rti_certi import CERTIRuntime, RuntimeProcess, discover_certi_runtime, launch_certi_rtig
+
 from .callbacks import dispatch_helper_callback
 from .codecs import (
     decode_handle_set,

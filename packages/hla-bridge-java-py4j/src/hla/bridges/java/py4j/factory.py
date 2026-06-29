@@ -3,9 +3,9 @@ from __future__ import annotations
 
 from typing import Any, cast
 
-from hla.bridges.java.common import BackendInfo, make_rti_ambassador
 from hla.backends.common import java_invocation_resolver
-from hla.backends.common.invocation import JavaInvocationResolverName
+from hla.bridges.java.common import BackendInfo, make_rti_ambassador
+
 from .adapter import Py4JRTIBackend
 from .runtime import Py4JBridge, Py4JConfig
 

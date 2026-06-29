@@ -22,12 +22,16 @@ Short answer:
 
 - canonical owner doc:
   `docs/requirements/ieee-1516-2010/omt_xml_bounded_family.md`
-- canonical source owners:
+- edition-wide canonical requirement truth:
+  `requirements/2010/canonical_requirements.json`
+- edition-wide backend-resolution companion:
+  `requirements/2010/backend_resolution.json`
+- family mapping bridges:
   - `requirements/2010/hla1516_xml_detailed_reconciliation.csv`
   - `requirements/2010/hla1516_2_omt_detailed_reconciliation.csv`
 - hybrid imported closeout ledger:
   `requirements/2010/hla1516_2_omt_xml_detailed_reconciliation.csv`
-- broad bridge:
+- generated projection bridge:
   `requirements/2010/traceability_matrix.csv`
 - export and handoff surface:
   `docs/verification/requirement_compliance_exports.md`
@@ -188,11 +192,13 @@ Bad reading:
 
 ## Reading Order
 
-1. `requirements/2010/hla1516_xml_detailed_reconciliation.csv`
-2. `requirements/2010/hla1516_2_omt_detailed_reconciliation.csv`
-3. `requirements/2010/hla1516_2_omt_xml_detailed_reconciliation.csv`
-4. `requirements/2010/traceability_matrix.csv`
-5. `docs/verification/requirement_compliance_exports.md`
+1. `requirements/2010/canonical_requirements.json`
+2. `requirements/2010/backend_resolution.json`
+3. `requirements/2010/hla1516_xml_detailed_reconciliation.csv`
+4. `requirements/2010/hla1516_2_omt_detailed_reconciliation.csv`
+5. `requirements/2010/hla1516_2_omt_xml_detailed_reconciliation.csv`
+6. `requirements/2010/traceability_matrix.csv`
+7. `docs/verification/requirement_compliance_exports.md`
 
 ## Related Docs
 

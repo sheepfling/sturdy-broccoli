@@ -1,23 +1,25 @@
 """Executable runtime showcase scenarios for high-value SISO FOM families."""
 from __future__ import annotations
 
-from collections.abc import Iterable, Mapping
 import csv
 import json
 import uuid
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 from hla.backends.common import RecordingFederateAmbassador
 from hla.backends.python1516e import InMemoryRTIEngine
+from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+from hla.rti1516e.enums import CallbackModel as CallbackModel2010
+from hla.rti1516e.enums import ResignAction as ResignAction2010
 from hla.runtime.factory import create_rti_ambassador as create_rti_ambassador_2010
 from hla.runtime.rti1516_2025_factory import create_rti_ambassador as create_rti_ambassador_2025
-from hla.rti1516e.enums import CallbackModel as CallbackModel2010, ResignAction as ResignAction2010
-from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025, ResignAction as ResignAction2025
-from hla.verification.scenario_support import register_named_object_instance, wait_for_callback_count_pair
 from hla.verification.repo_internal.fom_inventory import default_load_set_for_family
 from hla.verification.repo_internal.verification.runtime_listener import RuntimeListenerFederate, RuntimeListenerSession
+from hla.verification.scenario_support import register_named_object_instance, wait_for_callback_count_pair
 from hla.verification.startup import FederationStartupConfig, connect_create_join, synchronize_ready_to_run
 
 

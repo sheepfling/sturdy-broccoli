@@ -16,18 +16,22 @@ Short answer:
 - the canonical API owner ledger stays `partial` only for broad binding,
   header-token, and WSDL-catalog claims that the repo does not implement live
 - the mapped `CPP_METHOD` rows already credit the generated ambassador method
-  surface directly through source-derived `raw_api` metadata and requirements
+  surface directly through source-derived `api_metadata` and requirements
   ledger checks
 
 ## Owner Surface
 
 - canonical owner doc:
   `docs/requirements/ieee-1516-2010/api_binding_bounded_family.md`
-- canonical source owner:
+- edition-wide canonical requirement truth:
+  `requirements/2010/canonical_requirements.json`
+- edition-wide backend-resolution companion:
+  `requirements/2010/backend_resolution.json`
+- family mapping bridge:
   `requirements/2010/hla1516_1_api_detailed_reconciliation.csv`
 - neighboring clause owner:
   `requirements/2010/hla1516_1_conf_detailed_reconciliation.csv`
-- broad bridge:
+- generated projection bridge:
   `requirements/2010/traceability_matrix.csv`
 - export and handoff surface:
   `docs/verification/requirement_compliance_exports.md`
@@ -41,7 +45,7 @@ Short answer:
   but does not yet prove a live Web Services runtime surface, per-class C++
   header-token witnesses, or broader cross-binding semantics
 - treat the mapped `CPP_METHOD` rows as directly closed where source-derived
-  `raw_api` metadata and the requirements-ledger checks preserve the standard
+  `api_metadata` and the requirements-ledger checks preserve the standard
   ambassador method signature surface
 - do not describe these rows as missing Python RTI API coverage
 - do not flatten imported C++ catalog tokens or WSDL operation rows into
@@ -162,7 +166,7 @@ If none of those become true, preserve the current partial disposition.
 The current repo directly proves the generated ambassador method surface for
 the imported C++ method rows through:
 
-- source-derived `raw_api` metadata that preserves the standard generated
+- source-derived `api_metadata` that preserves the standard generated
   method surface
 - requirements-ledger coverage that ensures the generated API surface remains
   represented in the canonical requirements inventory
@@ -200,10 +204,12 @@ Bad reading:
 
 ## Reading Order
 
-1. `requirements/2010/hla1516_1_api_detailed_reconciliation.csv`
-2. `requirements/2010/hla1516_1_conf_detailed_reconciliation.csv`
-3. `requirements/2010/traceability_matrix.csv`
-4. `docs/verification/requirement_compliance_exports.md`
+1. `requirements/2010/canonical_requirements.json`
+2. `requirements/2010/backend_resolution.json`
+3. `requirements/2010/hla1516_1_api_detailed_reconciliation.csv`
+4. `requirements/2010/hla1516_1_conf_detailed_reconciliation.csv`
+5. `requirements/2010/traceability_matrix.csv`
+6. `docs/verification/requirement_compliance_exports.md`
 
 ## Related Docs
 

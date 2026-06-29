@@ -9,7 +9,6 @@ from typing import Iterable
 
 from .rti_ambassador import RTIambassador
 
-
 RTI_FACTORY_ENTRY_POINT_GROUP = "hla.ieee1516e"
 IMPLEMENTATION_ENTRY_POINT_GROUP = "hla.implementation"
 ENTRY_POINT_GROUPS: tuple[str, ...] = (

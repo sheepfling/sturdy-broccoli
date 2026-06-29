@@ -2,12 +2,10 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Sequence
-from importlib import import_module
-from importlib import resources
+from importlib import import_module, resources
 from typing import Any
 
 from .target_radar_2025_adapter import TargetRadar2025RTIAdapter
-
 
 _TARGET_RADAR_2025_BACKENDS = {
     "python1516_2025",

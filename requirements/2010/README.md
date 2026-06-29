@@ -118,6 +118,24 @@ The rollup-only rows moved into `canonical_projection_rows.json` are no longer
 part of the canonical 2010 denominator. They remain available as a generated
 projection for review, traceability, and historical continuity only.
 
+## Legacy Artifact Classes
+
+Every non-canonical machine-readable `2010` artifact should be read as one of
+these explicit classes:
+
+- `projection`: generated rollups and bounded review surfaces such as
+  `canonical_projection_rows.json`, `traceability_matrix.csv`, and
+  `hla1516_1_priority_backend_resolution.csv`
+- `mapping-bridge`: detailed reconciliation bridges such as
+  `hla1516_1_fm_detailed_reconciliation.csv`
+- `import-history`: imported packet ledgers, seed catalogs, priority tranches,
+  and packet hookup inventories such as `hla1516_1_federate_interface.csv`,
+  `hla1516_2_omt.csv`, and `hla_1516_master_harmonization_index_v1_0.csv`
+- `owner-note`: the human-facing bounded-family and closeout notes in
+  `docs/requirements/ieee-1516-2010/`
+
+None of those classes should be mistaken for canonical requirement truth.
+
 Use `hla1516_1_priority_backend_resolution.csv` when the canonical owner row is
 already closed for the repo-supported claim but the backend truth still differs
 by runtime. That companion keeps `python`, `certi`, `pitch`, and `portico`

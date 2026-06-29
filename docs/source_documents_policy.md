@@ -27,7 +27,9 @@ Extraction note:
   related docstrings
 - generated verification packets and matrices are intentionally excluded from
   the clean repo seed
-- `hla.rti1516e.raw_api` is retained source-derived metadata; new generated
-  standard API code should go into the package-local `_generated/` bucket above
+- `hla.rti1516e.api_metadata` is the retained source-derived API metadata
+  surface; `hla.rti1516e.raw_api` remains the legacy abstract-ambassador
+  scaffold, and new generated standard API code should go into the package-local
+  `_generated/` bucket above
 
 Use this page when you want the policy story rather than the inventory.

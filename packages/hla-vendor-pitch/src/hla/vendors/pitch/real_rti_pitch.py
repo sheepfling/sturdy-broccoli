@@ -9,13 +9,12 @@ import time
 from dataclasses import dataclass
 from importlib import import_module
 from pathlib import Path
-from uuid import uuid4
 from typing import Any, Sequence
+from uuid import uuid4
 
 from hla.bridges.java.common import BackendUnavailableError
 from hla.bridges.java.common.java_runtime import discover_java_tool, ensure_java_home
 from hla.rti import RuntimeProcess
-
 
 _PITCH_USER_HOME_MARKER = ".hla2010_pitch_user_home_seeded"
 

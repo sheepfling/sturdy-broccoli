@@ -17,9 +17,13 @@ Short answer:
 
 - canonical owner doc:
   `docs/requirements/ieee-1516-2010/federation_management_bounded_family.md`
-- canonical source owner:
+- edition-wide canonical requirement truth:
+  `requirements/2010/canonical_requirements.json`
+- edition-wide backend-resolution companion:
+  `requirements/2010/backend_resolution.json`
+- family mapping bridge:
   `requirements/2010/hla1516_1_fm_detailed_reconciliation.csv`
-- broad bridge:
+- generated projection bridge:
   `requirements/2010/traceability_matrix.csv`
 - supporting decomposition seed:
   `requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv`
@@ -190,10 +194,12 @@ Bad reading:
 
 ## Reading Order
 
-1. `requirements/2010/hla1516_1_fm_detailed_reconciliation.csv`
-2. `requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv`
-3. `requirements/2010/traceability_matrix.csv`
-4. `tests/backends/test_python_backend_federation_extended.py`
+1. `requirements/2010/canonical_requirements.json`
+2. `requirements/2010/backend_resolution.json`
+3. `requirements/2010/hla1516_1_fm_detailed_reconciliation.csv`
+4. `requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv`
+5. `requirements/2010/traceability_matrix.csv`
+6. `tests/backends/test_python_backend_federation_extended.py`
 
 ## Related Docs
 

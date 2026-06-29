@@ -8,20 +8,10 @@ methods accept ``*args``/``**kwargs`` because Java and C++ overloads do not map
 
 from __future__ import annotations
 
-import json
 from abc import ABC, abstractmethod
-from importlib import resources
 from typing import Any
 
-
-def _load_api_metadata() -> dict[str, dict[str, list[dict[str, Any]]]]:
-    metadata = resources.files("hla.rti1516e").joinpath("api_metadata.json").read_text(encoding="utf-8")
-    return json.loads(metadata)
-
-
-API_METADATA = _load_api_metadata()
-API_METADATA.setdefault("RTIambassador", {}).setdefault("getRegionHandleFactory", [])
-API_METADATA.setdefault("RTIambassador", {}).setdefault("getMessageRetractionHandleFactory", [])
+from .api_metadata import API_METADATA
 
 
 class RTIambassador(ABC):

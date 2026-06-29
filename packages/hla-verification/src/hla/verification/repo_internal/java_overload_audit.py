@@ -7,7 +7,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
-from hla.rti1516e.raw_api import API_METADATA
+from hla.rti1516e.api_metadata import API_METADATA
 
 
 @dataclass(frozen=True, slots=True)

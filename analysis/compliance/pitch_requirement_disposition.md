@@ -1,6 +1,6 @@
 # Pitch Requirement Disposition
 
-This audit projects the shared HLA 2010 requirements matrix onto Pitch so every row has an explicit generated `pitch` disposition.
+This audit projects the shared HLA 2010 requirements matrix onto Pitch so every row has an explicit generated `pitch` disposition. The source matrix is a legacy review projection rather than canonical requirement truth.
 
 ## Profile Summary
 

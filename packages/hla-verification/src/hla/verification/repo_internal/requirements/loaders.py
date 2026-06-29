@@ -2,13 +2,14 @@ from __future__ import annotations
 
 import csv
 import json
-from pathlib import Path
 import re
 from collections import Counter, defaultdict
+from pathlib import Path
 
 from .models import (
     BackendResolutionCatalog,
     BackendResolutionRow,
+    CanonicalBackendRequirementRow,
     CanonicalRequirementRow,
     CanonicalRowTriageArtifact,
     CanonicalRowTriageEntry,
@@ -409,7 +410,6 @@ def _slug(value: str) -> str:
 def _derive_owner_doc(row: dict[str, str]) -> str:
     area = row.get("area", "")
     service_group = row.get("service_group", "")
-    service_or_check = row.get("service_or_check", "")
 
     # Keep one canonical owner surface for each OMT family; bounded xs:any notes remain evidence, not owners.
     if area == "OMT component-level conformance":
@@ -570,6 +570,9 @@ def build_2025_canonical_requirement_catalog(project_root: Path) -> NormalizedRe
 
 
 def build_2010_canonical_requirement_catalog(project_root: Path) -> NormalizedRequirementCatalog:
+    checked_in = _load_checked_in_canonical_2010_catalog(project_root)
+    if checked_in is not None:
+        return checked_in
     rows = tuple(
         row
         for row in _build_2010_requirement_rows_all(project_root)
@@ -658,6 +661,9 @@ def _triage_basis_for_2010_row(row: CanonicalRequirementRow) -> tuple[str, str]:
 
 
 def build_2010_canonical_row_triage(project_root: Path) -> CanonicalRowTriageArtifact:
+    checked_in = _load_checked_in_2010_row_triage(project_root)
+    if checked_in is not None:
+        return checked_in
     canonical_rows = _build_2010_requirement_rows_all(project_root)
     triage_rows: list[CanonicalRowTriageEntry] = []
     decision_counts: Counter[str] = Counter()
@@ -689,6 +695,9 @@ def build_2010_canonical_row_triage(project_root: Path) -> CanonicalRowTriageArt
 
 
 def build_2010_projection_requirement_catalog(project_root: Path) -> NormalizedRequirementCatalog:
+    checked_in = _load_checked_in_2010_projection_catalog(project_root)
+    if checked_in is not None:
+        return checked_in
     rows = tuple(
         row
         for row in _build_2010_requirement_rows_all(project_root)
@@ -752,7 +761,40 @@ def load_canonical_requirement_catalog(path: Path) -> NormalizedRequirementCatal
     return NormalizedRequirementCatalog.from_mapping(payload)
 
 
+def _load_checked_in_canonical_2010_catalog(project_root: Path) -> NormalizedRequirementCatalog | None:
+    path = project_root / CANONICAL_2010_REL
+    if not path.exists():
+        return None
+    return load_canonical_requirement_catalog(path)
+
+
+def _load_checked_in_2010_row_triage(project_root: Path) -> CanonicalRowTriageArtifact | None:
+    path = project_root / TRIAGE_2010_REL
+    if not path.exists():
+        return None
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    return CanonicalRowTriageArtifact.from_mapping(payload)
+
+
+def _load_checked_in_2010_projection_catalog(project_root: Path) -> NormalizedRequirementCatalog | None:
+    path = project_root / PROJECTION_2010_REL
+    if not path.exists():
+        return None
+    return load_canonical_requirement_catalog(path)
+
+
+def _load_checked_in_2010_backend_resolution_catalog(project_root: Path) -> BackendResolutionCatalog | None:
+    path = project_root / BACKEND_2010_REL
+    if not path.exists():
+        return None
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    return BackendResolutionCatalog.from_mapping(payload)
+
+
 def build_2010_backend_resolution_catalog(project_root: Path) -> BackendResolutionCatalog:
+    checked_in = _load_checked_in_2010_backend_resolution_catalog(project_root)
+    if checked_in is not None:
+        return checked_in
     canonical_ids = {
         row.requirement_id
         for row in build_2010_canonical_requirement_catalog(project_root).rows
@@ -856,6 +898,8 @@ def load_2010_fm_reconciliation_rows(project_root: Path) -> tuple[RequirementMap
             source_requirement_id=row.get("packet_requirement_id", "").strip(),
             canonical_requirement_id=row.get("curated_requirement_id", "").strip(),
             mapping_kind=row.get("reconciliation_kind", "").strip(),
+            current_status=row.get("current_status", "").strip(),
+            requirement_text=row.get("requirement_text", "").strip(),
             mapping_notes=row.get("notes", "").strip(),
             source_packet_file=row.get("source_packet_file", "").strip(),
             owner_doc="docs/requirements/ieee-1516-2010/federation_management_bounded_family.md",
@@ -873,6 +917,8 @@ def load_2010_reconciliation_rows(project_root: Path, relative_path: str, owner_
             source_requirement_id=row.get("packet_requirement_id", "").strip(),
             canonical_requirement_id=row.get("curated_requirement_id", "").strip(),
             mapping_kind=row.get("reconciliation_kind", "").strip(),
+            current_status=row.get("current_status", "").strip(),
+            requirement_text=row.get("requirement_text", "").strip(),
             mapping_notes=row.get("notes", "").strip(),
             source_packet_file=row.get("source_packet_file", "").strip(),
             owner_doc=owner_doc,
@@ -884,6 +930,20 @@ def load_2010_reconciliation_rows(project_root: Path, relative_path: str, owner_
 
 def load_2010_backend_resolution_rows(project_root: Path) -> tuple[BackendResolutionRow, ...]:
     return load_backend_resolution_catalog(project_root / BACKEND_2010_REL).rows
+
+
+def load_2010_canonical_backend_requirement_rows(project_root: Path) -> tuple[CanonicalBackendRequirementRow, ...]:
+    canonical_rows = {
+        row.requirement_id: row
+        for row in load_canonical_requirement_catalog(project_root / CANONICAL_2010_REL).rows
+    }
+    joined_rows: list[CanonicalBackendRequirementRow] = []
+    for backend_row in load_backend_resolution_catalog(project_root / BACKEND_2010_REL).rows:
+        canonical_row = canonical_rows.get(backend_row.requirement_id)
+        if canonical_row is None:
+            continue
+        joined_rows.append(CanonicalBackendRequirementRow.from_rows(canonical_row, backend_row))
+    return tuple(joined_rows)
 
 
 def load_2025_backend_group_rows(project_root: Path) -> tuple[BackendResolutionRow, ...]:

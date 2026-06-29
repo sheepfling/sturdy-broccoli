@@ -3,9 +3,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from hla.rti.plugin_api import BackendRequest
-
 from hla.backends.common import BackendInfo, BackendUnavailableError, RTIBackendPlugin
+from hla.rti.plugin_api import BackendRequest
 
 
 def _discover_certi_runtime() -> BackendInfo | None:
@@ -24,8 +23,9 @@ def _discover_certi_runtime() -> BackendInfo | None:
 
 def _certi_backend_factory(request: BackendRequest):
     options: dict[str, Any] = dict(request.options if hasattr(request, "options") else request)
-    from . import CERTIConfig, create_certi_backend
     from hla.transports.common import coerce_transport_spec
+
+    from . import CERTIConfig, create_certi_backend
 
     transport = coerce_transport_spec(options.pop("transport", None))
     config = options.pop("config", None) or CERTIConfig(transport=transport, **options)

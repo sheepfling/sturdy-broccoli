@@ -5,6 +5,7 @@ import importlib
 from typing import Any, Mapping
 
 from hla.backends.common.plugin_api import RTITransportSpec
+
 from .transport import SubprocessLineTransport
 
 _TRANSPORT_FACTORIES: dict[str, Any] = {}

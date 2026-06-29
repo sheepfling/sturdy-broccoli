@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from hla.backends.common import BackendInfo, RTIBackendPlugin
-from hla.rti.plugin_api import BackendRequest
 
 from .backend import create_cpp_shim_backend
 from .cpp_intake_backend import create_cpp_sdk_intake_backend, discover_cpp_sdk_backend

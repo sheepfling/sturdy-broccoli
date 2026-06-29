@@ -19,7 +19,11 @@ Short answer:
 
 - canonical owner doc:
   `docs/requirements/ieee-1516-2010/clause13_conformance_closeout.md`
-- canonical source owner:
+- edition-wide canonical requirement truth:
+  `requirements/2010/canonical_requirements.json`
+- edition-wide backend-resolution companion:
+  `requirements/2010/backend_resolution.json`
+- family mapping bridge:
   `requirements/2010/hla1516_1_conf_detailed_reconciliation.csv`
 - neighboring API-binding owner:
   `requirements/2010/hla1516_1_api_detailed_reconciliation.csv`
@@ -27,7 +31,7 @@ Short answer:
   `docs/verification/clause13_conformance_packet.md`
 - machine-readable packet:
   `docs/verification/clause13_conformance_packet.json`
-- broad bridge:
+- generated projection bridge:
   `requirements/2010/traceability_matrix.csv`
 - primary shard:
   `unit-shim-tooling`
@@ -110,10 +114,12 @@ Bad reading:
 
 ## Reading Order
 
-1. `requirements/2010/hla1516_1_conf_detailed_reconciliation.csv`
-2. `docs/verification/clause13_conformance_packet.md`
-3. `docs/verification/clause13_conformance_packet.json`
-4. `requirements/2010/traceability_matrix.csv`
+1. `requirements/2010/canonical_requirements.json`
+2. `requirements/2010/backend_resolution.json`
+3. `requirements/2010/hla1516_1_conf_detailed_reconciliation.csv`
+4. `docs/verification/clause13_conformance_packet.md`
+5. `docs/verification/clause13_conformance_packet.json`
+6. `requirements/2010/traceability_matrix.csv`
 
 ## Related Docs
 

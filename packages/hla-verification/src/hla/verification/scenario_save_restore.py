@@ -7,33 +7,43 @@ import struct
 from dataclasses import dataclass, field
 from typing import Any
 
+from hla.rti1516_2025.exceptions import (
+    FederateNotExecutionMember as FederateNotExecutionMember2025,
+)
+from hla.rti1516_2025.exceptions import (
+    NotConnected as NotConnected2025,
+)
+from hla.rti1516_2025.exceptions import (
+    RestoreInProgress as RestoreInProgress2025,
+)
+from hla.rti1516_2025.exceptions import (
+    RestoreNotInProgress as RestoreNotInProgress2025,
+)
+from hla.rti1516_2025.exceptions import (
+    RestoreNotRequested as RestoreNotRequested2025,
+)
+from hla.rti1516_2025.exceptions import (
+    SaveInProgress as SaveInProgress2025,
+)
+from hla.rti1516_2025.exceptions import (
+    SaveNotInitiated as SaveNotInitiated2025,
+)
 from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction, RestoreFailureReason, RestoreStatus, SaveFailureReason, SaveStatus
 from hla.rti1516e.exceptions import (
     FederateNotExecutionMember,
     InvalidMessageRetractionHandle,
     NotConnected,
     RestoreInProgress,
-    RestoreNotRequested,
     RestoreNotInProgress,
+    RestoreNotRequested,
     SaveInProgress,
     SaveNotInitiated,
-    SaveNotInProgress,
-)
-from hla.rti1516_2025.exceptions import (
-    FederateNotExecutionMember as FederateNotExecutionMember2025,
-    NotConnected as NotConnected2025,
-    RestoreInProgress as RestoreInProgress2025,
-    RestoreNotRequested as RestoreNotRequested2025,
-    RestoreNotInProgress as RestoreNotInProgress2025,
-    SaveInProgress as SaveInProgress2025,
-    SaveNotInitiated as SaveNotInitiated2025,
 )
 from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
 
 from .scenario_support import (
     drain_callbacks_pair,
     order_value,
-    register_named_object_instance,
     wait_for_callback,
     wait_for_callback_count,
 )
@@ -953,8 +963,8 @@ def run_restore_directed_ddm_subscriber_routing_scenario(
     subscriber_a_interaction = subscriber_a_rti.get_interaction_class_handle(interaction_class_name)
     subscriber_b_interaction = subscriber_b_rti.get_interaction_class_handle(interaction_class_name)
     parameter = owner_rti.get_parameter_handle(interaction_class, parameter_name)
-    subscriber_a_parameter = subscriber_a_rti.get_parameter_handle(subscriber_a_interaction, parameter_name)
-    subscriber_b_parameter = subscriber_b_rti.get_parameter_handle(subscriber_b_interaction, parameter_name)
+    subscriber_a_rti.get_parameter_handle(subscriber_a_interaction, parameter_name)
+    subscriber_b_rti.get_parameter_handle(subscriber_b_interaction, parameter_name)
     owner_dimension = owner_rti.get_dimension_handle(dimension_name)
     subscriber_a_dimension = subscriber_a_rti.get_dimension_handle(dimension_name)
     subscriber_b_dimension = subscriber_b_rti.get_dimension_handle(dimension_name)
@@ -1095,7 +1105,7 @@ def run_restore_stale_directed_tso_cleanup_scenario(
         list(config.fom_modules),
         config.logical_time_implementation_name or "HLAinteger64Time",
     )
-    owner_handle = owner_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
+    owner_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
     subscriber_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
     observer_rti.join_federation_execution(f"{config.wing_name}-Observer", config.federate_type, config.federation_name)
 
@@ -1103,7 +1113,7 @@ def run_restore_stale_directed_tso_cleanup_scenario(
     interaction_class = owner_rti.get_interaction_class_handle(interaction_class_name)
     subscriber_interaction = subscriber_rti.get_interaction_class_handle(interaction_class_name)
     parameter = owner_rti.get_parameter_handle(interaction_class, parameter_name)
-    subscriber_parameter = subscriber_rti.get_parameter_handle(subscriber_interaction, parameter_name)
+    subscriber_rti.get_parameter_handle(subscriber_interaction, parameter_name)
     object_instance = owner_rti.register_object_instance(object_class, object_instance_name)
 
     owner_rti.publish_object_class_directed_interactions(object_class, {interaction_class})
@@ -1164,7 +1174,7 @@ def run_restore_stale_directed_tso_cleanup_scenario(
 
     subscriber_federate.clear()
     observer_federate.clear()
-    fresh = owner_rti.send_directed_interaction(
+    owner_rti.send_directed_interaction(
         interaction_class,
         object_instance,
         {parameter: b"FRESH"},

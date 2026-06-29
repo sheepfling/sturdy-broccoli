@@ -7,7 +7,6 @@ from typing import Any
 
 from hla.rti1516e.enums import CallbackModel, OrderType
 from hla.rti1516e.handles import (
-    AttributeHandle,
     AttributeHandleFactory,
     AttributeHandleSetFactory,
     AttributeHandleValueMapFactory,
@@ -18,27 +17,20 @@ from hla.rti1516e.handles import (
     FederateHandle,
     FederateHandleFactory,
     FederateHandleSetFactory,
-    InteractionClassHandle,
     InteractionClassHandleFactory,
     MessageRetractionHandle,
     MessageRetractionHandleFactory,
-    ObjectClassHandle,
     ObjectClassHandleFactory,
-    ObjectInstanceHandle,
     ObjectInstanceHandleFactory,
-    ParameterHandle,
     ParameterHandleFactory,
     ParameterHandleValueMapFactory,
-    RegionHandleFactory,
     RegionHandle,
+    RegionHandleFactory,
     RegionHandleSetFactory,
     TransportationTypeHandleFactory,
 )
 
-from .scenario_support import register_named_object_instance
-from .scenario_support import safe_evoke_callback
-from .scenario_support import safe_evoke_multiple_callbacks
-from .startup import drain_callbacks
+from .scenario_support import register_named_object_instance, safe_evoke_callback, safe_evoke_multiple_callbacks
 
 
 def _handle_value(value: Any) -> Any:

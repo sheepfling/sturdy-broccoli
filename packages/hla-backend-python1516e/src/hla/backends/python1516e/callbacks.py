@@ -10,6 +10,7 @@ from hla.rti1516e.exceptions import (
     CallNotAllowedFromWithinCallback,
     FederateInternalError,
 )
+
 from .state import CallbackEvent, FederateState, FederationState
 
 if TYPE_CHECKING:

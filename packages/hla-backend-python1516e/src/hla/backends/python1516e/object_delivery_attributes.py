@@ -5,13 +5,14 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any, Iterable, Mapping, Protocol
 
+from hla.rti1516e.datatypes import MessageRetractionReturn
 from hla.rti1516e.enums import OrderType
 from hla.rti1516e.exceptions import (
     AttributeNotOwned,
     AttributeNotPublished,
     InvalidObjectClassHandle,
-    ObjectInstanceNotKnown,
     ObjectClassNotDefined,
+    ObjectInstanceNotKnown,
 )
 from hla.rti1516e.handles import (
     AttributeHandle,
@@ -19,7 +20,6 @@ from hla.rti1516e.handles import (
     ObjectInstanceHandle,
     TransportationTypeHandle,
 )
-from hla.rti1516e.datatypes import MessageRetractionReturn
 
 from .object_delivery_transport import PythonRTIObjectTransportMixin
 from .state import CallbackEvent, ObjectInstance, SupplementalReflectInfo

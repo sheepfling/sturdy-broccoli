@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
-import hashlib
 import re
-import shutil
 import zipfile
 from dataclasses import asdict, dataclass
 from pathlib import Path

@@ -773,7 +773,7 @@ def test_clause4_pitch_lost_federate_rows_keep_exact_backlog_frontier_shape() ->
                 == "unblock capability or document the hard backend limitation"
             ), requirement_id
             assert (
-                str(row.get("source_artifact", "")) == "analysis/compliance/pitch_requirement_disposition.json"
+                str(row.get("source_artifact", "")) == "analysis/compliance/pitch_requirement_disposition_canonical.json"
             ), requirement_id
 
 

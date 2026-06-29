@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Iterable, Protocol
 from hla.rti1516e import handles as hla_handles
 from hla.rti1516e.enums import SynchronizationPointFailureReason
 from hla.rti1516e.handles import FederateHandle
+
 from .state import FederationState, SynchronizationPointState
 
 if TYPE_CHECKING:

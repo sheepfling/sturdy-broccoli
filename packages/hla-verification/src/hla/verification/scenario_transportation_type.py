@@ -4,8 +4,31 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-from hla.rti1516e.enums import CallbackModel
-from hla.rti1516e.enums import OrderType
+from hla.rti1516_2025.exceptions import (
+    AttributeNotDefined as AttributeNotDefined2025,
+)
+from hla.rti1516_2025.exceptions import (
+    AttributeNotOwned as AttributeNotOwned2025,
+)
+from hla.rti1516_2025.exceptions import (
+    InvalidAttributeHandle as InvalidAttributeHandle2025,
+)
+from hla.rti1516_2025.exceptions import (
+    InvalidInteractionClassHandle as InvalidInteractionClassHandle2025,
+)
+from hla.rti1516_2025.exceptions import (
+    InvalidTransportationTypeHandle as InvalidTransportationType2025,
+)
+from hla.rti1516_2025.exceptions import (
+    ObjectInstanceNotKnown as ObjectInstanceNotKnown2025,
+)
+from hla.rti1516_2025.exceptions import (
+    RestoreInProgress as RestoreInProgress2025,
+)
+from hla.rti1516_2025.exceptions import (
+    SaveInProgress as SaveInProgress2025,
+)
+from hla.rti1516e.enums import CallbackModel, OrderType
 from hla.rti1516e.exceptions import (
     AttributeNotDefined,
     AttributeNotOwned,
@@ -14,16 +37,6 @@ from hla.rti1516e.exceptions import (
     ObjectInstanceNotKnown,
     RestoreInProgress,
     SaveInProgress,
-)
-from hla.rti1516_2025.exceptions import (
-    AttributeNotDefined as AttributeNotDefined2025,
-    InvalidAttributeHandle as InvalidAttributeHandle2025,
-    AttributeNotOwned as AttributeNotOwned2025,
-    InvalidInteractionClassHandle as InvalidInteractionClassHandle2025,
-    InvalidTransportationTypeHandle as InvalidTransportationType2025,
-    ObjectInstanceNotKnown as ObjectInstanceNotKnown2025,
-    RestoreInProgress as RestoreInProgress2025,
-    SaveInProgress as SaveInProgress2025,
 )
 
 from .scenario_support import drain_callbacks_pair, register_named_object_instance, wait_for_callback

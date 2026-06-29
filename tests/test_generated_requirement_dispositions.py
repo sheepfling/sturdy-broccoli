@@ -141,17 +141,27 @@ PROFILE_INHERITANCE_ARTIFACTS = {
 }
 
 EXPECTED_SOURCE_ARTIFACTS = {
-    "python_requirement_disposition.json": "analysis/compliance/requirements_matrix_2010.json",
-    "certi_requirement_disposition.json": "analysis/compliance/requirements_matrix_2010.json",
+    "python_requirement_disposition.json": "requirements/2010/backend_resolution.json",
+    "certi_requirement_disposition.json": "requirements/2010/backend_resolution.json",
     "certi-native_requirement_disposition.json": "analysis/compliance/certi_requirement_disposition.json",
     "certi-jpype_requirement_disposition.json": "analysis/compliance/certi_requirement_disposition.json",
     "certi-py4j_requirement_disposition.json": "analysis/compliance/certi_requirement_disposition.json",
     "pitch_requirement_disposition.json": "analysis/compliance/requirements_matrix_2010.json",
     "pitch-jpype_requirement_disposition.json": "analysis/compliance/pitch_requirement_disposition.json",
     "pitch-py4j_requirement_disposition.json": "analysis/compliance/pitch_requirement_disposition.json",
-    "portico_requirement_disposition.json": "analysis/compliance/requirements_matrix_2010.json",
+    "portico_requirement_disposition.json": "requirements/2010/backend_resolution.json",
     "portico-jpype_requirement_disposition.json": "analysis/compliance/portico_requirement_disposition.json",
     "portico-py4j_requirement_disposition.json": "analysis/compliance/portico_requirement_disposition.json",
+}
+
+MATRIX_SOURCED_DISPOSITION_ARTIFACTS = {
+    "pitch_requirement_disposition.json",
+}
+
+BACKEND_RESOLUTION_SOURCED_DISPOSITION_ARTIFACTS = {
+    "python_requirement_disposition.json",
+    "certi_requirement_disposition.json",
+    "portico_requirement_disposition.json",
 }
 
 SUMMARY_DISPOSITION_FIELD_BY_ARTIFACT = {
@@ -297,6 +307,26 @@ def test_generated_requirement_disposition_markdown_packets_reference_generated_
         assert "## Summary" in text, markdown_filename
 
 
+def test_pitch_canonical_requirement_disposition_packet_is_leaf_only_and_backend_resolution_sourced() -> None:
+    payload = _load_payload("pitch_requirement_disposition_canonical.json")
+    summary = payload["summary"]
+    rows = payload["rows"]
+    rows_by_id = {row["requirement_id"] or row["matrix_id"]: row for row in rows}
+
+    assert summary["row_count"] == 880
+    assert summary["source_artifact"] == "requirements/2010/backend_resolution.json"
+    assert summary["source_artifact_class"] == "backend-resolution"
+    assert summary["canonical_requirement_artifact"] == "requirements/2010/canonical_requirements.json"
+    assert "AREA-1516.1-4" not in rows_by_id
+    assert "REQ-SAVE-RESTORE-001" not in rows_by_id
+    assert "REQ-OMT-PARSE-001" not in rows_by_id
+    assert rows_by_id["HLA1516.1-FM-4.1.5-001"]["pitch_disposition"] == "blocked"
+    assert (
+        "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md"
+        in rows_by_id["HLA1516.1-FM-4.1.5-001"]["evidence_refs"]
+    )
+
+
 def test_generated_requirement_disposition_summary_metadata_matches_rows() -> None:
     for filename, expected_source_artifact in EXPECTED_SOURCE_ARTIFACTS.items():
         payload = json.loads((COMPLIANCE_DIR / filename).read_text(encoding="utf-8"))
@@ -305,6 +335,14 @@ def test_generated_requirement_disposition_summary_metadata_matches_rows() -> No
 
         assert summary["row_count"] == len(rows), filename
         assert summary["source_artifact"] == expected_source_artifact, filename
+        if filename in MATRIX_SOURCED_DISPOSITION_ARTIFACTS:
+            assert summary["source_artifact_class"] == "projection", filename
+            assert summary["canonical_requirement_artifact"] == "requirements/2010/canonical_requirements.json", filename
+            assert summary["canonical_backend_resolution_artifact"] == "requirements/2010/backend_resolution.json", filename
+            assert summary["projection_rollup_artifact"] == "requirements/2010/canonical_projection_rows.json", filename
+        if filename in BACKEND_RESOLUTION_SOURCED_DISPOSITION_ARTIFACTS:
+            assert summary["source_artifact_class"] == "backend-resolution", filename
+            assert summary["canonical_requirement_artifact"] == "requirements/2010/canonical_requirements.json", filename
 
         if "backend" in summary:
             expected_backend = filename.removesuffix("_requirement_disposition.json")

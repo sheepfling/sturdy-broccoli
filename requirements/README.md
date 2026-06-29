@@ -118,6 +118,17 @@ Truth-surface rule:
 - all other CSV or JSON files under `requirements/2010/` and `requirements/2025/`
   are generated projections, imports, history, or audit aids
 
+For the normalized `2010 / 1516e` surface, every non-canonical machine-readable
+artifact should read as exactly one of these classes:
+
+- `projection`: generated rollups, bounded backend companions, or review views
+- `mapping-bridge`: clause or family reconciliation bridges from imported or
+  legacy rows onto canonical repo claims
+- `import-history`: imported packet ledgers, historical seeds, and packet
+  hookup inventories retained for audit and reconstruction
+- `owner-note`: human-facing bounded-family and closeout notes under
+  `docs/requirements/ieee-1516-2010/`
+
 ## Honest Test Rule
 
 When you turn a requirement row into `mapped` or `partial`, attach a concrete

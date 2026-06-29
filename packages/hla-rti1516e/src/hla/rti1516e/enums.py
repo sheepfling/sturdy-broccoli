@@ -5,6 +5,7 @@ from __future__ import annotations
 
 from enum import Enum, auto
 
+
 class CallbackModel(Enum):
     HLA_IMMEDIATE = auto()
     HLA_EVOKED = auto()

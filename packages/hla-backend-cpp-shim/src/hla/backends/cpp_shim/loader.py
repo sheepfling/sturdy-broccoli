@@ -10,7 +10,6 @@ from pathlib import Path
 from types import ModuleType
 from typing import Any, Mapping
 
-
 _EXTENSION_SUFFIXES = {".so", ".pyd", ".dylib"}
 
 

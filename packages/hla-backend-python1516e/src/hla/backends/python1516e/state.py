@@ -5,8 +5,9 @@ from collections import deque
 from dataclasses import dataclass, field
 from typing import Any, Deque
 
-from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction, RestoreStatus, SaveStatus
 from hla.fom import FOMCatalog, FOMModule
+from hla.rti1516e.datatypes import FederateHandleSaveStatusPair, FederateRestoreStatus, MessageRetractionReturn, RangeBounds, TimeQueryReturn
+from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction, RestoreStatus, SaveStatus
 from hla.rti1516e.handles import (
     AttributeHandle,
     DimensionHandle,
@@ -20,7 +21,6 @@ from hla.rti1516e.handles import (
     TransportationTypeHandle,
 )
 from hla.rti1516e.time import DEFAULT_TIME_FACTORY_REGISTRY, HLAfloat64TimeFactory, HLAinteger64Time, LogicalTimeFactory
-from hla.rti1516e.datatypes import FederateHandleSaveStatusPair, FederateRestoreStatus, MessageRetractionReturn, RangeBounds, TimeQueryReturn
 
 
 @dataclass(frozen=True)

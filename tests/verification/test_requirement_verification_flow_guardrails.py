@@ -125,6 +125,25 @@ _FORBIDDEN_VERIFICATION_EXPR_SNIPPETS = (
     "project_root/'analysis'/'compliance'/'supported_subset_policy.md'",
 )
 
+_BACKEND_DISCOVERY_FORBIDDEN_EXPR_SNIPPETS = (
+    "project_root/'analysis'/'compliance'/'requirements_matrix_2010.json'",
+    "ROOT/'analysis'/'compliance'/'requirements_matrix_2010.json'",
+)
+
+_FORBIDDEN_2010_LEAF_RECONSTRUCTION_SNIPPETS = (
+    "traceability_matrix.csv",
+    "curated_requirement_rows",
+    "curated_requirement_refs",
+)
+
+_FORBIDDEN_2010_API_LEDGER_DIRECT_READ_SNIPPETS = (
+    "csv.DictReader",
+    "RECONCILIATION_PATH",
+    'open(newline="", encoding="utf-8")',
+)
+
+_FORBIDDEN_TEST_RAW_API_METADATA_IMPORT = "from hla.rti1516e.raw_api import API_METADATA"
+
 _FORBIDDEN_VERIFICATION_TEST_NAMES = {
     "test_backend_compliance_catalog_mirrors_generated_requirement_disposition_packet_summaries",
     "test_committed_vendor_backlog_markdown_matches_json_packet",
@@ -403,6 +422,104 @@ def test_selected_verification_tests_do_not_police_checked_in_closeout_packets()
                 expr_text = _resolve_expr(child.func.value, local_assignments)
                 if any(snippet in expr_text for snippet in _FORBIDDEN_VERIFICATION_EXPR_SNIPPETS):
                     violations.append(f"{path.relative_to(ROOT)}::{node.name} -> {expr_text}")
+
+    assert violations == []
+
+
+def test_backend_compliance_discovery_uses_matrix_builder_not_checked_in_projection_packet() -> None:
+    path = VERIFICATION_TEST_DIR / "test_backend_compliance_discovery.py"
+    module = ast.parse(path.read_text(encoding="utf-8"))
+    module_assignments = _assignment_map(module.body)
+    violations: list[str] = []
+
+    for node in module.body:
+        if not isinstance(node, ast.FunctionDef):
+            continue
+        local_assignments = dict(module_assignments)
+        local_assignments.update(_assignment_map(node.body))
+        for child in ast.walk(node):
+            if not isinstance(child, ast.Call):
+                continue
+            if not isinstance(child.func, ast.Attribute) or child.func.attr not in _READ_METHODS:
+                continue
+            expr_text = _resolve_expr(child.func.value, local_assignments)
+            if any(snippet in expr_text for snippet in _BACKEND_DISCOVERY_FORBIDDEN_EXPR_SNIPPETS):
+                violations.append(f"{path.relative_to(ROOT)}::{node.name} -> {expr_text}")
+
+    assert violations == []
+
+
+def test_2010_review_matrix_does_not_reintroduce_legacy_leaf_reconstruction_helpers() -> None:
+    rows_helper = (
+        ROOT
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "repo_internal"
+        / "verification"
+        / "curated_requirement_rows.py"
+    )
+    refs_helper = (
+        ROOT
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "repo_internal"
+        / "verification"
+        / "curated_requirement_refs.py"
+    )
+    matrix_builder = (
+        ROOT
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "repo_internal"
+        / "verification"
+        / "requirements_matrix_artifacts.py"
+    )
+
+    assert not rows_helper.exists()
+    assert not refs_helper.exists()
+
+    matrix_text = matrix_builder.read_text(encoding="utf-8")
+    assert "requirements/2010/canonical_requirements.json" in matrix_text
+    assert "requirements/2010/canonical_projection_rows.json" in matrix_text
+    assert "requirements/2010/backend_resolution.json" in matrix_text
+    for snippet in _FORBIDDEN_2010_LEAF_RECONSTRUCTION_SNIPPETS:
+        assert snippet not in matrix_text, snippet
+
+
+def test_api_reconciliation_verification_uses_typed_loader_not_direct_ledger_reads() -> None:
+    verification_text = (
+        ROOT / "tests" / "verification" / "test_api_detailed_reconciliation.py"
+    ).read_text(encoding="utf-8")
+    boundary_text = (
+        ROOT / "tests" / "requirements" / "test_2010_api_binding_boundary.py"
+    ).read_text(encoding="utf-8")
+
+    assert "load_2010_reconciliation_rows(" in verification_text
+    assert "load_2010_reconciliation_rows(" in boundary_text
+    for snippet in _FORBIDDEN_2010_API_LEDGER_DIRECT_READ_SNIPPETS:
+        assert snippet not in verification_text, snippet
+        assert snippet not in boundary_text, snippet
+
+
+def test_tests_use_api_metadata_module_not_legacy_raw_api_metadata_import() -> None:
+    violations: list[str] = []
+
+    for directory in (REQUIREMENTS_TEST_DIR, VERIFICATION_TEST_DIR, TOP_LEVEL_TEST_DIR):
+        for path in sorted(directory.glob("test_*.py")):
+            if path.name == "test_requirement_verification_flow_guardrails.py":
+                continue
+            text = path.read_text(encoding="utf-8")
+            if _FORBIDDEN_TEST_RAW_API_METADATA_IMPORT in text:
+                violations.append(str(path.relative_to(ROOT)))
 
     assert violations == []
 

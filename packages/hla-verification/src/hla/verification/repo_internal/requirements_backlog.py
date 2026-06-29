@@ -1,6 +1,6 @@
 from __future__ import annotations
-# pyright: reportArgumentType=false, reportGeneralTypeIssues=false
 
+# pyright: reportArgumentType=false, reportGeneralTypeIssues=false
 import csv
 import json
 import os
@@ -9,9 +9,11 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Callable
 
+from .requirements import load_canonical_requirement_catalog, survey_requirement_artifacts
 
 OPEN_STATUSES = frozenset({"partial", "planned", "seeded"})
 TRANSPORT_TERMS = ("transport", "grpc", "rest", "equivalence")
+CANONICAL_2010_REL = "requirements/2010/canonical_requirements.json"
 
 
 @dataclass(frozen=True, slots=True)
@@ -253,6 +255,9 @@ def _resolve_project_root(project_root: Path | None = None) -> Path:
 
 def build_imported_hla_backlog(project_root: Path | None = None) -> dict[str, object]:
     base = _resolve_project_root(project_root)
+    canonical = load_canonical_requirement_catalog(base / CANONICAL_2010_REL)
+    artifact_survey = survey_requirement_artifacts(base)
+    artifact_families = {entry.path: entry.family for entry in artifact_survey.entries}
     families: list[BacklogFamily] = []
 
     base_specs = [
@@ -426,8 +431,22 @@ def build_imported_hla_backlog(project_root: Path | None = None) -> dict[str, ob
     families = sorted(families, key=lambda family: order[family.family])
     total_open_rows = sum(family.open_row_count for family in families)
     total_queue_items = sum(family.queue_item_count for family in families)
+    source_artifacts = sorted(
+        {
+            *[spec[2] for spec in base_specs],
+            "requirements/2010/hla1516_2_omt.csv",
+        }
+    )
     return {
-        "generated_from": "harmonized requirements ledgers + imported HLA packet v1.0",
+        "generated_from": (
+            "canonical 2010 requirement catalog + mapping-bridge/import-history backlog projection"
+        ),
+        "canonical_requirement_artifact": CANONICAL_2010_REL,
+        "canonical_requirement_row_count": canonical.row_count,
+        "canonical_requirement_status_counts": dict(sorted(Counter(row.canonical_status for row in canonical.rows).items())),
+        "backlog_surface_class": "generated-mapping-bridge-backlog",
+        "source_artifacts": source_artifacts,
+        "source_artifact_classes": {path: artifact_families.get(path, "") for path in source_artifacts},
         "total_open_rows": total_open_rows,
         "total_queue_items": total_queue_items,
         "families": [asdict(family) for family in families],
@@ -439,9 +458,13 @@ def build_imported_hla_backlog_markdown(project_root: Path | None = None) -> lis
     lines = [
         "# Imported HLA Requirements Backlog v1.0",
         "",
-        "This generated backlog turns the harmonized open requirements rows into repo-native implementation queues.",
+        "This generated backlog is a mapping-bridge work projection derived against the canonical 2010 requirement catalog.",
+        "It does not define requirement truth. Canonical ownership stays in `requirements/2010/canonical_requirements.json`, while this packet only summarizes any remaining bridge-level implementation queue items.",
         "Some rows intentionally appear in multiple queues, especially `MOM/MIM` and `Transports`, because those are cross-cutting execution backlogs rather than mutually exclusive taxonomies.",
         "",
+        f"- Canonical requirement artifact: {backlog['canonical_requirement_artifact']}",
+        f"- Canonical requirement rows: {backlog['canonical_requirement_row_count']}",
+        f"- Backlog surface class: {backlog['backlog_surface_class']}",
         f"- Total open rows: {backlog['total_open_rows']}",
         f"- Total queue items: {backlog['total_queue_items']}",
         f"- Families: {len(backlog['families'])}",

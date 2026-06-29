@@ -8,10 +8,9 @@ from pathlib import Path
 from typing import Any, cast
 
 from hla.backends.common import BackendInfo
-from hla.rti.plugin_api import BackendRequest
-from hla.bridges.java.common.py4j_support import reset_py4j_callback_client
 from hla.bridges.java.common.java_runtime import discover_java_tool
-
+from hla.bridges.java.common.py4j_support import reset_py4j_callback_client
+from hla.rti.plugin_api import BackendRequest
 
 FACTORY_NAME = "Java 2010 Standard Shim"
 DEFAULT_JAR = Path(

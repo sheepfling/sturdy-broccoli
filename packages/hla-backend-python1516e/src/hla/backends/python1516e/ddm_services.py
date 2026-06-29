@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Iterable, Mapping, Protocol
 
 import hla.fom.mom as hla_mom
+from hla.rti1516e.datatypes import MessageRetractionReturn, RangeBounds
 from hla.rti1516e.enums import OrderType
 from hla.rti1516e.exceptions import (
     AttributeNotPublished,
@@ -28,7 +29,6 @@ from hla.rti1516e.handles import (
     ParameterHandle,
     RegionHandle,
 )
-from hla.rti1516e.datatypes import MessageRetractionReturn, RangeBounds
 
 from .ddm_regions import PythonRTIDdmRegionMixin
 from .state import CallbackEvent, SupplementalReceiveInfo

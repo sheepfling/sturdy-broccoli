@@ -6,7 +6,7 @@ from typing import Any, Iterable
 
 from hla.spec.refs import SpecReference, method_reference
 
-from .federate_ambassador import FederateAmbassador, NullFederateAmbassador, lower_camel_to_snake
+from .federate_ambassador import FederateAmbassador, lower_camel_to_snake
 
 
 @dataclass(frozen=True)
@@ -23,7 +23,25 @@ class CallbackRecord:
         return lower_camel_to_snake(self.method_name)
 
 
-class RecordingFederateAmbassador(FederateAmbassador):
+class UnimplementedFederateAmbassador:
+    def __getattr__(self, name: str):
+        def _callback(*args: Any, **kwargs: Any) -> None:
+            raise NotImplementedError()
+
+        return _callback
+
+
+class NullFederateAmbassador:
+    """No-op federate callback sink matching the standard NullFederateAmbassador shape."""
+
+    def __getattr__(self, name: str):
+        def _callback(*args: Any, **kwargs: Any) -> None:
+            return None
+
+        return _callback
+
+
+class RecordingFederateAmbassador(NullFederateAmbassador):
     """FederateAmbassador that records every callback with its spec reference."""
 
     def __init__(self) -> None:
@@ -731,6 +749,7 @@ class FederateAmbassadorMultiplexer(FederateAmbassador):
 __all__ = [
     "CallbackRecord",
     "NullFederateAmbassador",
+    "UnimplementedFederateAmbassador",
     "FederateAmbassadorMultiplexer",
     "RecordingFederateAmbassador",
 ]

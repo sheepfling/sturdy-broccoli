@@ -1,6 +1,6 @@
 {
   "contract_version": "1.0.0",
-  "generated_from": "hla.rti1516e.raw_api.API_METADATA",
+  "generated_from": "hla.rti1516e.api_metadata.API_METADATA",
   "interfaces": {
     "FederateAmbassador": {
       "interface_name": "FederateAmbassador",

@@ -5,10 +5,13 @@ import json
 from pathlib import Path
 from typing import Any
 
-from hla.spec.refs import FOM_REFERENCES, IEEE_1516_1_2010, SERVICE_AREAS
+from hla.spec.refs import IEEE_1516_1_2010
 
-from .asset_plan import build_verification_plan
-from .curated_requirement_rows import load_curated_requirement_rows
+from ..requirements import (
+    build_2010_backend_resolution_catalog,
+    build_2010_canonical_requirement_catalog,
+    build_2010_projection_requirement_catalog,
+)
 from .extracted_clause_requirements import get_extracted_requirements_1516_1_clauses_5_6
 from .repo_seed_artifacts import build_requirements_ledger
 from .vendor_parity_metadata import (
@@ -16,6 +19,11 @@ from .vendor_parity_metadata import (
     load_operational_vendor_profiles,
     with_vendor_parity,
 )
+
+_CANONICAL_2010_REQUIREMENTS = "requirements/2010/canonical_requirements.json"
+_CANONICAL_2010_BACKEND_RESOLUTION = "requirements/2010/backend_resolution.json"
+_CANONICAL_2010_PROJECTION_ROWS = "requirements/2010/canonical_projection_rows.json"
+_LEGACY_2010_MATRIX_CSV = "analysis/compliance/requirements_matrix_2010.csv"
 
 
 def require_project_root(project_root: str | Path | None) -> Path:
@@ -32,22 +40,78 @@ def _normalize_supported_subset_refs(value: Any) -> list[str] | str:
     return str(value)
 
 
+def _partition_evidence_refs(refs: list[str] | tuple[str, ...]) -> tuple[list[str], list[str], list[str], list[str]]:
+    implementation_refs: list[str] = []
+    positive_test_refs: list[str] = []
+    negative_test_refs: list[str] = []
+    artifact_refs: list[str] = []
+
+    negative_tokens = (
+        "negative",
+        "reject",
+        "rejects",
+        "invalid",
+        "failure",
+        "fail",
+        "not_connected",
+        "not_joined",
+        "save_restore",
+    )
+
+    for ref in refs:
+        if ref.startswith("tests/"):
+            if any(token in ref.lower() for token in negative_tokens):
+                negative_test_refs.append(ref)
+            else:
+                positive_test_refs.append(ref)
+            continue
+        if ref.startswith(("analysis/", "requirements/", "docs/", "verification/")):
+            artifact_refs.append(ref)
+            continue
+        implementation_refs.append(ref)
+
+    return implementation_refs, positive_test_refs, negative_test_refs, artifact_refs
+
+
+def _dedupe_preserve_order(items: list[str]) -> list[str]:
+    deduped: list[str] = []
+    for item in items:
+        if item and item not in deduped:
+            deduped.append(item)
+    return deduped
+
+
+def _split_semicolon_refs(value: Any) -> list[str]:
+    text = str(value or "").strip()
+    if not text:
+        return []
+    return [item.strip() for item in text.split(";") if item.strip()]
+
+
 def build_requirements_matrix_2010(project_root: str | Path | None = None, *, version: str = "0.13.0") -> dict[str, Any]:
     """Return a whole-spec requirements matrix spanning section areas, service rows, and verification slices."""
     repo_root = require_project_root(project_root)
     ledger = build_requirements_ledger(version=version)
-    plan = build_verification_plan(version)
     vendor_rows_by_clause = load_backend_conformance_vendor_rows(repo_root)
     operational_vendor_profiles = load_operational_vendor_profiles(repo_root)
     extracted_requirements = get_extracted_requirements_1516_1_clauses_5_6()
+    extracted_specs_by_id = {spec["requirement_id"]: spec for spec in extracted_requirements}
+    canonical_rows = build_2010_canonical_requirement_catalog(repo_root).rows
+    projection_rows = build_2010_projection_requirement_catalog(repo_root).rows
+    backend_resolution_rows = {
+        row.requirement_id: row
+        for row in build_2010_backend_resolution_catalog(repo_root).rows
+    }
+    legacy_matrix_rows_by_id = {
+        (row.get("requirement_id", "").strip() or row.get("matrix_id", "").strip()): row
+        for row in csv.DictReader((repo_root / _LEGACY_2010_MATRIX_CSV).open(newline="", encoding="utf-8"))
+    }
+    ledger_rows_by_id = {
+        str(row["requirement_id"]): row
+        for row in ledger["rows"]
+    }
 
     rows: list[dict[str, Any]] = []
-    verification_slice_rows: list[dict[str, Any]] = []
-    service_rows_by_method: dict[str, list[dict[str, Any]]] = {}
-    for row in ledger["rows"]:
-        service_rows_by_method.setdefault(str(row["method"]), []).append(row)
-    assets_by_id = {asset.asset_id: asset for asset in plan.assets}
-    extracted_specs_by_id = {spec["requirement_id"]: spec for spec in extracted_requirements}
 
     def _normalize_requirement_status(status: str) -> str:
         mapping = {
@@ -91,335 +155,131 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
         if section_ref.startswith("IEEE 1516.2-2010 §"):
             return section_ref.replace("IEEE 1516.2-2010 §", "IEEE 1516.2-2010 (2010 edition) §", 1)
         return section_ref
+    for canonical_row in canonical_rows:
+        title = canonical_row.service_or_check or canonical_row.requirement_text or canonical_row.requirement_id
+        backend_row = backend_resolution_rows.get(canonical_row.requirement_id)
+        backend_fields = dict(backend_row.backend_fields) if backend_row is not None else {}
+        claim_scope = backend_fields.get("claim_scope", canonical_row.boundary_note)
+        policy_basis = backend_fields.get("policy_basis", "")
 
-    section_area_inputs: dict[str, list[str]] = {}
-    omt_area_inputs: dict[str, list[str]] = {}
-    for row in ledger["rows"]:
-        raw_section = str(row["section"])
-        section = raw_section.split("§", 1)[-1].split(".", 1)[0].strip()
-        section_area_inputs.setdefault(section, []).append(row["outcome"])
-
-    for key, ref in SERVICE_AREAS.items():
-        section_status = _aggregate_status(section_area_inputs.get(ref.section, []))
-        rows.append(
-            with_vendor_parity(
-                {
-                    "matrix_id": f"AREA-1516.1-{ref.section}",
-                    "kind": "section-area",
-                    "document": ref.document,
-                    "section_ref": f"{ref.document} §{ref.section}",
-                    "title": ref.title,
-                    "requirement_id": "",
-                    "service_group": ref.title,
-                    "status": section_status,
-                    "implementation_refs": [],
-                    "positive_test_refs": [],
-                    "negative_test_refs": [],
-                    "artifact_refs": [],
-                    "source": key,
-                },
-                vendor_rows_by_clause=vendor_rows_by_clause,
-                operational_vendor_profiles=operational_vendor_profiles,
-            )
-        )
-
-    def _omt_requirement_id(section: str, source_key: str) -> str:
-        token = section.replace(" ", "_").replace(".", "_").replace("-", "_").replace("/", "_")
-        return f"REQ-OMT-{token}-{source_key}"
-
-    for key, ref in FOM_REFERENCES.items():
-        requirement_id = _omt_requirement_id(ref.section, key)
-        rows.append(
-            with_vendor_parity(
-                {
-                    "matrix_id": requirement_id,
-                    "kind": "omt-area",
-                    "document": ref.document,
-                    "section_ref": f"{ref.document} §{ref.section}",
-                    "title": ref.title,
-                    "requirement_id": requirement_id,
-                    "service_group": "OMT/FOM",
-                    "status": "planned",
-                    "implementation_refs": [],
-                    "positive_test_refs": [],
-                    "negative_test_refs": [],
-                    "artifact_refs": [],
-                    "source": key,
-                },
-                vendor_rows_by_clause=vendor_rows_by_clause,
-                operational_vendor_profiles=operational_vendor_profiles,
-            )
-        )
-
-    curated_requirement_ids: set[str] = set()
-    for row in load_curated_requirement_rows(repo_root):
-        normalized = dict(row)
-        extracted_spec = extracted_specs_by_id.get(str(normalized.get("requirement_id", "")))
-        if extracted_spec is not None:
-            if not normalized.get("linked_methods"):
-                normalized["linked_methods"] = list(extracted_spec.get("linked_methods", ()))
-            if not normalized.get("linked_assets"):
-                normalized["linked_assets"] = list(extracted_spec.get("linked_assets", ()))
-        normalized["status"] = _normalize_requirement_status(str(row["status"]))
-        rows.append(
-            with_vendor_parity(
-                normalized,
-                vendor_rows_by_clause=vendor_rows_by_clause,
-                operational_vendor_profiles=operational_vendor_profiles,
-            )
-        )
-        curated_requirement_ids.add(str(normalized["requirement_id"]))
-        if str(normalized.get("document", "")) == "IEEE 1516.2-2010" and str(normalized.get("section_ref", "")).startswith("IEEE 1516.2-2010 §"):
-            section = str(normalized["section_ref"]).split("§", 1)[1].strip()
-            omt_area_inputs.setdefault(section, []).append(normalized["status"])
-
-    for row in ledger["rows"]:
-        rows.append(
-            with_vendor_parity(
-                {
-                    "matrix_id": row["requirement_id"],
-                    "kind": "service-requirement",
-                    "document": IEEE_1516_1_2010,
-                    "section_ref": row["section"],
-                    "title": row["title"],
-                    "requirement_id": row["requirement_id"],
-                    "service_group": row["service_group"],
-                    "status": row["outcome"],
-                    "implementation_refs": row["implementation_refs"],
-                    "positive_test_refs": row["positive_test_refs"],
-                    "negative_test_refs": row["negative_test_refs"],
-                    "artifact_refs": row["artifact_refs"],
-                    "source": row["method"],
-                },
-                vendor_rows_by_clause=vendor_rows_by_clause,
-                operational_vendor_profiles=operational_vendor_profiles,
-            )
-        )
-
-    for spec in extracted_requirements:
-        if spec["requirement_id"] in curated_requirement_ids:
-            continue
-        linked_service_rows = [item for method_name in spec.get("linked_methods", ()) for item in service_rows_by_method.get(method_name, ())]
-        linked_assets = [assets_by_id[asset_id] for asset_id in spec.get("linked_assets", ()) if asset_id in assets_by_id]
-        statuses = [item["outcome"] for item in linked_service_rows] + [asset.status for asset in linked_assets]
-        status = spec.get("status_override") or _aggregate_status(statuses)
-        implementation_refs = (
-            list(spec["implementation_refs"])
-            if "implementation_refs" in spec
-            else sorted(
-                {
-                    ref
-                    for item in linked_service_rows
-                    for ref in item["implementation_refs"]
-                }
-                | {
-                    ref
-                    for asset in linked_assets
-                    for ref in asset.evidence
-                    if ref.startswith("hla2010/")
-                }
-            )
-        )
-        positive_test_refs = (
-            list(spec["positive_test_refs"])
-            if "positive_test_refs" in spec
-            else sorted(
-                {
-                    ref
-                    for item in linked_service_rows
-                    for ref in item["positive_test_refs"]
-                }
-                | {
-                    ref
-                    for asset in linked_assets
-                    for ref in asset.evidence
-                    if ref.startswith("tests/")
-                }
-            )
-        )
-        negative_test_refs = (
-            list(spec["negative_test_refs"])
-            if "negative_test_refs" in spec
-            else sorted(
-                {
-                    ref
-                    for item in linked_service_rows
-                    for ref in item["negative_test_refs"]
-                }
-                | {
-                    ref
-                    for asset in linked_assets
-                    for ref in asset.evidence
-                    if ref.startswith("tests/") and "negative" in ref.lower()
-                }
-            )
-        )
-        artifact_refs = (
-            list(spec["artifact_refs"])
-            if "artifact_refs" in spec
-            else sorted(
-                {
-                    ref
-                    for item in linked_service_rows
-                    for ref in item["artifact_refs"]
-                }
-                | {
-                    ref
-                    for asset in linked_assets
-                    for ref in asset.evidence
-                    if ref.startswith("analysis/") or ref.startswith("verification/")
-                }
-            )
-        )
-        rows.append(
-            with_vendor_parity(
-                {
-                    "matrix_id": spec["requirement_id"],
-                    "kind": "extracted-requirement",
-                    "document": IEEE_1516_1_2010,
-                    "section_ref": spec["section_ref"],
-                    "title": spec["title"],
-                    "requirement_id": spec["requirement_id"],
-                    "service_group": spec["service_group"],
-                    "status": status,
-                    "implementation_refs": implementation_refs,
-                    "positive_test_refs": positive_test_refs,
-                    "negative_test_refs": negative_test_refs,
-                    "artifact_refs": artifact_refs,
-                    "linked_methods": list(spec.get("linked_methods", ())),
-                    "linked_assets": list(spec.get("linked_assets", ())),
-                    "claim_scope": spec.get("claim_scope", "broad-spec"),
-                    "supported_subset_for": _normalize_supported_subset_refs(spec.get("supported_subset_for", "")),
-                    "policy_basis": spec.get("policy_basis", ""),
-                    "notes": spec.get("notes", ""),
-                    "source": "curated-clause5-6",
-                },
-                vendor_rows_by_clause=vendor_rows_by_clause,
-                operational_vendor_profiles=operational_vendor_profiles,
-            )
-        )
-        if spec["section_ref"].startswith(("IEEE 1516.1-2010 §", f"{IEEE_1516_1_2010} §")):
-            section = spec["section_ref"].split("§", 1)[1].split(".", 1)[0].strip()
-            section_area_inputs.setdefault(section, []).append(status)
-
-    for asset in plan.assets:
-        if asset.asset_type not in {"requirement", "scenario"}:
-            continue
-        asset_row = {
-            "matrix_id": asset.asset_id,
-            "kind": "verification-slice",
-            "document": "multi-section",
-            "section_ref": "; ".join(asset.section_refs),
-            "title": asset.title,
-            "requirement_id": asset.asset_id,
-            "service_group": asset.asset_type,
-            "status": asset.status,
-            "implementation_refs": [item for item in asset.evidence if item.startswith("hla2010/")],
-            "positive_test_refs": [item for item in asset.evidence if item.startswith("tests/")],
-            "negative_test_refs": [item for item in asset.evidence if "negative" in item.lower()],
-            "artifact_refs": [item for item in asset.evidence if item.startswith("analysis/") or item.startswith("verification/")],
-            "source": asset.asset_id,
-        }
-        asset_row = with_vendor_parity(
-            asset_row,
-            vendor_rows_by_clause=vendor_rows_by_clause,
-            operational_vendor_profiles=operational_vendor_profiles,
-        )
-        verification_slice_rows.append(asset_row)
-        rows.append(asset_row)
-        for section_ref in asset.section_refs:
-            if section_ref.startswith("1516.1-2010 §"):
-                section = section_ref.split("§", 1)[1].split(".", 1)[0].strip()
-                section_area_inputs.setdefault(section, []).append(asset.status)
-            elif section_ref.startswith("1516.2-2010 §"):
-                section = section_ref.split("§", 1)[1].strip()
-                omt_area_inputs.setdefault(section, []).append(asset.status)
-
-    for row in rows:
-        row["document"] = _edition_qualified_document(str(row.get("document", "")))
-        row["section_ref"] = _edition_qualified_section_ref(str(row.get("section_ref", "")))
-
-    for row in rows:
-        if row["kind"] == "section-area":
-            section = row["section_ref"].split("§", 1)[1].strip()
-            supporting_rows = [
-                item for item in rows
-                if item["matrix_id"] != row["matrix_id"]
-                and item.get("document") == row["document"]
-                and (
-                    item.get("section_ref") == row["section_ref"]
-                    or str(item.get("section_ref", "")).startswith(f"{row['section_ref']}.")
+        if canonical_row.row_kind == "service-requirement":
+            ledger_row = ledger_rows_by_id.get(canonical_row.requirement_id)
+            implementation_refs = list(ledger_row["implementation_refs"]) if ledger_row is not None else []
+            positive_test_refs = list(ledger_row["positive_test_refs"]) if ledger_row is not None else []
+            negative_test_refs = list(ledger_row["negative_test_refs"]) if ledger_row is not None else []
+            artifact_refs = list(ledger_row["artifact_refs"]) if ledger_row is not None else []
+            source = str(ledger_row["method"]) if ledger_row is not None else f"canonical:{canonical_row.requirement_id}"
+            status = canonical_row.canonical_status
+            rows.append(
+                with_vendor_parity(
+                    {
+                        "matrix_id": canonical_row.requirement_id,
+                        "kind": canonical_row.row_kind,
+                        "document": _edition_qualified_document(canonical_row.source_document),
+                        "section_ref": _edition_qualified_section_ref(canonical_row.clause),
+                        "title": title,
+                        "requirement_id": canonical_row.requirement_id,
+                        "service_group": canonical_row.service_group,
+                        "status": status,
+                        "implementation_refs": implementation_refs,
+                        "positive_test_refs": positive_test_refs,
+                        "negative_test_refs": negative_test_refs,
+                        "artifact_refs": artifact_refs,
+                        "linked_methods": [],
+                        "linked_assets": [],
+                        "claim_scope": claim_scope,
+                        "supported_subset_for": _normalize_supported_subset_refs(canonical_row.parent_requirement_id),
+                        "policy_basis": policy_basis,
+                        "notes": canonical_row.canonical_status_reason,
+                        "source": source,
+                    },
+                    vendor_rows_by_clause=vendor_rows_by_clause,
+                    operational_vendor_profiles=operational_vendor_profiles,
                 )
-            ]
-            row["status"] = _aggregate_status(
-                [item["status"] for item in supporting_rows] or section_area_inputs.get(section, [])
             )
-        elif row["kind"] == "omt-area":
-            section = row["section_ref"].split("§", 1)[1].strip()
-            source_key = row["source"]
-            supporting_rows = [
-                item for item in rows
-                if item["matrix_id"] != row["matrix_id"]
-                and item.get("document") == row["document"]
-                and (
-                    item.get("section_ref") == row["section_ref"]
-                    or str(item.get("section_ref", "")).startswith(f"{row['section_ref']}.")
-                )
-            ]
-            matching_assets = [
-                item for item in verification_slice_rows
-                if f"1516.2-2010 §{section}" in item["section_ref"].split("; ")
-            ]
-            row["status"] = _aggregate_status(omt_area_inputs.get(section, []) or [item["status"] for item in supporting_rows])
-            row["implementation_refs"] = sorted(
+            continue
+
+        extracted_spec = extracted_specs_by_id.get(canonical_row.requirement_id, {})
+        legacy_row = legacy_matrix_rows_by_id.get(canonical_row.requirement_id, {})
+        implementation_refs, positive_test_refs, negative_test_refs, artifact_refs = _partition_evidence_refs(
+            list(canonical_row.evidence_refs)
+        )
+        implementation_refs = list(extracted_spec.get("implementation_refs", implementation_refs))
+        legacy_positive_test_refs = _split_semicolon_refs(legacy_row.get("positive_test_refs", ""))
+        legacy_negative_test_refs = _split_semicolon_refs(legacy_row.get("negative_test_refs", ""))
+        if "positive_test_refs" in extracted_spec:
+            positive_test_refs = list(extracted_spec["positive_test_refs"])
+        elif legacy_row:
+            positive_test_refs = legacy_positive_test_refs
+        if "negative_test_refs" in extracted_spec:
+            negative_test_refs = list(extracted_spec["negative_test_refs"])
+        elif legacy_row:
+            negative_test_refs = legacy_negative_test_refs
+        if "artifact_refs" in extracted_spec:
+            artifact_refs = list(extracted_spec["artifact_refs"])
+        elif legacy_row:
+            artifact_refs = _split_semicolon_refs(legacy_row.get("artifact_refs", ""))
+        linked_methods = list(extracted_spec.get("linked_methods", ())) or _split_semicolon_refs(legacy_row.get("linked_methods", ""))
+        linked_assets = list(extracted_spec.get("linked_assets", ())) or _split_semicolon_refs(legacy_row.get("linked_assets", ""))
+        rows.append(
+            with_vendor_parity(
                 {
-                    ref
-                    for item in supporting_rows
-                    for ref in item.get("implementation_refs", ())
-                }
-                | {
-                    ref
-                    for asset in matching_assets
-                    for ref in asset["implementation_refs"]
-                }
+                    "matrix_id": canonical_row.requirement_id,
+                    "kind": canonical_row.row_kind,
+                    "document": _edition_qualified_document(canonical_row.source_document),
+                    "section_ref": _edition_qualified_section_ref(canonical_row.clause),
+                    "title": title,
+                    "requirement_id": canonical_row.requirement_id,
+                    "service_group": canonical_row.service_group,
+                    "status": canonical_row.canonical_status,
+                    "implementation_refs": _dedupe_preserve_order(implementation_refs),
+                    "positive_test_refs": _dedupe_preserve_order(positive_test_refs),
+                    "negative_test_refs": _dedupe_preserve_order(negative_test_refs),
+                    "artifact_refs": _dedupe_preserve_order(artifact_refs),
+                    "linked_methods": linked_methods,
+                    "linked_assets": linked_assets,
+                    "claim_scope": claim_scope,
+                    "supported_subset_for": _normalize_supported_subset_refs(canonical_row.parent_requirement_id),
+                    "policy_basis": policy_basis,
+                    "notes": canonical_row.canonical_status_reason,
+                    "source": f"canonical:{canonical_row.requirement_id}",
+                },
+                vendor_rows_by_clause=vendor_rows_by_clause,
+                operational_vendor_profiles=operational_vendor_profiles,
             )
-            row["positive_test_refs"] = sorted(
+        )
+
+    for projection_row in projection_rows:
+        implementation_refs, positive_test_refs, negative_test_refs, artifact_refs = _partition_evidence_refs(
+            list(projection_row.evidence_refs)
+        )
+        rows.append(
+            with_vendor_parity(
                 {
-                    ref
-                    for item in supporting_rows
-                    for ref in item.get("positive_test_refs", ())
-                }
-                | {
-                    ref
-                    for asset in matching_assets
-                    for ref in asset["positive_test_refs"]
-                }
+                    "matrix_id": projection_row.requirement_id,
+                    "kind": projection_row.row_kind,
+                    "document": _edition_qualified_document(projection_row.source_document),
+                    "section_ref": _edition_qualified_section_ref(projection_row.clause),
+                    "title": projection_row.service_or_check or projection_row.requirement_text or projection_row.requirement_id,
+                    "requirement_id": projection_row.requirement_id,
+                    "service_group": projection_row.service_group,
+                    "status": projection_row.canonical_status,
+                    "implementation_refs": _dedupe_preserve_order(implementation_refs),
+                    "positive_test_refs": _dedupe_preserve_order(positive_test_refs),
+                    "negative_test_refs": _dedupe_preserve_order(negative_test_refs),
+                    "artifact_refs": _dedupe_preserve_order(artifact_refs),
+                    "linked_methods": [],
+                    "linked_assets": [],
+                    "claim_scope": projection_row.boundary_note,
+                    "supported_subset_for": _normalize_supported_subset_refs(projection_row.parent_requirement_id),
+                    "policy_basis": "",
+                    "notes": projection_row.canonical_status_reason,
+                    "source": f"projection:{projection_row.requirement_id}",
+                },
+                vendor_rows_by_clause=vendor_rows_by_clause,
+                operational_vendor_profiles=operational_vendor_profiles,
             )
-            row["negative_test_refs"] = sorted(
-                {
-                    ref
-                    for item in supporting_rows
-                    for ref in item.get("negative_test_refs", ())
-                }
-                | {
-                    ref
-                    for asset in matching_assets
-                    for ref in asset["negative_test_refs"]
-                }
-            )
-            row["artifact_refs"] = sorted(
-                {
-                    ref
-                    for item in supporting_rows
-                    for ref in item.get("artifact_refs", ())
-                }
-                | {
-                    ref
-                    for asset in matching_assets
-                    for ref in asset["artifact_refs"]
-                }
-            )
-            row["source"] = source_key
+        )
 
     kind_counts: dict[str, int] = {}
     status_counts: dict[str, int] = {}
@@ -429,6 +289,15 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
 
     return {
         "summary": {
+            "artifact": "requirements-matrix-2010",
+            "artifact_class": "projection",
+            "projection_basis": (
+                "Legacy whole-spec 2010 review matrix spanning canonical leaf rows plus "
+                "explicitly demoted rollup and grouping rows."
+            ),
+            "canonical_requirement_artifact": _CANONICAL_2010_REQUIREMENTS,
+            "canonical_backend_resolution_artifact": _CANONICAL_2010_BACKEND_RESOLUTION,
+            "projection_rollup_artifact": _CANONICAL_2010_PROJECTION_ROWS,
             "version": version,
             "row_count": len(rows),
             "kind_counts": dict(sorted(kind_counts.items())),

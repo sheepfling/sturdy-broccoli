@@ -4,9 +4,8 @@ from __future__ import annotations
 import importlib.util
 from typing import Any
 
-from hla.rti.plugin_api import BackendRequest
-
 from hla.bridges.java.common import BackendInfo, RTIBackendPlugin
+from hla.rti.plugin_api import BackendRequest
 
 from .factory import create_py4j_backend
 from .runtime import Py4JConfig

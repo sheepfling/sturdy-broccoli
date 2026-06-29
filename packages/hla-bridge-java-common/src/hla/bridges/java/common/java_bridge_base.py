@@ -2,12 +2,13 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from collections.abc import Iterable, Mapping as CollectionsMapping, Sequence
+from collections.abc import Iterable, Sequence
+from collections.abc import Mapping as CollectionsMapping
 from typing import Any, Protocol, TypeVar, cast
 
 from hla.backends.common import BackendConversionError
-from .java_binding_profile import load_python_java_binding_profile
 
+from .java_binding_profile import load_python_java_binding_profile
 
 _JavaKeyT = TypeVar("_JavaKeyT", covariant=True)
 _JavaValueT = TypeVar("_JavaValueT", covariant=True)

@@ -14,18 +14,20 @@ from hla.backends.common import (
     BackendInfo,
     Invocation,
     JavaInvocationResolver,
-    RTIBackend,
     ResolvedJavaInvocation,
+    RTIBackend,
     java_parameter_names,
     java_parameter_types,
     resolve_java_arguments,
     resolve_java_invocation,
 )
+
 from .java_bridge_base import JavaBridge
 from .java_callbacks import (
-    FederateInternalError,
-    PythonFederateAmbassadorDispatcher,
     _DEFAULT_BINDING as _CALLBACK_BINDING,
+)
+from .java_callbacks import (
+    PythonFederateAmbassadorDispatcher,
     expected_java_callback_parameter_types,
     expected_java_return_type,
 )

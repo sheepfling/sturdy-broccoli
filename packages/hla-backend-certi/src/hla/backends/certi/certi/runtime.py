@@ -8,12 +8,13 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
-from hla.rti1516e.exceptions import RTIinternalError
-from hla.fom import normalize_module_uri
-from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
+from hla.backends.certi.real_rti_certi import CERTIRuntime
+from hla.backends.certi.real_rti_certi import _project_root as project_root
 from hla.backends.common import BackendUnavailableError, UnsupportedBackendService
+from hla.fom import normalize_module_uri
+from hla.rti1516e.exceptions import RTIinternalError
+from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
 from hla.transports.common import RTITransport
-from hla.backends.certi.real_rti_certi import CERTIRuntime, _project_root as project_root
 
 HELPER_SOURCE = project_root() / "tools" / "certi_smoke_helper.cpp"
 HELPER_OUTPUT = project_root() / "build" / "certi" / "certi_smoke_helper"
@@ -56,9 +57,7 @@ def coerce_time_scalar(value: Any) -> int | float:
         return int(raw)
     if isinstance(value, (HLAfloat64Time, HLAfloat64Interval)):
         return float(raw)
-    if isinstance(raw, int):
-        return int(raw)
-    return float(raw)
+    raise RTIinternalError(f"CERTI backend only supports HLAinteger64Time and HLAfloat64Time logical time values; got {type(value).__name__}")
 
 
 def decode_logical_time(type_name: str, raw: Any) -> Any:

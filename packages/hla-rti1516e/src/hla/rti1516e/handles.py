@@ -11,6 +11,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Generic, Iterable, Mapping, TypeVar, cast
 
+
 @dataclass(frozen=True, order=True)
 class Handle:
     """Opaque, hashable handle.

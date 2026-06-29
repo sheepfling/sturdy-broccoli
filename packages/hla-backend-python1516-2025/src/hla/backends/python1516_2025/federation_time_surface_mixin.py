@@ -21,10 +21,11 @@ from .callback_runtime import (
 )
 from .federation_management_runtime import (
     connect as federation_connect,
+)
+from .federation_management_runtime import (
     create_federation_execution,
     create_federation_execution_with_mim,
     destroy_federation_execution,
-    disconnect as federation_disconnect,
     force_federate_loss,
     join_federation_execution,
     list_federation_execution_members,
@@ -32,6 +33,9 @@ from .federation_management_runtime import (
     register_federation_synchronization_point,
     resign_federation_execution,
     synchronization_point_achieved,
+)
+from .federation_management_runtime import (
+    disconnect as federation_disconnect,
 )
 from .save_restore_lifecycle import (
     abort_federation_restore,

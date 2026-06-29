@@ -148,7 +148,6 @@ def _parse_simple_yaml(text: str) -> dict[str, Any]:
 
     data: dict[str, Any] = {}
     current_key: str | None = None
-    current_map_key: str | None = None
     for raw_line in text.splitlines():
         line = _strip_comment(raw_line).rstrip()
         if not line.strip():
@@ -156,7 +155,6 @@ def _parse_simple_yaml(text: str) -> dict[str, Any]:
         indent = len(line) - len(line.lstrip(" "))
         stripped = line.strip()
         if indent == 0:
-            current_map_key = None
             if ":" not in stripped:
                 raise ValueError(f"Invalid profile line: {raw_line}")
             key, value = stripped.split(":", 1)
@@ -167,7 +165,6 @@ def _parse_simple_yaml(text: str) -> dict[str, Any]:
                 data[key] = _coerce_scalar(value)
             else:
                 data[key] = {}
-                current_map_key = key
             continue
         if current_key is None:
             raise ValueError(f"Invalid indented profile line: {raw_line}")
@@ -181,7 +178,6 @@ def _parse_simple_yaml(text: str) -> dict[str, Any]:
             if not isinstance(data.get(current_key), dict):
                 data[current_key] = {}
             data[current_key][key.strip()] = _coerce_scalar(value)
-            current_map_key = current_key
             continue
         raise ValueError(f"Invalid profile line: {raw_line}")
     return data
@@ -421,8 +417,8 @@ def _render_capsule_cmake(profile: CppSdkIntakeProfile, report: CppSdkIntakeRepo
             "",
             f"set(CMAKE_CXX_STANDARD {profile.cxx_standard})",
             "set(CMAKE_CXX_STANDARD_REQUIRED ON)",
-            f"set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${{CMAKE_BINARY_DIR}}/lib)",
-            f"set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${{CMAKE_BINARY_DIR}}/bin)",
+            "set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)",
+            "set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)",
             "",
             f"add_library({target} SHARED",
             "  generated/shim_routes_cpp_intake_capsule.cpp",

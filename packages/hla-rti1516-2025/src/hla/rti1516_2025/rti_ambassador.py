@@ -5,7 +5,7 @@ Sources: Java RTIambassador.java and C++ RTIambassador.h.
 
 from __future__ import annotations
 
-from typing import Protocol, Sequence, Set
+from typing import Protocol, Sequence, Set, overload
 
 from .datatypes import (
     ConfigurationResult,
@@ -65,13 +65,33 @@ from .logical_time import (
 
 
 class RTIambassador(Protocol):
-    """Runtime protocol surface for the RTI ambassador.
-
-For strict overloads and per-method source trace, see
-rti_ambassador.pyi and requirements/2025/SOURCE_TRACE.md.
-"""
+    """Runtime protocol surface for IEEE 1516.1-2025 RTIambassador."""
 
     # ========= Federation Management Services =========
+    @overload
+    def connect(
+        self,
+        federateAmbassador: FederateAmbassador,
+        callbackModel: CallbackModel,
+    ) -> ConfigurationResult: ...
+
+    @overload
+    def connect(
+        self,
+        federateAmbassador: FederateAmbassador,
+        callbackModel: CallbackModel,
+        configuration: RtiConfiguration,
+    ) -> ConfigurationResult: ...
+
+    @overload
+    def connect(
+        self,
+        federateAmbassador: FederateAmbassador,
+        callbackModel: CallbackModel,
+        configuration: RtiConfiguration,
+        credentials: Credentials,
+    ) -> ConfigurationResult: ...
+
     def connect(
         self,
         federateAmbassador: FederateAmbassador,
@@ -104,7 +124,32 @@ rti_ambassador.pyi and requirements/2025/SOURCE_TRACE.md.
 
     def listFederationExecutionMembers(self, federationName: str) -> None: ...
 
-    # the overloads for this one are really terrible so we will force kwarg
+    @overload
+    def joinFederationExecution(
+        self,
+        *,
+        federateType: str,
+        federationName: str,
+    ) -> FederateHandle: ...
+
+    @overload
+    def joinFederationExecution(
+        self,
+        *,
+        federateType: str,
+        federationName: str,
+        additionalFomModules: Sequence[str],
+    ) -> FederateHandle: ...
+
+    @overload
+    def joinFederationExecution(
+        self,
+        *,
+        federateName: str,
+        federateType: str,
+        federationName: str,
+    ) -> FederateHandle: ...
+
     def joinFederationExecution(
         self,
         *,
@@ -288,6 +333,22 @@ rti_ambassador.pyi and requirements/2025/SOURCE_TRACE.md.
 
     def localDeleteObjectInstance(
         self, objectInstance: ObjectInstanceHandle
+    ) -> None: ...
+
+    @overload
+    def requestAttributeValueUpdate(
+        self,
+        objectClassOrInstance: ObjectClassHandle,
+        attributes: AttributeHandleSet,
+        userSuppliedTag: bytes,
+    ) -> None: ...
+
+    @overload
+    def requestAttributeValueUpdate(
+        self,
+        objectClassOrInstance: ObjectInstanceHandle,
+        attributes: AttributeHandleSet,
+        userSuppliedTag: bytes,
     ) -> None: ...
 
     def requestAttributeValueUpdate(

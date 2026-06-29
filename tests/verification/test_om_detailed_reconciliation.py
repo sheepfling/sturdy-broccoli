@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-import csv
 from collections import Counter
 from pathlib import Path
 
-from hla.verification.repo_internal.requirements import load_2010_reconciliation_rows
+from hla.verification.repo_internal.requirements import (
+    load_2010_reconciliation_rows,
+    survey_requirement_artifacts,
+)
 
 try:
     from reconciliation_truth_sources import assert_rows_do_not_use_closeout_truth_sources
@@ -12,29 +14,29 @@ except ModuleNotFoundError:
     from tests.reconciliation_truth_sources import assert_rows_do_not_use_closeout_truth_sources
 
 ROOT = Path(__file__).resolve().parents[2]
-RECONCILIATION_PATH = (
-    ROOT / "requirements" / "2010" / "hla1516_1_om_detailed_reconciliation.csv"
-)
-
-
-def _read_rows() -> list[dict[str, str]]:
-    with RECONCILIATION_PATH.open(newline="", encoding="utf-8") as handle:
-        return list(csv.DictReader(handle))
+RECONCILIATION_REL = "requirements/2010/hla1516_1_om_detailed_reconciliation.csv"
+OWNER_DOC = "docs/requirements/ieee-1516-2010/object_management_bounded_family.md"
 
 
 def _typed_rows_by_id() -> dict[str, object]:
     return {
         row.source_requirement_id: row
-        for row in load_2010_reconciliation_rows(
-            ROOT,
-            "requirements/2010/hla1516_1_om_detailed_reconciliation.csv",
-            "docs/requirements/ieee-1516-2010/object_management_bounded_family.md",
-        )
+        for row in load_2010_reconciliation_rows(ROOT, RECONCILIATION_REL, OWNER_DOC)
     }
 
 
-def _split_refs(refs: str) -> list[str]:
-    return [item.strip() for item in refs.split(";") if item.strip()]
+def _typed_rows() -> list[object]:
+    return list(_typed_rows_by_id().values())
+
+
+def _typed_truth_source_rows() -> list[dict[str, str]]:
+    return [
+        {
+            "packet_requirement_id": row.source_requirement_id,
+            "current_test_id": ";".join(row.evidence_refs),
+        }
+        for row in _typed_rows()
+    ]
 
 
 def _assert_reference_is_live(reference: str) -> None:
@@ -63,11 +65,11 @@ def _assert_reference_is_live(reference: str) -> None:
 
 
 def test_om_detailed_reconciliation_has_expected_shape():
-    rows = _read_rows()
+    rows = _typed_rows()
 
     assert len(rows) == 391
-    assert Counter(row["current_status"] for row in rows) == Counter({"mapped": 391})
-    assert Counter((row["reconciliation_kind"], row["current_status"]) for row in rows) == Counter(
+    assert Counter(row.current_status for row in rows) == Counter({"mapped": 391})
+    assert Counter((row.mapping_kind, row.current_status) for row in rows) == Counter(
         {
             ("CB_SIG", "mapped"): 42,
             ("SIG", "mapped"): 38,
@@ -90,89 +92,89 @@ def test_om_detailed_reconciliation_has_expected_shape():
             ("OVW", "mapped"): 2,
         }
     )
-    assert {row["source_packet_file"] for row in rows} == {
-        "hla_1516_requirements_master_v1_0.csv"
-    }
+    assert {row.source_packet_file for row in rows} == {"hla_1516_requirements_master_v1_0.csv"}
 
 
 def test_om_detailed_reconciliation_spot_checks_key_rows():
-    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    rows = _typed_rows_by_id()
 
-    assert rows["HLA1516.1-OM-OVERVIEW-006"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-OVERVIEW-007"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_2-RTIAPI-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_2-RTIAPI-001-MOM"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-PRE-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_3-FEDCB-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_3-FEDCB-001-ORD"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_3-OBJECTINSTANCENAMERESERVATIONSUCCEEDED-CB_ORDER-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_6-MULTIPLEOBJECTINSTANCENAMERESERVATIONSUCCEEDED-CB_ORDER-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_9-DISCOVEROBJECTINSTANCE-CB_ORDER-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-ARG-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-EXC-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-ARG-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-PRE-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-EXC-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_5-RESERVEMULTIPLEOBJECTINSTANCENAME-ARG-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_5-RESERVEMULTIPLEOBJECTINSTANCENAME-EXC-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_7-RELEASEMULTIPLEOBJECTINSTANCENAME-ARG-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_7-RELEASEMULTIPLEOBJECTINSTANCENAME-EXC-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_11-REFLECTATTRIBUTEVALUES-CB-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_11-FEDCB-001-ORD"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_11-REFLECTATTRIBUTEVALUES-CB_PAYLOAD-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_10-RTIAPI-001-EXC"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_10-RTIAPI-002-EXC"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_10-UPDATEATTRIBUTEVALUES-EXC-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_19-RTIAPI-001-EXC"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_19-RTIAPI-002-EXC"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_13-RECEIVEINTERACTION-CB-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_13-RECEIVEINTERACTION-CB_ORDER-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_13-RECEIVEINTERACTION-CB_PAYLOAD-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_15-REMOVEOBJECTINSTANCE-CB_ORDER-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_17-ATTRIBUTESINSCOPE-CB_ORDER-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_20-PROVIDEATTRIBUTEVALUEUPDATE-CB_PAYLOAD-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_21-TURNUPDATESONFOROBJECTINSTANCE-CB_ORDER-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_22-TURNUPDATESOFFFOROBJECTINSTANCE-CB_ORDER-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_12-SENDINTERACTION-TEST-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_12-SENDINTERACTION-PRE-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-TEST-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-PRE-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-EFF-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-EXC-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_8-REGISTEROBJECTINSTANCE-EFF-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_8-REGISTEROBJECTINSTANCE-EXC-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_16-LOCALDELETEOBJECTINSTANCE-EFF-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_16-LOCALDELETEOBJECTINSTANCE-EXC-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-EFF-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-EFF-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_5-RESERVEMULTIPLEOBJECTINSTANCENAME-EFF-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_7-RELEASEMULTIPLEOBJECTINSTANCENAME-EFF-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_8-REGISTEROBJECTINSTANCE-EFF-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_23-REQUESTATTRIBUTETRANSPORTATIONTYPECHANGE-SVC-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_23-REQUESTATTRIBUTETRANSPORTATIONTYPECHANGE-EFF-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_23-REQUESTATTRIBUTETRANSPORTATIONTYPECHANGE-EXC-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_24-CONFIRMATTRIBUTETRANSPORTATIONTYPECHANGE-CB_ORDER-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_23-REQUESTATTRIBUTETRANSPORTATIONTYPECHANGE-TEST-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-SVC-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-EFF-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-EXC-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-TEST-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_26-REPORTATTRIBUTETRANSPORTATIONTYPE-CB_ORDER-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_27-REQUESTINTERACTIONTRANSPORTATIONTYPECHANGE-SVC-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_27-REQUESTINTERACTIONTRANSPORTATIONTYPECHANGE-EFF-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_27-REQUESTINTERACTIONTRANSPORTATIONTYPECHANGE-EXC-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_28-CONFIRMINTERACTIONTRANSPORTATIONTYPECHANGE-CB_ORDER-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_27-REQUESTINTERACTIONTRANSPORTATIONTYPECHANGE-TEST-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-SVC-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-EFF-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-EXC-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-TEST-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_29-RTIAPI-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_30-REPORTINTERACTIONTRANSPORTATIONTYPE-CB_ORDER-001"]["current_status"] == "mapped"
+    for packet_id in (
+        "HLA1516.1-OM-OVERVIEW-006",
+        "HLA1516.1-OM-OVERVIEW-007",
+        "HLA1516.1-OM-6_2-RTIAPI-001",
+        "HLA1516.1-OM-6_2-RTIAPI-001-MOM",
+        "HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-PRE-001",
+        "HLA1516.1-OM-6_3-FEDCB-001",
+        "HLA1516.1-OM-6_3-FEDCB-001-ORD",
+        "HLA1516.1-OM-6_3-OBJECTINSTANCENAMERESERVATIONSUCCEEDED-CB_ORDER-001",
+        "HLA1516.1-OM-6_6-MULTIPLEOBJECTINSTANCENAMERESERVATIONSUCCEEDED-CB_ORDER-001",
+        "HLA1516.1-OM-6_9-DISCOVEROBJECTINSTANCE-CB_ORDER-001",
+        "HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-ARG-001",
+        "HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-EXC-001",
+        "HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-ARG-001",
+        "HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-PRE-001",
+        "HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-EXC-001",
+        "HLA1516.1-OM-6_5-RESERVEMULTIPLEOBJECTINSTANCENAME-ARG-001",
+        "HLA1516.1-OM-6_5-RESERVEMULTIPLEOBJECTINSTANCENAME-EXC-001",
+        "HLA1516.1-OM-6_7-RELEASEMULTIPLEOBJECTINSTANCENAME-ARG-001",
+        "HLA1516.1-OM-6_7-RELEASEMULTIPLEOBJECTINSTANCENAME-EXC-001",
+        "HLA1516.1-OM-6_11-REFLECTATTRIBUTEVALUES-CB-001",
+        "HLA1516.1-OM-6_11-FEDCB-001-ORD",
+        "HLA1516.1-OM-6_11-REFLECTATTRIBUTEVALUES-CB_PAYLOAD-001",
+        "HLA1516.1-OM-6_10-RTIAPI-001-EXC",
+        "HLA1516.1-OM-6_10-RTIAPI-002-EXC",
+        "HLA1516.1-OM-6_10-UPDATEATTRIBUTEVALUES-EXC-001",
+        "HLA1516.1-OM-6_19-RTIAPI-001-EXC",
+        "HLA1516.1-OM-6_19-RTIAPI-002-EXC",
+        "HLA1516.1-OM-6_13-RECEIVEINTERACTION-CB-001",
+        "HLA1516.1-OM-6_13-RECEIVEINTERACTION-CB_ORDER-001",
+        "HLA1516.1-OM-6_13-RECEIVEINTERACTION-CB_PAYLOAD-001",
+        "HLA1516.1-OM-6_15-REMOVEOBJECTINSTANCE-CB_ORDER-001",
+        "HLA1516.1-OM-6_17-ATTRIBUTESINSCOPE-CB_ORDER-001",
+        "HLA1516.1-OM-6_20-PROVIDEATTRIBUTEVALUEUPDATE-CB_PAYLOAD-001",
+        "HLA1516.1-OM-6_21-TURNUPDATESONFOROBJECTINSTANCE-CB_ORDER-001",
+        "HLA1516.1-OM-6_22-TURNUPDATESOFFFOROBJECTINSTANCE-CB_ORDER-001",
+        "HLA1516.1-OM-6_12-SENDINTERACTION-TEST-001",
+        "HLA1516.1-OM-6_12-SENDINTERACTION-PRE-001",
+        "HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-TEST-001",
+        "HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-PRE-001",
+        "HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-EFF-001",
+        "HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-EXC-001",
+        "HLA1516.1-OM-6_8-REGISTEROBJECTINSTANCE-EFF-001",
+        "HLA1516.1-OM-6_8-REGISTEROBJECTINSTANCE-EXC-001",
+        "HLA1516.1-OM-6_16-LOCALDELETEOBJECTINSTANCE-EFF-001",
+        "HLA1516.1-OM-6_16-LOCALDELETEOBJECTINSTANCE-EXC-001",
+        "HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-EFF-001",
+        "HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-EFF-001",
+        "HLA1516.1-OM-6_5-RESERVEMULTIPLEOBJECTINSTANCENAME-EFF-001",
+        "HLA1516.1-OM-6_7-RELEASEMULTIPLEOBJECTINSTANCENAME-EFF-001",
+        "HLA1516.1-OM-6_23-REQUESTATTRIBUTETRANSPORTATIONTYPECHANGE-SVC-001",
+        "HLA1516.1-OM-6_23-REQUESTATTRIBUTETRANSPORTATIONTYPECHANGE-EFF-001",
+        "HLA1516.1-OM-6_23-REQUESTATTRIBUTETRANSPORTATIONTYPECHANGE-EXC-001",
+        "HLA1516.1-OM-6_24-CONFIRMATTRIBUTETRANSPORTATIONTYPECHANGE-CB_ORDER-001",
+        "HLA1516.1-OM-6_23-REQUESTATTRIBUTETRANSPORTATIONTYPECHANGE-TEST-001",
+        "HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-SVC-001",
+        "HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-EFF-001",
+        "HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-EXC-001",
+        "HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-TEST-001",
+        "HLA1516.1-OM-6_26-REPORTATTRIBUTETRANSPORTATIONTYPE-CB_ORDER-001",
+        "HLA1516.1-OM-6_27-REQUESTINTERACTIONTRANSPORTATIONTYPECHANGE-SVC-001",
+        "HLA1516.1-OM-6_27-REQUESTINTERACTIONTRANSPORTATIONTYPECHANGE-EFF-001",
+        "HLA1516.1-OM-6_27-REQUESTINTERACTIONTRANSPORTATIONTYPECHANGE-EXC-001",
+        "HLA1516.1-OM-6_28-CONFIRMINTERACTIONTRANSPORTATIONTYPECHANGE-CB_ORDER-001",
+        "HLA1516.1-OM-6_27-REQUESTINTERACTIONTRANSPORTATIONTYPECHANGE-TEST-001",
+        "HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-SVC-001",
+        "HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-EFF-001",
+        "HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-EXC-001",
+        "HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-TEST-001",
+        "HLA1516.1-OM-6_29-RTIAPI-001",
+        "HLA1516.1-OM-6_30-REPORTINTERACTIONTRANSPORTATIONTYPE-CB_ORDER-001",
+    ):
+        assert rows[packet_id].current_status == "mapped"
 
 
 def test_clause_6_object_name_argument_rows_use_direct_name_service_evidence():
-    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    rows = _typed_rows_by_id()
 
     expected = {
         "HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-ARG-001": "tests/backends/test_python_backend_time_ddm_extended.py::test_name_reservation_ddm_regions_ownership_and_time_support",
@@ -183,13 +185,13 @@ def test_clause_6_object_name_argument_rows_use_direct_name_service_evidence():
 
     for packet_id, test_id in expected.items():
         row = rows[packet_id]
-        assert row["current_status"] == "mapped"
-        assert row["current_test_id"] == test_id
-        assert "node-level" in row["notes"]
+        assert row.current_status == "mapped"
+        assert row.evidence_refs == (test_id,)
+        assert "node-level" in row.mapping_notes
 
 
 def test_clause_6_nearby_exception_rows_now_point_at_real_bounded_witnesses() -> None:
-    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    rows = _typed_rows_by_id()
 
     expected = {
         "HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-EXC-001": (
@@ -252,14 +254,13 @@ def test_clause_6_nearby_exception_rows_now_point_at_real_bounded_witnesses() ->
 
     for packet_id, (test_id, note_token) in expected.items():
         row = rows[packet_id]
-        expected_status = "mapped"
-        assert row["current_status"] == expected_status
-        assert test_id in row["current_test_id"]
-        assert note_token in row["notes"] or note_token in row["requirement_text"]
+        assert row.current_status == "mapped"
+        assert test_id in ";".join(row.evidence_refs)
+        assert note_token in row.mapping_notes or note_token in row.requirement_text
 
 
 def test_clause_6_name_and_registration_effect_rows_now_use_direct_state_witnesses() -> None:
-    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    rows = _typed_rows_by_id()
 
     mapped_rows = {
         "HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-EFF-001": "test_name_reservation_and_release_effects_manage_state_without_creating_objects",
@@ -271,20 +272,29 @@ def test_clause_6_name_and_registration_effect_rows_now_use_direct_state_witness
 
     for packet_id, test_id in mapped_rows.items():
         row = rows[packet_id]
-        assert row["current_status"] == "mapped"
-        assert test_id in row["current_test_id"]
-        assert "Direct node-level" in row["notes"]
+        assert row.current_status == "mapped"
+        assert test_id in ";".join(row.evidence_refs)
+        assert "Direct node-level" in row.mapping_notes
+
+
+def test_om_detailed_reconciliation_is_explicitly_classified_as_mapping_bridge() -> None:
+    survey = survey_requirement_artifacts(ROOT)
+    entries_by_path = {entry.path: entry for entry in survey.entries}
+    entry = entries_by_path[RECONCILIATION_REL]
+
+    assert entry.family == "mapping-bridge"
+    assert entry.classification_basis == (
+        "2010 mapping bridge from imported or legacy requirement rows onto canonical repo claims"
+    )
 
 
 def test_om_rows_anchor_to_live_evidence_refs() -> None:
-    typed_rows = _typed_rows_by_id()
-    for row in _read_rows():
-        references = _split_refs(row["current_test_id"])
-        assert references, f"{row['packet_requirement_id']} should carry evidence references"
-        assert typed_rows[row["packet_requirement_id"]].evidence_refs == tuple(references)
+    for requirement_id, typed_row in _typed_rows_by_id().items():
+        references = list(typed_row.evidence_refs)
+        assert references, f"{requirement_id} should carry evidence references"
         for reference in references:
             _assert_reference_is_live(reference)
 
 
 def test_om_rows_do_not_use_plan_or_closeout_packets_as_truth_sources() -> None:
-    assert_rows_do_not_use_closeout_truth_sources(_read_rows())
+    assert_rows_do_not_use_closeout_truth_sources(_typed_truth_source_rows())

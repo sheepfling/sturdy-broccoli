@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from hla.rti1516e.datatypes import FederateHandleSaveStatusPair, FederateRestoreStatus
 from hla.rti1516e.enums import (
     RestoreFailureReason,
     RestoreStatus,
@@ -25,6 +26,7 @@ from hla.rti1516e.handles import (
     ParameterHandleValueMap,
     TransportationTypeHandle,
 )
+
 from .codecs import (
     decode_bytes,
     decode_handle_set,
@@ -32,7 +34,6 @@ from .codecs import (
     decode_order,
 )
 from .runtime import decode_logical_time
-from hla.rti1516e.datatypes import FederateHandleSaveStatusPair, FederateRestoreStatus
 
 
 def invoke_federate_callback(ambassador: Any, method_name: str, *args: Any) -> None:

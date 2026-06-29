@@ -20,7 +20,7 @@ Two other top-level reading surfaces sit across those engineering lanes:
 
 | If the question is about | Start here | Then read |
 | --- | --- | --- |
-| `Backend` -> backend swaps, route names, JPype, Py4J, vendor lanes, or wrapping a Java RTI | [`backend_transport_fom_selection_guide.md`](backend_transport_fom_selection_guide.md) | [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md), [`java_bridge_wrapping_guide.md`](java_bridge_wrapping_guide.md), [`java_bridge_encoding_and_bytes.md`](java_bridge_encoding_and_bytes.md), [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md), [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md) |
+| `Backend` -> backend swaps, route names, JPype, Py4J, vendor lanes, or wrapping a Java RTI | [`backend_transport_fom_selection_guide.md`](backend_transport_fom_selection_guide.md) | [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md), [`java_bridge_wrapping_guide.md`](java_bridge_wrapping_guide.md), [`java_bridge_encoding_and_bytes.md`](java_bridge_encoding_and_bytes.md), [`java_bridge_adaptation_policy.md`](java_bridge_adaptation_policy.md), [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md) |
 | `Transport` -> `grpc`, `rest`, hosted routes, wire formats, callback polling, or a slightly different vendor protocol | [`extending_ambassador_transports.md`](extending_ambassador_transports.md) | [`transport_extension_playbook.md`](transport_extension_playbook.md), [`networked_rti_python.md`](networked_rti_python.md) |
 | `FOM` -> FOM families, validation, workbench/UI, baselines, or authoring | [`fom_tooling_front_door.md`](fom_tooling_front_door.md) | [`fom_reading_map.md`](fom_reading_map.md), [`fom_validate.md`](fom_validate.md), [`fom_workbench.md`](fom_workbench.md) |
 | `UI surfaces` -> FOM Explorer, Federation Visualizer, RTI Bridge API naming, backlog, or product direction | [`runtime_surface_naming_and_backlog.md`](runtime_surface_naming_and_backlog.md) | [`plans/hla_studio_surface_worklist.md`](plans/hla_studio_surface_worklist.md), [`fom_workbench.md`](fom_workbench.md), [`fom_siso_runtime_showcase.md`](fom_siso_runtime_showcase.md), [`reference/runtime_observer_event_schema.md`](reference/runtime_observer_event_schema.md) |
@@ -50,7 +50,7 @@ Read these next for Java route work:
 1. [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md)
 2. [`java_bridge_wrapping_guide.md`](java_bridge_wrapping_guide.md)
 3. [`java_bridge_encoding_and_bytes.md`](java_bridge_encoding_and_bytes.md)
-4. [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md)
+4. [`java_bridge_adaptation_policy.md`](java_bridge_adaptation_policy.md)
 5. [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md)
 
 Useful follow-ons:
@@ -68,7 +68,7 @@ Practical rule:
 - start management or onboarding explanations with
   [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md)
 - start implementation or debugging work with
-  [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md)
+  [`java_bridge_adaptation_policy.md`](java_bridge_adaptation_policy.md)
 
 ## Surface 2: Transport Options
 

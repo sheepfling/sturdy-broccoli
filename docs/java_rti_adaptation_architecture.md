@@ -144,8 +144,8 @@ wrong" but has not yet isolated the layer.
 
 | Reported problem | Primary owner | Next check |
 | --- | --- | --- |
-| wrong RTI method overload or ambiguous call path | `invocation.py` | `java_bridge_overload_resolution.md` |
-| wrong Python-to-Java container materialization | `java_value_adapter.py` via `GenericJavaValueAdapter` | `java_bridge_overload_resolution.md` |
+| wrong RTI method overload or ambiguous call path | `invocation.py` | `java_bridge_adaptation_policy.md` |
+| wrong Python-to-Java container materialization | `java_value_adapter.py` via `GenericJavaValueAdapter` | `java_bridge_adaptation_policy.md` |
 | wrong HLA handle/time/auth/config wrapping | `java_value_adapter.py` via `HLAJavaValueAdapter` | `java_binding_profile.py` |
 | wrong callback signature, callback argument shape, or callback normalization | `java_callbacks.py` | route runtime module |
 | bytes or encoder outputs differ between JPype and Py4J | `java_encoding.py` | `java_bridge_encoding_and_bytes.md` |
@@ -240,7 +240,7 @@ Inbound callbacks use the same general idea in reverse: the shared dispatcher
 looks up the expected Java callback signature and converts values before
 calling the normalized Python callback method.
 
-Read [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md)
+Read [`java_bridge_adaptation_policy.md`](java_bridge_adaptation_policy.md)
 for the concrete JPype versus Py4J comparison at that boundary.
 
 Read [`java_bridge_encoding_and_bytes.md`](java_bridge_encoding_and_bytes.md)

@@ -11,9 +11,8 @@ from hla.verification.repo_internal.fom_corpus_classification import classify_ed
 from hla.verification.repo_internal.fom_inventory import default_load_set_records, inventory_records_by_family
 from hla.verification.repo_internal.fom_roundtrip import build_fom_roundtrip, write_fom_roundtrip
 from hla.verification.repo_internal.fom_stress import _stress_annotation
-from hla.verification.repo_internal.fom_validate import build_fom_validation, write_fom_validation
-from hla.verification.repo_internal.fom_workbench import build_fom_workbench_snapshot, write_fom_workbench_html, write_fom_workbench_snapshot
-
+from hla.verification.repo_internal.fom_validate import write_fom_validation
+from hla.verification.repo_internal.fom_workbench import write_fom_workbench_html, write_fom_workbench_snapshot
 
 HIGH_VALUE_SISO_FAMILIES = (
     "siso-rpr-2.0",

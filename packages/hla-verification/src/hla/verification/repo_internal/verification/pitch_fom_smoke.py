@@ -9,10 +9,10 @@ from pathlib import Path
 from typing import Any
 
 from hla.backends.common import RecordingFederateAmbassador
+from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+from hla.rti1516e.enums import ResignAction
 from hla.runtime.factory import create_rti_ambassador
 from hla.runtime.rti1516_2025_factory import create_rti_ambassador as create_rti_ambassador_2025
-from hla.rti1516e.enums import ResignAction
-from hla.rti1516_2025.enums import ResignAction as ResignAction2025
 from hla.verification.repo_internal.fom_inventory import inventory_records
 from hla.verification.startup import FederationStartupConfig, connect_create_join
 

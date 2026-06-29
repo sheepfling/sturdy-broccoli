@@ -12,12 +12,6 @@ from hla.rti1516_2025.exceptions import (
     RegionDoesNotContainSpecifiedDimension,
 )
 from hla.rti1516_2025.handles import AttributeHandle, DimensionHandle, RegionHandle
-from hla.backends.python1516_2025.ddm_default_attribute_policy import (
-    ranges_overlap,
-    region_owner_key,
-    region_sets_overlap,
-    regions_overlap_pair,
-)
 
 
 def create_region(rti: Any, dimensions: Any) -> RegionHandle:

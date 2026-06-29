@@ -9,6 +9,7 @@ from __future__ import annotations
 import struct
 from dataclasses import dataclass, field
 
+
 class EncoderException(Exception):
     pass
 

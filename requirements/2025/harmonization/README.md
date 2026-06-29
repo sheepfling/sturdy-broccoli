@@ -46,10 +46,16 @@ fixtures, and unsupported-boundary decisions where applicable are recorded.
 
 Verification rule:
 
+- `../canonical_requirements.json` is the only row-level requirement
+  truth for this packet
 - treat `../canonical_requirements.json` and `../canonical_requirements.csv`
-  as the same row-level requirement truth surface in two encodings
+  as the same row-level requirement truth surface in two encodings; they are
+  the only row-level requirement truth for this packet
+- `../backend_resolution.json` is the only backend- and route-resolution
+  truth for this packet
 - treat `../backend_resolution.json` and `../backend_resolution.csv` as the
-  same backend- and route-resolution truth surface in two encodings
+  same backend- and route-resolution truth surface in two encodings; they are
+  the only backend- and route-resolution truth for this packet
 - treat every file in this directory as a downstream grouped, row-shaped, or
   review-sequencing projection over those canonical surfaces
 

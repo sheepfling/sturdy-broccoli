@@ -2,8 +2,8 @@
 # pyright: reportReturnType=false, reportOptionalMemberAccess=false, reportCallIssue=false, reportArgumentType=false, reportAttributeAccessIssue=false
 from __future__ import annotations
 
-import json
 import importlib
+import json
 import multiprocessing
 import threading
 import time

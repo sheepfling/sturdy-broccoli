@@ -27,7 +27,7 @@ from hla.rti1516e.handles import (
 from hla.rti1516_2025.encoding import HLAfixedArray as HLA2025FixedArray, HLAoctet as HLA2025Octet, HLAvariantRecord as HLA2025VariantRecord
 from hla.rti1516_2025.handles import ObjectInstanceHandle as ObjectInstanceHandle2025
 from hla.rti1516e.encoding import HLAASCIIstring, HLAfixedRecord, HLAunicodeString
-from hla.rti1516e.raw_api import API_METADATA
+from hla.rti1516e.api_metadata import API_METADATA
 from hla.runtime.factory import create_rti_ambassador
 from hla.rti1516e.datatypes import AttributeRegionAssociation
 from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time

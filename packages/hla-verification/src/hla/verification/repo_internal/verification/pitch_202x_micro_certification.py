@@ -229,7 +229,7 @@ def _render_markdown(summary: Mapping[str, Any], paths: Pitch202xMicroCertificat
         f"- failed: `{summary['failed']}`",
         f"- summary json: `{paths.summary_json.name}`",
         f"- comparison csv: `{paths.comparison_csv.name}`",
-        f"- underlying micro packet: `micro_parity/siso_pitch_micro_parity_report.md`",
+        "- underlying micro packet: `micro_parity/siso_pitch_micro_parity_report.md`",
         "",
         "## Executed Runs",
         "",

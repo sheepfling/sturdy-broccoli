@@ -6,8 +6,8 @@ primary requirement-truth owner surface.
 """
 
 from __future__ import annotations
-# pyright: reportArgumentType=false, reportAttributeAccessIssue=false
 
+# pyright: reportArgumentType=false, reportAttributeAccessIssue=false
 import ast
 import copy
 import csv
@@ -4032,7 +4032,6 @@ def _build_python2025_exclusion_boundaries_audit(
     doc_rel = "docs/requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md"
     doc_path = project_root / doc_rel
     doc_text = doc_path.read_text(encoding="utf-8") if doc_path.exists() else ""
-    normalized_doc_text = " ".join(doc_text.split())
     required_area_labels = [
         "Legacy aliases and shim imports",
         "Java/C++ bindings",

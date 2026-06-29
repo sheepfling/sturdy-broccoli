@@ -12,8 +12,8 @@ from hla.rti1516e.exceptions import (
     AttributeDivestitureWasNotRequested,
     AttributeNotPublished,
     FederateOwnsAttributes,
-    ObjectClassNotPublished,
     NoAcquisitionPending,
+    ObjectClassNotPublished,
 )
 from hla.rti1516e.handles import AttributeHandle, ObjectInstanceHandle
 

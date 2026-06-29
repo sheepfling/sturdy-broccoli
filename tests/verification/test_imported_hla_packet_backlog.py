@@ -26,6 +26,8 @@ def test_imported_hla_backlog_is_generated_with_expected_families(tmp_path: Path
     assert "## Federation Management" in markdown
     assert "## MOM/MIM" in markdown
     assert "## Transports" in markdown
+    assert "mapping-bridge work projection" in markdown
+    assert "does not define requirement truth" in markdown
 
     payload = json.loads(json_path.read_text(encoding="utf-8"))
     families = [family["family"] for family in payload["families"]]
@@ -42,14 +44,17 @@ def test_imported_hla_backlog_is_generated_with_expected_families(tmp_path: Path
         "XML",
         "Transports",
     ]
-    assert payload["total_open_rows"] >= 1
-    assert any(family["family"] == "Transports" and family["open_row_count"] >= 1 for family in payload["families"])
+    assert payload["canonical_requirement_artifact"] == "requirements/2010/canonical_requirements.json"
+    assert payload["canonical_requirement_row_count"] == 880
+    assert payload["canonical_requirement_status_counts"] == {"pass": 880}
+    assert payload["backlog_surface_class"] == "generated-mapping-bridge-backlog"
+    assert payload["source_artifact_classes"]["requirements/2010/hla1516_1_clause_8_tm_detailed_reconciliation.csv"] == "mapping-bridge"
+    assert payload["source_artifact_classes"]["requirements/2010/hla1516_2_omt.csv"] == "import-history"
+    assert payload["total_open_rows"] == 0
+    assert all(family["open_row_count"] == 0 for family in payload["families"])
     federation_management = next(family for family in payload["families"] if family["family"] == "Federation Management")
-    if federation_management["queue_items"]:
-        connect_item = next(item for item in federation_management["queue_items"] if item["queue_item"] == "Connect")
-        assert connect_item["suggested_next_action"].startswith("Optional: tighten this bounded FM state-vector tail")
-    else:
-        assert federation_management["open_row_count"] == 0
+    assert federation_management["queue_items"] == []
+    assert federation_management["open_row_count"] == 0
 
 
 def test_imported_hla_backlog_script_bootstraps_source_checkout(tmp_path: Path):

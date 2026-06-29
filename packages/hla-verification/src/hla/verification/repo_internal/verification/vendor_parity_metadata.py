@@ -82,7 +82,6 @@ def with_vendor_parity(
     operational_vendor_profiles: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     augmented = dict(row)
-    clause = _extract_numeric_clause(augmented.get("section_ref"))
     vendor = _select_vendor_row(augmented, vendor_rows_by_clause) if _is_1516_1_2010_document(augmented.get("document")) else {}
     augmented.setdefault("python_runtime_status", vendor.get("python_runtime_status", ""))
     augmented.setdefault("certi_runtime_status", vendor.get("certi_runtime_status", ""))

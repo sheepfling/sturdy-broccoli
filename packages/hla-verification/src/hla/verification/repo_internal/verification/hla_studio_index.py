@@ -1,9 +1,9 @@
 """Shared HLA Studio aggregate index helpers."""
 from __future__ import annotations
 
-from dataclasses import dataclass
 import html
 import os
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
 

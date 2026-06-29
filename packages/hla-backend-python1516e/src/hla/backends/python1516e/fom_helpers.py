@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import replace
 from typing import TYPE_CHECKING, Any, Iterable, Protocol
 
+from hla.fom import FOMCatalog, FOMMergeError, FOMModule, FOMResolutionError, merge_fom_modules, standard_mim_module
 from hla.rti1516e.exceptions import (
     CouldNotCreateLogicalTimeFactory,
     CouldNotOpenFDD,
@@ -14,8 +15,8 @@ from hla.rti1516e.exceptions import (
     InvalidLogicalTime,
     InvalidLookahead,
 )
-from hla.fom import FOMCatalog, FOMMergeError, FOMModule, FOMResolutionError, merge_fom_modules, standard_mim_module
 from hla.rti1516e.time import LogicalTimeFactory
+
 from .state import FederationState
 
 if TYPE_CHECKING:

@@ -8,9 +8,9 @@ from typing import Any, Mapping, Sequence, cast
 
 from hla.backends.common import BackendUnavailableError
 from hla.transports.common import RTITransport, TransportError, TransportRequest, TransportResponse, register_transport_factory
+
 from .client import GrpcTransportClientAdapter as GrpcTransportClientAdapter2010
 from .client_2025 import GrpcTransportClientAdapter as GrpcTransportClientAdapter2025
-
 
 _CALLBACK_POLL_COMMANDS = frozenset({"EVOKE", "EVOKE_MANY"})
 _SCHEMA_ALIASES = {

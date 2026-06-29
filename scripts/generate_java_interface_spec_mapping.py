@@ -34,7 +34,7 @@ def _parse_protocol_methods(path: Path, class_name: str) -> set[str]:
 
 def _load_rows() -> tuple[dict[str, list[dict[str, object]]], dict[str, list[object]], set[str], set[str]]:
     from hla.backends.common import get_deterministic_java_invocation_router
-    from hla.rti1516e.raw_api import API_METADATA
+    from hla.rti1516e.api_metadata import API_METADATA
 
     deterministic_routes = {}
     for route in get_deterministic_java_invocation_router().routes:
@@ -177,7 +177,7 @@ def render() -> str:
         "",
         "## Source Authorities",
         "",
-        "- `packages/hla-rti1516e/src/hla/rti1516e/api_metadata.json` via `hla.rti1516e.raw_api.API_METADATA`",
+        "- `packages/hla-rti1516e/src/hla/rti1516e/api_metadata.json` via `hla.rti1516e.api_metadata.API_METADATA`",
         "- `packages/hla-backend-common/src/hla/backends/common/invocation.py` deterministic router table",
         "- `packages/hla-rti1516-2025/src/hla/rti1516_2025/rti_ambassador.py`",
         "- `packages/hla-rti1516-2025/src/hla/rti1516_2025/federate_ambassador.py`",

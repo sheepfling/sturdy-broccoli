@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Any, Mapping, Protocol, Sequence
 import hla.fom.mom as hla_mom
 from hla.rti1516e.enums import OrderType
 from hla.spec.refs import method_reference
+
 from .service_reporting import ServiceReportRecord
 from .state import CallbackEvent, FederateState, FederationState, SupplementalReceiveInfo
 
@@ -399,4 +400,5 @@ class PythonRTIMomReportingMixin(_MomReportingMixinBase):
 
 
 from hla.rti1516e.handles import ParameterHandle  # noqa: E402
+
 from . import mom_catalog as mom_table  # noqa: E402

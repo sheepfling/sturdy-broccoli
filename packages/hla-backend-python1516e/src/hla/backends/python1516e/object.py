@@ -10,6 +10,7 @@ from hla.rti1516e.exceptions import (
     ObjectInstanceNameInUse,
 )
 from hla.rti1516e.handles import ObjectClassHandle, ObjectInstanceHandle
+
 from .object_delivery import PythonRTIObjectDeliveryMixin
 from .state import ObjectInstance
 

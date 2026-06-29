@@ -4,14 +4,13 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-from hla.rti.plugin_api import BackendRequest
-
 from hla.bridges.java.common import (
     BackendInfo,
     BackendUnavailableError,
     RTIBackendPlugin,
     reset_py4j_callback_client,
 )
+from hla.rti.plugin_api import BackendRequest
 
 from .factory import create_py4j_backend
 from .runtime import Py4JConfig
@@ -120,9 +119,9 @@ def _discover_pitch_native_202x_runtime() -> BackendInfo | None:
 
 def _pitch_py4j_backend_factory(request: BackendRequest):
     options: dict[str, Any] = dict(request.options if hasattr(request, "options") else request)
-    from py4j.java_gateway import CallbackServerParameters, GatewayParameters, JavaGateway
-
     from hla.vendors.pitch import launch_pitch_py4j_gateway, pitch_fedpro_local_settings_designator
+
+    from py4j.java_gateway import CallbackServerParameters, GatewayParameters, JavaGateway
 
     gateway = options.pop("gateway", None)
     options.setdefault("rti_factory_name", "Federate Protocol")
@@ -162,13 +161,13 @@ def _pitch_native_202x_py4j_backend_factory(request: BackendRequest):
     if request.spec.name != "rti1516_2025":
         raise ValueError(f"pitch-native-202x-py4j only supports HLA spec {request.spec.name!r}")
     options: dict[str, Any] = dict(request.options if hasattr(request, "options") else request)
-    from py4j.java_gateway import CallbackServerParameters, GatewayParameters, JavaGateway
-
     from hla.vendors.pitch import (
         discover_pitch_runtime,
         launch_pitch_hla4_py4j_gateway,
         pitch_fedpro_local_settings_designator,
     )
+
+    from py4j.java_gateway import CallbackServerParameters, GatewayParameters, JavaGateway
 
     surface = str(options.pop("surface", "direct")).strip().lower().replace("_", "-")
     if surface not in {"direct", "fedpro"}:

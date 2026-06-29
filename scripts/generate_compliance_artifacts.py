@@ -50,6 +50,7 @@ from hla.verification.repo_internal.verification.repo_seed_artifacts import (
     write_requirements_ledger_csv,
     write_requirements_ledger_json,
 )
+from hla.verification.repo_internal.requirements import load_2010_canonical_backend_requirement_rows
 from hla.verification.repo_internal.verification.requirements_matrix_artifacts import (
     build_requirements_matrix_2010,
     write_requirements_matrix_2010_csv,
@@ -221,6 +222,21 @@ _BACKEND_DISPOSITION_ARTIFACT_META: dict[str, dict[str, str]] = {
         "output_stem": "portico_requirement_disposition",
     },
 }
+
+_LEGACY_2010_MATRIX_SOURCE_ARTIFACT = "analysis/compliance/requirements_matrix_2010.json"
+_CANONICAL_2010_REQUIREMENT_ARTIFACT = "requirements/2010/canonical_requirements.json"
+_CANONICAL_2010_BACKEND_RESOLUTION_ARTIFACT = "requirements/2010/backend_resolution.json"
+_CANONICAL_2010_PROJECTION_ARTIFACT = "requirements/2010/canonical_projection_rows.json"
+
+
+def _legacy_2010_projection_source_metadata() -> dict[str, Any]:
+    return {
+        "source_artifact": _LEGACY_2010_MATRIX_SOURCE_ARTIFACT,
+        "source_artifact_class": "projection",
+        "canonical_requirement_artifact": _CANONICAL_2010_REQUIREMENT_ARTIFACT,
+        "canonical_backend_resolution_artifact": _CANONICAL_2010_BACKEND_RESOLUTION_ARTIFACT,
+        "projection_rollup_artifact": _CANONICAL_2010_PROJECTION_ARTIFACT,
+    }
 
 
 _SUPPORTED_SUBSET_POLICY_DEFS: dict[str, dict[str, str]] = {
@@ -1297,6 +1313,34 @@ _PYTHON_REQUIREMENT_EVIDENCE: dict[str, tuple[tuple[str, ...], str]] = {
 
 _PYTHON_REQUIREMENT_EVIDENCE.update(
     {
+        "HLA1516.1-FM-4.1-005": (
+            (
+                "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_multi_participation_scenario",
+                "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_multi_participation_matrix",
+            ),
+            "Python federation-lifecycle multi-participation scenario verifies simultaneous participation across federation executions directly.",
+        ),
+        "HLA1516.1-FM-4.1-006": (
+            (
+                "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_multi_participation_scenario",
+                "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_multi_participation_matrix",
+            ),
+            "Python federation-lifecycle multi-participation scenario verifies one application can hold multiple joined federates directly.",
+        ),
+        "HLA1516.1-FM-4.1.4.1-002": (
+            (
+                "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_fom_integrity_negative_scenario",
+                "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_fom_integrity_negative_matrix",
+            ),
+            "Python federation-lifecycle negative FOM-integrity scenario verifies the rejected join path for inconsistent FOM modules directly.",
+        ),
+        "HLA1516.1-TM-8.1.2-003": (
+            (
+                "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_order_override_case",
+                "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_order_override_services",
+            ),
+            "Python Section 8 order-override scenario verifies that receive-order deliveries remain receive-order under order-override services.",
+        ),
         "HLA1516.1-OM-6.1.10-004": (
             (
                 "tests/backends/test_python_backend_support_services.py::test_fom_declared_transport_defaults_apply_to_attributes_and_interactions",
@@ -5800,6 +5844,59 @@ def _family_evidence_refs(source_row: dict[str, Any], *, backend: str, clause_ro
     return _normalized_evidence_refs(filtered_mapped + filtered_vendor)
 
 
+def _runtime_status_from_disposition(legacy_status: str, disposition: str) -> str:
+    status = str(legacy_status or "").strip()
+    if status:
+        return status
+    return {
+        "verified": "yes",
+        "blocked": "blocked",
+        "vendor-divergent": "partial",
+        "not-yet-tested": "no",
+    }.get(disposition, "")
+
+
+def _canonical_family_evidence_refs(source_row: Any, *, backend: str, clause_root: str) -> tuple[str, ...]:
+    requirement_id = str(source_row.requirement_id)
+    vendor_evidence = tuple(source_row.requirement_evidence_refs) + tuple(source_row.backend_evidence_refs)
+    if requirement_id in _SEED_ROW_NOT_APPLICABLE_NOTES:
+        return ()
+    if backend == "python" and requirement_id in _PYTHON_REQUIREMENT_EVIDENCE:
+        return _normalized_evidence_refs(_PYTHON_REQUIREMENT_EVIDENCE[requirement_id][0])
+    if backend == "certi":
+        if requirement_id in _CERTI_REQUIREMENT_EVIDENCE:
+            return _normalized_evidence_refs(_CERTI_REQUIREMENT_EVIDENCE[requirement_id][0])
+        allowed_prefixes = (
+            "packages/hla-verification/src/hla.verification/",
+            "tests/vendors/test_certi_real_backend_exchange_matrix.py::",
+            "tests/vendors/test_certi_real_backend_ownership_matrix.py::",
+            "tests/vendors/test_certi_real_backend_time_matrix.py::",
+            "tests/vendors/test_real_vendor_runtime_smoke.py::",
+            "tests/vendors/test_java_profile_backend_matrix.py::",
+            "packages/hla-backend-certi/docs/evidence/",
+        )
+        filtered_vendor = tuple(ref for ref in vendor_evidence if ref.startswith(allowed_prefixes))
+        return _normalized_evidence_refs(filtered_vendor)
+    if backend == "portico":
+        if requirement_id in _PORTICO_REQUIREMENT_EVIDENCE:
+            return _normalized_evidence_refs(_PORTICO_REQUIREMENT_EVIDENCE[requirement_id][0])
+        allowed_prefixes = (
+            "packages/hla-verification/src/hla.verification/",
+            "tests/vendors/test_portico_real_backend_matrix.py::",
+            "tests/scenarios/test_ownership_management_backend_matrix.py::",
+            "tests/scenarios/test_object_management_backend_matrix.py::",
+            "tests/scenarios/test_federation_lifecycle_backend_matrix.py::",
+            "tests/scenarios/test_federation_management_backend_matrix.py::",
+            "tests/scenarios/test_ddm_backend_matrix.py::",
+            "tests/scenarios/test_support_services_backend_matrix.py::",
+            "tests/time/test_section8_backend_matrix.py::",
+            "tests/time/test_lookahead_backend_matrix.py::",
+        )
+        filtered_vendor = tuple(ref for ref in vendor_evidence if ref.startswith(allowed_prefixes))
+        return _normalized_evidence_refs(filtered_vendor)
+    return _normalized_evidence_refs(vendor_evidence)
+
+
 def _family_requirement_notes(source_row: dict[str, Any], *, backend: str, disposition: str) -> str:
     requirement_id = str(source_row.get("requirement_id") or source_row.get("matrix_id") or "")
     vendor_notes = str(source_row.get("vendor_notes") or "").strip()
@@ -5836,6 +5933,31 @@ def _family_requirement_notes(source_row: dict[str, Any], *, backend: str, dispo
         return generic_notes
 
     return vendor_notes or generic_notes
+
+
+def _canonical_family_requirement_notes(source_row: Any, *, backend: str, disposition: str) -> str:
+    requirement_id = str(source_row.requirement_id)
+    generic_notes = str(source_row.boundary_note or source_row.canonical_status_reason or "").strip()
+
+    if requirement_id in _SEED_ROW_NOT_APPLICABLE_NOTES:
+        return _SEED_ROW_NOT_APPLICABLE_NOTES[requirement_id]
+    if backend == "python" and requirement_id in _PYTHON_REQUIREMENT_EVIDENCE:
+        return _PYTHON_REQUIREMENT_EVIDENCE[requirement_id][1]
+    if backend == "certi":
+        if requirement_id in _CERTI_NOTE_OVERRIDES:
+            return _CERTI_NOTE_OVERRIDES[requirement_id]
+        if requirement_id in _CERTI_REQUIREMENT_EVIDENCE:
+            return _CERTI_REQUIREMENT_EVIDENCE[requirement_id][1]
+        if generic_notes:
+            return generic_notes
+        return f"CERTI runtime disposition is generated as {disposition} from the canonical 2010 backend-resolution companion."
+    if backend == "portico":
+        if requirement_id in _PORTICO_REQUIREMENT_EVIDENCE:
+            return _PORTICO_REQUIREMENT_EVIDENCE[requirement_id][1]
+        if generic_notes:
+            return generic_notes
+        return f"Portico runtime disposition is generated as {disposition} from the canonical 2010 backend-resolution companion."
+    return generic_notes
 
 
 def _pitch_requirement_disposition(row: dict[str, Any]) -> tuple[str, str]:
@@ -6006,7 +6128,7 @@ def _write_pitch_requirement_disposition_artifacts() -> None:
                 },
                 "clause_summary": clause_summary,
                 "profile_clause_summary": profile_clause_summary,
-                "source_artifact": "analysis/compliance/requirements_matrix_2010.json",
+                **_legacy_2010_projection_source_metadata(),
             },
             "rows": [asdict(row) for row in sorted_rows],
         },
@@ -6015,7 +6137,7 @@ def _write_pitch_requirement_disposition_artifacts() -> None:
     md_lines = [
         "# Pitch Requirement Disposition",
         "",
-        "This audit projects the shared HLA 2010 requirements matrix onto Pitch so every row has an explicit generated `pitch` disposition.",
+        "This audit projects the shared HLA 2010 requirements matrix, a legacy review projection rather than canonical requirement truth, onto Pitch so every row has an explicit generated `pitch` disposition.",
         "",
         "## Profile Summary",
         "",
@@ -6114,6 +6236,149 @@ def _write_pitch_requirement_disposition_artifacts() -> None:
             f"| {row.document} | {row.clause_root} | {row.requirement_id or row.matrix_id} | {row.kind} | {row.applicability} | {row.title} |"
         )
     _write_markdown(OUTPUT_DIR / "pitch_requirement_disposition.md", md_lines)
+
+
+def _write_pitch_requirement_disposition_canonical_artifacts() -> None:
+    rows: list[PitchRequirementDispositionRow] = []
+    clause_counts: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+    profile_clause_counts: dict[str, dict[str, dict[str, int]]] = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+    disposition_counts: dict[str, int] = defaultdict(int)
+    applicability_counts: dict[str, int] = defaultdict(int)
+    profile_disposition_counts: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+
+    for source_row in load_2010_canonical_backend_requirement_rows(REPO_ROOT):
+        document = source_row.source_document
+        section_ref = source_row.clause
+        clause_root = _clause_root(section_ref)
+        clause_key = f"{document} §{clause_root}" if clause_root != "unknown" else f"{document} unknown"
+        disposition = source_row.backend_fields.get("pitch_runtime_disposition", "").strip()
+        if not disposition:
+            continue
+        evidence_refs = _normalized_evidence_refs(
+            _PITCH_REQUIREMENT_EVIDENCE.get(source_row.requirement_id, ("", (), ""))[1]
+            + tuple(source_row.requirement_evidence_refs)
+            + tuple(source_row.backend_evidence_refs)
+        )
+        if (
+            _is_ieee_1516_1_2010_document(document)
+            and clause_root == "10"
+            and disposition == "not-yet-tested"
+            and "analysis/compliance/section10_backend_matrix.json" not in evidence_refs
+        ):
+            evidence_refs = evidence_refs + ("analysis/compliance/section10_backend_matrix.json",)
+        pseudo_row = {
+            "requirement_id": source_row.requirement_id,
+            "matrix_id": source_row.requirement_id,
+            "document": document,
+            "section_ref": section_ref,
+            "kind": source_row.row_kind,
+        }
+        mapped_note = _PITCH_REQUIREMENT_EVIDENCE.get(source_row.requirement_id, ("", (), ""))[2]
+        applicability = _pitch_requirement_applicability(pseudo_row)
+        profile_views = _pitch_profile_requirement_views(
+            pseudo_row,
+            family_disposition=disposition,
+            evidence_refs=evidence_refs,
+        )
+        notes = mapped_note or str(source_row.boundary_note or source_row.canonical_status_reason or "")
+        row = PitchRequirementDispositionRow(
+            matrix_id=source_row.requirement_id,
+            requirement_id=source_row.requirement_id,
+            document=document,
+            section_ref=section_ref,
+            clause_root=clause_root,
+            kind=source_row.row_kind,
+            title=source_row.service_or_check or source_row.requirement_id,
+            python_runtime_status=_runtime_status_from_disposition(
+                source_row.backend_fields.get("python_runtime_status", ""),
+                source_row.backend_fields.get("python_runtime_disposition", ""),
+            ),
+            pitch_runtime_status=_runtime_status_from_disposition(
+                source_row.backend_fields.get("pitch_runtime_status", ""),
+                disposition,
+            ),
+            pitch_disposition=disposition,
+            pitch_jpype_disposition=profile_views["pitch-jpype"][0],
+            pitch_py4j_disposition=profile_views["pitch-py4j"][0],
+            applicability=applicability,
+            evidence_refs=evidence_refs,
+            pitch_jpype_evidence_refs=profile_views["pitch-jpype"][1],
+            pitch_py4j_evidence_refs=profile_views["pitch-py4j"][1],
+            notes=notes,
+        )
+        rows.append(row)
+        clause_counts[clause_key][disposition] += 1
+        clause_counts[clause_key]["total"] += 1
+        disposition_counts[disposition] += 1
+        applicability_counts[applicability] += 1
+        profile_disposition_counts["pitch-jpype"][row.pitch_jpype_disposition] += 1
+        profile_disposition_counts["pitch-py4j"][row.pitch_py4j_disposition] += 1
+        profile_clause_counts["pitch-jpype"][clause_key][row.pitch_jpype_disposition] += 1
+        profile_clause_counts["pitch-jpype"][clause_key]["total"] += 1
+        profile_clause_counts["pitch-py4j"][clause_key][row.pitch_py4j_disposition] += 1
+        profile_clause_counts["pitch-py4j"][clause_key]["total"] += 1
+
+    sorted_rows = sorted(
+        rows,
+        key=lambda row: (
+            row.document,
+            int(row.clause_root) if row.clause_root.isdigit() else 999,
+            row.section_ref,
+            row.requirement_id or row.matrix_id,
+        ),
+    )
+    clause_summary = {
+        clause: dict(sorted(counts.items()))
+        for clause, counts in sorted(clause_counts.items(), key=lambda item: item[0])
+    }
+    profile_clause_summary = {
+        profile: {
+            clause: dict(sorted(counts.items()))
+            for clause, counts in sorted(clause_map.items(), key=lambda item: item[0])
+        }
+        for profile, clause_map in sorted(profile_clause_counts.items())
+    }
+
+    _write_json(
+        OUTPUT_DIR / "pitch_requirement_disposition_canonical.json",
+        {
+            "summary": {
+                "row_count": len(sorted_rows),
+                "disposition_counts": dict(sorted(disposition_counts.items())),
+                "applicability_counts": dict(sorted(applicability_counts.items())),
+                "profile_disposition_counts": {
+                    profile: dict(sorted(counts.items()))
+                    for profile, counts in sorted(profile_disposition_counts.items())
+                },
+                "clause_summary": clause_summary,
+                "profile_clause_summary": profile_clause_summary,
+                "source_artifact": "requirements/2010/backend_resolution.json",
+                "source_artifact_class": "backend-resolution",
+                "canonical_requirement_artifact": "requirements/2010/canonical_requirements.json",
+            },
+            "rows": [asdict(row) for row in sorted_rows],
+        },
+    )
+
+    md_lines = [
+        "# Pitch Canonical Requirement Disposition",
+        "",
+        "This audit projects the canonical 2010 requirement catalog plus the canonical backend-resolution companion onto Pitch so every leaf requirement row has an explicit generated `pitch` disposition.",
+        "",
+        "This canonical packet intentionally excludes projection-only section, verification-slice, and other demoted rollup rows.",
+        "",
+        "## Summary",
+        "",
+        "| Document clause | Total | Verified | Blocked | Vendor divergent | Not yet tested | Not applicable | Classification required |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|",
+    ]
+    for clause, counts in clause_summary.items():
+        md_lines.append(
+            f"| {clause} | {counts.get('total', 0)} | {counts.get('verified', 0)} | "
+            f"{counts.get('blocked', 0)} | {counts.get('vendor-divergent', 0)} | {counts.get('not-yet-tested', 0)} | "
+            f"{counts.get('not-applicable', 0)} | {counts.get('classification-required', 0)} |"
+        )
+    _write_markdown(OUTPUT_DIR / "pitch_requirement_disposition_canonical.md", md_lines)
 
 
 def _write_pitch_profile_requirement_disposition_artifacts(profile: str) -> None:
@@ -6709,11 +6974,6 @@ def _write_family_requirement_disposition_artifacts(backend: str) -> None:
     if backend not in _BACKEND_DISPOSITION_ARTIFACT_META:
         raise ValueError(f"unsupported family disposition backend: {backend}")
 
-    requirements_json_path = OUTPUT_DIR / "requirements_matrix_2010.json"
-    if not requirements_json_path.exists():
-        return
-
-    payload = json.loads(requirements_json_path.read_text(encoding="utf-8"))
     meta = _BACKEND_DISPOSITION_ARTIFACT_META[backend]
     disposition_field = meta["disposition_field"]
     status_field = meta["status_field"]
@@ -6721,27 +6981,29 @@ def _write_family_requirement_disposition_artifacts(backend: str) -> None:
     clause_counts: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
     disposition_counts: dict[str, int] = defaultdict(int)
 
-    for source_row in payload.get("rows", []):
-        document = str(source_row.get("document", ""))
-        section_ref = str(source_row.get("section_ref", ""))
+    canonical_backend_rows = load_2010_canonical_backend_requirement_rows(REPO_ROOT)
+
+    for source_row in canonical_backend_rows:
+        document = source_row.source_document
+        section_ref = source_row.clause
         clause_root = _clause_root(section_ref)
         clause_key = f"{document} §{clause_root}" if clause_root != "unknown" else f"{document} unknown"
-        disposition = str(source_row.get(disposition_field, "")).strip()
+        disposition = source_row.backend_fields.get(disposition_field, "").strip()
         if not disposition:
             continue
-        notes = _family_requirement_notes(source_row, backend=backend, disposition=disposition)
+        notes = _canonical_family_requirement_notes(source_row, backend=backend, disposition=disposition)
         rows.append(
             BackendRequirementDispositionRow(
-                matrix_id=str(source_row.get("matrix_id", "")),
-                requirement_id=str(source_row.get("requirement_id", "")),
+                matrix_id=source_row.requirement_id,
+                requirement_id=source_row.requirement_id,
                 document=document,
                 section_ref=section_ref,
                 clause_root=clause_root,
-                kind=str(source_row.get("kind", "")),
-                title=str(source_row.get("title", "")),
-                runtime_status=str(source_row.get(status_field, "")),
+                kind=source_row.row_kind,
+                title=source_row.service_or_check or source_row.requirement_id,
+                runtime_status=_runtime_status_from_disposition(source_row.backend_fields.get(status_field, ""), disposition),
                 runtime_disposition=disposition,
-                evidence_refs=_family_evidence_refs(source_row, backend=backend, clause_root=clause_root),
+                evidence_refs=_canonical_family_evidence_refs(source_row, backend=backend, clause_root=clause_root),
                 notes=notes,
             )
         )
@@ -6769,7 +7031,9 @@ def _write_family_requirement_disposition_artifacts(backend: str) -> None:
             "row_count": len(sorted_rows),
             "disposition_counts": dict(sorted(disposition_counts.items())),
             "clause_summary": clause_summary,
-            "source_artifact": "analysis/compliance/requirements_matrix_2010.json",
+            "source_artifact": "requirements/2010/backend_resolution.json",
+            "source_artifact_class": "backend-resolution",
+            "canonical_requirement_artifact": "requirements/2010/canonical_requirements.json",
         },
         "rows": [asdict(row) for row in sorted_rows],
     }
@@ -6778,7 +7042,7 @@ def _write_family_requirement_disposition_artifacts(backend: str) -> None:
     md_lines = [
         f"# {meta['title']}",
         "",
-        f"This audit projects the shared HLA 2010 requirements matrix onto `{meta['label']}` so every row has an explicit generated `{meta['label']}` disposition.",
+        f"This audit projects the canonical 2010 requirement catalog plus the canonical backend-resolution companion onto `{meta['label']}` so every row has an explicit generated `{meta['label']}` disposition.",
         "",
     ]
     if backend == "portico":
@@ -6843,6 +7107,7 @@ def main(argv: list[str] | None = None) -> int:
     write_requirements_matrix_2010_json(OUTPUT_DIR / "requirements_matrix_2010.json", REPO_ROOT, version=hla.rti1516e.__version__)
     write_requirements_matrix_2010_csv(OUTPUT_DIR / "requirements_matrix_2010.csv", REPO_ROOT, version=hla.rti1516e.__version__)
     _write_pitch_requirement_disposition_artifacts()
+    _write_pitch_requirement_disposition_canonical_artifacts()
     _project_backend_dispositions_into_requirements_matrix_artifacts()
     _write_family_requirement_disposition_artifacts("python")
     _write_family_requirement_disposition_artifacts("certi")

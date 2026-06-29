@@ -7,6 +7,7 @@ declarations.
 
 from __future__ import annotations
 
+
 class RTIexception(Exception):
     """Base class for HLA RTI exceptions."""
 

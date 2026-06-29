@@ -2,30 +2,30 @@
 
 from __future__ import annotations
 
+import ast
+import html
 import json
 import os
-import html
-import ast
 import re
 import xml.etree.ElementTree as ET
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable, Literal, cast
 
-from hla.fom.validation import ValidationIssue, validate_fom_module, validate_omt_xml_schema
 from hla.fom import (
     FOMCatalog,
-    merge_fom_modules,
-    FOMResolver,
     FOMMergeError,
     FOMModule,
     FOMResolutionError,
+    FOMResolver,
     OMTConformanceAssessment,
     assess_omt_conformance,
+    merge_fom_modules,
     parse_fom_xml,
 )
-from hla.verification.repo_internal.fom_inventory import default_load_set_for_family, lookup_fom_inventory
+from hla.fom.validation import ValidationIssue, validate_fom_module, validate_omt_xml_schema
 from hla.verification.repo_internal.fom_corpus_classification import classify_edition_scope
+from hla.verification.repo_internal.fom_inventory import default_load_set_for_family, lookup_fom_inventory
 
 Edition = Literal["2010", "2025"]
 EditionArg = Literal["auto", "2010", "2025"]
