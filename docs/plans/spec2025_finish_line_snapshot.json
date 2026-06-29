@@ -201,7 +201,7 @@
       {
         "evidence_tests": [
           "tests/requirements/test_2025_route_parity_matrix.py",
-          "tests/requirements/test_2025_finish_line_snapshot.py",
+          "tests/verification/test_2025_finish_line_reporting.py",
           "scripts/run_spec2025_route_parity_matrix.py"
         ],
         "family": "cross-route-scenario-parity-ledger",
@@ -2687,7 +2687,7 @@
         "hla.backends.shim.backend.create_shim_backend"
       ],
       "package_creation_rule": "Keep this package as the promoted live backend only while the direct-lane and hosted FedPro proof families stay green and hla-backend-shim continues narrowing as a legacy compatibility shim.",
-      "scanner_regression_test": "tests/requirements/test_2025_finish_line_snapshot.py::test_2025_backend_plugin_scan_detects_future_dedicated_python_2025_backend",
+      "scanner_regression_test": "tests/verification/test_2025_finish_line_reporting.py::test_2025_backend_plugin_scan_detects_future_dedicated_python_2025_backend",
       "target_backend_name": "python1516_2025",
       "target_distribution": "hla-backend-python1516-2025",
       "target_import_root": "hla.backends.python1516_2025",
@@ -8462,7 +8462,6 @@
       "docs/workspace_layout.md",
       "docs/rti_options_and_test_matrix.md",
       "docs/verification/time_model_compliance.md",
-      "docs/verification/verification_plan.md",
       "docs/backend_route_inventory.md",
       "docs/backend_route_inventory_remote.md",
       "packages/hla-backend-python1516-2025/pyproject.toml",
@@ -8475,7 +8474,6 @@
       "packages/hla-fom-target-radar/src/hla/foms/target_radar/_internal/target_radar_factory.py",
       "packages/hla-fom-target-radar/src/hla/foms/target_radar/_internal/target_radar_2025_adapter.py",
       "examples/target_radar_simulation.py",
-      "docs/plans/2025_python_rti_backend_audit.md",
       "docs/python_rti_backend.md"
     ],
     "extraction_boundary": "Keep using hla-backend-python1516-2025 as the executable Python 2025 RTI surface while continuing to narrow hla-backend-shim as a legacy compatibility shim; only reopen a deeper extraction question if future evidence shows that residual compatibility or route normalization logic is still obscuring core runtime semantics.",
@@ -10454,7 +10452,7 @@
     },
     {
       "evidence": [
-        "tests/requirements/test_2025_finish_line_snapshot.py",
+        "tests/verification/test_2025_finish_line_reporting.py",
         "packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py",
         "requirements/2025/requirement_completion_backlog.csv",
         "docs/requirements/ieee-1516-2025/executable_tests/hla_2025_executable_test_requirements_v3.csv"
@@ -10470,7 +10468,7 @@
     },
     {
       "evidence": [
-        "tests/requirements/test_2025_finish_line_snapshot.py",
+        "tests/verification/test_2025_finish_line_reporting.py",
         "packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py",
         "packages/hla-verification/src/hla/verification/repo_internal/verification/spec2025_route_parity_matrix.py",
         "requirements/2025/requirement_completion_backlog.csv"
@@ -18095,6 +18093,11 @@
     "rows_with_doc_anchor_count": 45,
     "test_path": "tests/test_rti1516_2025_validation.py"
   },
+  "owner_sources": {
+    "backend_resolution": "requirements/2025/backend_resolution.json",
+    "canonical_requirements": "requirements/2025/canonical_requirements.json",
+    "closeout_projection": "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv"
+  },
   "ownership_decomposition_audit": {
     "audit_status": "ownership-decomposition-captured",
     "current_assessment": "Ownership proof is no longer just a broad strong-slice claim. Its current evidence separates into divestiture/confirmation, release/if-wanted, acquisition/assumption, availability/cancellation, query visibility, resign-policy, and rollback/restore families. FedPro-hosted replay backs every named family, while the REST-hosted Python route backs the transfer, release, acquisition, cancellation, and query-visibility families but not the narrower resign-policy or rollback families.",
@@ -19993,6 +19996,7 @@
     "unsupported_rows_with_explicit_boundary_flag": 0
   },
   "requirement_coverage_disposition": {
+    "backend_resolution_source": "requirements/2025/backend_resolution.json",
     "by_area_and_disposition": {
       "Callback/configuration/binding deltas": {
         "duplicate/umbrella": 12
@@ -20034,6 +20038,7 @@
       "P2": 172
     },
     "covered_row_count": 645,
+    "current_assessment": "This closeout-reporting packet summarizes the imported harmonization projection, but canonical 2025 requirement status still belongs to requirements/2025/canonical_requirements.json and backend or route truth still belongs to requirements/2025/backend_resolution.json.",
     "fi_binding_surface": {
       "cpp_present": 196,
       "fedpro_alias_or_split_route": 1,
@@ -20042,9 +20047,10 @@
       "fi_rows": 196,
       "java_present": 196
     },
+    "owner_source": "requirements/2025/canonical_requirements.json",
+    "projection_source": "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv",
     "row_count": 691,
     "row_count_from_csv": 691,
-    "source": "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv",
     "status": "repo-reconciled-disposition"
   },
   "requirement_depth_expansion": {
@@ -20090,9 +20096,9 @@
     "status": "imported-harmonization-candidate"
   },
   "requirement_pytest_anchor_audit": {
-    "anchored_requirement_count": 731,
+    "anchored_requirement_count": 732,
     "current_assessment": "Repo-native HLA2025 requirement markers now provide direct pytest-function anchors for the supported working-surface claim, complementing the broader evidence-slice ledgers.",
-    "row_count": 731,
+    "row_count": 732,
     "rows": [
       {
         "pytest_anchor_count": 5,
@@ -20130,11 +20136,13 @@
         "requirement_id": "HLA2025-BLG-002"
       },
       {
-        "pytest_anchor_count": 6,
+        "pytest_anchor_count": 8,
         "pytest_anchors": [
           "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_runtime_capability_when_built",
           "tests/requirements/test_2025_binding_surface_evidence.py::test_2025_java_binding_source_trace_is_separate_from_common_behavior_rows",
           "tests/requirements/test_2025_tail_backlog_evidence.py::test_binding_boundary_note_tracks_all_three_binding_rows_as_non_owner_routes",
+          "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_2025_backend_resolution_catalog_keeps_backend_and_route_truth_separate_from_canonical_status",
+          "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_2025_backend_resolution_rows_keep_owner_shard_and_evidence_traceability_coherent",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_binding_and_hosted_boundary_markdown_keeps_python2025_as_main_runtime_lane",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_python2025_exclusion_boundaries_markdown_gathers_non_claim_areas",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_standard_binding_runtime_capability_markdown_keeps_bounded_binding_claim_explicit"
@@ -20142,11 +20150,12 @@
         "requirement_id": "HLA2025-BND-001"
       },
       {
-        "pytest_anchor_count": 6,
+        "pytest_anchor_count": 7,
         "pytest_anchors": [
           "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_runtime_capability_when_built",
           "tests/requirements/test_2025_binding_surface_evidence.py::test_2025_cpp_binding_source_trace_is_separate_from_common_behavior_rows",
           "tests/requirements/test_2025_tail_backlog_evidence.py::test_binding_boundary_note_tracks_all_three_binding_rows_as_non_owner_routes",
+          "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_2025_backend_resolution_catalog_keeps_backend_and_route_truth_separate_from_canonical_status",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_binding_and_hosted_boundary_markdown_keeps_python2025_as_main_runtime_lane",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_python2025_exclusion_boundaries_markdown_gathers_non_claim_areas",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_standard_binding_runtime_capability_markdown_keeps_bounded_binding_claim_explicit"
@@ -20154,11 +20163,13 @@
         "requirement_id": "HLA2025-BND-002"
       },
       {
-        "pytest_anchor_count": 241,
+        "pytest_anchor_count": 243,
         "pytest_anchors": [
           "tests/requirements/test_2025_binding_surface_evidence.py::test_2025_fedpro_transport_replaces_wsdl_without_cross_wiring_legacy_binding",
+          "tests/requirements/test_2025_tail_backlog_evidence.py::test_backend_resolution_keeps_fedpro_route_boundaries_explicit",
           "tests/requirements/test_2025_tail_backlog_evidence.py::test_binding_boundary_note_tracks_all_three_binding_rows_as_non_owner_routes",
-          "tests/requirements/test_2025_tail_backlog_evidence.py::test_fi_binding_surface_matrix_keeps_fedpro_route_boundaries_explicit",
+          "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_2025_backend_resolution_catalog_keeps_backend_and_route_truth_separate_from_canonical_status",
+          "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_2025_canonical_requirement_catalog_maps_rows_to_owner_docs_shards_and_evidence",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_binding_and_hosted_boundary_markdown_keeps_python2025_as_main_runtime_lane",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_hosted_fedpro_bounded_proof_markdown_keeps_main_runtime_identity_and_boundary_explicit",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_pitch_202x_bounded_comparison_markdown_keeps_bounded_backend_resolution_explicit",
@@ -20401,9 +20412,10 @@
         "requirement_id": "HLA2025-BND-003"
       },
       {
-        "pytest_anchor_count": 170,
+        "pytest_anchor_count": 171,
         "pytest_anchors": [
           "tests/backends/test_proto2025_federate_examples.py::test_proto2025_2025_example_foms_drive_two_federate_exchange",
+          "tests/requirements/test_2025_traceability.py::test_spec2025_packet_only_traceability_rows_get_requirement_facing_owner_docs_and_direct_anchors",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_callback_surface_uses_direct_context_parameters_not_supplemental_helpers",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compat_records_discovery_metadata_callback_shape",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compat_records_update_advisory_callback_shape",
@@ -20804,11 +20816,12 @@
         "requirement_id": "HLA2025-FI-031"
       },
       {
-        "pytest_anchor_count": 5,
+        "pytest_anchor_count": 6,
         "pytest_anchors": [
           "tests/requirements/test_2025_tail_backlog_evidence.py::test_delta_umbrella_rows_are_explicit_evidenced_owner_doc_closures_not_missing_evidence_rows",
           "tests/requirements/test_2025_tail_backlog_evidence.py::test_harmonization_packets_repoint_delta_umbrella_rows_to_real_callback_binding_evidence",
           "tests/requirements/test_2025_traceability.py::test_spec2025_callback_binding_traceability_rows_are_child_mapped_and_evidence_backed",
+          "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_2025_backend_resolution_catalog_keeps_backend_and_route_truth_separate_from_canonical_status",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_callback_binding_delta_markdown_maps_umbrella_rows_to_runtime_and_binding_evidence",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_callback_bounded_proof_markdown_keeps_callback_family_boundary_explicit"
         ],
@@ -21982,7 +21995,7 @@
       {
         "pytest_anchor_count": 12,
         "pytest_anchors": [
-          "tests/requirements/test_2025_tail_backlog_evidence.py::test_fi_binding_surface_matrix_keeps_fedpro_route_boundaries_explicit",
+          "tests/requirements/test_2025_tail_backlog_evidence.py::test_backend_resolution_keeps_fedpro_route_boundaries_explicit",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_2025_object_management_bounded_proof_calls_out_execution_member_guards",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_restores_transportation_type_state_without_wrapper_adapter",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_transportation_type_restore_persistence_scenario_without_wrapper_adapter",
@@ -23381,7 +23394,7 @@
       {
         "pytest_anchor_count": 8,
         "pytest_anchors": [
-          "tests/requirements/test_2025_tail_backlog_evidence.py::test_fi_binding_surface_matrix_keeps_fedpro_route_boundaries_explicit",
+          "tests/requirements/test_2025_tail_backlog_evidence.py::test_backend_resolution_keeps_fedpro_route_boundaries_explicit",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_delivers_immediate_object_callbacks_inline_without_evocation",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_raw_callback_control_flow_without_wrapper_adapter",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_enable_disable_callbacks_controls_evoked_delivery",
@@ -23419,7 +23432,7 @@
       {
         "pytest_anchor_count": 7,
         "pytest_anchors": [
-          "tests/requirements/test_2025_tail_backlog_evidence.py::test_fi_binding_surface_matrix_keeps_fedpro_route_boundaries_explicit",
+          "tests/requirements/test_2025_tail_backlog_evidence.py::test_backend_resolution_keeps_fedpro_route_boundaries_explicit",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_raw_callback_control_flow_without_wrapper_adapter",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_enable_disable_callbacks_controls_evoked_delivery",
           "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_drops_disconnected_callback_backlog_before_reconnect",
@@ -23633,7 +23646,6 @@
       {
         "pytest_anchor_count": 47,
         "pytest_anchors": [
-          "tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_eliminates_shim_helper_imports_from_runtime_tests",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_every_shim_helper_under_an_explicit_wrapper_consumption_test",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_main_runtime_suite_free_of_shim_named_tests",
@@ -23679,14 +23691,14 @@
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_support_factory_and_decode_scenario_without_wrapper_adapter",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_transportation_type_rejection_scenario_without_wrapper_adapter",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_transportation_type_restore_persistence_scenario_without_wrapper_adapter",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_dedicated_python1516_2025_backend_is_discoverable_and_executable"
+          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_dedicated_python1516_2025_backend_is_discoverable_and_executable",
+          "tests/verification/test_2025_finish_line_reporting.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest"
         ],
         "requirement_id": "HLA2025-MIL-001"
       },
       {
         "pytest_anchor_count": 24,
         "pytest_anchors": [
-          "tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_eliminates_shim_helper_imports_from_runtime_tests",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_every_shim_helper_under_an_explicit_wrapper_consumption_test",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_main_runtime_suite_free_of_shim_named_tests",
@@ -23709,14 +23721,14 @@
           "tests/requirements/test_2025_tail_backlog_evidence.py::test_harmonization_packets_keep_covered_runtime_evidence_on_python2025_lane",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_fom_backed_scenario_bounded_proof_markdown_keeps_tracked_suite_boundary_explicit",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_hosted_fedpro_bounded_proof_markdown_keeps_main_runtime_identity_and_boundary_explicit",
-          "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_python2025_direct_bounded_proof_markdown_keeps_main_lane_claim_explicit"
+          "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_python2025_direct_bounded_proof_markdown_keeps_main_lane_claim_explicit",
+          "tests/verification/test_2025_finish_line_reporting.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest"
         ],
         "requirement_id": "HLA2025-MIL-002"
       },
       {
         "pytest_anchor_count": 21,
         "pytest_anchors": [
-          "tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_eliminates_shim_helper_imports_from_runtime_tests",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_every_shim_helper_under_an_explicit_wrapper_consumption_test",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_main_runtime_suite_free_of_shim_named_tests",
@@ -23736,14 +23748,14 @@
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_runtime_aliases_reexport_points_at_python2025_backend",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_snapshot_tracks_live_evidence_and_boundaries",
           "tests/test_hla_factory_composition.py::test_2025_version_local_factory_rejects_legacy_shim_provider_name",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_dedicated_python1516_2025_backend_is_discoverable_and_executable"
+          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_dedicated_python1516_2025_backend_is_discoverable_and_executable",
+          "tests/verification/test_2025_finish_line_reporting.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest"
         ],
         "requirement_id": "HLA2025-MIL-003"
       },
       {
         "pytest_anchor_count": 62,
         "pytest_anchors": [
-          "tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_time_window_proof_ladder_negative_oracle_guards",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_restore_federate_local_state_scenario_without_wrapper_adapter",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario_without_wrapper_adapter",
@@ -23804,14 +23816,14 @@
           "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_restore_state_scenario_over_fedpro_route",
           "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_restore_window_state_oracle_over_fedpro_route",
           "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_core_scenario_over_fedpro_route",
-          "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route"
+          "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route",
+          "tests/verification/test_2025_finish_line_reporting.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest"
         ],
         "requirement_id": "HLA2025-MIL-004"
       },
       {
         "pytest_anchor_count": 61,
         "pytest_anchors": [
-          "tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_time_window_proof_ladder_negative_oracle_guards",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_restore_federate_local_state_scenario_without_wrapper_adapter",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario_without_wrapper_adapter",
@@ -23871,14 +23883,14 @@
           "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_restore_state_scenario_over_fedpro_route",
           "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_restore_window_state_oracle_over_fedpro_route",
           "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_core_scenario_over_fedpro_route",
-          "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route"
+          "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route",
+          "tests/verification/test_2025_finish_line_reporting.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest"
         ],
         "requirement_id": "HLA2025-MIL-005"
       },
       {
         "pytest_anchor_count": 59,
         "pytest_anchors": [
-          "tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_wrapper_boundary",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_time_window_proof_ladder_negative_oracle_guards",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_legacy_shim_helper_modules_are_removed",
@@ -23936,7 +23948,8 @@
           "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_restore_state_scenario_over_fedpro_route",
           "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_restore_window_state_oracle_over_fedpro_route",
           "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_core_scenario_over_fedpro_route",
-          "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route"
+          "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route",
+          "tests/verification/test_2025_finish_line_reporting.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest"
         ],
         "requirement_id": "HLA2025-MIL-006"
       },
@@ -24065,6 +24078,13 @@
           "tests/test_rti1516_2025_validation.py::test_2025_validation_allows_standard_mim_hla_attribute_and_parameter_names"
         ],
         "requirement_id": "HLA2025-MOD-010"
+      },
+      {
+        "pytest_anchor_count": 1,
+        "pytest_anchors": [
+          "tests/requirements/test_2025_traceability.py::test_spec2025_packet_only_traceability_rows_get_requirement_facing_owner_docs_and_direct_anchors"
+        ],
+        "requirement_id": "HLA2025-MOM-001"
       },
       {
         "pytest_anchor_count": 4,
@@ -27457,9 +27477,8 @@
         "requirement_id": "HLA2025-OMT-SU-196"
       },
       {
-        "pytest_anchor_count": 46,
+        "pytest_anchor_count": 48,
         "pytest_anchors": [
-          "tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest",
           "tests/requirements/test_2025_imported_packets.py::test_covered_fi_service_rows_are_consistently_covered_in_disposition_and_binding_matrix",
           "tests/requirements/test_2025_imported_packets.py::test_imported_executable_test_backlog_is_tracked_in_registry",
           "tests/requirements/test_2025_imported_packets.py::test_imported_requirement_depth_packet_is_tracked_as_harmonization_candidate",
@@ -27480,6 +27499,8 @@
           "tests/requirements/test_2025_tail_backlog_evidence.py::test_harmonization_packets_keep_ownership_management_rows_on_ownership_management_proof_note",
           "tests/requirements/test_2025_tail_backlog_evidence.py::test_harmonization_packets_keep_support_service_rows_on_bounded_support_service_evidence",
           "tests/requirements/test_2025_tail_backlog_evidence.py::test_harmonization_packets_keep_time_management_rows_on_time_management_proof_note",
+          "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_2025_canonical_catalog_rows_keep_owner_shard_and_evidence_traceability_coherent",
+          "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_2025_canonical_requirement_catalog_maps_rows_to_owner_docs_shards_and_evidence",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_ddm_bounded_proof_markdown_keeps_service_family_traceability_explicit",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_declaration_management_bounded_proof_markdown_keeps_service_family_traceability_explicit",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_federation_management_bounded_proof_markdown_keeps_service_family_traceability_explicit",
@@ -27504,14 +27525,14 @@
           "tests/test_rti1516_2025_encoding_auth_contexts.py::test_2010_runtime_context_does_not_forward_auth_context_to_python1516e_backend",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2010_and_2025_backend_selection_do_not_cross_wire",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_spec_aliases_and_backend_discovery_are_spec_aware",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_spec_package_exposes_authoritative_surface_without_replacing_2010"
+          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_spec_package_exposes_authoritative_surface_without_replacing_2010",
+          "tests/verification/test_2025_finish_line_reporting.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest"
         ],
         "requirement_id": "HLA2025-REQ-001"
       },
       {
         "pytest_anchor_count": 33,
         "pytest_anchors": [
-          "tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_ieee_1516_2025_requirements_registry_has_initial_tranche",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_save_restore_bounded_proof_markdown_keeps_rollback_family_boundary_explicit",
           "tests/test_hla_factory_composition.py::test_hla_factory_rejects_mismatched_spec_provider_combinations",
@@ -27543,7 +27564,8 @@
           "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_mom_object_and_ownership_service_slice",
           "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_mom_request_report_slice",
           "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_mom_federation_management_service_interactions",
-          "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_lost_federate_mom_scenario_over_fedpro_route"
+          "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_lost_federate_mom_scenario_over_fedpro_route",
+          "tests/verification/test_2025_finish_line_reporting.py::test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence"
         ],
         "requirement_id": "HLA2025-REQ-002"
       },
@@ -27662,25 +27684,31 @@
         "requirement_id": "HLA2025-SUP-001"
       },
       {
-        "pytest_anchor_count": 8,
+        "pytest_anchor_count": 12,
         "pytest_anchors": [
-          "tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest",
-          "tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence",
-          "tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_uses_live_traceability_artifacts",
-          "tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_writer_emits_reviewable_json_and_markdown",
           "tests/requirements/test_2025_imported_packets.py::test_covered_fi_service_rows_are_consistently_covered_in_disposition_and_binding_matrix",
           "tests/requirements/test_2025_imported_packets.py::test_imported_requirement_disposition_packet_tracks_repo_reconciled_coverage_promotions",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_snapshot_tracks_live_evidence_and_boundaries",
-          "tests/requirements/test_2025_tail_backlog_evidence.py::test_harmonization_packets_keep_covered_runtime_evidence_on_python2025_lane"
+          "tests/requirements/test_2025_tail_backlog_evidence.py::test_harmonization_packets_keep_covered_runtime_evidence_on_python2025_lane",
+          "tests/requirements/test_2025_traceability.py::test_spec2025_packet_only_traceability_rows_get_requirement_facing_owner_docs_and_direct_anchors",
+          "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_2025_backend_resolution_rows_keep_owner_shard_and_evidence_traceability_coherent",
+          "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_2025_canonical_catalog_rows_keep_owner_shard_and_evidence_traceability_coherent",
+          "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_2025_canonical_requirement_catalog_maps_rows_to_owner_docs_shards_and_evidence",
+          "tests/verification/test_2025_finish_line_reporting.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest",
+          "tests/verification/test_2025_finish_line_reporting.py::test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence",
+          "tests/verification/test_2025_finish_line_reporting.py::test_2025_finish_line_snapshot_uses_live_traceability_artifacts",
+          "tests/verification/test_2025_finish_line_reporting.py::test_2025_finish_line_writer_emits_reviewable_json_and_markdown"
         ],
         "requirement_id": "HLA2025-TRACE-001"
       },
       {
-        "pytest_anchor_count": 3,
+        "pytest_anchor_count": 5,
         "pytest_anchors": [
-          "tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest",
-          "tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_uses_live_traceability_artifacts",
-          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_snapshot_tracks_live_evidence_and_boundaries"
+          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_snapshot_tracks_live_evidence_and_boundaries",
+          "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_2025_backend_resolution_rows_keep_owner_shard_and_evidence_traceability_coherent",
+          "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_2025_canonical_catalog_rows_keep_owner_shard_and_evidence_traceability_coherent",
+          "tests/verification/test_2025_finish_line_reporting.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest",
+          "tests/verification/test_2025_finish_line_reporting.py::test_2025_finish_line_snapshot_uses_live_traceability_artifacts"
         ],
         "requirement_id": "HLA2025-TRACE-002"
       },

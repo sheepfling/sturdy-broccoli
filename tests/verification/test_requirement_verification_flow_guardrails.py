@@ -175,11 +175,27 @@ def test_2025_finish_line_requirement_test_is_explicitly_downstream_reporting() 
 def test_closeout_docs_demote_themselves_beneath_canonical_requirement_truth() -> None:
     audit_text = (ROOT / "docs" / "plans" / "requirements_completion_audit.md").read_text(encoding="utf-8")
     closure_text = (ROOT / "docs" / "plans" / "requirements_remaining_closure.md").read_text(encoding="utf-8")
+    gap_register_text = (ROOT / "docs" / "plans" / "requirements_gap_register.md").read_text(encoding="utf-8")
+    export_text = (ROOT / "docs" / "verification" / "requirement_compliance_exports.md").read_text(encoding="utf-8")
+    structure_packet_text = (ROOT / "docs" / "verification" / "requirements_structure_packet.md").read_text(encoding="utf-8")
+    view_registry_text = (ROOT / "docs" / "verification" / "view_registry.md").read_text(encoding="utf-8")
+    execution_queue_text = (ROOT / "docs" / "plans" / "requirements_execution_queue.md").read_text(encoding="utf-8")
+    normalized_execution_queue_text = " ".join(execution_queue_text.split())
 
     assert "canonical requirement catalog and backend-resolution companion" in audit_text
     assert "not themselves requirement-truth owner surfaces" in audit_text
     assert "canonical requirement and\nbackend-resolution catalogs as requirement truth" in closure_text
     assert "downstream closeout-program\nprojection inputs" in closure_text
+    assert "requirements/2025/canonical_requirements.json" in gap_register_text
+    assert "requirements/2025/backend_resolution.json" in gap_register_text
+    assert "requirements/2025/harmonization/hla_2025_harmonization_worklist.csv" not in export_text
+    assert "requirements/2025/canonical_requirements.json" in export_text
+    assert "requirements/2025/backend_resolution.json" in export_text
+    assert "generated 2025 grouped closeout projection" in structure_packet_text
+    assert "grouped closeout projection is now fully dispositioned" in structure_packet_text
+    assert "does not replace the canonical requirement catalog or backend-resolution\n  companion" in structure_packet_text
+    assert "canonical requirement catalog, backend-resolution companion" in view_registry_text
+    assert "canonical requirement catalog, or backend-resolution companion has gone stale" in normalized_execution_queue_text
 
 
 def test_high_traffic_plan_and_verification_entrypoints_route_through_canonical_surfaces() -> None:
@@ -187,6 +203,24 @@ def test_high_traffic_plan_and_verification_entrypoints_route_through_canonical_
     verification_plan = (ROOT / "docs" / "verification" / "verification_plan.md").read_text(encoding="utf-8")
     verification_readme = (ROOT / "docs" / "verification" / "README.md").read_text(encoding="utf-8")
     backend_audit = (ROOT / "docs" / "plans" / "2025_python_rti_backend_audit.md").read_text(encoding="utf-8")
+    row_audit = (ROOT / "docs" / "plans" / "2025_requirement_by_requirement_audit.md").read_text(encoding="utf-8")
+    umbrella_worklist = (
+        ROOT / "docs" / "plans" / "2025_python_rti_umbrella_decomposition_worklist.md"
+    ).read_text(encoding="utf-8")
+    completion_worklist = (
+        ROOT / "docs" / "plans" / "2025_python_rti_100_percent_worklist.md"
+    ).read_text(encoding="utf-8")
+    compliance_plan = (
+        ROOT / "docs" / "plans" / "PLN-004_python_rti_100_percent_compliance_plan.md"
+    ).read_text(encoding="utf-8")
+    shard_view_plan = (
+        ROOT / "docs" / "plans" / "PLN-005_requirements_shards_views_and_verification_plan.md"
+    ).read_text(encoding="utf-8")
+    normalized_row_plan = (
+        ROOT / "docs" / "plans" / "PLN-006_normalized_requirement_row_model_execution_plan.md"
+    ).read_text(encoding="utf-8")
+    finish_line = (ROOT / "docs" / "plans" / "requirements_finish_line.md").read_text(encoding="utf-8")
+    normalized_row_plan_normalized = " ".join(normalized_row_plan.split())
 
     assert "canonical requirement catalog and backend-resolution companion" in plans_readme
     assert "downstream reporting and sequencing\nsurfaces" in plans_readme
@@ -195,7 +229,17 @@ def test_high_traffic_plan_and_verification_entrypoints_route_through_canonical_
     assert "source-side canonical requirement row or backend-resolution row" in verification_readme
     assert "requirements/2025/canonical_requirements.json" in backend_audit
     assert "requirements/2025/backend_resolution.json" in backend_audit
-    assert "downstream projection or backend-detail artifacts" in backend_audit
+    assert "not\nowner surfaces for 2025 requirement status or backend truth" in backend_audit
+    assert "requirements/2025/canonical_requirements.json" in row_audit
+    assert "requirements/2025/backend_resolution.json" in row_audit
+    assert "not the primary requirement-truth surface" in row_audit
+    assert "canonical 2025 requirement catalog" in umbrella_worklist
+    assert "canonical 2025 requirement catalog counts" in completion_worklist
+    assert "canonical requirement catalog" in compliance_plan
+    assert "backend-resolution companion" in compliance_plan
+    assert "generated grouped projections and canonical row catalogs linked, but not conflated" in shard_view_plan
+    assert "canonical requirement catalog, grouped closeout projections" in normalized_row_plan_normalized
+    assert "canonical-to-generated projection synchronization" in finish_line
 
 
 def test_2025_boundary_owner_docs_require_canonical_or_backend_resolution_for_claim_widening() -> None:

@@ -22,7 +22,7 @@ Use this metric split:
    - `retired/legacy-only`
    - bounded backend-resolution or route surfaces
 
-Current row-level ledger counts:
+Current canonical 2025 requirement catalog counts:
 
 - total tracked rows: `691`
 - directly `covered`: `645`
@@ -88,7 +88,7 @@ not active direct-support targets.
 Latest investigated no-convert result for the framework-umbrella class:
 
 - on `2026-06-26`, the full framework slice was re-audited against its owner
-  doc, harmonization ledger, child-row map, and executable anchors
+  doc, canonical requirement catalog, child-row map, and executable anchors
 - the current result is to keep those rows as `duplicate/umbrella`
 - they should not be treated as the next direct-support backlog unless the
   repo deliberately wants literal `691 / 691 covered`
@@ -180,8 +180,8 @@ boundaries, not active direct-support targets.
 Latest investigated no-convert result for the retired/legacy-only class:
 
 - on `2026-06-26`, the full retired/legacy slice was re-audited against its
-  owner doc, harmonization ledger, grouped worklist rows, and finish-line
-  evidence surfaces
+  owner doc, canonical requirement catalog, generated grouped projections, and
+  finish-line evidence surfaces
 - the current result is to keep those rows as `retired/legacy-only`
 - they should not be treated as the next direct-support backlog unless the
   repo deliberately wants a real compatibility or migration program
@@ -202,7 +202,8 @@ Latest investigated no-convert result for the retired/legacy-only class:
 1. decompose or directly prove the `22` umbrella rows
 2. implement and test compatibility or migration scope for the `24` retired
    rows
-3. update owner docs, ledgers, finish-line packets, and exports together
+3. update owner docs, canonical catalogs or backend-resolution companions,
+   finish-line packets, and exports together
 
 ## Vendor Update Rule
 

@@ -340,11 +340,11 @@ program:
 
 | Bucket | Owner doc | Owner companion | Current evidence | Missing proof to close | Exit condition |
 | --- | --- | --- | --- | --- | --- |
-| 2025 callback-control umbrella slice (`HLA2025-FI-CB-002` through `HLA2025-FI-CB-004`) | `docs/requirements/ieee-1516-2025/callback_binding_deltas.md` | `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv` plus `requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv` | child FI service rows and direct runtime tests already carry explicit EVOKED, queue-drain, and enable/disable callback evidence | narrower standalone callback-control claims that do more than summarize the child rows and are explicitly tied to their narrowest shard owners | the umbrella rows are either intentionally left as non-standalone with the current child-owner map, or replaced by narrower direct callback-control claims with explicit executable anchors and owner-doc updates |
-| 2025 directed-interaction callback umbrella slice (`HLA2025-FI-CB-007`) | `docs/requirements/ieee-1516-2025/callback_binding_deltas.md` | `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv` plus route-parity artifacts and `requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv` | child directed-interaction FI rows, direct runtime tests, and hosted FedPro route-parity evidence already carry explicit directed callback semantics | narrower standalone directed-interaction callback-parameterization claims that do more than summarize the child rows and are explicitly tied to their narrowest shard owners | the umbrella row is either intentionally left as non-standalone with the current child-owner map, or replaced by a narrower direct directed-callback claim with explicit executable anchors and owner-doc updates |
-| 2025 configuration/auth umbrella slice (`HLA2025-FI-CFG-001`, `HLA2025-FI-AUTH-001`) | `docs/requirements/ieee-1516-2025/callback_binding_deltas.md` | `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv` plus `requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv` | child connect rows, factory composition tests, and hosted FedPro request-shape evidence already carry explicit configuration-result and credentials behavior | narrower standalone configuration-result or authorization-credentials claims that do more than summarize the child connect rows and are explicitly tied to their narrowest shard owners | the umbrella rows are either intentionally left as non-standalone with the current child-owner map, or replaced by narrower direct connect-auth/config claims with explicit executable anchors and owner-doc updates |
-| 2025 Java/C++ binding umbrella slice (`HLA2025-BIND-JAVA-CPP-001`) | `docs/requirements/ieee-1516-2025/callback_binding_deltas.md` | `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv` plus route-parity artifacts, shim-route evidence packets, and `requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv` | child binding rows, standard-shim artifact tests, and shim-route traces already carry explicit Java/C++ wrapper-capability evidence | narrower standalone Java/C++ binding-capability claims that do more than summarize the child rows and are explicitly tied to their narrowest shard owners | the umbrella row is either intentionally left as non-standalone with the current child-owner map, or replaced by a narrower direct binding-capability claim with explicit executable anchors and owner-doc updates |
-| 2025 FedPro protocol umbrella slice (`HLA2025-BIND-FEDPRO-001`) | `docs/requirements/ieee-1516-2025/callback_binding_deltas.md` | `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv` plus route-parity artifacts and `requirements/2025/harmonization/hla_2025_harmonization_worklist.csv` | hosted-route parity, protocol assets, and route matrix evidence already exist | narrower direct protocol-capability claims that separate transport adaptation proof from broad umbrella wording | the current bounded hosted-route reading is either preserved explicitly, or replaced by narrower direct FedPro protocol-capability claims with explicit proto/callback/error-mapping evidence |
+| 2025 callback-control umbrella slice (`HLA2025-FI-CB-002` through `HLA2025-FI-CB-004`) | `docs/requirements/ieee-1516-2025/callback_binding_deltas.md` | `requirements/2025/canonical_requirements.json` plus `requirements/2025/backend_resolution.json` when binding divergence matters | child FI service rows and direct runtime tests already carry explicit EVOKED, queue-drain, and enable/disable callback evidence | narrower standalone callback-control claims that do more than summarize the child rows and are explicitly tied to their narrowest shard owners | the umbrella rows are either intentionally left as non-standalone with the current child-owner map, or replaced by narrower direct callback-control claims with explicit executable anchors and owner-doc updates |
+| 2025 directed-interaction callback umbrella slice (`HLA2025-FI-CB-007`) | `docs/requirements/ieee-1516-2025/callback_binding_deltas.md` | `requirements/2025/canonical_requirements.json` plus `requirements/2025/backend_resolution.json` and route-parity artifacts | child directed-interaction FI rows, direct runtime tests, and hosted FedPro route-parity evidence already carry explicit directed callback semantics | narrower standalone directed-interaction callback-parameterization claims that do more than summarize the child rows and are explicitly tied to their narrowest shard owners | the umbrella row is either intentionally left as non-standalone with the current child-owner map, or replaced by a narrower direct directed-callback claim with explicit executable anchors and owner-doc updates |
+| 2025 configuration/auth umbrella slice (`HLA2025-FI-CFG-001`, `HLA2025-FI-AUTH-001`) | `docs/requirements/ieee-1516-2025/callback_binding_deltas.md` | `requirements/2025/canonical_requirements.json` plus `requirements/2025/backend_resolution.json` when hosted-route or binding divergence matters | child connect rows, factory composition tests, and hosted FedPro request-shape evidence already carry explicit configuration-result and credentials behavior | narrower standalone configuration-result or authorization-credentials claims that do more than summarize the child connect rows and are explicitly tied to their narrowest shard owners | the umbrella rows are either intentionally left as non-standalone with the current child-owner map, or replaced by narrower direct connect-auth/config claims with explicit executable anchors and owner-doc updates |
+| 2025 Java/C++ binding umbrella slice (`HLA2025-BIND-JAVA-CPP-001`) | `docs/requirements/ieee-1516-2025/callback_binding_deltas.md` | `requirements/2025/backend_resolution.json` plus route-parity artifacts and shim-route evidence packets | child binding rows, standard-shim artifact tests, and shim-route traces already carry explicit Java/C++ wrapper-capability evidence | narrower standalone Java/C++ binding-capability claims that do more than summarize the child rows and are explicitly tied to their narrowest shard owners | the umbrella row is either intentionally left as non-standalone with the current child-owner map, or replaced by a narrower direct binding-capability claim with explicit executable anchors and owner-doc updates |
+| 2025 FedPro protocol umbrella slice (`HLA2025-BIND-FEDPRO-001`) | `docs/requirements/ieee-1516-2025/callback_binding_deltas.md` | `requirements/2025/backend_resolution.json` plus route-parity artifacts | hosted-route parity, protocol assets, and route matrix evidence already exist | narrower direct protocol-capability claims that separate transport adaptation proof from broad umbrella wording | the current bounded hosted-route reading is either preserved explicitly, or replaced by narrower direct FedPro protocol-capability claims with explicit proto/callback/error-mapping evidence |
 
 Latest investigated decision:
 
@@ -375,8 +375,9 @@ Latest investigated decision:
   a genuinely narrower direct protocol-capability claim
 - on `2026-06-26`, the `2025 retired/legacy-only rows` were also re-audited
   and kept as an explicit exclusion boundary
-- current retired owner docs, harmonization ledgers, grouped worklist rows,
-  and finish-line evidence already carry the intended legacy-only reading
+- current retired owner docs plus the canonical requirement catalog already
+  carry the intended legacy-only reading, with older grouped artifacts kept as
+  downstream projections only
 - no compatibility or migration mode was identified that would justify
   promoting those rows into active 2025 support claims
 - treat that slice as maintained exclusion documentation unless the repo later
@@ -385,44 +386,40 @@ Latest investigated decision:
 Settled but still useful reference:
 
 - `docs/requirements/ieee-1516-2025/framework_rules.md` plus
-  `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
+  `requirements/2025/canonical_requirements.json`
   remain the canonical place to read the `duplicate/umbrella` framework rows.
   They are intentionally maintained as non-standalone parent rows, but not
   active open buckets in this register unless future child-claim or ownership
   changes reopen them.
 - `docs/requirements/ieee-1516-2025/callback_binding_deltas.md` plus
-  `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
-  and `requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv`
+  `requirements/2025/canonical_requirements.json` and
+  `requirements/2025/backend_resolution.json`
   remain the canonical place to read the callback/configuration/binding
   `duplicate/umbrella` rows. They are intentionally maintained as
   non-standalone delta or normalization rows, but not active open buckets in
   this register unless future child-claim or ownership changes reopen them.
 - `docs/requirements/ieee-1516-2025/retired_legacy_mapping.md` plus
-  `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
+  `requirements/2025/canonical_requirements.json`
   remain the canonical place to read the `retired/legacy-only` rows. They are
   intentionally maintained as explicit exclusions, but not active open buckets
   in this register unless the repo deliberately opens a compatibility or
   migration program.
 - `docs/requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md`
-  plus route-parity artifacts,
-  `requirements/2025/harmonization/hla_2025_harmonization_worklist.csv`, and
-  `requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv`
+  plus `requirements/2025/backend_resolution.json` and route-parity artifacts
   remain the canonical place to read the binding and hosted-route bounded
   claims. They are intentionally maintained as bounded adaptation or
   transport-route evidence, but not active open buckets in this register
   unless the repo deliberately opens a broader behavior-equivalence program.
 - `docs/requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md` plus
-  `requirements/2025/harmonization/hla_2025_pitch_202x_group_resolution.csv`,
-  `requirements/2025/harmonization/hla_2025_pitch_202x_row_resolution.csv`,
-  and the grouped `pitch_202x_resolution` field in
-  `requirements/2025/harmonization/hla_2025_harmonization_worklist.csv`
+  `requirements/2025/backend_resolution.json`
   remain the canonical place to read the Pitch proto HLA 4 / `202X`
   backend-resolution lane. It is intentionally maintained as a bounded
   backend-resolution reading, but not an active open bucket in this register
   unless the repo deliberately opens a broader vendor-runtime comparison or
   certification program.
-- `docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md` plus
-  `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
+- `docs/requirements/ieee-1516-2025/omt.md`,
+  `docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md`, and
+  `requirements/2025/canonical_requirements.json`
   remain the canonical place to read the OMT `xs:any` extension-tolerance
   boundary. It is intentionally maintained as payload-preserving tolerance
   rather than arbitrary extension-execution semantics, but not an active open

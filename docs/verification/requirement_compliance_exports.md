@@ -125,13 +125,15 @@ Canonical sources:
 - `requirements/2025/canonical_requirements.json`
 - `requirements/2025/backend_resolution.json`
 
-Generated grouped projection still used by some downstream workflows:
+Generated grouped projections may still exist for downstream workflows, but the
+export contract should describe them as a downstream bucketing projection
+rather than treating any single grouped CSV as an owner surface.
 
-- `requirements/2025/harmonization/hla_2025_harmonization_worklist.csv`
-
-Treat that grouped worklist as a downstream bucketing projection over the
-canonical 2025 row catalog and backend-resolution catalog, not as an owner
-surface.
+When a spreadsheet row needs an owner or status source, prefer
+`requirements/2025/canonical_requirements.json` for canonical requirement
+closure and `requirements/2025/backend_resolution.json` for backend or route
+divergence. Export-only grouped buckets should be labeled as downstream
+projections, not requirement truth.
 
 Human-facing front doors:
 

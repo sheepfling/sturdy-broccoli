@@ -225,7 +225,7 @@ Priorities:
    decomposed
 3. keep `Pitch` proto HLA 4 / `202X`, hosted FedPro, and Java/C++ binding
    results in explicit backend-resolution lanes rather than in canonical status
-4. keep grouped worklists and row-level ledgers linked, but not conflated
+4. keep generated grouped projections and canonical row catalogs linked, but not conflated
 
 ### 2010 / 1516e
 
@@ -292,4 +292,3 @@ This plan is complete when:
 4. restart and junior docs use the same runnable names as the top-level docs
 5. repo-green can be described as a stable shard set rather than a collection
    of loosely defined overlapping slices
-

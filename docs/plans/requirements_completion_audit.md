@@ -367,9 +367,11 @@ Two different 2025 status views are present in the repo and they answer
 different questions:
 
 - [`requirements_remaining_closure.md`](requirements_remaining_closure.md)
-  tracks grouped remaining bucket work in the harmonization worklist
+  tracks grouped remaining bucket work in the generated grouped closeout
+  projection
 - [`hla_2025_requirement_coverage_closure_report.md`](../../requirements/2025/harmonization/hla_2025_requirement_coverage_closure_report.md)
-  tracks the row-level 691-row disposition pass
+  tracks one generated row-level closeout projection over the canonical
+  691-row requirement catalog
 
 These are not contradictory, but they are not the same scope.
 Grouped bucket counts should not be read as row counts.
@@ -423,8 +425,9 @@ Grouped bucket counts should not be read as row counts.
    family proof notes
    - canonical owner note:
      [`../../docs/requirements/ieee-1516-2025/federation_management_bounded_proof.md`](../../docs/requirements/ieee-1516-2025/federation_management_bounded_proof.md)
-   - canonical grouped owner ledger:
-     [`../../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`](../../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv)
+   - canonical row and backend companions:
+     [`../../requirements/2025/canonical_requirements.json`](../../requirements/2025/canonical_requirements.json)
+     and [`../../requirements/2025/backend_resolution.json`](../../requirements/2025/backend_resolution.json)
    - exact lifecycle rows for this execution-state reading:
      - `HLA2025-FI-SVC-005` destroy federation execution
      - `HLA2025-FI-SVC-008` list federation execution members

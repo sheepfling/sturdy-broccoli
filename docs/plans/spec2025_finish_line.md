@@ -53,7 +53,7 @@ Partitioned blockers:
 
 ## Pytest Anchor Audit
 
-- Anchored requirements: 731
+- Anchored requirements: 732
 - Assessment: Repo-native HLA2025 requirement markers now provide direct pytest-function anchors for the supported working-surface claim, complementing the broader evidence-slice ledgers.
 
 ## Unanchored Requirement Audit
@@ -106,13 +106,12 @@ Canonical boundary owner reading order:
 2. `docs/requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md`
 3. `docs/requirements/ieee-1516-2025/retired_legacy_mapping.md`
 4. `docs/requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md`
-5. `docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md`
+5. `docs/requirements/ieee-1516-2025/omt.md`
+6. `docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md`
 
-Use the owner docs above for the boundary narrative, and use the linked grouped or row-level backend-resolution ledgers only for the backend split details:
+Use the owner docs above for the boundary narrative, and use the canonical backend-resolution companion for backend split details:
 
-- `requirements/2025/harmonization/hla_2025_harmonization_worklist.csv`
-- `requirements/2025/harmonization/hla_2025_pitch_202x_group_resolution.csv`
-- `requirements/2025/harmonization/hla_2025_pitch_202x_row_resolution.csv`
+- `requirements/2025/backend_resolution.json`
 
 ## OMT Requirement Proof Audit
 

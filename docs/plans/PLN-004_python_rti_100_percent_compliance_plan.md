@@ -49,7 +49,7 @@ Use this as the program-level objective:
 
 This plan covers:
 
-- the `2025` row-level requirement disposition ledger
+- the `2025` canonical requirement catalog and backend-resolution companion
 - the `2010` harmonized requirement master index and family companions
 - the canonical human-facing owner docs under `docs/requirements/`
 - the closeout and audit surfaces under `docs/plans/`
@@ -168,7 +168,7 @@ generated outputs, broken links, or mixed-purpose diffs.
 For every row that still blocks the selected `100%` metric:
 
 1. identify the canonical owner doc
-2. identify the owner companion ledger
+2. identify the canonical owner companion
 3. identify the narrowest shard or focused command
 4. define the exact exit condition
 5. add or tighten proof until the row can honestly move
@@ -209,8 +209,8 @@ Operational rule:
 
 After the row moves are complete:
 
-1. rerun the row-level audit
-2. rerun the grouped harmonization worklist checks
+1. rerun the canonical row-level audit
+2. rerun the generated grouped closeout projection checks
 3. rerun finish-line snapshots
 4. rerun documentation and traceability checks
 5. rerun the owning shards that feed the affected views
@@ -219,7 +219,7 @@ After the row moves are complete:
 The `2025` finish line is only stable when:
 
 - the owner docs
-- the ledgers
+- the canonical catalogs and backend-resolution companions
 - the finish-line packets
 - the generated exports
 

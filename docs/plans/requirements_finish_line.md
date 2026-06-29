@@ -115,7 +115,7 @@ Practical owner rule:
 
 - owner docs explain the bounded or still-open claim honestly
 - owner companions carry canonical row status, backend-resolution detail, or
-  grouped-to-row-level synchronization
+  canonical-to-generated projection synchronization
 - spreadsheet packets stay downstream of those sources
 
 ## Recommended finish order

@@ -1078,6 +1078,8 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "delta-umbrella: 12 rows" in markdown
     assert "framework-umbrella: 10 rows" in markdown
     assert "`requirements/2025/backend_resolution.json`" in markdown
+    assert "`docs/requirements/ieee-1516-2025/omt.md`" in markdown
+    assert "`docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md`" in markdown
     assert "canonical backend-resolution companion" in markdown
     assert "hla_2025_harmonization_worklist.csv" not in markdown
     assert "hla_2025_pitch_202x_group_resolution.csv" not in markdown

@@ -16,7 +16,7 @@ This note is the concrete umbrella-row execution companion to:
 
 ## Current Truth
 
-The current row-level `2025` ledger has:
+The current canonical 2025 requirement catalog has:
 
 - `22` rows in `duplicate/umbrella`
 - `10` framework umbrella rows
@@ -60,7 +60,7 @@ are true:
 2. the exact child-proof target is named
 3. the narrowest owning shard is named
 4. at least one executable anchor and one owner-doc anchor are recorded
-5. the row-level disposition ledger and the owner doc are updated together
+5. the canonical requirement row and the owner doc are updated together
 
 ## Common Column Meanings
 
@@ -130,7 +130,7 @@ Typical shard and views:
 ## Latest Investigated Decision
 
 The framework umbrella slice was re-audited on `2026-06-26` against the
-current owner doc, harmonization ledger, child-row map, runtime tests,
+current owner doc, canonical requirement catalog, child-row map, runtime tests,
 scenario suites, and traceability anchors for:
 
 - `HLA2025-FR-001` through `HLA2025-FR-010`
@@ -161,7 +161,7 @@ Current evidence reviewed for this decision included:
 - `tests/scenarios/test_ownership_management_backend_matrix.py`
 - `tests/test_rti1516_2025_validation.py`
 - `docs/requirements/ieee-1516-2025/traceability_matrix.md`
-- `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
+- `requirements/2025/canonical_requirements.json`
 
 Operational effect:
 
@@ -171,7 +171,8 @@ Operational effect:
   framework child claims
 
 The first queued callback-control umbrella slice was re-audited on `2026-06-26`
-against the current owner doc, harmonization ledger, and executable anchors for:
+against the current owner doc, canonical requirement catalog, and executable
+anchors for:
 
 - `HLA2025-FI-CB-002`
 - `HLA2025-FI-CB-003`
@@ -200,7 +201,7 @@ Current evidence reviewed for this decision included:
 - `tests/backends/test_python_backend_support_services.py`
 - `tests/scenarios/test_support_services_backend_matrix.py`
 - `tests/transport/test_grpc_transport_2025.py`
-- `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
+- `requirements/2025/canonical_requirements.json`
 - `../requirements/ieee-1516-2025/callback_binding_deltas.md`
 
 Operational effect:
@@ -251,7 +252,7 @@ Operational effect:
   claim
 
 The configuration and authorization umbrella slice was also re-audited on
-`2026-06-26` against the current owner doc, harmonization ledger, connect
+`2026-06-26` against the current owner doc, canonical requirement catalog, connect
 runtime tests, factory composition tests, hosted FedPro request mapping, and
 factory/auth implementation anchors for:
 
@@ -285,7 +286,7 @@ Current evidence reviewed for this decision included:
 - `tests/transport/test_grpc_transport_2025.py`
 - `packages/hla-rti-core/src/hla/rti/factory.py`
 - `packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/federation_bootstrap_runtime.py`
-- `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
+- `requirements/2025/canonical_requirements.json`
 - `../requirements/ieee-1516-2025/callback_binding_deltas.md`
 
 Operational effect:
@@ -297,8 +298,9 @@ Operational effect:
   implementation claim
 
 The directed-interaction callback umbrella slice was also re-audited on
-`2026-06-26` against the current owner doc, harmonization ledger, direct
-runtime tests, hosted FedPro transport tests, and route-parity artifacts for:
+`2026-06-26` against the current owner doc, canonical requirement catalog,
+direct runtime tests, hosted FedPro transport tests, and route-parity artifacts
+for:
 
 - `HLA2025-FI-CB-007`
 
@@ -328,7 +330,7 @@ Current evidence reviewed for this decision included:
 - `tests/test_rti1516_2025_python1516_2025_runtime.py`
 - `tests/transport/test_grpc_transport_2025.py`
 - `packages/hla-verification/src/hla/verification/repo_internal/verification/spec2025_route_parity_matrix.py`
-- `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
+- `requirements/2025/backend_resolution.json`
 - `../requirements/ieee-1516-2025/callback_binding_deltas.md`
 
 Operational effect:
@@ -340,8 +342,9 @@ Operational effect:
   standalone implementation claim
 
 The Java/C++ binding umbrella slice was also re-audited on `2026-06-26`
-against the current owner doc, harmonization ledger, standard-shim artifact
-tests, route-parity matrix, shim-route evidence packets, and route traces for:
+against the current owner doc, backend-resolution companion, standard-shim
+artifact tests, route-parity matrix, shim-route evidence packets, and route
+traces for:
 
 - `HLA2025-BIND-JAVA-CPP-001`
 
@@ -370,7 +373,7 @@ Current evidence reviewed for this decision included:
 - `docs/evidence/shim_routes/java-standard-2025.json`
 - `docs/evidence/shim_routes/cpp-standard-2025.json`
 - `docs/evidence/shim_routes/route_traces/`
-- `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
+- `requirements/2025/backend_resolution.json`
 - `../requirements/ieee-1516-2025/callback_binding_deltas.md`
 
 Operational effect:
@@ -408,7 +411,7 @@ Reason:
 
 When changing any row in this worklist:
 
-1. update the row-level disposition ledger first
+1. update the canonical requirement catalog first
 2. update the owning umbrella doc or replace it with narrower child claims
 3. record the narrowest owning shard from
    [`../verification/shard_registry.md`](../verification/shard_registry.md)

@@ -115,8 +115,7 @@ Current evidence reviewed for this decision included:
 
 - `requirements/2025/canonical_requirements.json`
 - `requirements/2025/backend_resolution.json`
-- `requirements/2025/harmonization/hla_2025_harmonization_worklist.csv`
-- `requirements/2025/harmonization/hla_2025_requirement_coverage_rollup.json`
+- generated grouped closeout projections under `requirements/2025/harmonization/`
 - `docs/requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md`
 - `tests/requirements/test_2025_tail_backlog_evidence.py`
 

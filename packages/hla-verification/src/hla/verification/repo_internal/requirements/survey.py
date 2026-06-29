@@ -24,7 +24,7 @@ def _classify_csv(path: str, header: list[str]) -> tuple[str, str, str]:
     if {"packet_requirement_id", "curated_requirement_id"} <= header_set:
         return "requirement-mapping", "2010 detailed reconciliation bridge shape", "2010"
     if path.endswith("hla_2025_requirement_disposition_ledger.csv"):
-        return "canonical-requirement", "2025 row-level harmonization ledger", "2025"
+        return "historical", "legacy row-shaped 2025 closeout projection", "2025"
     if path.endswith("canonical_requirements.json"):
         return "canonical-requirement", "normalized canonical export", _edition_for_path(path)
     if path.endswith("hla_2025_harmonization_worklist.csv"):
@@ -51,7 +51,7 @@ def _classify_json(path: str, payload: Any) -> tuple[str, str, str]:
     if path.endswith("traceability_matrix.json"):
         return "executable-verification", "derived traceability projection", _edition_for_path(path)
     if path.endswith("hla_2025_requirement_disposition_ledger.json"):
-        return "canonical-requirement", "json projection of 2025 canonical ledger", "2025"
+        return "historical", "json projection of legacy 2025 closeout ledger", "2025"
     if path.endswith("hla_2025_requirement_coverage_rollup.json"):
         return "grouped-view", "coverage rollup summary", "2025"
     if path.endswith("requirements.json"):

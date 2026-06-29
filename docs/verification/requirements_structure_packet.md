@@ -218,14 +218,16 @@ The practical rule is simple:
   or linked backend-resolution artifacts rather than flattening it into the
   canonical status cell
 
-For the 2025 grouped harmonization surface specifically:
+For the generated 2025 grouped closeout projection specifically:
 
-- the grouped worklist is now fully dispositioned:
+- the grouped closeout projection is now fully dispositioned:
   - `53 covered`
   - `5 duplicate/umbrella`
   - `2 retired/legacy-only`
 - that removes stale grouped `planned` and `partial` bucket debt
-- it does not erase row-level bounded-scope limits or make umbrella and retired rows behave like standalone runtime proof
+- it does not replace the canonical requirement catalog or backend-resolution
+  companion, erase row-level bounded-scope limits, or make umbrella and
+  retired rows behave like standalone runtime proof
 
 ## Clause 4 as the model
 

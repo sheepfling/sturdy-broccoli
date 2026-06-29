@@ -1207,9 +1207,9 @@
       "path": "requirements/2025/harmonization/hla_2025_requirement_coverage_rollup.json"
     },
     {
-      "classification_basis": "2025 row-level harmonization ledger",
+      "classification_basis": "legacy row-shaped 2025 closeout projection",
       "edition": "2025",
-      "family": "canonical-requirement",
+      "family": "historical",
       "fields": [
         "id",
         "source_document",
@@ -1249,9 +1249,9 @@
       "path": "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv"
     },
     {
-      "classification_basis": "json projection of 2025 canonical ledger",
+      "classification_basis": "json projection of legacy 2025 closeout ledger",
       "edition": "2025",
-      "family": "canonical-requirement",
+      "family": "historical",
       "fields": [
         "area",
         "clause",

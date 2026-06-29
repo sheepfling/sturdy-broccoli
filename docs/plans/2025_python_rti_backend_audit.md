@@ -32,8 +32,9 @@ Canonical boundary owner reading order for the remaining 2025 closeout limits:
 4. `docs/requirements/ieee-1516-2025/retired_legacy_mapping.md`
 5. `docs/requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md`
 6. `docs/requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md`
-7. `docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md`
-8. `docs/requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md`
+7. `docs/requirements/ieee-1516-2025/omt.md`
+8. `docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md`
+9. `docs/requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md`
 
 Use this backend audit as a bounded runtime-lane rollup over those owner docs,
 not as a replacement for them.
@@ -45,11 +46,9 @@ first:
 - `requirements/2025/canonical_requirements.json`
 - `requirements/2025/backend_resolution.json`
 
-Then use older harmonization or route-specific companion CSVs only as
-downstream projection or backend-detail artifacts, such as
-`hla_2025_fi_binding_surface_matrix.csv`,
-`hla_2025_pitch_202x_group_resolution.csv`, and
-`hla_2025_pitch_202x_row_resolution.csv`.
+Then use older harmonization or route-specific companion CSVs only if a
+narrower generated backend-detail projection is still useful. They are not
+owner surfaces for 2025 requirement status or backend truth.
 
 ## Current Repo Reality
 

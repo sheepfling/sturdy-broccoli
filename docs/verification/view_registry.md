@@ -51,7 +51,7 @@ These focused targets come from
 | `routes-2025` | `./tools/test-focus run routes-2025` | `fedpro-2025`, `grpc-2025`, `route-parity-2025` | `transport`, `python1516_2025-routes`, `requirements-2025` | did the hosted 2025 route parity or bounded hosted-owner surface drift? |
 | `backends` | `./tools/test-focus run backends` | `backend-integration` | `unit-scenarios-light`, `vendor` | did backend adapter behavior drift? |
 | `rti-core` | `./tools/test-focus run rti-core` | `rti-factory`, `core-factory` | `unit-python-core`, `foundation` | did core RTI discovery or factory selection drift? |
-| `requirements-2025` | `./tools/test-focus run requirements-2025` | `closeout-2025`, `requirements`, `parity-2025` | `routes-2025`, `verification`, `matrix` | did 2025 requirement ledgers, route parity, or canonical owner surfaces drift? |
+| `requirements-2025` | `./tools/test-focus run requirements-2025` | `closeout-2025`, `requirements`, `parity-2025` | `routes-2025`, `verification`, `matrix` | did the 2025 canonical requirement catalog, backend-resolution companion, route parity, or canonical owner surfaces drift? |
 | `verification` | `./tools/test-focus run verification` | `verification-harness` | `requirements-2025`, `matrix` | did detailed ledgers or verification harnesses drift? |
 | `time` | `./tools/test-focus run time` | `time-suite` | `python-2025-time`, `python1516_2025-main` | did time-management algorithms or backend matrices drift? |
 | `vendors` | `./tools/test-focus run vendors` | `vendor-runtime` | `unit-vendor-onboarding`, `vendor` | did real vendor-runtime behavior drift? |
@@ -63,13 +63,13 @@ These are document-level views that overlap runnable shards:
 | View tag | Typical owner docs | Typical shard owners |
 | --- | --- | --- |
 | `2010-core` | 2010 bounded family notes and source ledgers | `unit-python-core`, `unit-scenarios-light` |
-| `2025-core` | 2025 bounded proof notes and row-level ledgers | `unit-python-2025-core`, `python1516_2025-main` |
+| `2025-core` | 2025 bounded proof notes plus the canonical requirement catalog and backend-resolution companion | `unit-python-2025-core`, `python1516_2025-main` |
 | `transport` | hosted-route boundary docs and route-parity artifacts | `unit-transport-local`, `python-routes`, `python1516_2025-routes` |
 | `setup-preflight` | onboarding, toolchain, and environment docs | `unit-foundation`, `unit-vendor-onboarding`, `unit-shim-tooling` |
 | `execution-membership` | federation-management and object-management owner docs that talk about joined versus not-joined rules | `unit-scenarios-light`, `unit-python-2025-core`, `unit-transport-local` for the hosted 2025 gRPC/FedPro slice plus the REST-hosted Python route, `python1516_2025-routes`; use the broader `transport` view for generic REST-hosted route questions |
 | `java-shim` | Java toolchain and standard-shim docs | `unit-shim-tooling` |
 | `cpp-shim` | C++ toolchain and standard-shim docs | `unit-shim-tooling` |
-| `ownership` | ownership bounded proof notes and ledgers | `unit-python-2025-core`, `python1516_2025-main` |
+| `ownership` | ownership bounded proof notes and canonical owner companions | `unit-python-2025-core`, `python1516_2025-main` |
 | `time` | time-model compliance and bounded proof notes | `unit-python-2025-core`, `python1516_2025-main`, `python1516_2025-routes` |
 | `save-restore` | save/restore bounded proof notes and route parity | `python1516_2025-main`, `python1516_2025-routes` |
 | `ddm` | DDM bounded proof notes and region-routing evidence | `unit-python-2025-core`, `python1516_2025-main`, `python1516_2025-routes` |

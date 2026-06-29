@@ -32,7 +32,8 @@ def test_requirement_row_shape_survey_checked_in_artifact_matches_live_generatio
     assert checked_in["entry_count"] == len(checked_in["entries"])
 
     entries_by_path = {entry["path"]: entry for entry in checked_in["entries"]}
-    assert entries_by_path["requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv"]["family"] == "canonical-requirement"
+    assert entries_by_path["requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv"]["family"] == "historical"
+    assert entries_by_path["requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv"]["classification_basis"] == "legacy row-shaped 2025 closeout projection"
     assert entries_by_path["requirements/2025/harmonization/hla_2025_harmonization_worklist.csv"]["family"] == "grouped-view"
     assert entries_by_path["requirements/2025/harmonization/hla_2025_pitch_202x_row_resolution.csv"]["family"] == "backend-resolution"
     assert entries_by_path["requirements/2010/hla1516_1_fm_detailed_reconciliation.csv"]["family"] == "requirement-mapping"

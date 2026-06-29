@@ -321,14 +321,15 @@ Exit condition:
 
 ### Workstream 7: 2025 Migration
 
-Normalize the 2025 surface second, especially where the row ledger, grouped
-worklist, traceability matrix, executable tests, and backend-resolution
+Normalize the 2025 surface second, especially where the canonical requirement
+catalog, grouped closeout projections, traceability matrix, executable tests,
+and backend-resolution
 companions overlap.
 
 Priority targets:
 
-1. disposition ledger
-2. grouped harmonization worklist
+1. canonical requirement catalog
+2. generated grouped closeout projections
 3. traceability matrix JSON
 4. Pitch proto HLA 4 / `202X` backend-resolution companions
 5. executable test requirement rows

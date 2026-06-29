@@ -100,9 +100,9 @@ Primary owner surfaces:
 - `requirements/2025/backend_resolution.json` for the separate backend and
   route truth across Python, Java/C++, hosted FedPro, and Pitch proto HLA 4 /
   `202X`
-- `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
-  only as a generated legacy projection for row-shaped harmonization review,
-  not as a primary owner surface
+- generated legacy projections such as
+  `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
+  only for legacy row-shaped review, never as a primary owner surface
 - [`../execution_membership_rules.md`](../execution_membership_rules.md) for
   one cross-edition index covering join, destroy, update, delete, query, and
   region-gated not-joined rules
@@ -415,7 +415,7 @@ rather than the next missing implementation frontier by itself.
 - [`../../../requirements/2025/README.md`](../../../requirements/2025/README.md)
 - [`../../verification/README.md`](../../verification/README.md)
 - [`../../verification/requirement_compliance_exports.md`](../../verification/requirement_compliance_exports.md)
-  Legacy projections:
+- Legacy projections:
 - [`../../../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`](../../../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv)
 - [`../../../requirements/2025/harmonization/hla_2025_requirement_coverage_rollup.json`](../../../requirements/2025/harmonization/hla_2025_requirement_coverage_rollup.json)
 - [`../../../requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv`](../../../requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv)

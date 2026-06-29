@@ -353,8 +353,9 @@ revisited only if later proof work materially changes child claims.
 ## Cheapest Win Candidates
 
 If the goal is immediate visible progress with minimal scope risk, start by
-checking whether any generated report, owner doc, or row-level ledger has gone
-stale relative to the maintained boundary surfaces below, then run `P1`
+checking whether any generated report, owner doc, canonical requirement
+catalog, or backend-resolution companion has gone stale relative to the
+maintained boundary surfaces below, then run `P1`
 only if backend truth has actually changed.
 
 ## Dependency Notes

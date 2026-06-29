@@ -1,7 +1,14 @@
 # 2025 Requirement-By-Requirement Audit
 
-This note is the row-level audit companion to the 691-row harmonization ledger in
-`requirements/2025/harmonization/`.
+This note is the row-level audit companion to the canonical 2025 requirement
+catalog:
+
+- `requirements/2025/canonical_requirements.json`
+- `requirements/2025/backend_resolution.json`
+
+Generated harmonization artifacts under `requirements/2025/harmonization/`
+remain downstream projections for grouped review or legacy packet consumers,
+not the primary requirement-truth surface.
 
 For the current umbrella-row execution surface, use
 [`2025_python_rti_umbrella_decomposition_worklist.md`](2025_python_rti_umbrella_decomposition_worklist.md).
@@ -71,7 +78,7 @@ The repo no longer lacks a row-level 2025 audit.
 
 More specifically, it proves:
 
-- every tracked 2025 row has an explicit harmonization disposition
+- every tracked 2025 row has an explicit canonical disposition
 - every covered row has a suggested repo evidence path
 - no tracked row remains hidden in an implicit unsupported bucket
 - framework and delta umbrella rows are kept separate from delivered support
@@ -81,8 +88,9 @@ More specifically, it proves:
 This closes the missing-audit gap.
 
 It also strengthens the bounded main-implementation claim for
-`hla-backend-python1516-2025`: the repo now has a row-level ledger behind the
-current Python 2025 RTI lane rather than only broad slice summaries, while
+`hla-backend-python1516-2025`: the repo now has a canonical row-level
+requirement catalog behind the current Python 2025 RTI lane rather than only
+broad slice summaries, while
 `hla-backend-shim` stays in a compatibility-wrapper role instead of becoming a
 second implementation owner.
 
