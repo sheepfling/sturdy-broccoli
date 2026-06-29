@@ -357,6 +357,38 @@ def test_2025_non_executable_family_rows_use_explicit_traceability_or_exclusion_
         assert "compatibility or migration mode" in retired_doc_text
 
 
+@pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-TRACE-001", "HLA2025-BND-001")
+def test_2025_covered_canonical_rows_keep_direct_executable_or_package_evidence_while_backend_rows_may_stay_companions() -> None:
+    canonical_rows = _canonical_rows_by_id()
+    covered_rows = [row for row in canonical_rows.values() if row["canonical_status"] == "covered"]
+    assert len(covered_rows) == 645
+
+    for row in covered_rows:
+        evidence_refs = [str(anchor) for anchor in row["evidence_refs"]]
+        assert any(
+            anchor.startswith("tests/") or anchor.startswith("packages/") for anchor in evidence_refs
+        ), row["requirement_id"]
+
+    backend_payload = json.loads(BACKEND_RESOLUTION.read_text(encoding="utf-8"))
+    backend_rows = backend_payload["rows"]
+    grouped_backend_rows = [row for row in backend_rows if row["resolution_type"] == "grouped-backend-view"]
+    vendor_group_rows = [row for row in backend_rows if row["resolution_type"] == "vendor-group-resolution"]
+
+    assert grouped_backend_rows
+    assert vendor_group_rows
+
+    for row in grouped_backend_rows:
+        evidence_refs = [str(anchor) for anchor in row["evidence_refs"]]
+        assert "requirements/2025/canonical_requirements.json" in evidence_refs, row["requirement_id"]
+        assert any(anchor.startswith("docs/requirements/ieee-1516-2025/") for anchor in evidence_refs), row["requirement_id"]
+        assert not any(anchor.startswith("docs/plans/") for anchor in evidence_refs), row["requirement_id"]
+
+    for row in vendor_group_rows:
+        evidence_refs = [str(anchor) for anchor in row["evidence_refs"]]
+        assert any(anchor.startswith("docs/requirements/ieee-1516-2025/") for anchor in evidence_refs), row["requirement_id"]
+        assert not any(anchor.startswith("docs/plans/") for anchor in evidence_refs), row["requirement_id"]
+
+
 @pytest.mark.requirements("HLA2025-REQ-001")
 def test_ieee_1516_2025_requirements_markdown_views_exist() -> None:
     expected = {

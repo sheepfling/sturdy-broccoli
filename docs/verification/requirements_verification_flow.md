@@ -48,6 +48,11 @@ Good requirement tests:
 - verify that a requirement row maps to live pytest anchors
 - verify that claimed evidence files exist
 - verify that a route row keeps backend ownership and boundary fields honest
+- verify that canonical `covered` rows keep direct `tests/` or `packages/`
+  evidence rather than slipping back to generated-only anchors
+- verify that backend-resolution companion rows stay explicitly labeled as
+  companion truth linked back to canonical rows, owner docs, or bounded route
+  artifacts rather than pretending to be the canonical status row
 - verify that blocker rows remain classified as boundary-only when they do not
   count against runtime completeness
 - verify that a shard or command named by the requirement surface is real

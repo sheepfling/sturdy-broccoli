@@ -138,6 +138,15 @@ Do not overload one field to mean both:
 Use the canonical owner row for the requirement-level status, and keep backend
 resolution in separate columns or linked evidence artifacts.
 
+For the current 2025 surface, the concrete audit rule is:
+
+- canonical `covered` rows should carry direct `tests/` or `packages/`
+  evidence in `requirements/2025/canonical_requirements.json`
+- grouped backend rows, vendor grouped rows, and other backend-resolution
+  companions may instead point at the canonical catalog, owner docs, and
+  bounded route artifacts because they summarize backend truth rather than
+  replace canonical requirement closure
+
 Good shape:
 
 - canonical status: `partial`
