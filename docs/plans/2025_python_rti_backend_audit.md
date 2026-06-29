@@ -245,7 +245,7 @@ Primary evidence anchors:
 - [../tests/test_root_facade_policy.py](../../tests/test_root_facade_policy.py)
 - [../tests/test_rti1516_2025_python1516_2025_runtime.py](../../tests/test_rti1516_2025_python1516_2025_runtime.py)
 - [../tests/transport/test_grpc_transport_2025.py](../../tests/transport/test_grpc_transport_2025.py)
-- [../tests/requirements/test_2025_finish_line_snapshot.py](../../tests/requirements/test_2025_finish_line_snapshot.py)
+- [../tests/verification/test_2025_finish_line_reporting.py](../../tests/verification/test_2025_finish_line_reporting.py)
 - [../tests/requirements/test_2025_route_parity_matrix.py](../../tests/requirements/test_2025_route_parity_matrix.py)
 
 For the compact excluded-area inventory behind this bounded claim, use

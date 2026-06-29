@@ -153,7 +153,7 @@ Primary anchors:
   - [test_rti1516_2025_python1516_2025_runtime.py](../tests/test_rti1516_2025_python1516_2025_runtime.py)
 - 2025 route-parity and finish-line evidence:
   - [test_2025_route_parity_matrix.py](../tests/requirements/test_2025_route_parity_matrix.py)
-  - [test_2025_finish_line_snapshot.py](../tests/requirements/test_2025_finish_line_snapshot.py)
+  - [test_2025_finish_line_snapshot.py](../tests/verification/test_2025_finish_line_reporting.py)
 - Shared Java-profile exchange matrix:
   - [test_java_profile_backend_matrix.py](../tests/vendors/test_java_profile_backend_matrix.py)
 - Real CERTI backend matrix:

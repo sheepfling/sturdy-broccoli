@@ -1901,7 +1901,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "status": "implemented-slice",
         "requirements": ("HLA2025-VER-001", "HLA2025-TRACE-001", "HLA2025-TRACE-002"),
         "evidence": (
-            "tests/requirements/test_2025_finish_line_snapshot.py",
+            "tests/verification/test_2025_finish_line_reporting.py",
             "packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py",
             "requirements/2025/requirement_completion_backlog.csv",
             "docs/requirements/ieee-1516-2025/executable_tests/hla_2025_executable_test_requirements_v3.csv",
@@ -1924,7 +1924,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-MIL-006",
         ),
         "evidence": (
-            "tests/requirements/test_2025_finish_line_snapshot.py",
+            "tests/verification/test_2025_finish_line_reporting.py",
             "packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py",
             "packages/hla-verification/src/hla/verification/repo_internal/verification/spec2025_route_parity_matrix.py",
             "requirements/2025/requirement_completion_backlog.csv",
@@ -3059,7 +3059,7 @@ def _build_binding_route_decomposition_audit() -> dict[str, Any]:
             "focus": "the explicit parity ledger across federation_lifecycle, object_exchange, ownership, ddm, time_management, save_restore, mom, and support_services for all current 2025 routes",
             "evidence_tests": [
                 "tests/requirements/test_2025_route_parity_matrix.py",
-                "tests/requirements/test_2025_finish_line_snapshot.py",
+                "tests/verification/test_2025_finish_line_reporting.py",
                 "scripts/run_spec2025_route_parity_matrix.py",
             ],
             "route_groups": [
@@ -7346,7 +7346,7 @@ def _build_extraction_readiness_audit(
             "target_supports": ["rti1516_2025"],
             "must_not_delegate_to": ["hla.backends.shim.backend.create_shim_backend"],
             "scanner_regression_test": (
-                "tests/requirements/test_2025_finish_line_snapshot.py::"
+                "tests/verification/test_2025_finish_line_reporting.py::"
                 "test_2025_backend_plugin_scan_detects_future_dedicated_python_2025_backend"
             ),
             "package_creation_rule": (

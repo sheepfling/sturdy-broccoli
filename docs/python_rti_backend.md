@@ -149,7 +149,7 @@ Primary evidence anchors:
 - `tests/scenarios/test_target_radar_scenario.py`
 - `tests/test_fom_target_radar_split_package.py`
 - `tests/test_rti1516_2025_python1516_2025_runtime.py` (main in-process python1516_2025 proof suite)
-- `tests/requirements/test_2025_finish_line_snapshot.py` (downstream closeout-reporting verification, not a requirement-truth owner)
+- `tests/verification/test_2025_finish_line_reporting.py` (downstream closeout-reporting verification, not a requirement-truth owner)
 - `tests/requirements/test_2025_route_parity_matrix.py`
 - `tests/backends/test_shim_route_trace_evidence.py`
 - `tests/transport/test_grpc_transport_2025.py`
@@ -396,7 +396,7 @@ Recent 2025 suite state:
 - the hosted FedPro route now replays that ownership restore surface too: one
   route restores in-flight ownership negotiation state, and another proves
   cross-federate owner-visibility queries return the restored ownership graph
-- `tests/requirements/test_2025_finish_line_snapshot.py`: green
+- `tests/verification/test_2025_finish_line_reporting.py`: green
 - `tests/requirements/test_2025_route_parity_matrix.py`: green
 - `tests/backends/test_shim_route_trace_evidence.py`: green
 

@@ -79,8 +79,8 @@ Use the owner docs when you need the full requirement-to-test chain:
 - `tests/runtime/`: runtime discovery, bridge availability, and local runtime smoke tests. Use these when checking environment shape rather than clause semantics.
 - `tests/time/`: time-management and MOM/time semantic slices. Use these after the plain exchange path is already healthy.
 - `tests/vendors/`: real-vendor backend matrices and vendor smoke tests. These are environment-dependent and are not a newcomer entrypoint.
-- `tests/verification/`: conformance, requirements-ledger, MOM negative-matrix, and spec-traceability tests. Use these for defended compliance work, not first-run validation.
-- `tests/requirements/`: canonical 2025 requirement-owner, route-parity, backend-resolution, imported-packet, and downstream closeout-reporting checks for the main `python1516_2025` RTI lane. Read these as requirement-surface and reporting-surface tests, not as plan/worklist truth.
+- `tests/verification/`: conformance, requirements-ledger, MOM negative-matrix, spec-traceability, and downstream closeout-reporting tests. Use these for defended compliance work, not first-run validation.
+- `tests/requirements/`: canonical 2025 requirement-owner, route-parity, backend-resolution, and imported-packet checks for the main `python1516_2025` RTI lane. Read these as requirement-surface tests, not as plan/worklist truth.
 - `tests/`: direct executable slices that have not been grouped further yet.
 
 ## Environment-Aware Markers

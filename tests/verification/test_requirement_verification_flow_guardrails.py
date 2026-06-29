@@ -157,7 +157,7 @@ def test_requirement_verification_flow_doc_is_indexed() -> None:
 
 
 def test_2025_finish_line_requirement_test_is_explicitly_downstream_reporting() -> None:
-    text = (ROOT / "tests" / "requirements" / "test_2025_finish_line_snapshot.py").read_text(encoding="utf-8")
+    text = (ROOT / "tests" / "verification" / "test_2025_finish_line_reporting.py").read_text(encoding="utf-8")
     assert "Downstream closeout-reporting verification for the 2025 lane." in text
     assert "not itself a\nrequirement-truth owner surface" in text
 

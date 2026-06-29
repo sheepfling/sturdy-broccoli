@@ -105,7 +105,7 @@ proof first and only then inspect the wrapper alias:
 2. `tests/test_rti1516_2025_python1516_2025_runtime.py` (main in-process `python1516_2025` proof suite)
 3. `requirements/2025/canonical_requirements.json`
 4. `requirements/2025/backend_resolution.json`
-5. `tests/requirements/test_2025_finish_line_snapshot.py` (downstream closeout-reporting verification)
+5. `tests/verification/test_2025_finish_line_reporting.py` (downstream closeout-reporting verification)
 
 In practice, `./tools/python verify-main-2025` is the normal proof command for
 that direct factory-selection path, while `./tools/python verify-routes-2025`
@@ -120,7 +120,7 @@ behavior are:
 - [../tests/test_rti1516_2025_python1516_2025_runtime.py](../tests/test_rti1516_2025_python1516_2025_runtime.py) (main in-process `python1516_2025` proof suite)
 - [../requirements/2025/canonical_requirements.json](../requirements/2025/canonical_requirements.json)
 - [../requirements/2025/backend_resolution.json](../requirements/2025/backend_resolution.json)
-- [../tests/requirements/test_2025_finish_line_snapshot.py](../tests/requirements/test_2025_finish_line_snapshot.py) (downstream closeout-reporting verification)
+- [../tests/verification/test_2025_finish_line_reporting.py](../tests/verification/test_2025_finish_line_reporting.py) (downstream closeout-reporting verification)
 
 Use those when changing:
 

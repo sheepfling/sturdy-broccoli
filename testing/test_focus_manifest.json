@@ -418,7 +418,7 @@
         [
           "./tools/test",
           "tests/requirements/test_2025_route_parity_matrix.py",
-          "tests/requirements/test_2025_finish_line_snapshot.py",
+          "tests/verification/test_2025_finish_line_reporting.py",
           "tests/requirements/test_2025_python_rti_backend_audit.py"
         ]
       ]
