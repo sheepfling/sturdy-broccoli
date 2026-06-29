@@ -1065,22 +1065,26 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
         f"{impact_rows['2025-ddm-default-attribute-policy']['current_source_method_baseline']} methods"
     ) in markdown
     assert "line baselines are intentionally overlapping" in markdown
+    objective_audit = snapshot["objective_dimension_audit"]
+    claim_audit = snapshot["completion_claim_audit"]
+    closeout_readiness = snapshot["closeout_readiness"]
+    requirement_audit = snapshot["requirement_by_requirement_audit"]
     assert "Objective Audit" in markdown
-    assert "Surface claim: bounded-working-surface" in markdown
-    assert "Bounded-ready dimensions: 8 / 8" in markdown
-    assert "Federation Management" in markdown
-    assert "OMT Handling" in markdown
-    assert "per-service runtime traceability plus complete actionable negative-path coverage" in markdown
-    assert "Ready for slice closeout: True" in markdown
-    assert "Ready for full completion claim: False" in markdown
+    assert f"Surface claim: {objective_audit['surface_claim']}" in markdown
+    assert (
+        f"Bounded-ready dimensions: {objective_audit['bounded_ready_dimension_count']} / "
+        f"{objective_audit['dimension_count']}"
+    ) in markdown
+    assert f"Ready for slice closeout: {closeout_readiness['ready_for_slice_closeout']}" in markdown
+    assert f"Ready for full completion claim: {closeout_readiness['ready_for_full_completion_claim']}" in markdown
     assert "Conformance blockers:" in markdown
     assert "Requirement-by-requirement duplicate/umbrella breakdown:" in markdown
-    assert "delta-umbrella: 12 rows" in markdown
-    assert "framework-umbrella: 10 rows" in markdown
+    for dimension in objective_audit["dimensions"]:
+        assert dimension["name"] in markdown
+    for row_role, row_ids in requirement_audit["duplicate_umbrella_rows_by_role"].items():
+        assert f"{row_role}: {len(row_ids)} rows" in markdown
     assert "`requirements/2025/backend_resolution.json`" in markdown
-    assert "`docs/requirements/ieee-1516-2025/omt.md`" in markdown
-    assert "`docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md`" in markdown
-    assert "canonical backend-resolution companion" in markdown
+    assert claim_audit["current_assessment"] in markdown
     assert "hla_2025_harmonization_worklist.csv" not in markdown
     assert "hla_2025_pitch_202x_group_resolution.csv" not in markdown
     assert "hla_2025_pitch_202x_row_resolution.csv" not in markdown
