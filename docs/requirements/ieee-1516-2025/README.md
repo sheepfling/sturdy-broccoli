@@ -192,7 +192,7 @@ Use the shared matrix model from
 
 For 2025 work, the usual ownership pattern is:
 
-- source packet or harmonization row in [`../../../requirements/2025/README.md`](../../../requirements/2025/README.md)
+- source-side edition inventory in [`../../../requirements/2025/README.md`](../../../requirements/2025/README.md)
 - canonical closure row in `requirements/2025/canonical_requirements.json`
 - backend or route split in `requirements/2025/backend_resolution.json`
 - canonical claim or boundary note in one bounded proof note under this directory
@@ -204,13 +204,13 @@ Preferred closure-table columns:
 | Column | Meaning |
 | --- | --- |
 | `Requirement family` | grouped FI, OMT, framework, binding, or harmonization bucket |
-| `Requirement IDs` | exact 2025 IDs or grouped worklist rows |
+| `Requirement IDs` | exact 2025 IDs or explicit canonical family references; grouped worklist rows are only downstream audit views |
 | `Canonical status` | `planned`, `partial`, `covered`, `duplicate/umbrella`, or `retired/legacy-only` |
 | `Backend resolution` | separate backend-resolution columns or a linked backend-resolution artifact such as `requirements/2025/backend_resolution.json`; older harmonization or binding CSVs are projections, not canonical truth |
 | `Primary shard` | first canonical owning shard |
 | `Widen to` | broader lane only if hosted parity, closeout reporting, or cross-surface proof is required |
 | `View tags` | overlapping audit cuts such as `transport`, `ownership`, `time`, `java-shim`, `cpp-shim`, `setup-preflight`, or `closeout-reporting` |
-| `Evidence artifact` | bounded proof note, ledger, packet, JSON, or generated route-parity artifact |
+| `Evidence artifact` | bounded proof note, canonical JSON row, generated projection, or generated route-parity artifact |
 | `Boundary note` | honest supported-scope note when the proof is narrower than the full standard wording |
 
 Practical rule:
@@ -300,7 +300,7 @@ Reading rule:
 
 1. start with the owner doc above
 2. then open the linked bounded proof note first, and only use a harmonization
-   ledger when you need a historical projection view
+   projection when you need a historical or grouped view
 3. only after that widen to route parity, closeout/reporting exports, or
    generated packet artifacts
 

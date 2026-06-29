@@ -4,8 +4,10 @@ Source: bounded Pitch proto HLA 4 / `202X` adapter-route evidence over the repo
 2025 Python RTI lane.
 
 This note records the repo's current requirement-facing reading for the Pitch
-proto HLA 4 / `202X` surface. It is the canonical owner doc for grouped
-`pitch_202x_resolution` entries in the 2025 harmonization worklist.
+proto HLA 4 / `202X` surface. It is the canonical owner doc behind the 2025
+backend-resolution reading for this bounded vendor lane. The grouped
+`pitch_202x_resolution` worklist field and the older harmonization CSVs are
+downstream projections of that backend-resolution story, not requirement truth.
 
 It does not promote Pitch into a second 2025 RTI owner.
 It does not claim IEEE 1516.1-2025 vendor conformance.
@@ -15,10 +17,14 @@ It records the narrow current evidence the repo actually has.
 
 - canonical owner doc:
   `docs/requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md`
+- canonical backend-resolution companion:
+  `requirements/2025/backend_resolution.json`
 - companion grouped artifact:
   `requirements/2025/harmonization/hla_2025_pitch_202x_group_resolution.csv`
+  as a generated grouped projection
 - companion row-level artifact:
   `requirements/2025/harmonization/hla_2025_pitch_202x_row_resolution.csv`
+  as a generated per-row projection
 - primary command: `./tools/pitch 202x-micro-certify`
 - typical view tags: `2025-core`, `transport`, `java-shim`,
   `closeout-reporting`
@@ -129,8 +135,9 @@ true:
 2. the final claim language keeps Pitch proto HLA 4 / `202X` explicit as a
    bounded backend-resolution reading rather than canonical requirement status
    or vendor-conformance proof
-3. no generated packet, audit note, or grouped worklist reclassifies the
-   current bounded comparison into a broader vendor-runtime conformance claim
+3. any future widening must happen through canonical requirement rows or the
+   backend-resolution companion, never through grouped worklists, audit notes,
+   or other downstream reporting views
 
 Only reopen this bucket if the repo intentionally starts a broader Pitch 202X
 vendor-runtime comparison or certification program.
@@ -138,7 +145,8 @@ vendor-runtime comparison or certification program.
 ## Reading Order
 
 1. this note
-2. `requirements/2025/harmonization/hla_2025_pitch_202x_group_resolution.csv`
-3. `requirements/2025/harmonization/hla_2025_pitch_202x_row_resolution.csv`
-4. `artifacts/pitch_202x_micro_certification/pitch_202x_micro_certification_report.md`
-5. `packages/hla-vendor-pitch/docs/pitch_vs_python_baseline.md`
+2. `requirements/2025/backend_resolution.json`
+3. `requirements/2025/harmonization/hla_2025_pitch_202x_group_resolution.csv`
+4. `requirements/2025/harmonization/hla_2025_pitch_202x_row_resolution.csv`
+5. `artifacts/pitch_202x_micro_certification/pitch_202x_micro_certification_report.md`
+6. `packages/hla-vendor-pitch/docs/pitch_vs_python_baseline.md`

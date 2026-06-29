@@ -32,6 +32,11 @@ _FORBIDDEN_REQUIREMENT_ASSERT_TEXT_SNIPPETS = (
     "PLN-004_python_rti_100_percent_compliance_plan.md",
 )
 
+_FORBIDDEN_REQUIREMENT_TEST_NAMES = {
+    "test_spec2025_traceability_checked_in_artifact_stays_in_sync_with_generated_structure",
+    "test_spec2025_traceability_matrix_writer_matches_checked_in_artifact",
+}
+
 _SELECTED_VERIFICATION_FILES = {
     "test_backend_compliance_discovery.py",
     "test_requirements_matrix_2010_v013.py",
@@ -41,6 +46,10 @@ _SELECTED_VERIFICATION_FILES = {
 _SELECTED_TOP_LEVEL_POLICY_FILES = {
     "test_backend_compliance_discovery_policy.py",
     "test_generated_requirement_dispositions.py",
+}
+
+_SELECTED_REQUIREMENT_FLOW_FILES = {
+    "test_2025_traceability.py",
 }
 
 _SINGLE_SOURCE_SCRIPT_FILES = {
@@ -84,6 +93,16 @@ _REQUIREMENT_ENTRYPOINT_DOC_EXPECTATIONS = {
         "requirements/2010/canonical_requirements.json",
         "requirements/2025/backend_resolution.json",
         "generated whole-spec 2010 matrix",
+    ),
+    "docs/networked_rti_python.md": (
+        "requirements/2025/canonical_requirements.json",
+        "requirements/2025/backend_resolution.json",
+        "downstream audit view",
+    ),
+    "docs/requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md": (
+        "requirements/2025/backend_resolution.json",
+        "downstream projections",
+        "generated grouped projection",
     ),
 }
 
@@ -169,6 +188,24 @@ def test_high_traffic_plan_and_verification_entrypoints_route_through_canonical_
     assert "downstream projection or backend-detail artifacts" in backend_audit
 
 
+def test_2025_boundary_owner_docs_require_canonical_or_backend_resolution_for_claim_widening() -> None:
+    owner_docs = [
+        ROOT / "docs" / "requirements" / "ieee-1516-2025" / "framework_rules.md",
+        ROOT / "docs" / "requirements" / "ieee-1516-2025" / "callback_binding_deltas.md",
+        ROOT / "docs" / "requirements" / "ieee-1516-2025" / "binding_and_hosted_route_boundaries.md",
+        ROOT / "docs" / "requirements" / "ieee-1516-2025" / "retired_legacy_mapping.md",
+        ROOT / "docs" / "requirements" / "ieee-1516-2025" / "omt_xs_any_extension_tolerance.md",
+        ROOT / "docs" / "requirements" / "ieee-1516-2025" / "pitch_202x_bounded_comparison.md",
+    ]
+
+    for path in owner_docs:
+        text = path.read_text(encoding="utf-8")
+        assert "canonical requirement rows or the" in text, path
+        assert "backend-resolution companion" in text, path
+        assert "downstream reporting views" in text, path
+        assert "no generated packet, audit note, or grouped worklist reclassifies" not in text, path
+
+
 def test_requirement_tests_do_not_read_plan_or_closeout_docs_as_truth_sources() -> None:
     violations: list[str] = []
 
@@ -211,6 +248,23 @@ def test_requirement_tests_do_not_assert_closeout_plan_filenames_in_doc_text() -
                     text = grandchild.value
                     if any(snippet in text for snippet in _FORBIDDEN_REQUIREMENT_ASSERT_TEXT_SNIPPETS):
                         violations.append(f"{path.relative_to(ROOT)}::{node.name} -> {text}")
+
+    assert violations == []
+
+
+def test_selected_requirement_flow_tests_do_not_police_checked_in_packets() -> None:
+    violations: list[str] = []
+
+    for path in sorted(REQUIREMENTS_TEST_DIR.glob("test_*.py")):
+        if path.name not in _SELECTED_REQUIREMENT_FLOW_FILES:
+            continue
+        module = ast.parse(path.read_text(encoding="utf-8"))
+
+        for node in module.body:
+            if not isinstance(node, ast.FunctionDef):
+                continue
+            if node.name in _FORBIDDEN_REQUIREMENT_TEST_NAMES:
+                violations.append(f"{path.relative_to(ROOT)}::{node.name}")
 
     assert violations == []
 

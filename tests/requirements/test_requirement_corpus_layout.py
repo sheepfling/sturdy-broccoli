@@ -14,6 +14,8 @@ REQUIREMENTS_2025_FILENAMES = {
     "SOURCE_TRACE.md",
     "STRICT_DOC_INVENTORY.json",
     "STRICT_DOC_REPORT.md",
+    "canonical_requirements.json",
+    "backend_resolution.json",
     "requirement_completion_backlog.csv",
 }
 
@@ -27,7 +29,7 @@ def test_requirements_corpus_blocks_are_explicit_and_separate() -> None:
         for path in REQUIREMENTS.iterdir()
         if path.is_file() and path.name not in {"README.md", ".DS_Store"}
     )
-    assert root_files == []
+    assert root_files == ["hla_1516_master_harmonization_index_v1_0.csv"]
 
     block_2010_files = sorted(path.name for path in REQUIREMENTS_2010.iterdir() if path.is_file() and path.name != "README.md")
     assert block_2010_files

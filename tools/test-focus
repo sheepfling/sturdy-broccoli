@@ -23,8 +23,19 @@ Named focused-test front door for faster iteration and restartability:
   ./tools/test-focus run routes-2025
   ./tools/test-focus resume python-2025-runtime
 
-This is the human-facing wrapper over `python3 scripts/test_focus.py`.
+This is the human-facing wrapper over `scripts/test_focus.py`, preferring the
+repo `.venv` interpreter when available.
 EOF
+}
+
+python_bin() {
+  if [[ -x "$ROOT_DIR/.venv/bin/python" ]]; then
+    printf '%s\n' "$ROOT_DIR/.venv/bin/python"
+  elif command -v python3 >/dev/null 2>&1; then
+    command -v python3
+  else
+    command -v python
+  fi
 }
 
 case "${1:-}" in
@@ -32,6 +43,6 @@ case "${1:-}" in
     usage
     ;;
   *)
-    exec python3 "$ROOT_DIR/scripts/test_focus.py" "$@"
+    exec "$(python_bin)" "$ROOT_DIR/scripts/test_focus.py" "$@"
     ;;
 esac

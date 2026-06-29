@@ -297,8 +297,9 @@ true:
    owner doc and the canonical row-level requirement catalog
 2. the final claim language keeps them explicit as parent or normalization rows
    rather than accidental standalone runtime proof
-3. no generated packet, audit note, or grouped worklist reclassifies them as
-   standalone `covered` implementation buckets
+3. any future widening must happen through canonical requirement rows or the
+   backend-resolution companion, never through grouped worklists, audit notes,
+   or other downstream reporting views
 
 Only reopen this bucket if the repo intentionally introduces narrower child
 claims or changes the callback or binding ownership map.

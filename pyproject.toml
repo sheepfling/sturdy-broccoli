@@ -5,6 +5,7 @@
 # Pytest mirrors the workspace package roots so source-checkout runs resolve the
 # same split packages that editable installs expose.
 pythonpath = [
+  "tests",
   "packages/hla-rti1516e/src",
   "packages/hla-rti1516-2025/src",
   "packages/hla-backend-python1516e/src",

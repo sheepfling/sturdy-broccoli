@@ -81,8 +81,9 @@ true:
    route-parity and FI-binding artifacts
 2. the final claim language keeps them explicit as bounded adaptation or
    hosted-route rows rather than alternate RTI owners
-3. no generated packet, audit note, or grouped worklist reclassifies them as
-   full Java, C++, or hosted conformance claims
+3. any future widening must happen through canonical requirement rows or the
+   backend-resolution companion, never through grouped worklists, audit notes,
+   or other downstream reporting views
 
 Only reopen this bucket if the repo intentionally starts a broader
 behavior-equivalence program for one or more of these rows.

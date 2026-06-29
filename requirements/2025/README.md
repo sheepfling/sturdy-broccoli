@@ -21,7 +21,7 @@ Contents:
   conformance, validator-negative checks, framework rules, binding/configuration
   deltas, and retired/replacement mapping candidates
 - `harmonization/`: reconciled disposition layer over the depth packet, with
-  row-level canonical disposition, FI binding surface accounting, grouped
+  generated disposition projections, FI binding surface accounting, grouped
   backend-resolution companions, coverage rollup, and derived review/reporting
   artifacts
 
@@ -85,7 +85,7 @@ explicit failures for unsupported services.
 The `depth/` packet is an import/harmonization candidate, not direct evidence
 that all rows are implemented. Use it to split broad 2025 umbrella rows into
 reviewable service, schema, validator, and migration-mapping rows before
-promoting any claim in the canonical disposition ledger or owner docs.
+promoting any claim in the canonical requirement catalog or owner docs.
 
 The `harmonization/` packet is the next reconciliation layer. The canonical
 edition truth lives in:
@@ -102,8 +102,9 @@ The older harmonization projections still live in:
 - `harmonization/hla_2025_pitch_202x_row_resolution.csv`
 
 The grouped worklist, closure report, and review queue are derived working
-surfaces built from those ledgers. They are useful for coordination, but they
-are not requirement truth and must not sit in the verification chain.
+surfaces built from the canonical requirement and backend-resolution catalogs
+plus the older harmonization projections. They are useful for coordination, but
+they are not requirement truth and must not sit in the verification chain.
 
 Current grouped harmonization state:
 
@@ -132,14 +133,15 @@ Use the grouped result carefully:
 - grouped `retired/legacy-only` means the bucket is an explicit exclusion from
   active 2025 support, not a hidden gap
 - backend or route-specific support still belongs in separate
-  backend-resolution fields, row-level ledgers, or linked owner docs
+  backend-resolution artifacts or linked owner docs
 
 Do not read the grouped worklist as:
 
 - a blanket all-covered IEEE 1516.1-2025 claim
 - proof that every row is a direct executable runtime witness
 - proof that hosted FedPro, Java, or C++ are alternate full RTI owners
-- a substitute for the row-level disposition ledger or the owner docs under
+- a substitute for the canonical requirement catalog, backend-resolution
+  companion, or the owner docs under
   `docs/requirements/ieee-1516-2025/`
 
 ## Canonical Boundary Owners

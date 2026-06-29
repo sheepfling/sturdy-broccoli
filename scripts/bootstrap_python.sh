@@ -105,7 +105,7 @@ helper_deps=()
 if [[ "$want_pytest" == "1" ]]; then
   helper_deps+=("pytest")
 fi
-helper_deps+=("PyYAML" "playwright")
+helper_deps+=("PyYAML" "playwright" "openpyxl")
 helper_deps+=("grpcio" "protobuf")
 if [[ "$want_qa" == "1" ]]; then
   helper_deps+=("ruff" "pyright" "matplotlib" "lxml")

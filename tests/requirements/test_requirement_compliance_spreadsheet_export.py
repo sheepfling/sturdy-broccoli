@@ -6,6 +6,7 @@ from pathlib import Path
 
 from openpyxl import load_workbook
 
+from hla.verification.repo_internal.requirements import load_2025_backend_group_rows
 from scripts.generate_requirement_compliance_spreadsheets import generate_exports
 
 
@@ -330,41 +331,35 @@ def test_pitch_202x_group_resolution_keeps_bounded_vendor_reading_explicit_by_di
     )
 
 
-def test_2025_harmonization_worklist_keeps_non_covered_acceptance_gates_and_framework_closeout_honest() -> None:
-    rows = list(
-        csv.DictReader(
-            (
-                ROOT
-                / "requirements"
-                / "2025"
-                / "harmonization"
-                / "hla_2025_harmonization_worklist.csv"
-            ).open(newline="", encoding="utf-8")
-        )
-    )
+def test_2025_grouped_backend_projection_keeps_non_covered_acceptance_gates_and_framework_closeout_honest() -> None:
+    rows = [
+        row
+        for row in load_2025_backend_group_rows(ROOT)
+        if row.resolution_type == "grouped-backend-view"
+    ]
 
-    umbrella_rows = [row for row in rows if row["canonical_disposition"] == "duplicate/umbrella"]
-    retired_rows = [row for row in rows if row["canonical_disposition"] == "retired/legacy-only"]
+    umbrella_rows = [row for row in rows if row.canonical_status == "duplicate/umbrella"]
+    retired_rows = [row for row in rows if row.canonical_status == "retired/legacy-only"]
 
     assert len(umbrella_rows) == 5
     assert len(retired_rows) == 2
 
     assert all(
-        "exclusion-owner evidence" in row["acceptance_gate"]
-        and "replacement mapping" in row["acceptance_gate"]
-        and "compatibility-only promotion semantics" in row["acceptance_gate"]
+        "exclusion-owner evidence" in row.boundary_note
+        and "replacement mapping" in row.boundary_note
+        and "compatibility-only promotion semantics" in row.boundary_note
         for row in retired_rows
     )
     assert all(
-        "owner-doc evidence" in row["acceptance_gate"]
-        and "child-row or backend-resolution references" in row["acceptance_gate"]
-        and "promotion/no-promote semantics" in row["acceptance_gate"]
+        "owner-doc evidence" in row.boundary_note
+        and "child-row or backend-resolution references" in row.boundary_note
+        and "promotion/no-promote semantics" in row.boundary_note
         for row in umbrella_rows
     )
     assert all(
-        "child-row map" in row["closure_goal"]
-        and "framework owner reading" in row["closure_goal"]
-        and "do not relabel parent normalization rows as standalone proof" in row["closure_goal"]
+        "child-row map" in row.backend_fields["closure_goal"]
+        and "framework owner reading" in row.backend_fields["closure_goal"]
+        and "do not relabel parent normalization rows as standalone proof" in row.backend_fields["closure_goal"]
         for row in umbrella_rows
-        if row["area"] == "Framework and Rules"
+        if row.backend_fields["area"] == "Framework and Rules"
     )

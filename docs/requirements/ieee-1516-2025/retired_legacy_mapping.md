@@ -135,8 +135,9 @@ true:
    canonical requirement catalog
 2. the final claim language keeps them explicit as exclusions rather than
    accidental coverage gaps
-3. no generated packet, audit note, or grouped worklist reclassifies them as
-   active 2025 support obligations
+3. any future widening must happen through canonical requirement rows or the
+   backend-resolution companion, never through grouped worklists, audit notes,
+   or other downstream reporting views
 
 Only reopen this bucket if the repo intentionally starts a compatibility or
 migration program for one or more retired rows.

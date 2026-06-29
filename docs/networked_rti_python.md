@@ -27,8 +27,8 @@ If you need the architecture and evidence posture for that 2025 lane, read
 [`python_rti_backend.md`](python_rti_backend.md),
 [`../requirements/2025/canonical_requirements.json`](../requirements/2025/canonical_requirements.json),
 [`../requirements/2025/backend_resolution.json`](../requirements/2025/backend_resolution.json),
-and [`plans/2025_python_rti_backend_audit.md`](plans/2025_python_rti_backend_audit.md)
-alongside this page.
+and use [`plans/2025_python_rti_backend_audit.md`](plans/2025_python_rti_backend_audit.md)
+only as a downstream audit view alongside this page.
 
 ## Hosted `python1516e` Route
 

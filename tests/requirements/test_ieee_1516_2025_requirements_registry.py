@@ -668,9 +668,11 @@ def test_pitch_202x_bounded_comparison_markdown_keeps_bounded_backend_resolution
     text = (REGISTRY_DIR / "pitch_202x_bounded_comparison.md").read_text(encoding="utf-8")
     normalized = " ".join(text.split())
 
-    assert "It is the canonical owner doc for grouped `pitch_202x_resolution` entries" in normalized
+    assert "It is the canonical owner doc behind the 2025 backend-resolution reading for this bounded vendor lane." in normalized
+    assert "downstream projections of that backend-resolution story, not requirement truth" in normalized
     assert "It does not promote Pitch into a second 2025 RTI owner." in normalized
     assert "It does not claim IEEE 1516.1-2025 vendor conformance." in normalized
+    assert "`requirements/2025/backend_resolution.json`" in text
     assert "`requirements/2025/harmonization/hla_2025_pitch_202x_group_resolution.csv`" in text
     assert "`requirements/2025/harmonization/hla_2025_pitch_202x_row_resolution.csv`" in text
     assert "`./tools/pitch 202x-micro-certify`" in text
