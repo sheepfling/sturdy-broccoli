@@ -25,7 +25,7 @@
         "row_count": "11",
         "service_group": "Federate Interface legacy API"
       },
-      "boundary_note": "Every row in this group has explicit exclusion-owner evidence, replacement mapping, row-level disposition, and compatibility-only promotion semantics reviewed.",
+      "boundary_note": "Every row in this group has explicit exclusion-owner evidence, replacement mapping, canonical row disposition, and compatibility-only promotion semantics reviewed.",
       "canonical_owner": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
       "canonical_status": "retired/legacy-only",
       "edition": "2025",
@@ -56,7 +56,7 @@
         "row_count": "13",
         "service_group": "OMT legacy schema"
       },
-      "boundary_note": "Every row in this group has explicit exclusion-owner evidence, replacement mapping, row-level disposition, and compatibility-only promotion semantics reviewed.",
+      "boundary_note": "Every row in this group has explicit exclusion-owner evidence, replacement mapping, canonical row disposition, and compatibility-only promotion semantics reviewed.",
       "canonical_owner": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
       "canonical_status": "retired/legacy-only",
       "edition": "2025",
@@ -87,7 +87,7 @@
         "row_count": "9",
         "service_group": "Callback model and bindings"
       },
-      "boundary_note": "Every row in this group has explicit owner-doc evidence, row-level disposition, child-row or backend-resolution references, and promotion/no-promote semantics reviewed.",
+      "boundary_note": "Every row in this group has explicit owner-doc evidence, canonical row disposition, child-row or backend-resolution references, and promotion/no-promote semantics reviewed.",
       "canonical_owner": "docs/requirements/ieee-1516-2025/callback_binding_deltas.md",
       "canonical_status": "duplicate/umbrella",
       "edition": "2025",
@@ -119,7 +119,7 @@
         "row_count": "3",
         "service_group": "Callback model and bindings"
       },
-      "boundary_note": "Every row in this group has explicit owner-doc evidence, row-level disposition, child-row or backend-resolution references, and promotion/no-promote semantics reviewed.",
+      "boundary_note": "Every row in this group has explicit owner-doc evidence, canonical row disposition, child-row or backend-resolution references, and promotion/no-promote semantics reviewed.",
       "canonical_owner": "docs/requirements/ieee-1516-2025/callback_binding_deltas.md",
       "canonical_status": "duplicate/umbrella",
       "edition": "2025",
@@ -1806,7 +1806,7 @@
         "row_count": "4",
         "service_group": "Federate rules"
       },
-      "boundary_note": "Every row in this group has explicit owner-doc evidence, row-level disposition, child-row or backend-resolution references, and promotion/no-promote semantics reviewed.",
+      "boundary_note": "Every row in this group has explicit owner-doc evidence, canonical row disposition, child-row or backend-resolution references, and promotion/no-promote semantics reviewed.",
       "canonical_owner": "docs/requirements/ieee-1516-2025/framework_rules.md",
       "canonical_status": "duplicate/umbrella",
       "edition": "2025",
@@ -1837,7 +1837,7 @@
         "row_count": "1",
         "service_group": "Federate rules"
       },
-      "boundary_note": "Every row in this group has explicit owner-doc evidence, row-level disposition, child-row or backend-resolution references, and promotion/no-promote semantics reviewed.",
+      "boundary_note": "Every row in this group has explicit owner-doc evidence, canonical row disposition, child-row or backend-resolution references, and promotion/no-promote semantics reviewed.",
       "canonical_owner": "docs/requirements/ieee-1516-2025/framework_rules.md",
       "canonical_status": "duplicate/umbrella",
       "edition": "2025",
@@ -1868,7 +1868,7 @@
         "row_count": "5",
         "service_group": "Federation rules"
       },
-      "boundary_note": "Every row in this group has explicit owner-doc evidence, row-level disposition, child-row or backend-resolution references, and promotion/no-promote semantics reviewed.",
+      "boundary_note": "Every row in this group has explicit owner-doc evidence, canonical row disposition, child-row or backend-resolution references, and promotion/no-promote semantics reviewed.",
       "canonical_owner": "docs/requirements/ieee-1516-2025/framework_rules.md",
       "canonical_status": "duplicate/umbrella",
       "edition": "2025",

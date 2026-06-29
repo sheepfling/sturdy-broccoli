@@ -181,6 +181,7 @@ def test_closeout_docs_demote_themselves_beneath_canonical_requirement_truth() -
     view_registry_text = (ROOT / "docs" / "verification" / "view_registry.md").read_text(encoding="utf-8")
     execution_queue_text = (ROOT / "docs" / "plans" / "requirements_execution_queue.md").read_text(encoding="utf-8")
     harmonization_readme_text = (ROOT / "requirements" / "2025" / "harmonization" / "README.md").read_text(encoding="utf-8")
+    harmonization_worklist_text = (ROOT / "requirements" / "2025" / "harmonization" / "hla_2025_harmonization_worklist.csv").read_text(encoding="utf-8")
     normalized_execution_queue_text = " ".join(execution_queue_text.split())
 
     assert "canonical requirement catalog and backend-resolution companion" in audit_text
@@ -202,6 +203,11 @@ def test_closeout_docs_demote_themselves_beneath_canonical_requirement_truth() -
     assert "only backend- and route-resolution\n  truth" in harmonization_readme_text
     assert "downstream grouped, row-shaped, or\n  review-sequencing projection" in harmonization_readme_text
     assert "synchronized grouped projection over the canonical requirement\n  catalog and backend-resolution companion" in harmonization_readme_text
+    assert "keep per-service truth in the harmonization ledger" not in harmonization_worklist_text
+    assert "behavior closure stays row-level" not in harmonization_worklist_text
+    assert "keep exact closure in the row-level ledger" not in harmonization_worklist_text
+    assert "canonical requirement catalog" in harmonization_worklist_text
+    assert "backend-resolution companion" in harmonization_worklist_text
 
 
 def test_high_traffic_plan_and_verification_entrypoints_route_through_canonical_surfaces() -> None:

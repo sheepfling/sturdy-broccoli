@@ -87,12 +87,12 @@ def _grouped_2025_evidence_refs(rows: tuple[CanonicalRequirementRow, ...], owner
 def _grouped_2025_acceptance_gate(canonical_status: str) -> str:
     if canonical_status == "duplicate/umbrella":
         return (
-            "Every row in this group has explicit owner-doc evidence, row-level disposition, child-row or "
+            "Every row in this group has explicit owner-doc evidence, canonical row disposition, child-row or "
             "backend-resolution references, and promotion/no-promote semantics reviewed."
         )
     if canonical_status == "retired/legacy-only":
         return (
-            "Every row in this group has explicit exclusion-owner evidence, replacement mapping, row-level "
+            "Every row in this group has explicit exclusion-owner evidence, replacement mapping, canonical row "
             "disposition, and compatibility-only promotion semantics reviewed."
         )
     return "Every row in this group stays tied to canonical owner evidence, executable proof, and explicit backend-resolution boundaries."
