@@ -180,7 +180,7 @@ def test_framework_umbrella_rows_are_explicit_evidenced_owner_doc_closures_not_m
         evidence = "; ".join(row.get("evidence_refs", []))
         assert FRAMEWORK_RULES_DOC in evidence
         assert "traceability_matrix.json" in evidence
-        assert "linked FI/OMT child rows" in evidence
+        assert "literal:linked-fi-omt-child-rows" in evidence
 
         repo_status = str(row.get("repo_evidence_status", ""))
         assert repo_status.startswith("owner-doc-closed:")
@@ -194,7 +194,10 @@ def test_framework_umbrella_rows_are_explicit_evidenced_owner_doc_closures_not_m
 
 @pytest.mark.requirements("HLA2025-RET-001", "HLA2025-RET-003")
 def test_retired_legacy_rows_are_explicit_evidenced_owner_doc_closures_not_missing_evidence_rows() -> None:
-    expected_evidence = "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md; migration/compatibility fixture if supported"
+    expected_evidence = (
+        "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md; "
+        "bounded:migration-compatibility-fixture-if-supported"
+    )
     matched = _matching_requirement_rows(_canonical_requirement_rows(), RETIRED_LEGACY_IDS)
     assert len(matched) == len(RETIRED_LEGACY_IDS)
     for row in matched:

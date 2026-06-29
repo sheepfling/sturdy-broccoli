@@ -5,344 +5,444 @@
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md",
+        "docs/requirements/ieee-1516-2025"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md",
+        "docs/requirements/ieee-1516-2025"
+      ],
       "executable_test_id": "HLA2025-FI-001-XT-REQ-THREE_DOCUMENT_HLA_PRODUCT_SET",
       "expected_result_from_extraction": "Matrix contains at least one source link from each of the three standards for FOM-backed exchange scenarios.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "docs/requirements/ieee-1516-2025",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/federate_interface.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_fi_001",
       "requirement_id": "HLA2025-FI-001",
       "requirement_summary": "Spec2025 requirements should cross-link framework/rules, federate interface, and OMT requirements.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md",
+        "docs/backend_capability_matrix.md",
+        "tools/shim-routes matrix"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md",
+        "docs/backend_capability_matrix.md",
+        "tools/shim-routes matrix"
+      ],
       "executable_test_id": "HLA2025-FI-002-XT-REQ-SERVICE_GROUP_TAXONOMY",
       "expected_result_from_extraction": "Every service row has exactly one group and group-level coverage rollups are present.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "docs/backend_capability_matrix.md; tools/shim-routes matrix",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/federate_interface.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_fi_002",
       "requirement_id": "HLA2025-FI-002",
       "requirement_summary": "Capability reports should be organized by federation management, declaration, object, ownership, time, DDM, and support services.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md"
+      ],
       "executable_test_id": "HLA2025-FI-003-XT-REQ-RTI_INITIATED_CALLBACK_SERVICES",
       "expected_result_from_extraction": "Callback inventory exists and each callback is supported, explicitly unsupported, or blocked with a reason.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "hla.rti1516_2025 raw_api; hla.verification callbacks",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/federate_interface.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_fi_003",
       "requirement_id": "HLA2025-FI-003",
       "requirement_summary": "RTI-initiated services must be tracked separately from federate-initiated services.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md"
+      ],
       "executable_test_id": "HLA2025-FI-004-XT-REQ-CONNECT_BEFORE_RTI_INTERACTION",
       "expected_result_from_extraction": "Route returns NotConnected or a structured equivalent; no raw crash.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "DelegatingRTIAmbassador; backends state validation",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/federate_interface.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_fi_004",
       "requirement_id": "HLA2025-FI-004",
       "requirement_summary": "A federate must connect to the RTI before creating/joining or otherwise interacting with federation execution.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md"
+      ],
       "executable_test_id": "HLA2025-FI-005-XT-REQ-DISCONNECT_AFTER_FEDERATION_PART",
       "expected_result_from_extraction": "Final backend/session state is disconnected and no live federate handles remain.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "All RTI backends and standard routes",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/federate_interface.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_fi_005",
       "requirement_id": "HLA2025-FI-005",
       "requirement_summary": "A federate that resigns and has no further intent to participate should disconnect from the RTI.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md",
+        "Java/Py4J/JPype adapters"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md",
+        "Java/Py4J/JPype adapters"
+      ],
       "executable_test_id": "HLA2025-FI-006-XT-REQ-IMMEDIATE_AND_EVOKED_CALLBACK_MO",
       "expected_result_from_extraction": "EVOKED delivers through evoke calls; IMMEDIATE delivers without explicit polling or reports unsupported until implemented.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "Java/Py4J/JPype adapters; C++ capsule callback contract",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/federate_interface.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_fi_006",
       "requirement_id": "HLA2025-FI-006",
       "requirement_summary": "RTIs must implement both IMMEDIATE and EVOKED callback models.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md"
+      ],
       "executable_test_id": "HLA2025-FI-007-XT-REQ-MULTIPLE_JOINED_FEDERATES_AND_FE",
       "expected_result_from_extraction": "Each session has a distinct joined federate designator and callbacks route to the correct federate.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "InMemoryRTIEngine; Java shared kernel; C++ capsule session manager",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/federate_interface.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_fi_007",
       "requirement_id": "HLA2025-FI-007",
       "requirement_summary": "An RTI must allow one application to participate as multiple joined federates and in multiple federations.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md"
+      ],
       "executable_test_id": "HLA2025-FI-008-XT-REQ-ILLEGAL_OPERATIONS_RAISE_EXCEPTI",
       "expected_result_from_extraction": "Each illegal invocation returns the specified RTI exception type or structured equivalent.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "hla.verification.state_negative; all backends",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/federate_interface.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_fi_008",
       "requirement_id": "HLA2025-FI-008",
       "requirement_summary": "Service invocations not allowed by the state charts must generate exceptions.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md",
+        "Java/C++ logical time converters"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md",
+        "Java/C++ logical time converters"
+      ],
       "executable_test_id": "HLA2025-FI-027-XT-REQ-COMMON_LOGICAL_TIME_IMPLEMENTATI",
       "expected_result_from_extraction": "Both federates use the same time factory and grants are type-consistent.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "hla.rti1516_2025.time; Java/C++ logical time converters",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/federate_interface.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_fi_027",
       "requirement_id": "HLA2025-FI-027",
       "requirement_summary": "RTI and joined federates in a federation execution must share a common logical time implementation.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md",
+        "Java/C++ standard shims"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md",
+        "Java/C++ standard shims"
+      ],
       "executable_test_id": "HLA2025-FI-028-XT-REQ-DEFAULT_INTEGER_AND_FLOATING_LOG",
       "expected_result_from_extraction": "HLAinteger64Time and HLAfloat64Time or mapped equivalents are available and usable.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "hla.rti1516_2025.time; Java/C++ standard shims",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/federate_interface.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_fi_028",
       "requirement_id": "HLA2025-FI-028",
       "requirement_summary": "RTIs must provide two default logical time implementations: one integer and one floating point.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md"
+      ],
       "executable_test_id": "HLA2025-FI-029-XT-REQ-CREATE_FEDERATION_FOM_AND_DEFAUL",
       "expected_result_from_extraction": "No-FOM call fails; valid call succeeds and records HLAfloat64Time default.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "create_federation_execution services; FOM loader",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/federate_interface.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_fi_029",
       "requirement_id": "HLA2025-FI-029",
       "requirement_summary": "Create Federation Execution requires at least one FOM module; if logical time is omitted, HLAfloat64Time is used.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md"
+      ],
       "executable_test_id": "HLA2025-FI-030-XT-REQ-JOIN_UNIQUE_FEDERATE_NAMING_AND",
       "expected_result_from_extraction": "RTI returns a unique joined federate designator/name and current FOM is extended.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "join_federation_execution; FOM merge",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/federate_interface.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_fi_030",
       "requirement_id": "HLA2025-FI-030",
       "requirement_summary": "Join assigns or enforces a unique federate name and may add non-conflicting FOM modules.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md"
+      ],
       "executable_test_id": "HLA2025-FI-031-XT-REQ-JOIN_REJECTS_INVALID_OR_INCONSIS",
       "expected_result_from_extraction": "Join fails with the expected FOM exception and current FOM remains unchanged.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "join_federation_execution; hla.foms.validation",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/federate_interface.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_fi_031",
       "requirement_id": "HLA2025-FI-031",
       "requirement_summary": "Join Federation Execution must report errors for invalid, inconsistent, unreadable, or missing FOM modules.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md",
+        "docs/language_shim_routes.md",
+        "tools/shim-routes matrix"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md",
+        "docs/language_shim_routes.md",
+        "tools/shim-routes matrix"
+      ],
       "executable_test_id": "HLA2025-FI-032-XT-REQ-DO_NOT_OVERCLAIM_HLA_CONFORMING",
       "expected_result_from_extraction": "No artifact/route is labelled HLA Conforming unless certified external evidence is recorded.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "docs/language_shim_routes.md; tools/shim-routes matrix",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/federate_interface.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_fi_032",
       "requirement_id": "HLA2025-FI-032",
       "requirement_summary": "The HLA Conforming label is reserved for publicly certified results from a recognized authority.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md"
+      ],
       "executable_test_id": "HLA2025-FI-034-XT-REQ-RTI_SERVICE_AND_CALLBACK_COMPLET",
       "expected_result_from_extraction": "Report counts implemented and unsupported services; full conformance remains false until all are covered.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "hla.rti1516_2025 raw_api; backend conformance matrix",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/federate_interface.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_fi_034",
       "requirement_id": "HLA2025-FI-034",
       "requirement_summary": "A conforming RTI must implement all joined-federate services and invoke all RTI-initiated services.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md",
+        "Java/C++ standard shims"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md",
+        "Java/C++ standard shims"
+      ],
       "executable_test_id": "HLA2025-FI-035-XT-REQ-AT_LEAST_ONE_LANGUAGE_SPECIFIC_A",
       "expected_result_from_extraction": "Each report names the API/language verified and does not combine them into a single unqualified claim.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "Java/C++ standard shims; Python mapping docs",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/federate_interface.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_fi_035",
       "requirement_id": "HLA2025-FI-035",
       "requirement_summary": "RTI conformance requires at least one implemented language-specific API, and results must name verified APIs.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md",
+        "docs/requirements",
+        "Java/C++ build lanes"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md",
+        "docs/requirements",
+        "Java/C++ build lanes"
+      ],
       "executable_test_id": "HLA2025-FI-036-XT-REQ-LANGUAGE_BINDING_EVIDENCE",
       "expected_result_from_extraction": "Official Java/C++ compile reports exist; Python mapping notes link to requirements.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "docs/requirements; Java/C++ build lanes",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/federate_interface.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_fi_036",
       "requirement_id": "HLA2025-FI-036",
       "requirement_summary": "C++ and Java bindings are standard-defined; Python requires an explicit mapping.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md",
+        "java_shims/hla-rti1516-2025-standard-shim"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md",
+        "java_shims/hla-rti1516-2025-standard-shim"
+      ],
       "executable_test_id": "HLA2025-FI-037-XT-REQ-OFFICIAL_JAVA_API_BUNDLE_COMPOSI",
       "expected_result_from_extraction": "Build fails if the artifact uses a hand-written mini API rather than official package/classes.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "java_shims/hla-rti1516-2025-standard-shim",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/federate_interface.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_fi_037",
       "requirement_id": "HLA2025-FI-037",
       "requirement_summary": "The Java API is defined by the listed files in the official Java API zip.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/federate_interface.md"
+      ],
       "executable_test_id": "HLA2025-FI-038-XT-REQ-DEFAULT_JAVA_LOGICAL_TIME_API_CL",
       "expected_result_from_extraction": "Both bridges return type-consistent Python logical time/interval values.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "hla.bridges.java.common value converters",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/federate_interface.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_fi_038",
       "requirement_id": "HLA2025-FI-038",
       "requirement_summary": "The Java API includes HLAfloat64 and HLAinteger64 time factories and logical time interfaces.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
@@ -355,7 +455,7 @@
       "direct_evidence_anchors": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows",
+        "literal:linked-fi-omt-child-rows",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_proto2025_fom_resources.py",
         "tests/scenarios/test_proto2025_fom_showcase.py"
@@ -363,7 +463,7 @@
       "evidence_anchors": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows",
+        "literal:linked-fi-omt-child-rows",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_proto2025_fom_resources.py",
         "tests/scenarios/test_proto2025_fom_showcase.py"
@@ -400,18 +500,18 @@
       "direct_evidence_anchors": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows",
+        "literal:linked-fi-omt-child-rows",
         "tests/test_rti1516_2025_python1516_2025_runtime.py",
         "tests/transport/test_grpc_transport_2025.py",
-        "save_restore_bounded_proof.md"
+        "docs/requirements/ieee-1516-2025/save_restore_bounded_proof.md"
       ],
       "evidence_anchors": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows",
+        "literal:linked-fi-omt-child-rows",
         "tests/test_rti1516_2025_python1516_2025_runtime.py",
         "tests/transport/test_grpc_transport_2025.py",
-        "save_restore_bounded_proof.md",
+        "docs/requirements/ieee-1516-2025/save_restore_bounded_proof.md",
         "docs/requirements/ieee-1516-2025/object_management_bounded_proof.md",
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla-rti1516-2025/src/hla/rti1516_2025/federate_ambassador.py"
@@ -454,7 +554,7 @@
       "direct_evidence_anchors": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows",
+        "literal:linked-fi-omt-child-rows",
         "tests/test_rti1516_2025_python1516_2025_runtime.py",
         "tests/transport/test_grpc_transport_2025.py",
         "tests/backends/test_shim_route_trace_evidence.py"
@@ -462,7 +562,7 @@
       "evidence_anchors": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows",
+        "literal:linked-fi-omt-child-rows",
         "tests/test_rti1516_2025_python1516_2025_runtime.py",
         "tests/transport/test_grpc_transport_2025.py",
         "tests/backends/test_shim_route_trace_evidence.py",
@@ -503,7 +603,7 @@
       "direct_evidence_anchors": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows",
+        "literal:linked-fi-omt-child-rows",
         "tests/test_hla_factory_composition.py",
         "tests/test_rti1516_2025_python1516_2025_runtime.py",
         "tests/transport/test_grpc_transport_2025.py"
@@ -511,7 +611,7 @@
       "evidence_anchors": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows",
+        "literal:linked-fi-omt-child-rows",
         "tests/test_hla_factory_composition.py",
         "tests/test_rti1516_2025_python1516_2025_runtime.py",
         "tests/transport/test_grpc_transport_2025.py"
@@ -548,7 +648,7 @@
       "direct_evidence_anchors": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows",
+        "literal:linked-fi-omt-child-rows",
         "tests/test_rti1516_2025_python1516_2025_runtime.py",
         "tests/transport/test_grpc_transport_2025.py",
         "tests/scenarios/test_ownership_management_backend_matrix.py"
@@ -556,7 +656,7 @@
       "evidence_anchors": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows",
+        "literal:linked-fi-omt-child-rows",
         "tests/test_rti1516_2025_python1516_2025_runtime.py",
         "tests/transport/test_grpc_transport_2025.py",
         "tests/scenarios/test_ownership_management_backend_matrix.py",
@@ -607,7 +707,7 @@
       "direct_evidence_anchors": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows",
+        "literal:linked-fi-omt-child-rows",
         "tests/test_rti1516_2025_python1516_2025_runtime.py",
         "tests/transport/test_grpc_transport_2025.py",
         "tests/scenarios/test_target_radar_scenario.py"
@@ -615,7 +715,7 @@
       "evidence_anchors": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows",
+        "literal:linked-fi-omt-child-rows",
         "tests/test_rti1516_2025_python1516_2025_runtime.py",
         "tests/transport/test_grpc_transport_2025.py",
         "tests/scenarios/test_target_radar_scenario.py",
@@ -661,7 +761,7 @@
       "direct_evidence_anchors": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows",
+        "literal:linked-fi-omt-child-rows",
         "tests/test_rti1516_2025_python1516_2025_runtime.py",
         "tests/transport/test_grpc_transport_2025.py",
         "tests/scenarios/test_ownership_management_backend_matrix.py"
@@ -669,7 +769,7 @@
       "evidence_anchors": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows",
+        "literal:linked-fi-omt-child-rows",
         "tests/test_rti1516_2025_python1516_2025_runtime.py",
         "tests/transport/test_grpc_transport_2025.py",
         "tests/scenarios/test_ownership_management_backend_matrix.py",
@@ -721,7 +821,7 @@
       "direct_evidence_anchors": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows",
+        "literal:linked-fi-omt-child-rows",
         "tests/test_rti1516_2025_python1516_2025_runtime.py",
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/backends/test_python_backend_support_services.py"
@@ -729,7 +829,7 @@
       "evidence_anchors": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows",
+        "literal:linked-fi-omt-child-rows",
         "tests/test_rti1516_2025_python1516_2025_runtime.py",
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/backends/test_python_backend_support_services.py",
@@ -781,7 +881,7 @@
       "direct_evidence_anchors": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows",
+        "literal:linked-fi-omt-child-rows",
         "tests/test_rti1516_2025_python1516_2025_runtime.py",
         "tests/transport/test_grpc_transport_2025.py",
         "tests/backends/test_shim_route_trace_evidence.py"
@@ -789,7 +889,7 @@
       "evidence_anchors": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows",
+        "literal:linked-fi-omt-child-rows",
         "tests/test_rti1516_2025_python1516_2025_runtime.py",
         "tests/transport/test_grpc_transport_2025.py",
         "tests/backends/test_shim_route_trace_evidence.py",
@@ -818,290 +918,378 @@
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/traceability_matrix.md"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/traceability_matrix.md"
+      ],
       "executable_test_id": "HLA2025-MOM-001-XT-REQ-MOM_OBJECT_CLASSES",
       "expected_result_from_extraction": "MOM area appears in capability matrix with explicit status rather than being omitted.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "hla.foms.mom; hla.verification.mom; ./tools/shim-routes mom/evidence",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/traceability_matrix.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_mom_001",
       "requirement_id": "HLA2025-MOM-001",
       "requirement_summary": "The implementation shall extract and plan support for the MOM area: Track MOM object class requirements as a management capability area.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/traceability_matrix.md"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/traceability_matrix.md"
+      ],
       "executable_test_id": "HLA2025-MOM-002-XT-REQ-MOM_INTERACTION_CLASSES",
       "expected_result_from_extraction": "MOM area appears in capability matrix with explicit status rather than being omitted.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "hla.foms.mom; hla.verification.mom; ./tools/shim-routes mom/evidence",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/traceability_matrix.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_mom_002",
       "requirement_id": "HLA2025-MOM-002",
       "requirement_summary": "The implementation shall extract and plan support for the MOM area: Track MOM interaction class requirements as a management capability area.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/traceability_matrix.md"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/traceability_matrix.md"
+      ],
       "executable_test_id": "HLA2025-MOM-003-XT-REQ-MOM_RELATED_CHARACTERISTICS_OF_T",
       "expected_result_from_extraction": "MOM area appears in capability matrix with explicit status rather than being omitted.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "hla.foms.mom; hla.verification.mom; ./tools/shim-routes mom/evidence",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/traceability_matrix.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_mom_003",
       "requirement_id": "HLA2025-MOM-003",
       "requirement_summary": "The implementation shall extract and plan support for the MOM area: Track RTI characteristics surfaced through MOM.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/traceability_matrix.md"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/traceability_matrix.md"
+      ],
       "executable_test_id": "HLA2025-MOM-004-XT-REQ-SERVICE_REPORTING",
       "expected_result_from_extraction": "MOM area appears in capability matrix with explicit status rather than being omitted.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "hla.foms.mom; hla.verification.mom; ./tools/shim-routes mom/evidence",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/traceability_matrix.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_mom_004",
       "requirement_id": "HLA2025-MOM-004",
       "requirement_summary": "The implementation shall extract and plan support for the MOM area: Track MOM service reporting requirements and reporting switches.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/traceability_matrix.md"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/traceability_matrix.md"
+      ],
       "executable_test_id": "HLA2025-MOM-005-XT-REQ-MOM_OMT_TABLES",
       "expected_result_from_extraction": "MOM area appears in capability matrix with explicit status rather than being omitted.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "hla.foms.mom; hla.verification.mom; ./tools/shim-routes mom/evidence",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/traceability_matrix.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_mom_005",
       "requirement_id": "HLA2025-MOM-005",
       "requirement_summary": "The implementation shall extract and plan support for the MOM area: Track MOM OMT tables as object-model fixtures.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/omt.md"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/omt.md"
+      ],
       "executable_test_id": "HLA2025-OMT-011-XT-REQ-FOMS_REQUIRE_MOM_MIM_CONTENT",
       "expected_result_from_extraction": "Standard MIM is inserted or reported as auto-provided; final FDD has required MOM data.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "hla.foms.merge; create_federation_execution",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/omt.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_omt_011",
       "requirement_id": "HLA2025-OMT-011",
       "requirement_summary": "All FOMs require MOM inclusion through a MIM; SOMs include MIM depending on MOM capabilities.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/omt.md",
+        "tools/shim-routes fom",
+        "docs/evidence"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/omt.md",
+        "tools/shim-routes fom",
+        "docs/evidence"
+      ],
       "executable_test_id": "HLA2025-OMT-018-XT-REQ-DO_NOT_OVERCLAIM_HLA_CONFORMING",
       "expected_result_from_extraction": "Reports use evidence-backed terms unless external certification evidence is recorded.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "tools/shim-routes fom; docs/evidence",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/omt.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_omt_018",
       "requirement_id": "HLA2025-OMT-018",
       "requirement_summary": "Object models and tools may use HLA Conforming only when certified results are publicly available.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/omt.md",
+        "tools/shim-routes fom validate/merge/export"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/omt.md",
+        "tools/shim-routes fom validate/merge/export"
+      ],
       "executable_test_id": "HLA2025-OMT-020-XT-REQ-TOOL_ACCEPTS_CONFORMING_OBJECT_M",
       "expected_result_from_extraction": "Conforming XML passes; invalid user input is explicitly identified before output.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "tools/shim-routes fom validate/merge/export",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/omt.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_omt_020",
       "requirement_id": "HLA2025-OMT-020",
       "requirement_summary": "A conforming object model tool accepts conforming models, parses XML, and identifies user inputs that would produce nonconforming models.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/omt.md",
+        "docs/evidence/shim_routes"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/omt.md",
+        "docs/evidence/shim_routes"
+      ],
       "executable_test_id": "HLA2025-OMT-ISU-001-XT-REQ-INTERFACE_SERVICES_USAGE_TABLE_T",
       "expected_result_from_extraction": "Usage table entries are accepted/rejected or generated according to the requirement and linked to route trace evidence.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "hla.foms.omt; docs/evidence/shim_routes; ./tools/shim-routes evidence",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/omt.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_omt_isu_001",
       "requirement_id": "HLA2025-OMT-ISU-001",
       "requirement_summary": "Service usage documentation shall/may be supported: Service utilization table shall include clause number, service name, and usage columns.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/omt.md",
+        "docs/evidence/shim_routes"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/omt.md",
+        "docs/evidence/shim_routes"
+      ],
       "executable_test_id": "HLA2025-OMT-ISU-002-XT-REQ-FOM_MINIMUM_USAGE_ENTRIES",
       "expected_result_from_extraction": "Usage table entries are accepted/rejected or generated according to the requirement and linked to route trace evidence.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "hla.foms.omt; docs/evidence/shim_routes; ./tools/shim-routes evidence",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/omt.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_omt_isu_002",
       "requirement_id": "HLA2025-OMT-ISU-002",
       "requirement_summary": "Service usage documentation shall/may be supported: FOM service usage table shall mark the minimum federation-forming services as Yes.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/omt.md",
+        "docs/evidence/shim_routes"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/omt.md",
+        "docs/evidence/shim_routes"
+      ],
       "executable_test_id": "HLA2025-OMT-ISU-003-XT-REQ-SOM_MINIMUM_USAGE_ENTRIES",
       "expected_result_from_extraction": "Usage table entries are accepted/rejected or generated according to the requirement and linked to route trace evidence.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "hla.foms.omt; docs/evidence/shim_routes; ./tools/shim-routes evidence",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/omt.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_omt_isu_003",
       "requirement_id": "HLA2025-OMT-ISU-003",
       "requirement_summary": "Service usage documentation shall/may be supported: SOM service usage table shall mark the minimum federate-forming services as Yes.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/omt.md",
+        "docs/evidence/shim_routes"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/omt.md",
+        "docs/evidence/shim_routes"
+      ],
       "executable_test_id": "HLA2025-OMT-ISU-004-XT-REQ-OPTIONAL_INCLUSION_CRITERIA",
       "expected_result_from_extraction": "Usage table entries are accepted/rejected or generated according to the requirement and linked to route trace evidence.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "hla.foms.omt; docs/evidence/shim_routes; ./tools/shim-routes evidence",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/omt.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_omt_isu_004",
       "requirement_id": "HLA2025-OMT-ISU-004",
       "requirement_summary": "Service usage documentation shall/may be supported: Federations and federates may document HLA service usage in FOM/SOM modules.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/traceability_matrix.md",
+        "docs/evidence/shim_routes"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/traceability_matrix.md",
+        "docs/evidence/shim_routes"
+      ],
       "executable_test_id": "HLA2025-TRACE-001-XT-REQ-REQUIREMENT_IDS_IN_ROUTE_TRACES",
       "expected_result_from_extraction": "Each route trace includes FR/FI/OMT requirement IDs for the exercised capabilities.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "hla.verification.shim_route_evidence; docs/evidence/shim_routes",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/traceability_matrix.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_trace_001",
       "requirement_id": "HLA2025-TRACE-001",
       "requirement_summary": "Every route evidence trace should include the requirement IDs exercised by the scenario.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/traceability_matrix.md",
+        "tools/shim-routes matrix",
+        "docs/backend_conformance_matrix.md"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/traceability_matrix.md",
+        "tools/shim-routes matrix",
+        "docs/backend_conformance_matrix.md"
+      ],
       "executable_test_id": "HLA2025-TRACE-002-XT-REQ-FULL_INTERFACE_STATUS_SEPARATE_F",
       "expected_result_from_extraction": "Lifecycle-only routes are not labelled core-green or full-interface-complete.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "tools/shim-routes matrix; docs/backend_conformance_matrix.md",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/traceability_matrix.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_trace_002",
       "requirement_id": "HLA2025-TRACE-002",
       "requirement_summary": "Reports must distinguish lifecycle/core-exchange evidence from full joined-service and RTI-initiated callback coverage.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/traceability_matrix.md",
+        "Java/C++ intake"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/traceability_matrix.md",
+        "Java/C++ intake"
+      ],
       "executable_test_id": "HLA2025-TRACE-004-XT-REQ-LANGUAGE_SPECIFIC_API_EVIDENCE_S",
       "expected_result_from_extraction": "Each row names the language/API and has independent status and unsupported-service ledger.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "standard_shims; Java/C++ intake; Python mapping docs",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/traceability_matrix.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_trace_004",
       "requirement_id": "HLA2025-TRACE-004",
       "requirement_summary": "Java, C++, and Python mapping evidence must be tracked separately.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
       "child_requirement_ids": [],
-      "direct_evidence_anchors": [],
-      "evidence_anchors": [],
+      "direct_evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/traceability_matrix.md",
+        "Java/C++ bridge exception translators"
+      ],
+      "evidence_anchors": [
+        "docs/requirements/ieee-1516-2025/traceability_matrix.md",
+        "Java/C++ bridge exception translators"
+      ],
       "executable_test_id": "HLA2025-TRACE-005-XT-REQ-STRUCTURED_ERRORS_ACROSS_LANGUAG",
       "expected_result_from_extraction": "Each route returns equivalent structured error metadata without process crash.",
       "expected_status": "evidence-green or planned-with-blocker",
       "harmonization_disposition": "packet-only",
       "implementation_target": "Java/C++ bridge exception translators; hla.foms.validation",
       "inherited_evidence_anchors": [],
-      "owner_doc": "",
+      "owner_doc": "docs/requirements/ieee-1516-2025/traceability_matrix.md",
       "pytest_candidate": "tests/requirements/test_2025_traceability.py::test_spec2025_trace_005",
       "requirement_id": "HLA2025-TRACE-005",
       "requirement_summary": "Illegal operations and invalid FOMs should produce structured HLA exceptions or validation errors across Python, Java, and C++ routes.",
       "row_role": "packet-traceability",
-      "traceability_basis": "packet-only-no-direct-anchor"
+      "traceability_basis": "direct-requirement-evidence"
     },
     {
       "child_dispositions": {},
@@ -1543,14 +1731,14 @@
       "direct_evidence_anchors": [
         "docs/evidence/spec2025/traceability_matrix.json",
         "requirements/2025/depth/hla_2025_requirement_depth_expansion.csv",
-        "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv"
+        "requirements/2025/canonical_requirements.json"
       ],
       "evidence_anchors": [
         "docs/evidence/spec2025/traceability_matrix.json",
         "requirements/2025/depth/hla_2025_requirement_depth_expansion.csv",
-        "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv",
+        "requirements/2025/canonical_requirements.json",
         "docs/requirements/ieee-1516-2025/framework_rules.md",
-        "linked FI/OMT child rows",
+        "literal:linked-fi-omt-child-rows",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_proto2025_fom_resources.py",
         "tests/scenarios/test_proto2025_fom_showcase.py"
@@ -1563,7 +1751,7 @@
       "inherited_evidence_anchors": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows",
+        "literal:linked-fi-omt-child-rows",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_proto2025_fom_resources.py",
         "tests/scenarios/test_proto2025_fom_showcase.py"

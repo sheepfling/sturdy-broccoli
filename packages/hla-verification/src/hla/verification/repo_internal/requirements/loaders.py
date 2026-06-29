@@ -21,6 +21,11 @@ FI_BINDING_2025_REL = "requirements/2025/harmonization/hla_2025_fi_binding_surfa
 
 _SLUG_NON_ALNUM = re.compile(r"[^a-z0-9]+")
 
+_SPECIAL_2025_EVIDENCE_REFS = {
+    "linked FI/OMT child rows": "literal:linked-fi-omt-child-rows",
+    "migration/compatibility fixture if supported": "bounded:migration-compatibility-fixture-if-supported",
+}
+
 _SERVICE_GROUP_OWNER_DOCS = {
     "Federation management": "docs/requirements/ieee-1516-2025/federation_management_bounded_proof.md",
     "Declaration management": "docs/requirements/ieee-1516-2025/declaration_management_bounded_proof.md",
@@ -159,7 +164,9 @@ def _normalize_2025_evidence_refs(row: dict[str, str]) -> tuple[str, ...]:
     refs = list(_split_semicolon_items(row.get("suggested_repo_evidence_path", "")))
     normalized: list[str] = []
     for ref in refs:
-        if ref == "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py":
+        if ref in _SPECIAL_2025_EVIDENCE_REFS:
+            normalized.append(_SPECIAL_2025_EVIDENCE_REFS[ref])
+        elif ref == "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py":
             normalized.append("packages/hla-rti-core/src/hla/fom/validation.py")
         else:
             normalized.append(ref)

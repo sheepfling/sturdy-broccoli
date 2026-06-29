@@ -74,6 +74,33 @@ def test_spec2025_traceability_matrix_routes_through_canonical_owner_and_live_ev
         assert row["evidence_anchors"]
         assert "docs/plans/" not in row["owner_doc"]
         assert "worklist" not in row["owner_doc"]
+        for anchor in row["evidence_anchors"]:
+            if str(anchor).startswith(("literal:", "bounded:")):
+                continue
+            assert (ROOT / str(anchor).split(":", 1)[0]).exists(), anchor
+
+
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-MOM-001", "HLA2025-TRACE-001")
+def test_spec2025_packet_only_traceability_rows_get_requirement_facing_owner_docs_and_direct_anchors() -> None:
+    matrix = build_spec2025_traceability_matrix(ROOT)
+    rows = {row["requirement_id"]: row for row in matrix["rows"]}
+
+    assert rows["HLA2025-FI-001"]["owner_doc"] == "docs/requirements/ieee-1516-2025/federate_interface.md"
+    assert rows["HLA2025-FI-001"]["direct_evidence_anchors"] == [
+        "docs/requirements/ieee-1516-2025/federate_interface.md",
+        "docs/requirements/ieee-1516-2025",
+    ]
+
+    assert rows["HLA2025-MOM-001"]["owner_doc"] == "docs/requirements/ieee-1516-2025/traceability_matrix.md"
+    assert rows["HLA2025-MOM-001"]["direct_evidence_anchors"] == [
+        "docs/requirements/ieee-1516-2025/traceability_matrix.md",
+    ]
+
+    assert rows["HLA2025-TRACE-001"]["owner_doc"] == "docs/requirements/ieee-1516-2025/traceability_matrix.md"
+    assert rows["HLA2025-TRACE-001"]["direct_evidence_anchors"] == [
+        "docs/requirements/ieee-1516-2025/traceability_matrix.md",
+        "docs/evidence/shim_routes",
+    ]
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FR-010")
@@ -95,6 +122,7 @@ def test_spec2025_framework_traceability_rows_are_child_mapped_and_evidence_back
         "HLA2025-OMT-006",
         "HLA2025-REQ-001",
     ]
+    assert "literal:linked-fi-omt-child-rows" in rows["HLA2025-FR-001"]["evidence_anchors"]
     assert rows["HLA2025-FR-010"]["child_requirement_ids"] == [
         "HLA2025-FI-009",
         "HLA2025-FI-SVC-101",

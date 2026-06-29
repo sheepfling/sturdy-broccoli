@@ -17,8 +17,15 @@ EXECUTABLE_PACKET_REL = (
 TRACEABILITY_PYTEST_PREFIX = "tests/requirements/test_2025_traceability.py::"
 FRAMEWORK_DOC_REL = "docs/requirements/ieee-1516-2025/framework_rules.md"
 DELTA_DOC_REL = "docs/requirements/ieee-1516-2025/callback_binding_deltas.md"
+FI_OWNER_DOC_REL = "docs/requirements/ieee-1516-2025/federate_interface.md"
+OMT_OWNER_DOC_REL = "docs/requirements/ieee-1516-2025/omt.md"
+TRACEABILITY_OWNER_DOC_REL = "docs/requirements/ieee-1516-2025/traceability_matrix.md"
 
 _BACKTICKED_TOKEN = re.compile(r"`([^`]+)`")
+_SPECIAL_EVIDENCE_MARKERS = {
+    "linked FI/OMT child rows": "literal:linked-fi-omt-child-rows",
+    "migration/compatibility fixture if supported": "bounded:migration-compatibility-fixture-if-supported",
+}
 
 
 def _read_traceability_packet_rows(project_root: Path) -> list[dict[str, str]]:
@@ -61,13 +68,31 @@ def _split_cell_items(cell: str) -> list[str]:
     return [item.strip() for item in cell.split(",") if item.strip()]
 
 
-def _canonical_evidence_items(cell: str) -> list[str]:
+def _canonicalize_owner_doc_anchor(owner_doc: str, anchor: str) -> str:
+    normalized = anchor.strip()
+    if normalized in _SPECIAL_EVIDENCE_MARKERS:
+        return _SPECIAL_EVIDENCE_MARKERS[normalized]
+    if normalized.startswith(("literal:", "bounded:")):
+        return normalized
+    if "/" in normalized:
+        return normalized
+    if normalized.endswith((".md", ".json", ".csv", ".py")):
+        owner_dir = Path(owner_doc).parent
+        return str(owner_dir / normalized)
+    return normalized
+
+
+def _canonical_evidence_items(owner_doc: str, cell: str) -> list[str]:
     items: list[str] = []
     for item in _split_cell_items(cell):
-        normalized = item.strip()
-        if not normalized or "linked child rows" in normalized.lower():
+        normalized = _canonicalize_owner_doc_anchor(owner_doc, item)
+        if not normalized:
             continue
-        if "/" not in normalized and not normalized.endswith((".md", ".json", ".csv", ".py")):
+        if (
+            not normalized.startswith(("literal:", "bounded:"))
+            and "/" not in normalized
+            and not normalized.endswith((".md", ".json", ".csv", ".py"))
+        ):
             continue
         if normalized not in items:
             items.append(normalized)
@@ -92,9 +117,42 @@ def _read_owner_doc_mappings(project_root: Path) -> tuple[dict[str, list[str]], 
                     child_links[requirement_id] = sorted(_split_cell_items(row["Linked child rows"]))
                     owner_doc_by_requirement[requirement_id] = owner_doc
                 if "Evidence anchors" in row:
-                    owner_evidence_by_requirement[requirement_id] = _canonical_evidence_items(row["Evidence anchors"])
+                    owner_evidence_by_requirement[requirement_id] = _canonical_evidence_items(owner_doc, row["Evidence anchors"])
 
     return child_links, owner_doc_by_requirement, owner_evidence_by_requirement
+
+
+def _packet_owner_doc(requirement_id: str) -> str:
+    if requirement_id.startswith("HLA2025-FI-"):
+        return FI_OWNER_DOC_REL
+    if requirement_id.startswith(("HLA2025-OMT-", "HLA2025-OMT-ISU-")):
+        return OMT_OWNER_DOC_REL
+    if requirement_id.startswith(("HLA2025-MOM-", "HLA2025-TRACE-")):
+        return TRACEABILITY_OWNER_DOC_REL
+    return ""
+
+
+def _packet_pathlike_targets(packet_row: dict[str, str]) -> list[str]:
+    refs: list[str] = []
+    for item in (part.strip() for part in packet_row.get("implementation_target", "").split(";")):
+        if not item or "/" not in item:
+            continue
+        if item.startswith("./"):
+            continue
+        if item not in refs:
+            refs.append(item)
+    return refs
+
+
+def _packet_evidence_anchors(requirement_id: str, packet_row: dict[str, str]) -> list[str]:
+    anchors: list[str] = []
+    owner_doc = _packet_owner_doc(requirement_id)
+    if owner_doc:
+        anchors.append(owner_doc)
+    for target in _packet_pathlike_targets(packet_row):
+        if target not in anchors:
+            anchors.append(target)
+    return anchors
 
 
 def _requirement_evidence_index(
@@ -143,6 +201,8 @@ def build_spec2025_traceability_matrix(project_root: Path) -> dict[str, Any]:
                     inherited_evidence_anchors.append(anchor)
         if not direct_evidence_anchors and requirement_id in owner_evidence_by_requirement:
             direct_evidence_anchors = list(owner_evidence_by_requirement[requirement_id])
+        if not direct_evidence_anchors:
+            direct_evidence_anchors = _packet_evidence_anchors(requirement_id, packet_row)
         evidence_anchors = list(direct_evidence_anchors)
         for anchor in inherited_evidence_anchors:
             if anchor not in evidence_anchors:
@@ -168,7 +228,10 @@ def build_spec2025_traceability_matrix(project_root: Path) -> dict[str, Any]:
                     canonical_row["canonical_status"] if canonical_row else "packet-only"
                 ),
                 "row_role": canonical_row["row_kind"] if canonical_row else "packet-traceability",
-                "owner_doc": owner_doc_by_requirement.get(requirement_id, canonical_row["owner_doc"] if canonical_row else ""),
+                "owner_doc": owner_doc_by_requirement.get(
+                    requirement_id,
+                    canonical_row["owner_doc"] if canonical_row else _packet_owner_doc(requirement_id),
+                ),
                 "child_requirement_ids": child_ids,
                 "child_dispositions": {
                     child_id: canonical_rows_by_requirement[child_id]["canonical_status"]

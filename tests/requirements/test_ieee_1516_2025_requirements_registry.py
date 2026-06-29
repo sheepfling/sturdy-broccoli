@@ -23,6 +23,10 @@ def _assert_contains_all(text: str, snippets: list[str]) -> None:
         assert snippet in text
 
 
+def _is_explicit_nonpath_evidence_ref(evidence: str) -> bool:
+    return evidence.startswith(("literal:", "bounded:"))
+
+
 def _canonical_rows_by_id() -> dict[str, dict[str, object]]:
     payload = json.loads(CANONICAL_REQUIREMENTS.read_text(encoding="utf-8"))
     return {row["requirement_id"]: row for row in payload["rows"]}
@@ -150,10 +154,6 @@ def test_2025_backend_resolution_catalog_keeps_backend_and_route_truth_separate_
 def test_2025_canonical_catalog_rows_keep_owner_shard_and_evidence_traceability_coherent() -> None:
     rows = _canonical_rows_by_id()
     lane_commands = _lane_owner_commands()
-    allowed_literal_evidence = {
-        "linked FI/OMT child rows",
-        "migration/compatibility fixture if supported",
-    }
 
     for requirement_id, row in rows.items():
         owner_doc = str(row["owner_doc"])
@@ -168,7 +168,7 @@ def test_2025_canonical_catalog_rows_keep_owner_shard_and_evidence_traceability_
         assert evidence_refs, requirement_id
 
         for evidence in evidence_refs:
-            if evidence in allowed_literal_evidence:
+            if _is_explicit_nonpath_evidence_ref(str(evidence)):
                 assert str(row["row_kind"]) in {"framework-umbrella", "legacy-mapping"}, requirement_id
                 continue
             evidence_path = ROOT / str(evidence).split(":", 1)[0]

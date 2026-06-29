@@ -727,7 +727,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
             "Closeout Readiness",
             "Promotion Vs Split Audit",
             "Pytest Anchor Audit",
-                "Anchored requirements: 731",
+                "Anchored requirements: 732",
             "Unanchored Requirement Audit",
             "Unanchored ledger requirements: 0",
             "FI Service Proof Audit",
@@ -1077,6 +1077,11 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Requirement-by-requirement duplicate/umbrella breakdown:" in markdown
     assert "delta-umbrella: 12 rows" in markdown
     assert "framework-umbrella: 10 rows" in markdown
+    assert "`requirements/2025/backend_resolution.json`" in markdown
+    assert "canonical backend-resolution companion" in markdown
+    assert "hla_2025_harmonization_worklist.csv" not in markdown
+    assert "hla_2025_pitch_202x_group_resolution.csv" not in markdown
+    assert "hla_2025_pitch_202x_row_resolution.csv" not in markdown
     assert "Highest-Priority Open Work" in markdown
     assert "2025-wsdl-legacy-only" in markdown
     assert "Do not promote `partial` rows" in markdown
@@ -1091,7 +1096,7 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     assert payload["requirement_depth_expansion"]["row_count"] == 691
     assert payload["requirement_coverage_disposition"]["covered_row_count"] == 645
     assert payload["verification_matrix"]["high_priority_missing_anchor_count"] == 0
-    assert payload["requirement_pytest_anchor_audit"]["row_count"] == 731
+    assert payload["requirement_pytest_anchor_audit"]["row_count"] == 732
     assert payload["unanchored_requirement_audit"]["row_count"] == 0
     assert payload["route_parity_matrix"]["by_status"]["missing"] == 0
     payload_route_rows = {
@@ -1460,6 +1465,8 @@ def test_2025_finish_line_snapshot_uses_live_traceability_artifacts() -> None:
 
     assert lane_audit["evidence_anchors"]
     for evidence_path in lane_audit["evidence_anchors"]:
+        assert "docs/plans/" not in evidence_path
+        assert "verification_plan" not in evidence_path
         _assert_live_relative_path(evidence_path)
 
     assert all(

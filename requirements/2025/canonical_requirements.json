@@ -24508,7 +24508,7 @@
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows"
+        "literal:linked-fi-omt-child-rows"
       ],
       "normative_level": "shall",
       "owner_doc": "docs/requirements/ieee-1516-2025/framework_rules.md",
@@ -24545,7 +24545,7 @@
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows"
+        "literal:linked-fi-omt-child-rows"
       ],
       "normative_level": "shall",
       "owner_doc": "docs/requirements/ieee-1516-2025/framework_rules.md",
@@ -24581,7 +24581,7 @@
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows"
+        "literal:linked-fi-omt-child-rows"
       ],
       "normative_level": "shall",
       "owner_doc": "docs/requirements/ieee-1516-2025/framework_rules.md",
@@ -24618,7 +24618,7 @@
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows"
+        "literal:linked-fi-omt-child-rows"
       ],
       "normative_level": "shall",
       "owner_doc": "docs/requirements/ieee-1516-2025/framework_rules.md",
@@ -24654,7 +24654,7 @@
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows"
+        "literal:linked-fi-omt-child-rows"
       ],
       "normative_level": "shall",
       "owner_doc": "docs/requirements/ieee-1516-2025/framework_rules.md",
@@ -24690,7 +24690,7 @@
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows"
+        "literal:linked-fi-omt-child-rows"
       ],
       "normative_level": "shall",
       "owner_doc": "docs/requirements/ieee-1516-2025/framework_rules.md",
@@ -24726,7 +24726,7 @@
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows"
+        "literal:linked-fi-omt-child-rows"
       ],
       "normative_level": "shall",
       "owner_doc": "docs/requirements/ieee-1516-2025/framework_rules.md",
@@ -24762,7 +24762,7 @@
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows"
+        "literal:linked-fi-omt-child-rows"
       ],
       "normative_level": "shall",
       "owner_doc": "docs/requirements/ieee-1516-2025/framework_rules.md",
@@ -24798,7 +24798,7 @@
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows"
+        "literal:linked-fi-omt-child-rows"
       ],
       "normative_level": "shall",
       "owner_doc": "docs/requirements/ieee-1516-2025/framework_rules.md",
@@ -24834,7 +24834,7 @@
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/framework_rules.md",
         "docs/evidence/spec2025/traceability_matrix.json",
-        "linked FI/OMT child rows"
+        "literal:linked-fi-omt-child-rows"
       ],
       "normative_level": "shall",
       "owner_doc": "docs/requirements/ieee-1516-2025/framework_rules.md",
@@ -25323,7 +25323,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -25359,7 +25359,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -25395,7 +25395,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -25431,7 +25431,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -25467,7 +25467,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -25503,7 +25503,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -25539,7 +25539,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -25575,7 +25575,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -25611,7 +25611,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -25647,7 +25647,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -25683,7 +25683,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -25719,7 +25719,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -25755,7 +25755,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -25791,7 +25791,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -25827,7 +25827,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -25863,7 +25863,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -25899,7 +25899,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -25935,7 +25935,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -25971,7 +25971,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -26007,7 +26007,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -26043,7 +26043,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -26079,7 +26079,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -26115,7 +26115,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
@@ -26151,7 +26151,7 @@
       "edition": "2025",
       "evidence_refs": [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "migration/compatibility fixture if supported"
+        "bounded:migration-compatibility-fixture-if-supported"
       ],
       "normative_level": "legacy-only",
       "owner_doc": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
