@@ -1,9 +1,10 @@
 # HLA 1516-2025 requirement coverage disposition pass
 
-This packet is the repo-reconciled harmonization layer over the 691-row
-requirement-depth packet. It still separates source and binding surface
+This packet is a generated harmonization closeout projection over the 691-row
+requirement-depth packet plus the canonical 2025 requirement and
+backend-resolution catalogs. It still separates source and binding surface
 accounting from blanket implementation-proof claims, but it now summarizes the
-current committed row-level disposition ledger rather than an older
+current committed canonical and backend-resolution state rather than an older
 intermediate unsupported-boundary pass.
 
 ## Result
@@ -24,7 +25,8 @@ Historical note:
 - earlier harmonization passes used `unsupported-boundary` as an explicit
   intermediate disposition for rows that had not yet been promoted into
   `covered`, `duplicate/umbrella`, or `retired/legacy-only`
-- the current committed row-level ledger no longer uses that disposition
+- the current committed generated closeout projection no longer uses that
+  disposition
 - if an older packet still reports `unsupported-boundary=81`, treat it as
   historical intermediate evidence rather than the current closeout state
 
@@ -68,7 +70,7 @@ FedPro request messages in the provided protocol packet.
 
 ## Current Row-Level Closure Reading
 
-The current ledger-backed row-level reading is:
+The current generated closeout projection reads:
 
 - `645` covered rows
 - `22` duplicate/umbrella rows
@@ -77,7 +79,8 @@ The current ledger-backed row-level reading is:
 
 This means:
 
-- the repo now has an explicit row-level disposition for all 691 tracked rows
+- the repo now has an explicit canonical or owner-doc-derived reading for all
+  691 tracked rows
 - the remaining 2025 closeout debt is no longer a hidden unsupported bucket
 - the remaining blocker is bounded-claim discipline, umbrella-row hygiene,
   retired-row exclusion discipline, and bounded route or binding scope honesty
@@ -100,7 +103,7 @@ dispositions:
 
 | Coverage risk | What changed in this pass | Remaining gate |
 |---|---|---|
-| Imported rows are only candidates | Every row now has `harmonization_disposition`, `priority`, `closure_wave`, `repo_evidence_status`, and `promotion_rule`, and the current ledger assigns every tracked row to `covered`, `duplicate/umbrella`, or `retired/legacy-only`. | Keep future row changes synchronized with the row-level ledger, worklist, owner docs, and downstream closeout/export artifacts. |
+| Imported rows are only candidates | Every row now has `harmonization_disposition`, `priority`, `closure_wave`, `repo_evidence_status`, and `promotion_rule`, and the current projection assigns every tracked row to `covered`, `duplicate/umbrella`, or `retired/legacy-only` in sync with canonical requirement and backend-resolution truth. | Keep future row changes synchronized with the canonical catalogs, owner docs, and downstream closeout/export artifacts. |
 | FI service depth needs service-level accounting | All 196 FI rows now carry Java/C++/FedPro surface status and service-level closure tasks, and the full FI catalog now points at direct executable Python evidence. | Keep future FI behavior changes synchronized with canonical owner surfaces and executable anchors. |
 | SOM/FOM service-utilization rows lacked reconciled closure | All 196 service-utilization rows now point at direct parser/roundtrip evidence plus renumbered-differential checks and the covered FI catalog they mirror. | Keep serviceUtilization parser semantics and FI cross-checks synchronized when object-model handling changes. |
 | OMT component depth is not proof | The remaining OMT component rows are now either promoted into the supported shared parser/serializer subset or normalized into explicit bounded owner-doc readings instead of being left partial. | Keep narrowing broad claims, add direct fixtures when support expands, and replace bounded owner-doc language only when parser/serializer/runtime evidence exists. |

@@ -170,13 +170,13 @@ def test_requirement_compliance_spreadsheet_export_writes_both_editions(tmp_path
     assert any(
         row["service_group"] == "Object management"
         and row["canonical_disposition"] == "covered"
-        and row["python_runtime_resolution"] == "grouped row set already has direct python1516_2025 evidence; keep per-service truth in the canonical requirement ledger"
+        and row["python_runtime_resolution"] == "grouped row set already has direct python1516_2025 evidence; keep per-service requirement truth in the canonical requirement catalog"
         for row in execution_groups_2025
     )
     assert any(
         row["service_group"] == "Data distribution management"
         and row["canonical_disposition"] == "covered"
-        and row["hosted_fedpro_resolution"] == "FedPro route/support is tracked separately in the FI binding matrix and canonical requirement ledger"
+        and row["hosted_fedpro_resolution"] == "FedPro route/support is tracked separately in the FI binding matrix and backend-resolution companion"
         for row in execution_groups_2025
     )
     assert any(

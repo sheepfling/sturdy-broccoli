@@ -129,15 +129,15 @@ def _grouped_2025_resolution_fields(rows: tuple[CanonicalRequirementRow, ...]) -
         }
     if area == "Federate Interface service catalog":
         return {
-            "python_runtime_resolution": "grouped row set already has direct python1516_2025 evidence; keep per-service truth in the canonical requirement ledger",
-            "java_cpp_binding_resolution": "official Java/C++ surfaces are tracked separately in the FI binding matrix; behavior closure stays row-level",
-            "hosted_fedpro_resolution": "FedPro route/support is tracked separately in the FI binding matrix and canonical requirement ledger",
+            "python_runtime_resolution": "grouped row set already has direct python1516_2025 evidence; keep per-service requirement truth in the canonical requirement catalog",
+            "java_cpp_binding_resolution": "official Java/C++ surfaces are tracked separately in the FI binding matrix; requirement closure remains anchored in canonical requirement rows",
+            "hosted_fedpro_resolution": "FedPro route/support is tracked separately in the FI binding matrix and backend-resolution companion",
             "pitch_202x_resolution": "vendor-branded proto HLA 4 / 202X surface may overlap this FI bucket, but grouped Pitch parity still has to be read from linked owner artifacts rather than inferred here",
-            "closure_goal": "Keep the covered row set aligned with the canonical requirement ledger, executable evidence, and truthful scope boundaries.",
+            "closure_goal": "Keep the covered row set aligned with the canonical requirement catalog, executable evidence, and truthful scope boundaries.",
         }
     if area == "SOM/FOM service-usage requirements":
         return {
-            "python_runtime_resolution": "cross-check against parser/import-export and mirrored FI proof; keep exact closure in the row-level ledger",
+            "python_runtime_resolution": "cross-check against parser/import-export and mirrored FI proof; keep exact closure in canonical requirement rows",
             "java_cpp_binding_resolution": "n/a at grouped service-usage level except where mirrored FI rows carry binding surface evidence",
             "hosted_fedpro_resolution": "n/a at grouped service-usage level unless the mirrored FI row explicitly widens to hosted route proof",
             "pitch_202x_resolution": "n/a at grouped service-usage level unless a mirrored FI owner artifact explicitly records Pitch proto HLA 4 / 202X support or divergence",
