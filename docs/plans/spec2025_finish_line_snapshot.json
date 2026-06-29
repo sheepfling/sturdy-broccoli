@@ -20051,7 +20051,7 @@
     "projection_source": "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv",
     "row_count": 691,
     "row_count_from_csv": 691,
-    "status": "repo-reconciled-disposition"
+    "status": "generated-closeout-projection"
   },
   "requirement_depth_expansion": {
     "by_area": {
@@ -20093,7 +20093,7 @@
     "row_count": 691,
     "row_count_from_csv": 691,
     "source": "requirements/2025/depth/hla_2025_requirement_depth_expansion.csv",
-    "status": "imported-harmonization-candidate"
+    "status": "generated-depth-candidate"
   },
   "requirement_pytest_anchor_audit": {
     "anchored_requirement_count": 732,
@@ -20415,7 +20415,7 @@
         "pytest_anchor_count": 171,
         "pytest_anchors": [
           "tests/backends/test_proto2025_federate_examples.py::test_proto2025_2025_example_foms_drive_two_federate_exchange",
-          "tests/requirements/test_2025_traceability.py::test_spec2025_packet_only_traceability_rows_get_requirement_facing_owner_docs_and_direct_anchors",
+          "tests/requirements/test_2025_traceability.py::test_spec2025_owner_doc_derived_traceability_rows_get_requirement_facing_owner_docs_and_direct_anchors",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_callback_surface_uses_direct_context_parameters_not_supplemental_helpers",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compat_records_discovery_metadata_callback_shape",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compat_records_update_advisory_callback_shape",
@@ -20594,7 +20594,7 @@
           "tests/requirements/test_2025_imported_packets.py::test_covered_fi_service_rows_are_consistently_covered_in_disposition_and_binding_matrix",
           "tests/requirements/test_2025_imported_packets.py::test_imported_executable_test_backlog_is_tracked_in_registry",
           "tests/requirements/test_2025_imported_packets.py::test_imported_requirement_depth_packet_is_tracked_as_harmonization_candidate",
-          "tests/requirements/test_2025_imported_packets.py::test_imported_requirement_disposition_packet_tracks_repo_reconciled_coverage_promotions",
+          "tests/requirements/test_2025_imported_packets.py::test_imported_requirement_disposition_packet_is_a_generated_projection_over_canonical_truth",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_failed_federate_synchronization_scenario_end_to_end",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_federation_lifecycle_negative_scenario_end_to_end",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_federation_lifecycle_scenario_end_to_end",
@@ -24082,7 +24082,7 @@
       {
         "pytest_anchor_count": 1,
         "pytest_anchors": [
-          "tests/requirements/test_2025_traceability.py::test_spec2025_packet_only_traceability_rows_get_requirement_facing_owner_docs_and_direct_anchors"
+          "tests/requirements/test_2025_traceability.py::test_spec2025_owner_doc_derived_traceability_rows_get_requirement_facing_owner_docs_and_direct_anchors"
         ],
         "requirement_id": "HLA2025-MOM-001"
       },
@@ -27482,7 +27482,7 @@
           "tests/requirements/test_2025_imported_packets.py::test_covered_fi_service_rows_are_consistently_covered_in_disposition_and_binding_matrix",
           "tests/requirements/test_2025_imported_packets.py::test_imported_executable_test_backlog_is_tracked_in_registry",
           "tests/requirements/test_2025_imported_packets.py::test_imported_requirement_depth_packet_is_tracked_as_harmonization_candidate",
-          "tests/requirements/test_2025_imported_packets.py::test_imported_requirement_disposition_packet_tracks_repo_reconciled_coverage_promotions",
+          "tests/requirements/test_2025_imported_packets.py::test_imported_requirement_disposition_packet_is_a_generated_projection_over_canonical_truth",
           "tests/requirements/test_2025_requirement_completion_backlog.py::test_2025_completion_backlog_is_canonical_and_human_editable",
           "tests/requirements/test_2025_requirement_completion_backlog.py::test_high_priority_rows_have_acceptance_and_verification_work",
           "tests/requirements/test_2025_requirement_completion_backlog.py::test_modified_existing_sections_are_explicitly_dispositioned",
@@ -27687,10 +27687,10 @@
         "pytest_anchor_count": 12,
         "pytest_anchors": [
           "tests/requirements/test_2025_imported_packets.py::test_covered_fi_service_rows_are_consistently_covered_in_disposition_and_binding_matrix",
-          "tests/requirements/test_2025_imported_packets.py::test_imported_requirement_disposition_packet_tracks_repo_reconciled_coverage_promotions",
+          "tests/requirements/test_2025_imported_packets.py::test_imported_requirement_disposition_packet_is_a_generated_projection_over_canonical_truth",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_snapshot_tracks_live_evidence_and_boundaries",
           "tests/requirements/test_2025_tail_backlog_evidence.py::test_harmonization_packets_keep_covered_runtime_evidence_on_python2025_lane",
-          "tests/requirements/test_2025_traceability.py::test_spec2025_packet_only_traceability_rows_get_requirement_facing_owner_docs_and_direct_anchors",
+          "tests/requirements/test_2025_traceability.py::test_spec2025_owner_doc_derived_traceability_rows_get_requirement_facing_owner_docs_and_direct_anchors",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_2025_backend_resolution_rows_keep_owner_shard_and_evidence_traceability_coherent",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_2025_canonical_catalog_rows_keep_owner_shard_and_evidence_traceability_coherent",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_2025_canonical_requirement_catalog_maps_rows_to_owner_docs_shards_and_evidence",

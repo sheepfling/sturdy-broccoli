@@ -38,8 +38,10 @@
       "json_path": "../../../requirements/2025/depth/hla_2025_requirement_depth_expansion.json",
       "summary_path": "../../../requirements/2025/depth/hla_2025_requirement_depth_expansion_summary.json",
       "manifest_path": "../../../requirements/2025/depth/source_manifest.json",
+      "owner_source": "../../../requirements/2025/canonical_requirements.json",
+      "backend_resolution_source": "../../../requirements/2025/backend_resolution.json",
       "row_count": 691,
-      "status": "imported-harmonization-candidate"
+      "status": "generated-depth-candidate"
     },
     {
       "id": "hla-2025-requirement-coverage-disposition",
@@ -50,8 +52,10 @@
       "pitch_202x_row_path": "../../../requirements/2025/harmonization/hla_2025_pitch_202x_row_resolution.csv",
       "rollup_path": "../../../requirements/2025/harmonization/hla_2025_requirement_coverage_rollup.json",
       "manifest_path": "../../../requirements/2025/harmonization/source_manifest.json",
+      "owner_source": "../../../requirements/2025/canonical_requirements.json",
+      "backend_resolution_source": "../../../requirements/2025/backend_resolution.json",
       "row_count": 691,
-      "status": "repo-reconciled-disposition"
+      "status": "generated-closeout-projection"
     }
   ],
   "requirements": [

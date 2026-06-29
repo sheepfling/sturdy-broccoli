@@ -103,7 +103,9 @@ def test_imported_requirement_depth_packet_is_tracked_as_harmonization_candidate
 
     assert csv_path == DEPTH_DIR / "hla_2025_requirement_depth_expansion.csv"
     assert json_path == DEPTH_DIR / "hla_2025_requirement_depth_expansion.json"
-    assert packet["status"] == "imported-harmonization-candidate"
+    assert packet["status"] == "generated-depth-candidate"
+    assert packet["owner_source"] == "../../../requirements/2025/canonical_requirements.json"
+    assert packet["backend_resolution_source"] == "../../../requirements/2025/backend_resolution.json"
     assert len(rows) == packet["row_count"] == summary["total_rows"] == 691
     assert summary["by_area"]["Federate Interface service catalog"] == 196
     assert summary["by_area"]["SOM/FOM service-usage requirements"] == 196
@@ -123,7 +125,7 @@ def test_imported_requirement_depth_packet_is_tracked_as_harmonization_candidate
 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-FI-002", "HLA2025-TRACE-001")
-def test_imported_requirement_disposition_packet_tracks_repo_reconciled_coverage_promotions() -> None:
+def test_imported_requirement_disposition_packet_is_a_generated_projection_over_canonical_truth() -> None:
     registry = json.loads((REQ_DIR / "requirements.json").read_text(encoding="utf-8"))
     packets = {packet["id"]: packet for packet in registry["imported_packets"]}
     packet = packets["hla-2025-requirement-coverage-disposition"]
@@ -150,7 +152,9 @@ def test_imported_requirement_disposition_packet_tracks_repo_reconciled_coverage
     assert pitch_group_path == HARMONIZATION_DIR / "hla_2025_pitch_202x_group_resolution.csv"
     assert pitch_row_path == HARMONIZATION_DIR / "hla_2025_pitch_202x_row_resolution.csv"
     assert rollup_path == HARMONIZATION_DIR / "hla_2025_requirement_coverage_rollup.json"
-    assert packet["status"] == "repo-reconciled-disposition"
+    assert packet["status"] == "generated-closeout-projection"
+    assert packet["owner_source"] == "../../../requirements/2025/canonical_requirements.json"
+    assert packet["backend_resolution_source"] == "../../../requirements/2025/backend_resolution.json"
     for path in (json_path, matrix_path, pitch_group_path, pitch_row_path, rollup_path):
         assert path.exists()
         assert path.stat().st_size > 0

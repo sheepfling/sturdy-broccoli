@@ -90,13 +90,13 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert sum(executable["by_test_kind"].values()) == executable["row_count"]
 
     depth = snapshot["requirement_depth_expansion"]
-    assert depth["status"] == "imported-harmonization-candidate"
+    assert depth["status"] == "generated-depth-candidate"
     assert depth["row_count"] == depth["row_count_from_csv"]
     assert sum(depth["by_area"].values()) == depth["row_count"]
     assert sum(depth["by_delta_type"].values()) == depth["row_count"]
 
     disposition = snapshot["requirement_coverage_disposition"]
-    assert disposition["status"] == "repo-reconciled-disposition"
+    assert disposition["status"] == "generated-closeout-projection"
     assert disposition["row_count"] == disposition["row_count_from_csv"]
     assert sum(disposition["by_disposition"].values()) == disposition["row_count"]
     assert sum(disposition["by_priority"].values()) == disposition["row_count"]
