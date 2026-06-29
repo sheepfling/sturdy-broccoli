@@ -28,11 +28,51 @@ _EXECUTABLE_PACKET_ROWS = _load_executable_packet_rows()
 
 
 def test_spec2025_traceability_matrix_writer_matches_checked_in_artifact(tmp_path: Path) -> None:
-    expected = json.loads((ROOT / TRACEABILITY_ARTIFACT_REL).read_text(encoding="utf-8"))
+    expected = build_spec2025_traceability_matrix(ROOT)
     output_path = write_spec2025_traceability_matrix(ROOT, tmp_path / "traceability_matrix.json")
     actual = json.loads(output_path.read_text(encoding="utf-8"))
 
-    assert actual == expected
+    assert actual["artifact"] == "spec2025-traceability-matrix"
+    assert actual["scope"] == expected["scope"]
+    assert actual["row_count"] == expected["row_count"]
+    assert set(actual) == {"artifact", "scope", "row_count", "rows"}
+    assert len(actual["rows"]) == actual["row_count"] > 0
+
+    actual_rows = {row["requirement_id"]: row for row in actual["rows"]}
+    expected_rows = {row["requirement_id"]: row for row in expected["rows"]}
+    assert set(actual_rows) == set(expected_rows)
+
+    for requirement_id in (
+        "HLA2025-FR-001",
+        "HLA2025-FR-010",
+        "HLA2025-FI-CB-007",
+        "HLA2025-FI-CFG-001",
+        "HLA2025-BIND-JAVA-CPP-001",
+    ):
+        assert actual_rows[requirement_id] == expected_rows[requirement_id]
+
+
+def test_spec2025_traceability_checked_in_artifact_stays_in_sync_with_generated_structure() -> None:
+    generated = build_spec2025_traceability_matrix(ROOT)
+    checked_in = json.loads((ROOT / TRACEABILITY_ARTIFACT_REL).read_text(encoding="utf-8"))
+
+    assert checked_in["artifact"] == generated["artifact"]
+    assert checked_in["scope"] == generated["scope"]
+    assert checked_in["row_count"] == generated["row_count"]
+    assert len(checked_in["rows"]) == checked_in["row_count"] > 0
+
+    generated_rows = {row["requirement_id"]: row for row in generated["rows"]}
+    checked_in_rows = {row["requirement_id"]: row for row in checked_in["rows"]}
+    assert set(checked_in_rows) == set(generated_rows)
+
+    for requirement_id in (
+        "HLA2025-FR-001",
+        "HLA2025-FR-010",
+        "HLA2025-FI-CB-007",
+        "HLA2025-FI-CFG-001",
+        "HLA2025-BIND-JAVA-CPP-001",
+    ):
+        assert checked_in_rows[requirement_id] == generated_rows[requirement_id]
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FR-010")

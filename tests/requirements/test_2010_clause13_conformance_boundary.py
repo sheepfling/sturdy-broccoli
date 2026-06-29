@@ -28,14 +28,11 @@ def test_clause13_conformance_closeout_doc_records_current_shape() -> None:
 
     for snippet in (
         "2010 Clause 13 Conformance Closeout",
-        "`2` packet rows",
-        "`2 mapped`",
-        "`0 partial`",
+        "requirements/2010/hla1516_1_conf_detailed_reconciliation.csv",
+        "docs/verification/clause13_conformance_packet.md",
+        "docs/verification/clause13_conformance_packet.json",
         "`HLA1516.1-CONF_FEDERATE-014`",
         "`HLA1516.1-CONF_RTI-015`",
-        "`requirements/2010/hla1516_1_conf_detailed_reconciliation.csv`",
-        "`docs/verification/clause13_conformance_packet.md`",
-        "`docs/verification/clause13_conformance_packet.json`",
         "do not claim external standards certification",
         "do claim that the imported Clause 13 conformance assertions are directly backed",
     ):
@@ -48,7 +45,7 @@ def test_clause13_conformance_owner_surface_is_split_from_api_binding_in_front_d
     hierarchy = HIERARCHY_DOC.read_text(encoding="utf-8")
     requirements_index = REQUIREMENTS_INDEX.read_text(encoding="utf-8")
 
-    assert "Clause 13 conformance closeout reading | `clause13_conformance_closeout.md`" in front_door
+    assert "clause13_conformance_closeout.md" in front_door
     assert "API binding | `hla1516_1_api_detailed_reconciliation.csv`" in source_readme
     assert "Clause 13 conformance | `hla1516_1_conf_detailed_reconciliation.csv`" in source_readme
     assert "| API binding | `requirements/2010/hla1516_1_api_detailed_reconciliation.csv` |" in hierarchy

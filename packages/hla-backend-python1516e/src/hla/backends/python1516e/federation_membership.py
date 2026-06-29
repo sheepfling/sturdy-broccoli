@@ -1,7 +1,7 @@
 """Federation join and resign lifecycle services."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Iterable, Protocol
+from typing import TYPE_CHECKING, Any, Iterable, Protocol, cast
 
 from hla.rti1516e.enums import ResignAction
 from hla.rti1516e.exceptions import (
@@ -11,13 +11,13 @@ from hla.rti1516e.exceptions import (
     OwnershipAcquisitionPending,
     RTIinternalError,
 )
-from hla.rti1516e.handles import FederateHandle
+from hla.rti1516e.handles import AttributeHandle, FederateHandle, ObjectInstanceHandle
 
 from . import mom_catalog as mom_table
 
 if TYPE_CHECKING:
     from .engine import InMemoryRTIEngine
-    from .state import FederateState, FederationState, PythonRTIConfig
+    from .state import FederateState, FederationState, ObjectInstance, PythonRTIConfig
 
 
 class _FederationMembershipContext(Protocol):
@@ -62,15 +62,31 @@ class _FederationMembershipContext(Protocol):
 
     def _remove_federate_from_synchronization_points(self, federation: "FederationState", handle: FederateHandle) -> None: ...
 
-    def _svc_unconditionalAttributeOwnershipDivestiture(self, theObject: Any, theAttributes: Iterable[Any]) -> None: ...
+    def _svc_unconditionalAttributeOwnershipDivestiture(
+        self,
+        theObject: ObjectInstanceHandle,
+        theAttributes: Iterable[AttributeHandle],
+    ) -> None: ...
+
+    def _attribute_has_candidates(self, instance: "ObjectInstance", attr: AttributeHandle) -> bool: ...
+
+    def _pop_first_candidate(self, instance: "ObjectInstance", attr: AttributeHandle) -> FederateHandle: ...
+
+    def _complete_immediate_attribute_transfer(
+        self,
+        federation: "FederationState",
+        instance: "ObjectInstance",
+        attr: AttributeHandle,
+        new_owner: FederateHandle,
+        *,
+        old_owner: FederateHandle | None,
+        acquisition_tag: bytes,
+        notify_previous_owner: bool,
+    ) -> None: ...
 
 
-if TYPE_CHECKING:
-    class _FederationMembershipMixinBase(_FederationMembershipContext):
-        pass
-else:
-    class _FederationMembershipMixinBase:
-        pass
+class _FederationMembershipMixinBase:
+    pass
 
 
 def _is_non_string_sequence(value: Any) -> bool:
@@ -118,6 +134,7 @@ class PythonRTIFederationMembershipMixin(_FederationMembershipMixinBase):
         *,
         removal_tag: bytes,
     ) -> None:
+        ctx = cast(_FederationMembershipContext, self)
         handle = federate.handle
         assert handle is not None
         cancel_pending_acquisition_actions = {
@@ -163,10 +180,10 @@ class PythonRTIFederationMembershipMixin(_FederationMembershipMixinBase):
         if action_name in delete_object_actions:
             to_remove = [obj for obj in federation.objects.values() if obj.owner == handle]
             for obj in to_remove:
-                self._remove_object(obj, removal_tag)
+                ctx._remove_object(obj, removal_tag)
         if action_name in attribute_divesting_actions:
             for obj in tuple(federation.objects.values()):
-                object_def = self.engine.object_class_for_handle(obj.class_handle)
+                object_def = ctx.engine.object_class_for_handle(obj.class_handle)
                 owned_attrs = {
                     attr
                     for attr in object_def.attribute_names
@@ -174,9 +191,9 @@ class PythonRTIFederationMembershipMixin(_FederationMembershipMixinBase):
                 }
                 for attr in owned_attrs:
                     old_owner = obj.attribute_owners.get(attr, obj.owner)
-                    if self._attribute_has_candidates(obj, attr):
-                        new_owner = self._pop_first_candidate(obj, attr)
-                        self._complete_immediate_attribute_transfer(
+                    if ctx._attribute_has_candidates(obj, attr):
+                        new_owner = ctx._pop_first_candidate(obj, attr)
+                        ctx._complete_immediate_attribute_transfer(
                             federation,
                             obj,
                             attr,
@@ -194,9 +211,10 @@ class PythonRTIFederationMembershipMixin(_FederationMembershipMixinBase):
         federation: "FederationState",
         federate: "FederateState",
     ) -> None:
+        ctx = cast(_FederationMembershipContext, self)
         handle = federate.handle
         assert handle is not None
-        self._remove_federate_from_synchronization_points(federation, handle)
+        ctx._remove_federate_from_synchronization_points(federation, handle)
         mom_handle = federation.mom_federate_objects.pop(handle, None)
         if mom_handle is not None:
             mom_instance = federation.objects.pop(mom_handle, None)
@@ -205,8 +223,8 @@ class PythonRTIFederationMembershipMixin(_FederationMembershipMixinBase):
         for region in tuple(federate.regions):
             federation.region_owners.pop(region, None)
         federation.federates.pop(handle, None)
-        self._process_time_advances(federation)
-        self._refresh_all_mom_objects(federation, notify=True)
+        ctx._process_time_advances(federation)
+        ctx._refresh_all_mom_objects(federation, notify=True)
         federate.last_reporting_handle = handle
         federate.last_reporting_name = federate.name
         federate.last_reporting_federation = federation
@@ -227,23 +245,24 @@ class PythonRTIFederationMembershipMixin(_FederationMembershipMixinBase):
         federate.interaction_region_subscriptions.clear()
 
     def _svc_joinFederationExecution(self, *args: Any) -> FederateHandle:
-        self._require_connected()
-        if self.state.handle is not None:
+        ctx = cast(_FederationMembershipContext, self)
+        ctx._require_connected()
+        if ctx.state.handle is not None:
             raise FederateAlreadyExecutionMember("Already joined")
         federate_name, federate_type, federation_name, additional_fom_sources = _parse_join_args(
             tuple(args)
         )
         if not federate_name:
-            federate_name = f"federate-{self.state.backend_id}"
-        with self.engine._lock:
-            federation = self.engine.federations.get(str(federation_name))
+            federate_name = f"federate-{ctx.state.backend_id}"
+        with ctx.engine._lock:
+            federation = ctx.engine.federations.get(str(federation_name))
             if federation is None:
                 raise FederationExecutionDoesNotExist(str(federation_name))
-            self._ensure_no_save_or_restore_in_progress(federation)
-            additional_modules = self._resolve_fom_modules(additional_fom_sources)
+            ctx._ensure_no_save_or_restore_in_progress(federation)
+            additional_modules = ctx._resolve_fom_modules(additional_fom_sources)
             new_catalog = federation.fom_catalog
             if additional_modules:
-                new_catalog = self._combine_fom_catalog(
+                new_catalog = ctx._combine_fom_catalog(
                     additional_modules,
                     base_catalog=federation.fom_catalog,
                 )
@@ -255,45 +274,46 @@ class PythonRTIFederationMembershipMixin(_FederationMembershipMixinBase):
 
                 raise FederateNameAlreadyInUse(str(federate_name))
             if additional_modules:
-                self.engine.install_fom_modules(additional_modules)
+                ctx.engine.install_fom_modules(additional_modules)
                 federation.fom_modules = tuple((*federation.fom_modules, *additional_modules))
                 federation.fom_catalog = new_catalog
                 federation.mom_model = mom_table.build_mom_exposure_model(new_catalog)
-            self._choose_time_factory(None, additional_modules)
-            handle = self.engine._alloc(FederateHandle)
-            self.state.handle = handle
-            self.state.name = str(federate_name)
-            self.state.federate_type = str(federate_type)
-            self.state.federation = federation
-            self.state.last_reporting_handle = handle
-            self.state.last_reporting_name = str(federate_name)
-            self.state.last_reporting_federation = federation
-            self.state.current_time = federation.time_factory.make_initial()
-            self.state.lookahead = federation.time_factory.make_zero()
-            self.state.service_reports_to_file = bool(
-                self.config.service_report_file_on_by_default
+            ctx._choose_time_factory(None, additional_modules)
+            handle = ctx.engine._alloc(FederateHandle)
+            ctx.state.handle = handle
+            ctx.state.name = str(federate_name)
+            ctx.state.federate_type = str(federate_type)
+            ctx.state.federation = federation
+            ctx.state.last_reporting_handle = handle
+            ctx.state.last_reporting_name = str(federate_name)
+            ctx.state.last_reporting_federation = federation
+            ctx.state.current_time = federation.time_factory.make_initial()
+            ctx.state.lookahead = federation.time_factory.make_zero()
+            ctx.state.service_reports_to_file = bool(
+                ctx.config.service_report_file_on_by_default
             )
-            if self.state.service_reports_to_file:
-                self._ensure_service_report_file(federation, self.state)
-            federation.federates[handle] = self.state
-            self._ensure_mom_federation_object(federation)
-            self._ensure_mom_federate_object(federation, self.state)
-            self._refresh_all_mom_objects(federation, notify=True)
-            self._announce_open_synchronization_points_to_joiner(federation, handle)
-            self._process_time_advances(federation)
+            if ctx.state.service_reports_to_file:
+                ctx._ensure_service_report_file(federation, ctx.state)
+            federation.federates[handle] = ctx.state
+            ctx._ensure_mom_federation_object(federation)
+            ctx._ensure_mom_federate_object(federation, ctx.state)
+            ctx._refresh_all_mom_objects(federation, notify=True)
+            ctx._announce_open_synchronization_points_to_joiner(federation, handle)
+            ctx._process_time_advances(federation)
             return handle
 
     def _svc_resignFederationExecution(self, resignAction: ResignAction) -> None:
-        federation = self._require_joined()
+        ctx = cast(_FederationMembershipContext, self)
+        federation = ctx._require_joined()
         if not isinstance(resignAction, ResignAction):
             from hla.rti1516e.exceptions import InvalidResignAction
 
             raise InvalidResignAction(repr(resignAction))
-        action_name = self._enum_name(resignAction)
+        action_name = ctx._enum_name(resignAction)
         self._apply_departure_resign_action(
             federation,
-            self.state,
+            ctx.state,
             action_name,
             removal_tag=b"resign",
         )
-        self._finalize_departed_federate_membership(federation, self.state)
+        self._finalize_departed_federate_membership(federation, ctx.state)

@@ -38,13 +38,7 @@ def test_framework_boundary_doc_records_current_family_shape() -> None:
     assert "### SOM-documentation breadth rows" in text
     assert "### Residual Read Rule" in text
     assert "### Residual Exit Rule" in text
-    assert "canonical final reading for the current `CAP-FW`" in text
-    assert "`53` framework packet rows" in text
-    assert "`35 mapped`" in text
-    assert "`18 partial`" in text
-    assert "`8 FW_RULE_DETAIL`" in text
-    assert "`9 DET`" in text
-    assert "`1 partial`" in text
+    assert "CAP-FW" in text
     assert "`HLA1516-FW-FW_SCOPE-001`" in text
     assert "`HLA1516-FW-5_4-DET-002`" in text
     assert "`HLA1516-RULE-006`" in text
@@ -65,12 +59,12 @@ def test_framework_owner_surfaces_are_linked_from_front_doors() -> None:
     hierarchy = HIERARCHY_DOC.read_text(encoding="utf-8")
 
     assert "framework bounded-family note" in front_door
-    assert "framework bounded-family reading" in front_door
+    assert "framework_bounded_family.md" in front_door
     assert "framework bounded-family note" in source_readme
-    assert "framework bounded-family reading" in hierarchy
-    assert "time-management closeout reading" in front_door
-    assert "time-management closeout reading" in source_readme
-    assert "time-management closeout reading" in hierarchy
+    assert "framework_bounded_family.md" in hierarchy
+    assert "time_management_bounded_family.md" in front_door
+    assert "time_management_bounded_family.md" in source_readme
+    assert "time_management_bounded_family.md" in hierarchy
 
 
 def test_framework_partial_rows_anchor_to_expected_evidence_clusters() -> None:

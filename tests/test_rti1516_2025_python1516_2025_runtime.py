@@ -1782,9 +1782,13 @@ def _scan_target_radar_rti_methods(path: Path) -> set[str]:
     names: set[str] = set()
 
     class _Visitor(ast.NodeVisitor):
-        def visit_Attribute(self, node: ast.Attribute) -> None:
-            if isinstance(node.value, ast.Name) and node.value.id.endswith("_rti"):
-                names.add(node.attr)
+        def visit_Call(self, node: ast.Call) -> None:
+            if (
+                isinstance(node.func, ast.Attribute)
+                and isinstance(node.func.value, ast.Name)
+                and node.func.value.id.endswith("_rti")
+            ):
+                names.add(node.func.attr)
             self.generic_visit(node)
 
     _Visitor().visit(module)

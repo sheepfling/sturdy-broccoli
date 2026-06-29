@@ -112,7 +112,7 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     )
     assert rows[("time_management", "python1516_2025-fedpro-grpc")].evidence_artifacts == (
         "tests/transport/test_grpc_transport_2025.py",
-        "docs/plans/spec2025_finish_line_snapshot.json",
+        "docs/requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md",
     )
     assert rows[("ownership", "python1516_2025-fedpro-grpc")].status == PARITY_COVERED
     assert rows[("ownership", "python1516_2025-fedpro-grpc")].evidence_scope == "scenario-parity"
@@ -350,7 +350,7 @@ def test_2025_route_parity_matrix_rejects_missing_rows_with_artifacts() -> None:
         route="cpp-standard-2025-grpc",
         status=MISSING,
         requirements=("HLA2025-BND-002",),
-        evidence_tests=("tests/requirements/test_2025_finish_line_snapshot.py",),
+        evidence_tests=("tests/scenarios/test_python_route_parity.py",),
         notes="Bad fixture: a missing row cannot imply supporting evidence.",
         evidence_scope="gap-record",
         evidence_artifacts=("docs/evidence/shim_routes/route_traces/cpp-standard-2025-grpc.json",),
@@ -504,7 +504,7 @@ def test_2025_route_parity_summary_and_artifacts_are_reviewable(tmp_path) -> Non
     ) in csv_text
     assert "object_exchange,java-standard-2025-jpype,parity-covered,scenario-parity" in csv_text
     assert "save_restore,python1516_2025-fedpro-grpc,parity-covered,scenario-parity" in csv_text
-    assert "docs/plans/spec2025_finish_line_snapshot.json" in csv_text
+    assert "docs/requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md" in csv_text
     assert "# IEEE 1516-2025 Route Parity Matrix" in md_text
     assert "This matrix is not a conformance claim" in md_text
     assert "`hla-backend-shim` is a compatibility-maintained wrapper package that delegates runtime semantics to `hla-backend-python1516-2025`" in md_text

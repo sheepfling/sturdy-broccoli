@@ -143,7 +143,11 @@ def test_top_level_requirements_tree_stays_as_an_edition_index() -> None:
         for path in (ROOT / "requirements").iterdir()
         if path.is_file()
     )
-    assert top_level_files == ["README.md"]
+    assert top_level_files == ["README.md", "hla_1516_master_harmonization_index_v1_0.csv"]
+
+    text = _read(ROOT / "requirements" / "README.md")
+    assert "hla_1516_master_harmonization_index_v1_0.csv" in text
+    assert "generated or legacy projections" in text
 
 
 def test_each_requirement_edition_has_a_single_source_side_inventory_front_door() -> None:

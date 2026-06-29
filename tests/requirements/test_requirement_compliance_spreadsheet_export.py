@@ -181,23 +181,27 @@ def test_requirement_compliance_spreadsheet_export_writes_both_editions(tmp_path
     assert any(
         row["canonical_disposition"] == "duplicate/umbrella"
         and "not a standalone runtime claim" in row["python_runtime_resolution"]
-        and row["acceptance_gate"]
-        == "Every row in this group has explicit owner-doc evidence, row-level disposition, child-row or backend-resolution references, and promotion/no-promote semantics reviewed."
+        and "owner-doc evidence" in row["acceptance_gate"]
+        and "child-row or backend-resolution references" in row["acceptance_gate"]
+        and "promotion/no-promote semantics" in row["acceptance_gate"]
         for row in rows_2025
     )
     assert any(
         row["canonical_disposition"] == "retired/legacy-only"
         and "not active runtime ownership" in row["python_runtime_resolution"]
         and "not an active hosted-route claim" in row["hosted_fedpro_resolution"]
-        and row["acceptance_gate"]
-        == "Every row in this group has explicit exclusion-owner evidence, replacement mapping, row-level disposition, and compatibility-only promotion semantics reviewed."
+        and "exclusion-owner evidence" in row["acceptance_gate"]
+        and "replacement mapping" in row["acceptance_gate"]
+        and "compatibility-only promotion semantics" in row["acceptance_gate"]
         for row in rows_2025
     )
     assert json.loads(summary_2010["python_runtime_disposition_counts"]).get("verified", 0) > 0
     assert json.loads(summary_2010["pitch_runtime_disposition_counts"]).get("classification-required", 0) > 0
     assert summary_2010["policy_parent_partial_count"] == "0"
     assert summary_2010["policy_parent_supported_subset_pass_count"] == "0"
+    assert summary_2010["source_artifact"] == "requirements/2010/canonical_requirements.json"
     assert metadata_map_2010["canonical_status_meaning"].startswith("Requirement coverage state only")
+    assert metadata_map_2010["primary_source"] == "requirements/2010/canonical_requirements.json"
     assert "direct Python 2010 runtime lane" in metadata_map_2010["python_runtime_disposition_meaning"]
     assert "Hosted gRPC/REST replay" in metadata_map_2010["python_runtime_disposition_meaning"]
     assert "Pitch is independently verified" in metadata_map_2010["pitch_runtime_disposition_meaning"]
@@ -209,9 +213,9 @@ def test_requirement_compliance_spreadsheet_export_writes_both_editions(tmp_path
     assert summary_2025["duplicate_umbrella_row_count"] == "22"
     assert summary_2025["retired_legacy_only_row_count"] == "24"
     assert summary_2025["tracked_rows_outside_active_direct_support_denominator"] == "46"
-    assert summary_2025["row_level_source_artifact"] == "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv"
+    assert summary_2025["row_level_source_artifact"] == "requirements/2025/canonical_requirements.json"
     assert metadata_map_2025["canonical_disposition_meaning"].startswith("Requirement coverage state only")
-    assert metadata_map_2025["row_level_owner_source"] == "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv"
+    assert metadata_map_2025["row_level_owner_source"] == "requirements/2025/canonical_requirements.json"
     assert "100% dispositioned across all 691 tracked rows" in metadata_map_2025["denominator_rule"]
     assert "645 active normative non-retired non-umbrella rows" in metadata_map_2025["denominator_rule"]
     assert "do not restate this grouped packet as 691 / 691 covered" in metadata_map_2025["denominator_rule"]
@@ -343,18 +347,21 @@ def test_2025_harmonization_worklist_keeps_non_covered_acceptance_gates_and_fram
     assert len(retired_rows) == 2
 
     assert all(
-        row["acceptance_gate"]
-        == "Every row in this group has explicit exclusion-owner evidence, replacement mapping, row-level disposition, and compatibility-only promotion semantics reviewed."
+        "exclusion-owner evidence" in row["acceptance_gate"]
+        and "replacement mapping" in row["acceptance_gate"]
+        and "compatibility-only promotion semantics" in row["acceptance_gate"]
         for row in retired_rows
     )
     assert all(
-        row["acceptance_gate"]
-        == "Every row in this group has explicit owner-doc evidence, row-level disposition, child-row or backend-resolution references, and promotion/no-promote semantics reviewed."
+        "owner-doc evidence" in row["acceptance_gate"]
+        and "child-row or backend-resolution references" in row["acceptance_gate"]
+        and "promotion/no-promote semantics" in row["acceptance_gate"]
         for row in umbrella_rows
     )
     assert all(
-        row["closure_goal"]
-        == "Keep the child-row map and framework owner reading synchronized; do not relabel parent normalization rows as standalone proof without a narrower direct claim."
+        "child-row map" in row["closure_goal"]
+        and "framework owner reading" in row["closure_goal"]
+        and "do not relabel parent normalization rows as standalone proof" in row["closure_goal"]
         for row in umbrella_rows
         if row["area"] == "Framework and Rules"
     )

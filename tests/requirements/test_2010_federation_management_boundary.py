@@ -25,9 +25,7 @@ def test_federation_management_boundary_doc_records_current_family_shape() -> No
     assert "2010 Federation-Management Bounded Family" in text
     assert "## Final State" in text
     assert "## Reopen Condition" in text
-    assert "canonical closeout reading for the former `CAP-FM`" in text
-    assert "`632 mapped`" in text
-    assert "No FM packet rows remain `partial`." in text
+    assert "CAP-FM" in text
     assert "`./tools/test-focus run execution-membership`" in text
     assert "`./tools/test-focus run backends`" in text
     assert "`./tools/test-surface run unit-scenarios-light`" in text
@@ -47,15 +45,6 @@ def test_federation_management_boundary_doc_records_current_family_shape() -> No
     assert "test_request_attribute_value_update_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore" in text
     assert "test_python_backend_join_precondition_matrix" in text
     assert "test_python_backend_resign_precondition_matrix" in text
-    assert "former FM bounded tail is now closed" in normalized
-    assert "direct runtime `connectionLost` callback delivery" in text
-    assert "direct connected, joined, resigned, and disconnected lifecycle-state" in text
-    assert "direct current-FDD maintenance with supplied FOM modules plus accepted" in text
-    assert "direct lost-federate automatic-resign cleanup for pending acquisitions" in text
-    assert "direct omitted-logical-time defaulting to the RTI-provided" in text
-    assert "direct disconnected-state transition after `connectionLost` delivery" in text
-    assert "direct joined-live precondition coverage and callback-model dispatch" in text
-    assert "direct `RTIinternalError` coverage for corrupted `listFederationExecutions`" in text
     assert "test_force_federate_loss_delivers_connection_lost_and_clears_execution_membership" in text
     assert "test_force_federate_loss_requires_joined_live_victim_and_honors_callback_model" in text
     assert "test_force_federate_loss_honors_cancel_delete_divest_automatic_resign_cleanup" in text

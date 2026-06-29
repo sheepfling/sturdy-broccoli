@@ -37,6 +37,19 @@ def _encoded_logical_time_bytes(value: Any) -> bytes:
     raise TypeError(f"Unable to encode logical time payload for {value!r}")
 
 
+def _backend_state(value: Any) -> Any:
+    connected = getattr(value, "connected", None)
+    if isinstance(connected, bool):
+        return type("_ConnectionState", (), {"connected": connected})()
+    backend = getattr(value, "backend", None)
+    if callable(backend):
+        try:
+            backend = backend()
+        except Exception:
+            backend = None
+    return getattr(backend, "state", None)
+
+
 @dataclass(frozen=True)
 class LostFederateScenarioConfig:
     federation_name: str = "LostFederateFederation"
@@ -194,7 +207,7 @@ def run_lost_federate_mom_scenario(
         "removal": removal,
         "victim_callback_pending_before_drain": victim_callback_pending_before_drain,
         "victim_connection_lost": victim_connection_lost,
-        "victim_connected_after_loss": getattr(victim_rti.backend.state, "connected", None),
+        "victim_connected_after_loss": getattr(_backend_state(victim_rti), "connected", None),
         "victim_post_loss_resign_error": victim_post_loss_resign_error,
         "object_instance_not_known": object_instance_not_known,
     }

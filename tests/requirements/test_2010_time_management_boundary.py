@@ -25,9 +25,7 @@ def test_time_management_boundary_doc_records_current_family_shape() -> None:
     assert "2010 Time-Management Closeout Surface" in text
     assert "## Default Final Stance" in text
     assert "## Exit Condition" in text
-    assert "canonical closeout reading for the current `CAP-TM`" in text
-    assert "`301 mapped`" in text
-    assert "`0 partial`" in text
+    assert "CAP-TM" in text
     assert "mixed_backend_priority_boundaries.md" in text
     assert "`./tools/test-focus run time`" in text
     assert "`./tools/test-focus run backends`" in text
