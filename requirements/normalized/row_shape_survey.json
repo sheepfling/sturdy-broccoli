@@ -214,6 +214,20 @@
       "path": "requirements/2010/backend_resolution.json"
     },
     {
+      "classification_basis": "2010 demoted rollup projection over canonical truth",
+      "edition": "2010",
+      "family": "grouped-view",
+      "fields": [
+        "artifact",
+        "edition",
+        "generated_from",
+        "row_count",
+        "rows"
+      ],
+      "format": "json",
+      "path": "requirements/2010/canonical_projection_rows.json"
+    },
+    {
       "classification_basis": "normalized canonical export",
       "edition": "2010",
       "family": "canonical-requirement",
@@ -259,6 +273,21 @@
       ],
       "format": "json",
       "path": "requirements/2010/canonical_requirements.json"
+    },
+    {
+      "classification_basis": "2010 canonical row normalization triage view",
+      "edition": "2010",
+      "family": "grouped-view",
+      "fields": [
+        "artifact",
+        "decision_counts",
+        "edition",
+        "generated_from",
+        "row_count",
+        "rows"
+      ],
+      "format": "json",
+      "path": "requirements/2010/canonical_row_triage.json"
     },
     {
       "classification_basis": "2010 detailed reconciliation bridge shape",
@@ -2095,7 +2124,7 @@
       "path": "requirements/normalized/row_shape_survey.json"
     }
   ],
-  "entry_count": 99,
+  "entry_count": 101,
   "scoped_roots": [
     "requirements",
     "docs/requirements",

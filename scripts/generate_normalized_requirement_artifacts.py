@@ -26,6 +26,8 @@ from hla.verification.repo_internal.requirements import (  # noqa: E402
     write_2010_backend_resolution_catalog_csv,
     write_2010_canonical_requirement_catalog,
     write_2010_canonical_requirement_catalog_csv,
+    write_2010_canonical_row_triage,
+    write_2010_projection_requirement_catalog,
     write_2025_backend_resolution_catalog,
     write_2025_backend_resolution_catalog_csv,
     write_2025_canonical_requirement_catalog,
@@ -62,6 +64,16 @@ def main(argv: list[str] | None = None) -> int:
         help="Output path for the normalized 2010 backend-resolution CSV projection",
     )
     parser.add_argument(
+        "--triage-2010-output",
+        default=str(PROJECT_ROOT / "requirements" / "2010" / "canonical_row_triage.json"),
+        help="Output path for the 2010 canonical row normalization triage artifact",
+    )
+    parser.add_argument(
+        "--projection-2010-output",
+        default=str(PROJECT_ROOT / "requirements" / "2010" / "canonical_projection_rows.json"),
+        help="Output path for the 2010 demoted rollup projection artifact",
+    )
+    parser.add_argument(
         "--canonical-2025-output",
         default=str(PROJECT_ROOT / "requirements" / "2025" / "canonical_requirements.json"),
         help="Output path for the normalized 2025 canonical requirement catalog",
@@ -87,6 +99,8 @@ def main(argv: list[str] | None = None) -> int:
     backend_2010_path = write_2010_backend_resolution_catalog(PROJECT_ROOT, Path(args.backend_2010_output))
     canonical_2010_csv_path = write_2010_canonical_requirement_catalog_csv(PROJECT_ROOT, Path(args.canonical_2010_csv_output))
     backend_2010_csv_path = write_2010_backend_resolution_catalog_csv(PROJECT_ROOT, Path(args.backend_2010_csv_output))
+    triage_2010_path = write_2010_canonical_row_triage(PROJECT_ROOT, Path(args.triage_2010_output))
+    projection_2010_path = write_2010_projection_requirement_catalog(PROJECT_ROOT, Path(args.projection_2010_output))
     canonical_2025_path = write_2025_canonical_requirement_catalog(PROJECT_ROOT, Path(args.canonical_2025_output))
     backend_2025_path = write_2025_backend_resolution_catalog(PROJECT_ROOT, Path(args.backend_2025_output))
     canonical_2025_csv_path = write_2025_canonical_requirement_catalog_csv(PROJECT_ROOT, Path(args.canonical_2025_csv_output))
@@ -97,6 +111,8 @@ def main(argv: list[str] | None = None) -> int:
     print(backend_2010_path)
     print(canonical_2010_csv_path)
     print(backend_2010_csv_path)
+    print(triage_2010_path)
+    print(projection_2010_path)
     print(canonical_2025_path)
     print(backend_2025_path)
     print(canonical_2025_csv_path)

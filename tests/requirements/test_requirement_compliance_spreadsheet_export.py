@@ -75,8 +75,8 @@ def test_requirement_compliance_spreadsheet_export_writes_both_editions(tmp_path
         for row in rows_2010
     )
     assert any(
-        row["requirement_id"] == "REQ-OMT-SCHEMA-001"
-        and row["python_runtime_disposition"] == "not-applicable"
+        row["requirement_id"] == "HLA1516.2-DT-001"
+        and row["python_runtime_disposition"] == "verified"
         and row["pitch_runtime_disposition"] == "classification-required"
         for row in rows_2010
     )
@@ -198,6 +198,8 @@ def test_requirement_compliance_spreadsheet_export_writes_both_editions(tmp_path
     )
     assert json.loads(summary_2010["python_runtime_disposition_counts"]).get("verified", 0) > 0
     assert json.loads(summary_2010["pitch_runtime_disposition_counts"]).get("classification-required", 0) > 0
+    assert summary_2010["row_count"] == "880"
+    assert summary_2010["canonical_status_counts"] == '{"pass": 880}'
     assert summary_2010["policy_parent_partial_count"] == "0"
     assert summary_2010["policy_parent_supported_subset_pass_count"] == "0"
     assert summary_2010["source_artifact"] == "requirements/2010/canonical_requirements.json"

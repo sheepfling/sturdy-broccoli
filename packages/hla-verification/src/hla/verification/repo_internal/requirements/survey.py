@@ -27,8 +27,6 @@ def _classify_csv(path: str, header: list[str]) -> tuple[str, str, str]:
         return "historical", "legacy row-shaped 2025 closeout projection", "2025"
     if path.endswith("canonical_requirements.csv"):
         return "canonical-requirement", "normalized canonical export", _edition_for_path(path)
-    if path.endswith("canonical_requirements.json"):
-        return "canonical-requirement", "normalized canonical export", _edition_for_path(path)
     if path.endswith("hla_2025_harmonization_worklist.csv"):
         return "grouped-view", "2025 grouped closeout worklist", "2025"
     if "backend_resolution" in path_lower or "pitch_202x" in path_lower or path.endswith("hla_2025_fi_binding_surface_matrix.csv"):
@@ -48,6 +46,10 @@ def _classify_json(path: str, payload: Any) -> tuple[str, str, str]:
     path_lower = path.lower()
     if "/history/" in path_lower or "docs/evidence/hla2010_python_verification_evidence" in path_lower:
         return "historical", "historical packet or evidence archive", _edition_for_path(path)
+    if path.endswith("canonical_row_triage.json"):
+        return "grouped-view", "2010 canonical row normalization triage view", "2010"
+    if path.endswith("canonical_projection_rows.json"):
+        return "grouped-view", "2010 demoted rollup projection over canonical truth", "2010"
     if path.endswith("canonical_requirements.json"):
         return "canonical-requirement", "normalized canonical export", _edition_for_path(path)
     if path.endswith("traceability_matrix.json"):

@@ -211,6 +211,87 @@ class RequirementArtifactSurvey:
 
 
 @dataclass(frozen=True, slots=True)
+class CanonicalRowTriageEntry:
+    requirement_id: str
+    row_kind: str
+    triage_decision: str
+    triage_basis: str
+    source_document: str
+    clause: str
+    service_group: str
+    service_or_check: str
+    canonical_status: str
+    owner_doc: str
+
+    @classmethod
+    def from_mapping(cls, payload: Mapping[str, object]) -> CanonicalRowTriageEntry:
+        return cls(
+            requirement_id=_string(payload.get("requirement_id")),
+            row_kind=_string(payload.get("row_kind")),
+            triage_decision=_string(payload.get("triage_decision")),
+            triage_basis=_string(payload.get("triage_basis")),
+            source_document=_string(payload.get("source_document")),
+            clause=_string(payload.get("clause")),
+            service_group=_string(payload.get("service_group")),
+            service_or_check=_string(payload.get("service_or_check")),
+            canonical_status=_string(payload.get("canonical_status")),
+            owner_doc=_string(payload.get("owner_doc")),
+        )
+
+    def to_mapping(self) -> dict[str, object]:
+        return {
+            "requirement_id": self.requirement_id,
+            "row_kind": self.row_kind,
+            "triage_decision": self.triage_decision,
+            "triage_basis": self.triage_basis,
+            "source_document": self.source_document,
+            "clause": self.clause,
+            "service_group": self.service_group,
+            "service_or_check": self.service_or_check,
+            "canonical_status": self.canonical_status,
+            "owner_doc": self.owner_doc,
+        }
+
+
+@dataclass(frozen=True, slots=True)
+class CanonicalRowTriageArtifact:
+    artifact: str
+    edition: str
+    generated_from: tuple[str, ...]
+    row_count: int
+    decision_counts: dict[str, int]
+    rows: tuple[CanonicalRowTriageEntry, ...]
+
+    @classmethod
+    def from_mapping(cls, payload: Mapping[str, object]) -> CanonicalRowTriageArtifact:
+        raw_rows = _mapping_sequence(payload.get("rows"))
+        decision_counts_raw = payload.get("decision_counts", {})
+        return cls(
+            artifact=_string(payload.get("artifact")),
+            edition=_string(payload.get("edition")),
+            generated_from=_string_tuple(payload.get("generated_from")),
+            row_count=_int(payload.get("row_count")),
+            decision_counts={
+                _string(key): _int(value)
+                for key, value in decision_counts_raw.items()
+            }
+            if isinstance(decision_counts_raw, Mapping)
+            else {},
+            rows=tuple(CanonicalRowTriageEntry.from_mapping(row) for row in raw_rows),
+        )
+
+    def to_mapping(self) -> dict[str, object]:
+        return {
+            "artifact": self.artifact,
+            "edition": self.edition,
+            "generated_from": list(self.generated_from),
+            "row_count": self.row_count,
+            "decision_counts": dict(self.decision_counts),
+            "rows": [row.to_mapping() for row in self.rows],
+        }
+
+
+@dataclass(frozen=True, slots=True)
 class RequirementMappingRow:
     edition: str
     source_requirement_id: str

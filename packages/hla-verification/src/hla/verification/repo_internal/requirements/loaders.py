@@ -6,12 +6,22 @@ from pathlib import Path
 import re
 from collections import Counter, defaultdict
 
-from .models import BackendResolutionCatalog, BackendResolutionRow, CanonicalRequirementRow, NormalizedRequirementCatalog, RequirementMappingRow
+from .models import (
+    BackendResolutionCatalog,
+    BackendResolutionRow,
+    CanonicalRequirementRow,
+    CanonicalRowTriageArtifact,
+    CanonicalRowTriageEntry,
+    NormalizedRequirementCatalog,
+    RequirementMappingRow,
+)
 
 CANONICAL_2010_REL = "requirements/2010/canonical_requirements.json"
 CANONICAL_2025_REL = "requirements/2025/canonical_requirements.json"
 BACKEND_2010_REL = "requirements/2010/backend_resolution.json"
 BACKEND_2025_REL = "requirements/2025/backend_resolution.json"
+TRIAGE_2010_REL = "requirements/2010/canonical_row_triage.json"
+PROJECTION_2010_REL = "requirements/2010/canonical_projection_rows.json"
 HARMONIZATION_LEDGER_REL = "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv"
 COMPLIANCE_2010_REL = "analysis/compliance/requirements_matrix_2010.csv"
 FM_RECONCILIATION_2010_REL = "requirements/2010/hla1516_1_fm_detailed_reconciliation.csv"
@@ -61,6 +71,8 @@ BACKEND_RESOLUTION_CSV_FIELDNAMES = [
     "backend_fields",
 ]
 
+_ROLLUP_ONLY_2010_ROW_KINDS = {"verification-slice", "omt-area", "section-area"}
+
 _SLUG_NON_ALNUM = re.compile(r"[^a-z0-9]+")
 
 _SPECIAL_2025_EVIDENCE_REFS = {
@@ -84,6 +96,43 @@ _SHARD_COMMANDS = {
     "unit-fom-tooling": "./tools/test-surface run unit-fom-tooling",
     "unit-python-2025-core": "./tools/test-surface run unit-python-2025-core",
     "unit-transport-local": "./tools/test-surface run unit-transport-local",
+    "unit-scenarios-light": "./tools/test-surface run unit-scenarios-light",
+    "unit-python-core": "./tools/test-surface run unit-python-core",
+}
+
+_SERVICE_GROUP_2010_OWNER_DOCS: dict[str, tuple[str, str]] = {
+    "Federation Management": (
+        "docs/requirements/ieee-1516-2010/federation_management_bounded_family.md",
+        "unit-scenarios-light",
+    ),
+    "Declaration Management": (
+        "docs/requirements/ieee-1516-2010/declaration_management_bounded_family.md",
+        "unit-foundation",
+    ),
+    "Object Management": (
+        "docs/requirements/ieee-1516-2010/object_management_bounded_family.md",
+        "unit-scenarios-light",
+    ),
+    "Ownership Management": (
+        "docs/requirements/ieee-1516-2010/ownership_management_bounded_family.md",
+        "unit-scenarios-light",
+    ),
+    "Time Management": (
+        "docs/requirements/ieee-1516-2010/time_management_bounded_family.md",
+        "unit-python-core",
+    ),
+    "Data Distribution Management": (
+        "docs/requirements/ieee-1516-2010/data_distribution_management_bounded_family.md",
+        "unit-python-core",
+    ),
+    "Support Services": (
+        "docs/requirements/ieee-1516-2010/support_services_bounded_family.md",
+        "unit-python-core",
+    ),
+    "Programming Language Mappings": (
+        "docs/requirements/ieee-1516-2010/api_binding_bounded_family.md",
+        "unit-shim-tooling",
+    ),
 }
 
 _COMPARISON_2010_PATTERN = re.compile(r"2010 comparison=([^;]+)")
@@ -521,6 +570,21 @@ def build_2025_canonical_requirement_catalog(project_root: Path) -> NormalizedRe
 
 
 def build_2010_canonical_requirement_catalog(project_root: Path) -> NormalizedRequirementCatalog:
+    rows = tuple(
+        row
+        for row in _build_2010_requirement_rows_all(project_root)
+        if _triage_basis_for_2010_row(row)[0] != "move_to_projection"
+    )
+    return NormalizedRequirementCatalog(
+        artifact="canonical-requirements-catalog",
+        edition="2010",
+        generated_from=(COMPLIANCE_2010_REL,),
+        row_count=len(rows),
+        rows=rows,
+    )
+
+
+def _build_2010_requirement_rows_all(project_root: Path) -> tuple[CanonicalRequirementRow, ...]:
     matrix_rows = _read_csv_rows(project_root / COMPLIANCE_2010_REL)
     rows: list[CanonicalRequirementRow] = []
     for row in matrix_rows:
@@ -531,6 +595,14 @@ def build_2010_canonical_requirement_catalog(project_root: Path) -> NormalizedRe
         for ref in evidence_parts:
             if ref not in deduped_evidence:
                 deduped_evidence.append(ref)
+        row_kind = row.get("kind", "").strip()
+        service_group = row.get("service_group", "").strip()
+        owner_doc = ""
+        primary_test_shard = ""
+        primary_command = ""
+        if row_kind == "service-requirement":
+            owner_doc, primary_test_shard = _SERVICE_GROUP_2010_OWNER_DOCS.get(service_group, ("", ""))
+            primary_command = _SHARD_COMMANDS.get(primary_test_shard, "")
         rows.append(
             CanonicalRequirementRow(
                 edition="2010",
@@ -539,19 +611,19 @@ def build_2010_canonical_requirement_catalog(project_root: Path) -> NormalizedRe
                 clause=row.get("section_ref", "").strip(),
                 page="",
                 area=row.get("document", "").strip(),
-                service_group=row.get("service_group", "").strip(),
+                service_group=service_group,
                 service_or_check=row.get("title", "").strip(),
                 priority="",
                 closure_wave="",
                 requirement_text=row.get("title", "").strip(),
                 normative_level="",
-                row_kind=row.get("kind", "").strip(),
+                row_kind=row_kind,
                 parent_requirement_id=row.get("supported_subset_for", "").strip(),
                 canonical_status=row.get("status", "").strip(),
                 canonical_status_reason=row.get("notes", "").strip(),
-                owner_doc="",
-                primary_test_shard="",
-                primary_command="",
+                owner_doc=owner_doc,
+                primary_test_shard=primary_test_shard,
+                primary_command=primary_command,
                 evidence_refs=tuple(deduped_evidence),
                 boundary_note=row.get("claim_scope", "").strip(),
                 source_trace_strength="",
@@ -565,12 +637,69 @@ def build_2010_canonical_requirement_catalog(project_root: Path) -> NormalizedRe
                 ),
             )
         )
-    return NormalizedRequirementCatalog(
-        artifact="canonical-requirements-catalog",
+    return tuple(rows)
+
+
+def _triage_basis_for_2010_row(row: CanonicalRequirementRow) -> tuple[str, str]:
+    if row.row_kind in _ROLLUP_ONLY_2010_ROW_KINDS:
+        return (
+            "move_to_projection",
+            "Row kind is a rollup, area, or verification aggregation rather than a leaf requirement claim.",
+        )
+    if row.row_kind == "service-requirement":
+        return (
+            "keep_in_canonical",
+            "Service-level row is a leaf service claim with direct evidence and a deterministic bounded-family owner mapping.",
+        )
+    return (
+        "keep_in_canonical",
+        "Row is currently treated as a defended leaf-oriented requirement claim pending narrower cleanup.",
+    )
+
+
+def build_2010_canonical_row_triage(project_root: Path) -> CanonicalRowTriageArtifact:
+    canonical_rows = _build_2010_requirement_rows_all(project_root)
+    triage_rows: list[CanonicalRowTriageEntry] = []
+    decision_counts: Counter[str] = Counter()
+    for row in canonical_rows:
+        decision, basis = _triage_basis_for_2010_row(row)
+        decision_counts[decision] += 1
+        triage_rows.append(
+            CanonicalRowTriageEntry(
+                requirement_id=row.requirement_id,
+                row_kind=row.row_kind,
+                triage_decision=decision,
+                triage_basis=basis,
+                source_document=row.source_document,
+                clause=row.clause,
+                service_group=row.service_group,
+                service_or_check=row.service_or_check,
+                canonical_status=row.canonical_status,
+                owner_doc=row.owner_doc,
+            )
+        )
+    return CanonicalRowTriageArtifact(
+        artifact="canonical-row-triage",
         edition="2010",
-        generated_from=(COMPLIANCE_2010_REL,),
+        generated_from=(CANONICAL_2010_REL,),
+        row_count=len(triage_rows),
+        decision_counts=dict(sorted(decision_counts.items())),
+        rows=tuple(triage_rows),
+    )
+
+
+def build_2010_projection_requirement_catalog(project_root: Path) -> NormalizedRequirementCatalog:
+    rows = tuple(
+        row
+        for row in _build_2010_requirement_rows_all(project_root)
+        if _triage_basis_for_2010_row(row)[0] == "move_to_projection"
+    )
+    return NormalizedRequirementCatalog(
+        artifact="projection-requirements-catalog",
+        edition="2010",
+        generated_from=(COMPLIANCE_2010_REL, TRIAGE_2010_REL),
         row_count=len(rows),
-        rows=tuple(rows),
+        rows=rows,
     )
 
 
@@ -586,6 +715,22 @@ def write_2010_canonical_requirement_catalog_csv(project_root: Path, output_path
     target = output_path if output_path is not None else project_root / "requirements/2010/canonical_requirements.csv"
     catalog = build_2010_canonical_requirement_catalog(project_root)
     return _write_csv_rows(target, CANONICAL_CSV_FIELDNAMES, _canonical_rows_to_csv_rows(catalog.rows))
+
+
+def write_2010_canonical_row_triage(project_root: Path, output_path: Path | None = None) -> Path:
+    target = output_path if output_path is not None else project_root / TRIAGE_2010_REL
+    target.parent.mkdir(parents=True, exist_ok=True)
+    payload = build_2010_canonical_row_triage(project_root).to_mapping()
+    target.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return target
+
+
+def write_2010_projection_requirement_catalog(project_root: Path, output_path: Path | None = None) -> Path:
+    target = output_path if output_path is not None else project_root / PROJECTION_2010_REL
+    target.parent.mkdir(parents=True, exist_ok=True)
+    payload = build_2010_projection_requirement_catalog(project_root).to_mapping()
+    target.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return target
 
 
 def write_2025_canonical_requirement_catalog(project_root: Path, output_path: Path | None = None) -> Path:
@@ -608,7 +753,15 @@ def load_canonical_requirement_catalog(path: Path) -> NormalizedRequirementCatal
 
 
 def build_2010_backend_resolution_catalog(project_root: Path) -> BackendResolutionCatalog:
-    rows = _read_csv_rows(project_root / COMPLIANCE_2010_REL)
+    canonical_ids = {
+        row.requirement_id
+        for row in build_2010_canonical_requirement_catalog(project_root).rows
+    }
+    rows = [
+        row
+        for row in _read_csv_rows(project_root / COMPLIANCE_2010_REL)
+        if (row.get("requirement_id", "").strip() or row.get("matrix_id", "").strip()) in canonical_ids
+    ]
     backend_rows = [
         BackendResolutionRow(
             edition="2010",

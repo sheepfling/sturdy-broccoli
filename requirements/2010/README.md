@@ -23,6 +23,8 @@ Treat this as the single source-side list for the 2010 edition:
 - `canonical_requirements.csv`: canonical row-level CSV projection for 2010 with the same row schema as the JSON catalog
 - `backend_resolution.json`: canonical backend-resolution companion for 2010
 - `backend_resolution.csv`: canonical backend-resolution CSV projection for 2010 with the same row schema as the JSON catalog
+- `canonical_row_triage.json`: machine-readable normalization triage over the current 2010 canonical rows marking `keep_in_canonical`, `move_to_projection`, or `needs_manual_decision` during the leaf-only normalization program
+- `canonical_projection_rows.json`: explicit downstream projection carrying the demoted `section-area`, `omt-area`, and `verification-slice` rollup rows that no longer belong inside canonical requirement truth
 - `hla1516_framework_rules.csv`: framework and architecture rule seeds
 - `hla1516_framework_detailed_reconciliation.csv`: detailed framework reconciliation
 - `hla1516_clause_12_save_restore.csv`: clause-level save/restore tranche
@@ -68,8 +70,10 @@ Use this order:
 2. `canonical_requirements.csv` when you need the same canonical row surface in CSV form
 3. `backend_resolution.json` when backend truth differs by runtime
 4. `backend_resolution.csv` when you need the same backend-resolution surface in CSV form
-5. `traceability_matrix.csv` or one clause or family reconciliation file only when you need a generated or legacy projection
-6. `hla_1516_master_harmonization_index_v1_0.csv` only when you need the whole imported-master view
+5. `canonical_row_triage.json` when you are actively normalizing the 2010 truth surface and need the current keep versus move cut list
+6. `canonical_projection_rows.json` when you need the demoted rollup rows without treating them as canonical requirement truth
+7. `traceability_matrix.csv` or one clause or family reconciliation file only when you need a generated or legacy projection
+8. `hla_1516_master_harmonization_index_v1_0.csv` only when you need the whole imported-master view
 
 ## Canonical Owner Surfaces
 
@@ -109,6 +113,10 @@ artifact.
 The CSV companions `canonical_requirements.csv` and `backend_resolution.csv`
 are canonical exports, not alternate schemas. They must stay row-for-row and
 field-for-field aligned with the matching JSON catalogs.
+
+The rollup-only rows moved into `canonical_projection_rows.json` are no longer
+part of the canonical 2010 denominator. They remain available as a generated
+projection for review, traceability, and historical continuity only.
 
 Use `hla1516_1_priority_backend_resolution.csv` when the canonical owner row is
 already closed for the repo-supported claim but the backend truth still differs
