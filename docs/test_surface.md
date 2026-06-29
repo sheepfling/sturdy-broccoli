@@ -157,7 +157,7 @@ These are valid view concepts, not separate shard definitions:
 - `routes-2025`
 - `save-restore-2025`
 - `fom-target-radar`
-- `finish-line-2025`
+- `finish-line-2025` (downstream closeout-reporting view, not canonical requirement truth)
 
 Those focused targets may overlap the same underlying shard-owned tests.
 That overlap is acceptable because their purpose is analysis and focused reruns,
@@ -293,6 +293,9 @@ route-parity ledger, the 2025 requirements-registry/bounded-proof-note
 surface, regeneration of the checked-in 2025 closeout-reporting bundle (including the
 route-parity artifacts), and the README-advertised `python1516_2025` Target/Radar
 example path.
+Read that closeout-reporting bundle as downstream reporting over the canonical
+2025 requirement rows and backend-resolution rows, not as the primary
+requirement-truth surface.
 Pair it with:
 
 - [`python_rti_backend.md`](python_rti_backend.md)

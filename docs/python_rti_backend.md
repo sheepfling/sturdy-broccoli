@@ -134,6 +134,8 @@ closeout-reporting artifacts.
 
 Primary evidence anchors:
 
+- `requirements/2025/canonical_requirements.json`
+- `requirements/2025/backend_resolution.json`
 - `docs/plans/2025_requirements_finish_line.md`
 - `docs/plans/2025_python_rti_backend_audit.md`
 - `docs/requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md`
@@ -148,7 +150,7 @@ Primary evidence anchors:
 - `tests/scenarios/test_target_radar_scenario.py`
 - `tests/test_fom_target_radar_split_package.py`
 - `tests/test_rti1516_2025_python1516_2025_runtime.py` (main in-process python1516_2025 proof suite)
-- `tests/requirements/test_2025_finish_line_snapshot.py`
+- `tests/requirements/test_2025_finish_line_snapshot.py` (downstream closeout-reporting verification, not a requirement-truth owner)
 - `tests/requirements/test_2025_route_parity_matrix.py`
 - `tests/backends/test_shim_route_trace_evidence.py`
 - `tests/transport/test_grpc_transport_2025.py`

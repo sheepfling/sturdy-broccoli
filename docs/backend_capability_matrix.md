@@ -23,9 +23,10 @@ It is still not the canonical closeout view for the IEEE 1516.1-2025 lane.
 For the current 2025 implementation posture, use:
 
 - [python_rti_backend.md](python_rti_backend.md)
-- [plans/2025_requirements_finish_line.md](plans/2025_requirements_finish_line.md)
+- [../requirements/2025/canonical_requirements.json](../requirements/2025/canonical_requirements.json)
+- [../requirements/2025/backend_resolution.json](../requirements/2025/backend_resolution.json)
 
-Those pages record the bounded working-surface evidence for the current
+Those surfaces record the bounded working-surface evidence for the current
 `hla-backend-python1516-2025` 2025 lane, with `hla-backend-shim` retained only as a
 legacy compatibility shim, and the explicit promotion-versus-split decision
 criteria.

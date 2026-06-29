@@ -3,6 +3,13 @@
 This directory carries the repo-reconciled disposition layer over the 691-row
 requirement-depth expansion in `../depth/`.
 
+Canonical rule:
+
+- the primary 2025 requirement truth is `../canonical_requirements.json`
+- the primary backend and route companion truth is `../backend_resolution.json`
+- this directory is a generated or review-facing projection layer over those
+  canonical edition surfaces, not the first truth surface to read
+
 The files remain reviewable harmonization artifacts rather than blanket
 conformance claims, but rows may now be promoted to `covered` where direct repo
 evidence and executable anchors have been reconciled:
@@ -64,6 +71,10 @@ Current grouped worklist state:
 
 Practical reading rule:
 
+- start from `../canonical_requirements.json` for exact row-level canonical
+  status, owner doc, shard, command, and evidence references
+- start from `../backend_resolution.json` when backend or route support differs
+  from canonical requirement status
 - do not treat this grouped packet as an open backlog of missing runtime proof
 - treat it as a synchronized grouped owner surface over the row-level ledger
 - when the repo still is not “done,” the blocker is now usually one of:

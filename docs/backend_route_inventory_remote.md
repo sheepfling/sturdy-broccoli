@@ -43,7 +43,9 @@ Route anchors:
 - `docs/networked_rti_python.md`
 - `packages/hla-transport-grpc/README.md`
 - `tests/transport/test_grpc_transport_2025.py`
-- `docs/plans/2025_requirements_finish_line.md`
+- `requirements/2025/canonical_requirements.json`
+- `requirements/2025/backend_resolution.json`
+- `docs/requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md`
 
 Use this page when you want the transport-hosted route story and the current
 distinction between the 2010 hosted Python lane and the bounded hosted 2025
