@@ -112,6 +112,21 @@ Current grouped harmonization state:
 - `2 duplicate/umbrella`
 - `1 retired/legacy-only`
 
+Evidence reading by grouped family class:
+
+- the `10 covered` families point directly at executable `tests/` and
+  `packages/` anchors in `canonical_requirements.json`
+- the `Framework and Rules` umbrella family is intentionally non-standalone:
+  its canonical rows resolve through `framework_rules.md`, the generated
+  `docs/evidence/spec2025/traceability_matrix.json`, and linked child FI/OMT
+  requirement evidence rather than pretending each umbrella row is a separate
+  runtime witness
+- the `Retired / replacement mapping candidates` family is intentionally an
+  exclusion family: its canonical rows resolve through
+  `retired_legacy_mapping.md` plus the bounded compatibility marker
+  `bounded:migration-compatibility-fixture-if-supported`, not through fake
+  direct coverage claims
+
 That means the grouped coordination view is now fully dispositioned.
 The remaining 2025 closeout work is no longer stale grouped `planned` or
 `partial` buckets. The remaining bounded questions live in:
@@ -143,6 +158,16 @@ Do not read the grouped worklist as:
 - a substitute for the canonical requirement catalog, backend-resolution
   companion, or the owner docs under
   `docs/requirements/ieee-1516-2025/`
+
+Current direct-evidence invariant:
+
+- only the `10` framework umbrella rows and `24` retired/legacy-only rows lack
+  direct `tests/` or `packages/` anchors in the canonical catalog
+- that is intentional and audited
+- framework rows must instead carry explicit child-row traceability through
+  `docs/evidence/spec2025/traceability_matrix.json`
+- retired rows must instead carry explicit exclusion-owner evidence through
+  `retired_legacy_mapping.md`
 
 ## Canonical Boundary Owners
 

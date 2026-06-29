@@ -139,7 +139,8 @@ def test_covered_2025_rows_do_not_keep_stale_not_promoted_status_markers() -> No
     service_usage_rows = [row for row in covered_rows if str(row.get("row_kind", "")) == "service-usage-crosscheck"]
     assert service_usage_rows
     assert all(str(row.get("repo_evidence_status", "")) == SERVICE_USAGE_COVERED_STATUS for row in service_usage_rows)
-    assert all("; ".join(row.get("evidence_refs", [])) == DIRECT_SERVICE_USAGE_EVIDENCE for row in service_usage_rows)
+    assert all("; ".join(row.get("evidence_refs", [])[1:]) == DIRECT_SERVICE_USAGE_EVIDENCE for row in service_usage_rows)
+    assert all(str(row.get("evidence_refs", [])[0]) == "docs/requirements/ieee-1516-2025/omt.md" for row in service_usage_rows)
     assert all("tests/requirements/" not in "; ".join(row.get("evidence_refs", [])) for row in service_usage_rows)
 
 

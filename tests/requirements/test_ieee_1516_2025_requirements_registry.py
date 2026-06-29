@@ -4,6 +4,9 @@ import json
 from pathlib import Path
 
 import pytest
+from hla.verification.repo_internal.verification.spec2025_traceability_matrix import (
+    build_spec2025_traceability_matrix,
+)
 
 ROOT = Path(__file__).resolve().parents[2]
 REGISTRY_DIR = ROOT / "docs/requirements/ieee-1516-2025"
@@ -271,6 +274,87 @@ def test_2025_grouped_backend_resolution_rows_collapse_to_one_row_per_requiremen
         family_counts[family_key] = family_counts.get(family_key, 0) + 1
 
     assert all(count == 1 for count in family_counts.values())
+
+
+@pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-TRACE-001", "HLA2025-TRACE-002")
+def test_2025_non_executable_family_rows_use_explicit_traceability_or_exclusion_evidence() -> None:
+    rows = _canonical_rows_by_id()
+    framework_ids = {f"HLA2025-FR-{index:03d}" for index in range(1, 11)}
+    retired_ids = {
+        "HLA2025-FI-RET-001",
+        "HLA2025-FI-RET-002",
+        "HLA2025-FI-RET-003",
+        "HLA2025-FI-RET-004",
+        "HLA2025-FI-RET-005",
+        "HLA2025-FI-RET-006",
+        "HLA2025-FI-RET-007",
+        "HLA2025-FI-RET-008",
+        "HLA2025-FI-RET-009",
+        "HLA2025-FI-RET-010",
+        "HLA2025-FI-RET-011",
+        "HLA2025-OMT-RET-001",
+        "HLA2025-OMT-RET-002",
+        "HLA2025-OMT-RET-003",
+        "HLA2025-OMT-RET-004",
+        "HLA2025-OMT-RET-005",
+        "HLA2025-OMT-RET-006",
+        "HLA2025-OMT-RET-007",
+        "HLA2025-OMT-RET-008",
+        "HLA2025-OMT-RET-009",
+        "HLA2025-OMT-RET-010",
+        "HLA2025-OMT-RET-011",
+        "HLA2025-OMT-RET-012",
+        "HLA2025-OMT-RET-013",
+    }
+    expected_non_executable_ids = framework_ids | retired_ids
+
+    def _has_direct_exec_anchor(evidence_refs: list[str]) -> bool:
+        return any(anchor.startswith("tests/") or anchor.startswith("packages/") for anchor in evidence_refs)
+
+    actual_non_executable_ids = {
+        requirement_id
+        for requirement_id, row in rows.items()
+        if not _has_direct_exec_anchor([str(anchor) for anchor in row["evidence_refs"]])
+    }
+    assert actual_non_executable_ids == expected_non_executable_ids
+
+    traceability_rows = {
+        row["requirement_id"]: row for row in build_spec2025_traceability_matrix(ROOT)["rows"]
+    }
+    retired_doc_text = (
+        ROOT / "docs" / "requirements" / "ieee-1516-2025" / "retired_legacy_mapping.md"
+    ).read_text(encoding="utf-8")
+
+    for requirement_id in framework_ids:
+        row = rows[requirement_id]
+        assert row["canonical_status"] == "duplicate/umbrella"
+        assert row["row_kind"] == "framework-umbrella"
+        assert row["owner_doc"] == "docs/requirements/ieee-1516-2025/framework_rules.md"
+        assert row["evidence_refs"] == [
+            "docs/requirements/ieee-1516-2025/framework_rules.md",
+            "docs/evidence/spec2025/traceability_matrix.json",
+            "literal:linked-fi-omt-child-rows",
+        ]
+
+        traceability_row = traceability_rows[requirement_id]
+        assert traceability_row["traceability_basis"] == "duplicate-umbrella-child-evidence"
+        assert traceability_row["child_requirement_ids"], requirement_id
+        assert any(
+            anchor.startswith("tests/") or anchor.startswith("packages/")
+            for anchor in traceability_row["evidence_anchors"]
+        ), requirement_id
+
+    for requirement_id in retired_ids:
+        row = rows[requirement_id]
+        assert row["canonical_status"] == "retired/legacy-only"
+        assert row["row_kind"] == "legacy-mapping"
+        assert row["owner_doc"] == "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md"
+        assert row["evidence_refs"] == [
+            "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
+            "bounded:migration-compatibility-fixture-if-supported",
+        ]
+        assert requirement_id in retired_doc_text
+        assert "compatibility or migration mode" in retired_doc_text
 
 
 @pytest.mark.requirements("HLA2025-REQ-001")

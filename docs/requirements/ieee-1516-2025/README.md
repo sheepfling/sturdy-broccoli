@@ -267,6 +267,19 @@ Current closeout reading:
   denominator unless the repo deliberately funds broader row-by-row proof or
   compatibility work
 
+How those non-direct rows stay honest:
+
+- callback/configuration/binding umbrella rows still carry direct owner-doc and
+  executable anchors in the canonical catalog even though they remain
+  `duplicate/umbrella`
+- the `10` framework umbrella rows intentionally do not claim standalone
+  runtime proof; they resolve through `framework_rules.md`,
+  `docs/evidence/spec2025/traceability_matrix.json`, and the linked child FI
+  and OMT executable anchors beneath them
+- the `24` retired rows intentionally do not claim native 2025 coverage; they
+  resolve through `retired_legacy_mapping.md` and the explicit bounded
+  compatibility marker `bounded:migration-compatibility-fixture-if-supported`
+
 Use these canonical owner companions for the current honest `100%` reading:
 
 - [`../../../requirements/2025/canonical_requirements.json`](../../../requirements/2025/canonical_requirements.json)
