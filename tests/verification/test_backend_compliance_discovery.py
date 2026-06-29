@@ -61,6 +61,7 @@ def _assert_disposition_row(
     refs = row["evidence_refs"]  # type: ignore[assignment]
     assert row["runtime_disposition"] == disposition
     _assert_contains_all(refs, required_refs)
+    _assert_refs_avoid_closeout_truth_sources(refs)
     _assert_refs_exclude_backend_leaks(refs, row["notes"])  # type: ignore[arg-type]
 
 
@@ -83,6 +84,7 @@ def _assert_pitch_row(
     row = rows[requirement_id]
     assert row["pitch_disposition"] == disposition
     _assert_contains_all(row["evidence_refs"], required_refs)  # type: ignore[arg-type]
+    _assert_refs_avoid_closeout_truth_sources(row["evidence_refs"])  # type: ignore[arg-type]
 
 
 def _assert_pitch_rows(
@@ -108,6 +110,8 @@ def _assert_pitch_profile_split_row(
     assert row["pitch_py4j_disposition"] == disposition
     _assert_contains_all(row["pitch_jpype_evidence_refs"], jpype_refs)  # type: ignore[arg-type]
     _assert_contains_all(row["pitch_py4j_evidence_refs"], py4j_refs)  # type: ignore[arg-type]
+    _assert_refs_avoid_closeout_truth_sources(row["pitch_jpype_evidence_refs"])  # type: ignore[arg-type]
+    _assert_refs_avoid_closeout_truth_sources(row["pitch_py4j_evidence_refs"])  # type: ignore[arg-type]
 
 
 def _source_checkout_env(project_root: Path) -> dict[str, str]:
