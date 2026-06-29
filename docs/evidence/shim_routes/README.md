@@ -1,7 +1,7 @@
 # Shim Route Evidence
 
 This family stores generated Java and C++ standard-shim artifact packets plus
-the route-trace evidence used by the 2025 finish-line and route-parity views.
+the route-trace evidence used by the 2025 closeout-reporting and route-parity views.
 
 Canonical order:
 

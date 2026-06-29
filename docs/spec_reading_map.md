@@ -77,7 +77,8 @@ Use shards and views deliberately:
 - start from [`test_surface.md`](test_surface.md) when the question is which
   runnable shard proves the claim
 - use views only for overlap questions such as `transport`, `time`,
-  `save-restore`, `java-shim`, `cpp-shim`, `setup-preflight`, or `finish-line`
+  `save-restore`, `java-shim`, `cpp-shim`, `setup-preflight`, or
+  `closeout-reporting`
 - do not let a view replace the owning shard or the canonical requirement row
 
 ## Backend Resolution Rule

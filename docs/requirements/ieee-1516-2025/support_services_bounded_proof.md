@@ -28,12 +28,12 @@ binding and hosted seam.
 
 ## Primary Evidence Anchors
 
+- `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
 - `tests/test_rti1516_2025_python1516_2025_runtime.py`
 - `tests/scenarios/test_support_services_backend_matrix.py`
 - `tests/backends/test_python_backend_support_services.py`
 - `tests/transport/test_grpc_transport_2025.py`
 - `packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/support_services_runtime.py`
-- `docs/plans/spec2025_finish_line.md`
 
 ## Owner Row Scope
 

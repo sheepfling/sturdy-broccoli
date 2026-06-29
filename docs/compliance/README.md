@@ -3,7 +3,7 @@
 Historical / provenance note:
 This family retains older 2010-specific compliance packets and supporting
 matrices. It is not the primary front door for the current package layout or
-the current 2025 finish-line lane.
+the current 2025 closeout-reporting lane.
 
 Canonical order:
 

@@ -86,14 +86,18 @@ are:
   promotion-versus-split note
 - [plans/2025_python_rti_backend_audit.md](plans/2025_python_rti_backend_audit.md):
   explicit promotion-versus-extraction audit for the current 2025 lane
+- [requirements/ieee-1516-2025/README.md](requirements/ieee-1516-2025/README.md):
+  canonical 2025 requirement owner map
+- [../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv](../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv):
+  canonical row-level 2025 disposition ledger
 - [plans/2025_requirements_finish_line.md](plans/2025_requirements_finish_line.md):
-  generated finish-line and blocker snapshot
+  generated closeout-reporting and blocker snapshot
 - [requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md](requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md):
   explicit excluded-area map for legacy aliases, Java/C++ bindings, hosted
   transport boundaries, duplicate/umbrella rows, retired rows, and
   out-of-scope OMT extension semantics
 - [../packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py](../packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py):
-  source of truth for the finish-line snapshot
+  source of truth for the downstream closeout-reporting snapshot
 - [../tests/test_rti1516_2025_python1516_2025_runtime.py](../tests/test_rti1516_2025_python1516_2025_runtime.py):
   main in-process `python1516_2025` runtime suite
 - [../tests/transport/test_grpc_transport_2025.py](../tests/transport/test_grpc_transport_2025.py):

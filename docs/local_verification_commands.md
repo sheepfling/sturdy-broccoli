@@ -111,8 +111,9 @@ Python RTI surface. Run it after changes to `hla.backends.python1516e`,
 it after changes to 2025 transport-hosted client/server wiring, hosted-route
 examples, the in-process Target/Radar time-window proof ladder, direct
 `python1516_2025` save/restore, ownership, callback, support-service, or MOM
-proofs, the checked-in 2025 finish-line bundle, the 2025 route-parity ledger,
-the 2025 requirements-registry and bounded proof-note surface, or other route-level behavior that must
+proofs, the checked-in 2025 closeout-reporting bundle, the 2025 route-parity
+ledger, the 2025 requirements-registry and bounded proof-note surface, or
+other route-level behavior that must
 stay aligned between the direct `python1516_2025` lane and the hosted FedPro route.
 It also names the hosted Target/Radar time-window family explicitly through the
 factory-hosted and shared FedPro Target/Radar example, future-exclusion,
@@ -135,8 +136,8 @@ object-scope relevance, and hosted directed-routing checks before the full
 transport suite runs.
 
 `python3 scripts/run_spec2025_finish_line.py` is the explicit manual refresh
-entrypoint for the checked-in 2025 evidence bundle. Use it when you want to
-rebuild the finish-line snapshot, verification matrix, and route-parity
+entrypoint for the checked-in 2025 closeout-reporting bundle. Use it when you
+want to rebuild the closeout snapshot, verification matrix, and route-parity
 artifacts without rerunning the full `verify-routes-2025` hosted lane.
 
 For 2025 runtime ownership and proof status behind those commands, use:

@@ -15,7 +15,7 @@ full remote-RTI semantics claim.
 - `hla-backend-python1516-2025` remains the sole repo-owned IEEE 1516.1-2025
   Python RTI implementation lane behind this hosted replay surface.
 - The hosted route is parity-covered across the tracked scenario families used
-  by the current finish-line inventory.
+  by the current route-parity matrix and bounded owner surfaces.
 - The hosted route preserves direct `python1516_2025` RTI identity through the
   hosted ambassador, server, and client path.
 - The remaining proof burden on this lane is transport-seam and cross-binding

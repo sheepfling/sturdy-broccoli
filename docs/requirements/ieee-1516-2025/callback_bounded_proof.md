@@ -7,7 +7,7 @@ This note records the repo's current requirement-facing callback claim as a
 bounded proof statement for the main `hla-backend-python1516-2025` runtime lane. It
 separates the current callback surface into named proof families so the repo's
 bounded callback-delivery claim is explicit instead of only living in the
-generated finish-line bundle or the more general callback-model explainer.
+route-summary artifacts or the more general callback-model explainer.
 
 ## Current Proof Families
 

@@ -198,15 +198,15 @@ def test_scripts_readme_declares_implementation_boundary() -> None:
     assert "python3 scripts/ci/check_vendor_runtime_ci_state.py" not in text
     assert "./scripts/ci/vendor_green.sh" not in text
     assert "./scripts/ci/vendor_runtime_smoke.sh" not in text
-    assert "analysis/compliance/python_requirement_disposition.md" in text
-    assert "analysis/compliance/certi_requirement_disposition.md" in text
-    assert "analysis/compliance/certi-native_requirement_disposition.md" in text
-    assert "analysis/compliance/pitch_requirement_disposition.md" in text
-    assert "analysis/compliance/pitch-jpype_requirement_disposition.md" in text
-    assert "analysis/compliance/pitch-py4j_requirement_disposition.md" in text
-    assert "analysis/compliance/portico_requirement_disposition.md" in text
-    assert "analysis/compliance/portico-jpype_requirement_disposition.md" in text
-    assert "analysis/compliance/portico-py4j_requirement_disposition.md" in text
+    assert "analysis/compliance/python_requirement_disposition." in text
+    assert "analysis/compliance/certi_requirement_disposition." in text
+    assert "analysis/compliance/certi-native_requirement_disposition." in text
+    assert "analysis/compliance/pitch_requirement_disposition." in text
+    assert "analysis/compliance/pitch-jpype_requirement_disposition." in text
+    assert "analysis/compliance/pitch-py4j_requirement_disposition." in text
+    assert "analysis/compliance/portico_requirement_disposition." in text
+    assert "analysis/compliance/portico-jpype_requirement_disposition." in text
+    assert "analysis/compliance/portico-py4j_requirement_disposition." in text
 
 
 def test_public_readme_uses_tools_surface_for_compliance_operator_flow() -> None:
@@ -221,10 +221,11 @@ def test_backend_compliance_doc_uses_tools_surface() -> None:
     text = _primary_text(ROOT / "docs" / "backend_compliance_discovery.md")
     assert "./tools/compliance generate" in text
     assert "./tools/compliance discover --show-backlog" in text
-    assert "analysis/compliance/certi_requirement_disposition.md" in text
-    assert "analysis/compliance/certi-native_requirement_disposition.md" in text
-    assert "analysis/compliance/portico_requirement_disposition.md" in text
-    assert "analysis/compliance/pitch_requirement_disposition.md" in text
+    assert "analysis/compliance/certi_requirement_disposition.json" in text
+    assert "analysis/compliance/certi-native_requirement_disposition.json" in text
+    assert "analysis/compliance/portico_requirement_disposition.json" in text
+    assert "analysis/compliance/pitch_requirement_disposition.json" in text
+    assert "analysis/compliance/vendor_discovery_backlog.json" in text
     assert "python3 scripts/generate_compliance_artifacts.py" not in text
     assert "python3 scripts/discover_backend_compliance.py" not in text
 

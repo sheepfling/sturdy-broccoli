@@ -17,7 +17,7 @@ semantics or interpretation as native HLA metadata.
 - primary shard: `unit-fom-tooling`
 - widen to: only when a future change deliberately introduces executable
   third-party extension semantics
-- typical view tags: `2025-core`, `fom-omt`, `finish-line`
+- typical view tags: `2025-core`, `fom-omt`, `closeout-reporting`
 
 ## Final Claim Rule
 
@@ -55,7 +55,7 @@ Default final stance:
 
 - `tests/test_rti1516_2025_validation.py`
 - `packages/hla-rti1516e/src/hla/rti1516e/fom.py`
-- `docs/plans/spec2025_finish_line.md`
+- `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
 
 ## Family Mapping
 
@@ -97,9 +97,9 @@ Default final stance:
   into native HLA elements.
 - `packages/hla-rti1516e/src/hla/rti1516e/fom.py` is the implementation anchor
   that preserves those foreign XML fragments during parse/serialize handling.
-- The finish-line artifacts summarize the same claim at the working-surface
-  level, but this note is the requirement-facing explanation for why those 45
-  rows are `covered` only as payload-preserving tolerance.
+- The row-level disposition ledger records the same bounded claim at canonical
+  row granularity, while this note explains why those 45 rows are `covered`
+  only as payload-preserving tolerance.
 
 ## Explicit Non-Claim
 

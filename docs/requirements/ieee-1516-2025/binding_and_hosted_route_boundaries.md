@@ -15,7 +15,7 @@ FedPro route remains a transport-facing runtime slice over the same lane.
 - primary shard: `unit-transport-local`
 - widen to: `./tools/python verify-routes-2025` when binding or hosted claims
   need the broader route-parity bundle
-- typical view tags: `2025-core`, `transport`, `finish-line`
+- typical view tags: `2025-core`, `transport`, `closeout-reporting`
 
 ## Final Claim Rule
 

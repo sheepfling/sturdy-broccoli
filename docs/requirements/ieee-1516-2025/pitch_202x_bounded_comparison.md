@@ -20,7 +20,8 @@ It records the narrow current evidence the repo actually has.
 - companion row-level artifact:
   `requirements/2025/harmonization/hla_2025_pitch_202x_row_resolution.csv`
 - primary command: `./tools/pitch 202x-micro-certify`
-- typical view tags: `2025-core`, `transport`, `java-shim`, `finish-line`
+- typical view tags: `2025-core`, `transport`, `java-shim`,
+  `closeout-reporting`
 
 ## Final Claim Rule
 

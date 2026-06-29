@@ -11,9 +11,9 @@ Use it when you need the short list of boundaries around the current
 - canonical owner doc:
   `docs/requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md`
 - primary shard: `unit-foundation`
-- widen to: finish-line or route-parity artifacts only when the exclusion
+- widen to: route-parity or backend-resolution artifacts only when the exclusion
   statement itself changes
-- typical view tags: `2025-core`, `setup-preflight`, `finish-line`
+- typical view tags: `2025-core`, `setup-preflight`, `route-parity`
 
 ## Final Claim Rule
 
@@ -58,5 +58,6 @@ for the direct `python1516_2025` lane plus hosted FedPro replay:
 Read the broader bounded claim and current evidence posture in:
 
 - [`../../python_rti_backend.md`](../../python_rti_backend.md)
-- [`../../plans/2025_python_rti_backend_audit.md`](../../plans/2025_python_rti_backend_audit.md)
-- [`../../plans/2025_requirements_finish_line.md`](../../plans/2025_requirements_finish_line.md)
+- [`README.md`](README.md)
+- [`binding_and_hosted_route_boundaries.md`](binding_and_hosted_route_boundaries.md)
+- [`../../../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`](../../../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv)

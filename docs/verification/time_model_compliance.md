@@ -227,12 +227,10 @@ The main 2025 runtime evidence is:
 - [`../../tests/transport/test_grpc_transport_2025.py`](../../tests/transport/test_grpc_transport_2025.py)
   - hosted FedPro 2025 time-management behavior, including lookahead queries,
     grants, queued TSO delivery, and hosted proof-ladder replay
-- [`../plans/spec2025_route_parity_matrix.md`](../plans/spec2025_route_parity_matrix.md)
-  - the machine-readable and human-readable route-parity claim for the main
-    Python 2025 RTI lane
-- [`../plans/spec2025_finish_line.md`](../plans/spec2025_finish_line.md)
-  - finish-line snapshot and milestone wording for bounded GALT/LITS and
-    lookahead-window evidence
+- [`../requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md`](../requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md)
+  - canonical hosted-route owner note for the bounded FedPro replay claim
+- [`../requirements/ieee-1516-2025/lookahead_window_bounded_proof.md`](../requirements/ieee-1516-2025/lookahead_window_bounded_proof.md)
+  - canonical owner note for bounded GALT/LITS and lookahead-window evidence
 
 ## Vendor Boundary
 

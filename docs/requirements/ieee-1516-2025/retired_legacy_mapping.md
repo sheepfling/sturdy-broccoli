@@ -86,7 +86,7 @@ Default final stance:
 
 The retired/legacy-only slice was re-audited on `2026-06-26` against the
 current owner doc, harmonization ledger, grouped worklist rows, replacement
-mapping notes, and finish-line evidence surfaces for:
+mapping notes, and companion closeout evidence artifacts for:
 
 - `HLA2025-FI-RET-001` through `HLA2025-FI-RET-011`
 - `HLA2025-OMT-RET-001` through `HLA2025-OMT-RET-013`
@@ -113,7 +113,7 @@ Current evidence reviewed for this decision included:
 
 - `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
 - `requirements/2025/harmonization/hla_2025_harmonization_worklist.csv`
-- `docs/plans/spec2025_finish_line.md`
+- `requirements/2025/harmonization/hla_2025_requirement_coverage_rollup.json`
 - `docs/requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md`
 - `tests/requirements/test_2025_tail_backlog_evidence.py`
 

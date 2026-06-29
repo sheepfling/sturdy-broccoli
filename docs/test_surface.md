@@ -116,9 +116,9 @@ intent aliases:
 | `unit-scenarios-visualizer` | `./tools/test-surface run unit-scenarios-visualizer` | SISO observer, visualizer, bridge, and hydrated surface-artifact shard |
 | `python1516_2025-main` | `./tools/python verify-main-2025` | primary `python1516_2025` main-surface proof lane for package-boundary guards, raw support/decode plus callback-control proofs on the direct runtime surface, explicit federation/object/DDM runtime proofs, explicit support/ownership/MOM runtime proofs, the explicit Target/Radar time-window gauntlet and restore-window ladder, the explicit save/restore gauntlet and rollback ladder, broader direct runtime slices, and OMT evidence |
 | `python-routes` | `./tools/python verify-routes` | hosted 2010 Python RTI parity, transport-route semantics, and hosted example checks |
-| `python1516_2025-routes` | `./tools/python verify-routes-2025` | bounded `python1516_2025` plus hosted FedPro 2025 route checks, explicit hosted federation/object/DDM runtime proofs, explicit hosted support/ownership/MOM runtime proofs, explicit hosted Target/Radar time-window ladder replay, explicit hosted save/restore gauntlet and rollback replay, direct time-window, save/restore, ownership, callback, support-service, and MOM proofs, the checked-in 2025 finish-line bundle, and the README-advertised `python1516_2025` Target/Radar example path |
+| `python1516_2025-routes` | `./tools/python verify-routes-2025` | bounded `python1516_2025` plus hosted FedPro 2025 route checks, explicit hosted federation/object/DDM runtime proofs, explicit hosted support/ownership/MOM runtime proofs, explicit hosted Target/Radar time-window ladder replay, explicit hosted save/restore gauntlet and rollback replay, direct time-window, save/restore, ownership, callback, support-service, and MOM proofs, the checked-in 2025 closeout-reporting bundle, and the README-advertised `python1516_2025` Target/Radar example path |
 | `vendor` | `./tools/vendor-green matrix` | strict real-runtime lane after vendor preflight |
-| `matrix` | `./tools/test-surface run matrix` | regenerate compliance artifacts, refresh the checked-in 2025 finish-line bundle, and rerun matrix gates |
+| `matrix` | `./tools/test-surface run matrix` | regenerate compliance artifacts, refresh the checked-in 2025 closeout-reporting bundle, and rerun matrix gates |
 
 Read that table as a shard/lane catalog.
 Those entries are the runnable units the manifest owns.
@@ -290,7 +290,7 @@ normal route-level hygiene lane for the main `python1516_2025` RTI plus the boun
 suite, explicit in-process `python1516_2025` time-window, save/restore, ownership,
 callback, support-service, and MOM proof selectors, the checked-in 2025
 route-parity ledger, the 2025 requirements-registry/bounded-proof-note
-surface, regeneration of the checked-in 2025 finish-line bundle (including the
+surface, regeneration of the checked-in 2025 closeout-reporting bundle (including the
 route-parity artifacts), and the README-advertised `python1516_2025` Target/Radar
 example path.
 Pair it with:

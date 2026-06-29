@@ -61,8 +61,9 @@ Current evidence does support a bounded claim for that lane:
   backend split will never be needed
 
 That distinction is intentional. This matrix stays focused on the broader
-operator-facing backend families, while the 2025 finish-line inventory carries
-the deeper requirement-level evidence.
+operator-facing backend families, while the 2025 canonical owner surfaces and
+their downstream closeout-reporting artifacts carry the deeper
+requirement-level evidence.
 
 Legend:
 

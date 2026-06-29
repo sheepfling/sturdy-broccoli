@@ -12,13 +12,23 @@ Do not reverse that flow into:
 
 Use these as the source of truth for requirement verification:
 
-1. canonical requirement registries and harmonization ledgers
-2. bounded proof notes that name the exact requirement family and boundary
-3. live executable evidence:
+1. one canonical requirement catalog per edition:
+   - `requirements/2010/canonical_requirements.json`
+   - `requirements/2025/canonical_requirements.json`
+2. one backend-resolution companion per edition when backend divergence matters:
+   - `requirements/2010/backend_resolution.json`
+   - `requirements/2025/backend_resolution.json`
+3. bounded proof notes that name the exact requirement family and boundary
+4. live executable evidence:
    - pytest anchors
    - shard commands
    - route evidence artifacts
    - runtime/package/code paths
+
+Old requirement ledgers, worklists, and reconciliation CSVs are no longer
+requirement truth sources. They may remain as generated projections,
+compatibility artifacts, or historical bridges, but requirement verification
+should resolve through the canonical edition catalog first.
 
 Management and sequencing docs are not truth sources for requirement status:
 

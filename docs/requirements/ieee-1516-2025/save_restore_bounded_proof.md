@@ -8,7 +8,7 @@ This note records the repo's current requirement-facing save/restore claim as a
 bounded proof statement for the main `hla-backend-python1516-2025` runtime lane. It
 breaks the current save/restore surface into named proof families so the repo's
 bounded rollback claim is explicit instead of only living inside the generated
-finish-line bundle or inside the broader federation-management note.
+route-summary artifacts or inside the broader federation-management note.
 
 ## Current Proof Families
 

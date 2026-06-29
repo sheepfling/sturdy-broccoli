@@ -31,7 +31,7 @@ disposition.
 | Route | Evidence anchors | Bounded claim reading |
 | --- | --- | --- |
 | `python1516_2025` | `tests/scenarios/test_proto2025_fom_showcase.py`, `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/scenarios/test_target_radar_scenario.py` | The direct `python1516_2025` lane executes the tracked repo example/FOM-backed scenarios, including MessageTest, SpaceLite, TimeMgmtTest, object exchange, and Target/Radar-backed rollback paths. |
-| `python1516_2025-fedpro-grpc` | `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_python_route_parity.py`, `packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py` | The hosted FedPro route replays the tracked FOM-backed runtime scenarios through the package-owned Proto2025 example/FOM showcase and shared Target/Radar path rather than relying only on indirect object, MOM, and save/restore route slices. |
+| `python1516_2025-fedpro-grpc` | `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_python_route_parity.py`, `docs/requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md` | The hosted FedPro route replays the tracked FOM-backed runtime scenarios through the package-owned Proto2025 example/FOM showcase and shared Target/Radar path rather than relying only on indirect object, MOM, and save/restore route slices. |
 
 ## Scenario Inventory Notes
 

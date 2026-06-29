@@ -6,6 +6,10 @@ far, why the files are split the way they are, and where to look next.
 This page explains structure. It is not the canonical owner map for
 requirement-family closure.
 
+For the execution plan to normalize requirement row shapes across `2010` and
+`2025`, use
+`docs/plans/PLN-006_normalized_requirement_row_model_execution_plan.md`.
+
 ## Purpose
 
 The repo tracks three different things at once:

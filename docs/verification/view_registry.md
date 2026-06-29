@@ -48,10 +48,10 @@ These focused targets come from
 | `python-2025-ddm` | `./tools/test-focus run python-2025-ddm` | `ddm-2025`, `regions-2025` | `python-2025-runtime`, `python1516_2025-routes` | did DDM region-routing, overlap filtering, passive aliases, or restore cleanup drift on the direct lane or hosted 2025 gRPC/FedPro route? |
 | `python-2025-mom-callbacks` | `./tools/test-focus run python-2025-mom-callbacks` | `mom-2025`, `callbacks-2025`, `support-2025` | `python-2025-runtime`, `python1516_2025-routes` | did MOM, callback, or support-service behavior drift on the direct lane or hosted 2025 gRPC/FedPro route? |
 | `transport` | `./tools/test-focus run transport` | `grpc`, `rest` | `unit-transport-local`, `python-routes`, `python1516_2025-routes` | did hosted route transport behavior drift? |
-| `routes-2025` | `./tools/test-focus run routes-2025` | `fedpro-2025`, `grpc-2025`, `route-parity-2025` | `transport`, `python1516_2025-routes`, `requirements-2025` | did the hosted 2025 route parity or finish-line surface drift? |
+| `routes-2025` | `./tools/test-focus run routes-2025` | `fedpro-2025`, `grpc-2025`, `route-parity-2025` | `transport`, `python1516_2025-routes`, `requirements-2025` | did the hosted 2025 route parity or bounded hosted-owner surface drift? |
 | `backends` | `./tools/test-focus run backends` | `backend-integration` | `unit-scenarios-light`, `vendor` | did backend adapter behavior drift? |
 | `rti-core` | `./tools/test-focus run rti-core` | `rti-factory`, `core-factory` | `unit-python-core`, `foundation` | did core RTI discovery or factory selection drift? |
-| `requirements-2025` | `./tools/test-focus run requirements-2025` | `finish-line-2025`, `requirements`, `parity-2025` | `routes-2025`, `verification`, `matrix` | did 2025 requirement packets, route parity, or finish-line artifacts drift? |
+| `requirements-2025` | `./tools/test-focus run requirements-2025` | `closeout-2025`, `requirements`, `parity-2025` | `routes-2025`, `verification`, `matrix` | did 2025 requirement ledgers, route parity, or canonical owner surfaces drift? |
 | `verification` | `./tools/test-focus run verification` | `verification-harness` | `requirements-2025`, `matrix` | did detailed ledgers or verification harnesses drift? |
 | `time` | `./tools/test-focus run time` | `time-suite` | `python-2025-time`, `python1516_2025-main` | did time-management algorithms or backend matrices drift? |
 | `vendors` | `./tools/test-focus run vendors` | `vendor-runtime` | `unit-vendor-onboarding`, `vendor` | did real vendor-runtime behavior drift? |
@@ -75,7 +75,7 @@ These are document-level views that overlap runnable shards:
 | `ddm` | DDM bounded proof notes and region-routing evidence | `unit-python-2025-core`, `python1516_2025-main`, `python1516_2025-routes` |
 | `fom-omt` | OMT, XML, parser, and validation docs | `unit-fom-tooling`, `python1516_2025-main` |
 | `scenarios` | Target/Radar and scenario-backed bounded proof notes | `unit-scenarios-light`, `python1516_2025-main` |
-| `finish-line` | finish-line packets, audits, and exports | `requirements-2025`, `verification`, `matrix` |
+| `closeout-reporting` | closeout packets, audits, and exports | `requirements-2025`, `verification`, `matrix` |
 
 ## Practical Rule
 

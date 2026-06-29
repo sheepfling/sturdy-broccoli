@@ -128,8 +128,9 @@ those families, not just around historical test-file names.
 
 ## What Is Proven Today
 
-The strongest current evidence is split across the 2025 finish-line inventory,
-the main 2025 spec suite, and the route-parity ledgers.
+The strongest current evidence is split across the 2025 canonical owner
+surfaces, the main 2025 spec suite, and the route-parity plus downstream
+closeout-reporting artifacts.
 
 Primary evidence anchors:
 
@@ -188,7 +189,7 @@ The matching lookahead-window note,
 captures the explicit Target/Radar closure, future-exclusion, output-delivery,
 consumer-order, pipeline, negative-oracle, and bounded restore-window ladder
 instead of leaving that contract only inside the broader time-management note
-or finish-line milestone prose.
+or closeout milestone prose.
 
 The current bounded claim is:
 
@@ -399,7 +400,7 @@ Recent 2025 suite state:
 The repo does not yet have evidence strong enough to claim unconditional IEEE
 1516-2025 conformance for the current lane.
 
-Current blockers are explicit in the finish-line snapshot:
+Current blockers are explicit in the closeout-reporting snapshot:
 
 - many requirement claims are still represented by bounded multi-requirement
   slices rather than one-row final SHALL proof

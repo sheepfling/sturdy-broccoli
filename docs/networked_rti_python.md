@@ -176,7 +176,7 @@ Those lanes are split by ownership:
 - `./tools/python verify-routes-2025` runs the bounded hosted 2025 FedPro
   transport suite, direct `python1516_2025` time-window, save/restore, ownership,
   callback, support-service, and MOM proof selectors, the 2025 route-parity
-  ledger checks, refreshes the checked-in 2025 finish-line bundle (including
+  ledger checks, refreshes the checked-in 2025 closeout-reporting bundle (including
   the route-parity artifacts), and reruns the `python1516_2025` Target/Radar
   example path.
 

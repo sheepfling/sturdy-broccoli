@@ -15,7 +15,8 @@ evidence rather than exhaustive cross-binding behavior-conformance proof.
 - `cpp-standard-2025-pybind` and `cpp-standard-2025-grpc` are C++ binding
   routes over `hla-backend-python1516-2025`, not separate 2025 RTI owners.
 - Both Java and C++ standard-route families are parity-covered across the
-  tracked eight scenario families used by the current finish-line inventory.
+  tracked eight scenario families used by the current bounded 2025 owner
+  surfaces.
 - The remaining proof burden on these lanes is exhaustive cross-binding
   behavior equivalence, not missing ownership of core RTI semantics.
 

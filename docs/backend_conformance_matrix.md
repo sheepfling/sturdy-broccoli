@@ -22,7 +22,7 @@ The four backend docs are intentionally parallel:
 - Backend columns refer to what a Python federate can rely on through
   `hla.rti.create_rti_ambassador(...)`.
 - This matrix is the clause-level snapshot for the backend-neutral
-  IEEE 1516.1-2010 surface, not the canonical finish-line artifact for the
+  IEEE 1516.1-2010 surface, not the canonical closeout-reporting artifact for the
   2025 lane.
 - `certi-jpype` and `certi-py4j` inherit the same runtime status as the active
   `certi` runtime; separate adapter parity is covered by the Java-profile
@@ -56,6 +56,8 @@ For the current 2025 closeout posture, use:
 - [backend_route_inventory.md](backend_route_inventory.md)
 - [verification/time_model_compliance.md](verification/time_model_compliance.md)
 - [plans/2025_python_rti_backend_audit.md](plans/2025_python_rti_backend_audit.md)
+- [requirements/ieee-1516-2025/README.md](requirements/ieee-1516-2025/README.md)
+- [../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv](../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv)
 - [plans/2025_requirements_finish_line.md](plans/2025_requirements_finish_line.md)
 - [plans/spec2025_route_parity_matrix.md](plans/spec2025_route_parity_matrix.md)
 

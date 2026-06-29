@@ -202,7 +202,7 @@ Practical rule:
 
 - spreadsheets are presentation surfaces, not canonical owner ledgers
 - the audit and remaining-closure docs are the truth surfaces for whether the repo can honestly claim completion
-- shard ownership should be named before broader views, finish-line packets, or matrix cuts
+- shard ownership should be named before broader views, closeout-reporting packets, or matrix cuts
 
 ## Simple Decision Rule
 

@@ -9,12 +9,13 @@ do not treat this file as the main conformance plan.
 
 Use these 2025 evidence anchors instead:
 
+- [`../requirements/ieee-1516-2025/README.md`](../requirements/ieee-1516-2025/README.md)
 - [`../python_rti_backend.md`](../python_rti_backend.md)
 - [`../verification/time_model_compliance.md`](time_model_compliance.md)
+- [`../requirements/ieee-1516-2025/python1516_2025_direct_bounded_proof.md`](../requirements/ieee-1516-2025/python1516_2025_direct_bounded_proof.md)
+- [`../requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md`](../requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md)
+- [`../requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md`](../requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md)
 - [`../requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md`](../requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md)
-- [`../plans/2025_python_rti_backend_audit.md`](../plans/2025_python_rti_backend_audit.md)
-- [`../plans/spec2025_finish_line.md`](../plans/spec2025_finish_line.md)
-- [`../plans/spec2025_route_parity_matrix.md`](../plans/spec2025_route_parity_matrix.md)
 
 Use that exclusion note when you need the explicit non-claim boundary around
 the bounded 2025 working-surface statement, especially for legacy aliases,

@@ -16,7 +16,7 @@ unqualified conformance claim.
 - `hla-backend-python1516-2025` is the sole repo-owned IEEE 1516.1-2025 Python RTI
   implementation lane behind this direct proof surface.
 - The direct lane has executable proof across the tracked runtime families used
-  by the current finish-line inventory.
+  by the current bounded 2025 owner surface.
 - The direct lane carries the main package-boundary, runtime-identity, time,
   save/restore, ownership, callback-control, MOM, support-service, and OMT
   proof load for the current 2025 claim.
