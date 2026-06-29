@@ -4,22 +4,26 @@ import csv
 from collections import Counter
 from pathlib import Path
 
+from hla.verification.repo_internal.requirements import load_2010_fm_reconciliation_rows
+
+try:
+    from reconciliation_truth_sources import assert_rows_do_not_use_closeout_truth_sources
+except ModuleNotFoundError:
+    from tests.reconciliation_truth_sources import assert_rows_do_not_use_closeout_truth_sources
 
 ROOT = Path(__file__).resolve().parents[2]
 RECONCILIATION_PATH = (
     ROOT / "requirements" / "2010" / "hla1516_1_fm_detailed_reconciliation.csv"
-)
-_DISALLOWED_TRUTH_SOURCES = (
-    "docs/plans/",
-    "analysis/compliance/presentation_packets",
-    "analysis/compliance/python_final_requirements_report.md",
-    "analysis/compliance/python_boss_capability_brief.md",
 )
 
 
 def _read_rows() -> list[dict[str, str]]:
     with RECONCILIATION_PATH.open(newline="", encoding="utf-8") as handle:
         return list(csv.DictReader(handle))
+
+
+def _typed_rows_by_id() -> dict[str, object]:
+    return {row.source_requirement_id: row for row in load_2010_fm_reconciliation_rows(ROOT)}
 
 
 def _split_refs(refs: str) -> list[str]:
@@ -115,6 +119,7 @@ def test_fm_detailed_reconciliation_spot_checks_key_rows():
 
 def test_fm_connection_lost_rows_point_to_direct_runtime_loss_witness() -> None:
     rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    typed_rows = _typed_rows_by_id()
     direct_test = (
         "tests/backends/test_python_backend_federation_extended.py::"
         "test_force_federate_loss_delivers_connection_lost_and_clears_execution_membership"
@@ -131,11 +136,13 @@ def test_fm_connection_lost_rows_point_to_direct_runtime_loss_witness() -> None:
         assert row["current_status"] == "mapped"
         assert row["current_test_id"] == direct_test
         assert row["notes"].startswith("Direct ")
+        assert typed_rows[packet_id].evidence_refs == (direct_test,)
 
     effect_row = rows["HLA1516.1-FM-4_4-EFF-001"]
     assert effect_row["current_status"] == "mapped"
     assert effect_row["current_test_id"] == direct_test
     assert "final disconnected not-connected state" in effect_row["notes"]
+    assert typed_rows["HLA1516.1-FM-4_4-EFF-001"].evidence_refs == (direct_test,)
 
 
 def test_fm_no_remaining_executable_semantic_partials() -> None:
@@ -160,6 +167,7 @@ def test_fm_family_is_now_fully_mapped() -> None:
 
 def test_fm_overview_rows_use_direct_overview_witnesses() -> None:
     rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    typed_rows = _typed_rows_by_id()
 
     lifecycle_row = rows["HLA1516.1-FM-OVERVIEW-001"]
     assert lifecycle_row["current_status"] == "mapped"
@@ -170,6 +178,10 @@ def test_fm_overview_rows_use_direct_overview_witnesses() -> None:
         "test_force_federate_loss_delivers_connection_lost_and_clears_execution_membership"
     )
     assert "connected joined resigned and disconnected federate states" in lifecycle_row["notes"]
+    assert typed_rows["HLA1516.1-FM-OVERVIEW-001"].evidence_refs == (
+        "tests/backends/test_python_backend_federation_extended.py::test_federation_management_lifecycle_states_cover_connected_joined_resigned_and_disconnected",
+        "tests/backends/test_python_backend_federation_extended.py::test_force_federate_loss_delivers_connection_lost_and_clears_execution_membership",
+    )
 
     modules_row = rows["HLA1516.1-FM-OVERVIEW-002"]
     assert modules_row["current_status"] == "mapped"
@@ -180,6 +192,10 @@ def test_fm_overview_rows_use_direct_overview_witnesses() -> None:
         "test_merge_with_standard_mim_preserves_standard_mom_definitions_and_catalog_metadata"
     )
     assert "supplied FOM modules together with an accepted standard MIM surface" in modules_row["notes"]
+    assert typed_rows["HLA1516.1-FM-OVERVIEW-002"].evidence_refs == (
+        "tests/backends/test_python_backend_federation_extended.py::test_create_federation_execution_maintains_current_fdd_modules_and_standard_mim",
+        "tests/factories/test_fom_omt_parsing.py::test_merge_with_standard_mim_preserves_standard_mom_definitions_and_catalog_metadata",
+    )
 
 
 def test_fm_new_argument_rows_point_to_direct_runtime_witnesses() -> None:
@@ -572,8 +588,4 @@ def test_fm_rows_anchor_to_live_evidence_refs_even_when_legacy_rows_use_bare_nam
 
 
 def test_fm_rows_do_not_use_plan_or_closeout_packets_as_truth_sources() -> None:
-    for row in _read_rows():
-        for forbidden in _DISALLOWED_TRUTH_SOURCES:
-            assert forbidden not in row["current_test_id"], (
-                f"{row['packet_requirement_id']} should not use {forbidden} as a truth source"
-            )
+    assert_rows_do_not_use_closeout_truth_sources(_read_rows())

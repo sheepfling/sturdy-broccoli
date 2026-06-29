@@ -4,22 +4,33 @@ import csv
 from collections import Counter
 from pathlib import Path
 
+from hla.verification.repo_internal.requirements import load_2010_reconciliation_rows
+
+try:
+    from reconciliation_truth_sources import assert_rows_do_not_use_closeout_truth_sources
+except ModuleNotFoundError:
+    from tests.reconciliation_truth_sources import assert_rows_do_not_use_closeout_truth_sources
 
 ROOT = Path(__file__).resolve().parents[2]
 RECONCILIATION_PATH = (
     ROOT / "requirements" / "2010" / "hla1516_1_dm_detailed_reconciliation.csv"
-)
-_DISALLOWED_TRUTH_SOURCES = (
-    "docs/plans/",
-    "analysis/compliance/presentation_packets",
-    "analysis/compliance/python_final_requirements_report.md",
-    "analysis/compliance/python_boss_capability_brief.md",
 )
 
 
 def _read_rows() -> list[dict[str, str]]:
     with RECONCILIATION_PATH.open(newline="", encoding="utf-8") as handle:
         return list(csv.DictReader(handle))
+
+
+def _typed_rows_by_id() -> dict[str, object]:
+    return {
+        row.source_requirement_id: row
+        for row in load_2010_reconciliation_rows(
+            ROOT,
+            "requirements/2010/hla1516_1_dm_detailed_reconciliation.csv",
+            "docs/requirements/ieee-1516-2010/declaration_management_bounded_family.md",
+        )
+    }
 
 
 def _split_refs(refs: str) -> list[str]:
@@ -84,16 +95,14 @@ def test_declaration_detailed_reconciliation_spot_checks_key_rows():
 
 
 def test_dm_rows_anchor_to_live_evidence_refs() -> None:
+    typed_rows = _typed_rows_by_id()
     for row in _read_rows():
         references = _split_refs(row["current_test_id"])
         assert references, f"{row['packet_requirement_id']} should carry evidence references"
+        assert typed_rows[row["packet_requirement_id"]].evidence_refs == tuple(references)
         for reference in references:
             _assert_reference_is_live(reference)
 
 
 def test_dm_rows_do_not_use_plan_or_closeout_packets_as_truth_sources() -> None:
-    for row in _read_rows():
-        for forbidden in _DISALLOWED_TRUTH_SOURCES:
-            assert forbidden not in row["current_test_id"], (
-                f"{row['packet_requirement_id']} should not use {forbidden} as a truth source"
-            )
+    assert_rows_do_not_use_closeout_truth_sources(_read_rows())
