@@ -11,6 +11,8 @@ semantics or interpretation as native HLA metadata.
 ## Owner Surface
 
 - canonical owner doc:
+  `docs/requirements/ieee-1516-2025/omt.md`
+- bounded evidence note:
   `docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md`
 - owner companion:
   `requirements/2025/canonical_requirements.json`
@@ -35,7 +37,7 @@ semantics or interpretation as native HLA metadata.
 Default final stance:
 
 - this bucket is already in its intended final repo-owned state as a bounded
-  OMT extension-tolerance owner surface
+  OMT extension-tolerance evidence note under the canonical `omt.md` owner
 - no additional proof is required to keep these rows explicit as payload
   preservation and round-trip tolerance rather than third-party execution
   semantics

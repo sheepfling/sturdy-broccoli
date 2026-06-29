@@ -52,6 +52,16 @@ _SELECTED_REQUIREMENT_FLOW_FILES = {
     "test_2025_traceability.py",
 }
 
+_ALLOWED_2025_HARMONIZATION_REQUIREMENT_TEST_FILES = {
+    "test_2025_imported_packets.py",
+}
+
+_FORBIDDEN_2025_HARMONIZATION_EXPR_SNIPPETS = (
+    "ROOT/'requirements'/'2025'/'harmonization'",
+    "ROOT/'requirements'/'2025'/'harmonization'/",
+    "requirements/2025/harmonization",
+)
+
 _SINGLE_SOURCE_SCRIPT_FILES = {
     "generate_requirement_compliance_spreadsheets.py",
     "generate_normalized_requirement_artifacts.py",
@@ -248,6 +258,32 @@ def test_requirement_tests_do_not_assert_closeout_plan_filenames_in_doc_text() -
                     text = grandchild.value
                     if any(snippet in text for snippet in _FORBIDDEN_REQUIREMENT_ASSERT_TEXT_SNIPPETS):
                         violations.append(f"{path.relative_to(ROOT)}::{node.name} -> {text}")
+
+    assert violations == []
+
+
+def test_2025_requirement_tests_do_not_read_harmonization_sidecars_as_primary_truth() -> None:
+    violations: list[str] = []
+
+    for path in sorted(REQUIREMENTS_TEST_DIR.glob("test_2025_*.py")):
+        if path.name in _ALLOWED_2025_HARMONIZATION_REQUIREMENT_TEST_FILES:
+            continue
+        module = ast.parse(path.read_text(encoding="utf-8"))
+        module_assignments = _assignment_map(module.body)
+
+        for node in module.body:
+            if not isinstance(node, ast.FunctionDef):
+                continue
+            local_assignments = dict(module_assignments)
+            local_assignments.update(_assignment_map(node.body))
+            for child in ast.walk(node):
+                if not isinstance(child, ast.Call):
+                    continue
+                if not isinstance(child.func, ast.Attribute) or child.func.attr not in _READ_METHODS:
+                    continue
+                expr_text = _resolve_expr(child.func.value, local_assignments)
+                if any(snippet in expr_text for snippet in _FORBIDDEN_2025_HARMONIZATION_EXPR_SNIPPETS):
+                    violations.append(f"{path.relative_to(ROOT)}::{node.name} -> {expr_text}")
 
     assert violations == []
 

@@ -157,7 +157,7 @@ rather than a service row:
 | Pitch proto HLA 4 / `202X` backend-resolution lane | `docs/requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md` | vendor-branded route naming stays a backend-resolution story, not canonical status |
 | retired and legacy-only rows | `docs/requirements/ieee-1516-2025/retired_legacy_mapping.md` | retired rows stay explicit exclusions unless a compatibility program is added |
 | exclusion perimeter around the main Python lane | `docs/requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md` | collects the current non-claim perimeter around `python1516_2025` |
-| OMT `xs:any` extension tolerance | `docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md` | foreign extension payloads are preserved for round-trip tolerance, not arbitrary runtime semantics |
+| OMT `xs:any` extension tolerance | `docs/requirements/ieee-1516-2025/omt.md` | canonical OMT owner surface; use `omt_xs_any_extension_tolerance.md` as the bounded evidence note for foreign extension payload round-trip tolerance rather than arbitrary runtime semantics |
 
 Keep canonical closeout and backend support separate in this source-side
 surface:

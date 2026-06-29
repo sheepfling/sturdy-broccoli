@@ -13,7 +13,6 @@ STRICT_DOC_INVENTORY = ROOT / "requirements/2025/STRICT_DOC_INVENTORY.json"
 SOURCE_TRACE = ROOT / "requirements/2025/SOURCE_TRACE.md"
 CANONICAL_REQUIREMENTS = ROOT / "requirements/2025/canonical_requirements.json"
 BACKEND_RESOLUTION = ROOT / "requirements/2025/backend_resolution.json"
-FI_BINDING_SURFACE_MATRIX = ROOT / "requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv"
 FEDPRO_PROTO_DIR = ROOT / "packages/hla-transport-grpc/proto/rti1516_2025/fedpro"
 FEDPRO_2025_TEST = ROOT / "tests/transport/test_grpc_transport_2025.py"
 WSDL_2010 = ROOT / "CERTI/xml/ieee1516-2010/1516_1-2010/hla1516e.wsdl"
@@ -30,6 +29,14 @@ def _canonical_requirement_rows() -> list[dict[str, object]]:
 
 def _backend_resolution_rows() -> list[dict[str, object]]:
     return json.loads(BACKEND_RESOLUTION.read_text(encoding="utf-8"))["rows"]
+
+
+def _binding_resolution_rows() -> dict[str, dict[str, object]]:
+    return {
+        str(row["requirement_id"]): row
+        for row in _backend_resolution_rows()
+        if str(row.get("resolution_type", "")) == "binding-route-resolution"
+    }
 
 
 def _matching_requirement_rows(rows: list[dict[str, object]], ids: set[str]) -> list[dict[str, object]]:
@@ -346,28 +353,33 @@ def test_binding_boundary_note_tracks_all_three_binding_rows_as_non_owner_routes
 
 
 @pytest.mark.requirements("HLA2025-BND-003", "HLA2025-FI-SVC-070", "HLA2025-FI-SVC-193", "HLA2025-FI-SVC-196")
-def test_fi_binding_surface_matrix_keeps_fedpro_route_boundaries_explicit() -> None:
-    rows = {row["id"]: row for row in _csv_rows(FI_BINDING_SURFACE_MATRIX)}
+def test_backend_resolution_keeps_fedpro_route_boundaries_explicit() -> None:
+    rows = _binding_resolution_rows()
 
     split_row = rows["HLA2025-FI-SVC-070"]
-    assert split_row["disposition"] == "covered"
-    assert split_row["fedpro_surface"] == "present-via-class-and-instance-split"
-    assert split_row["fedpro_match_or_note"] == (
+    split_fields = split_row["backend_fields"]
+    assert split_row["canonical_status"] == "covered"
+    assert split_fields["fedpro_surface"] == "present-via-class-and-instance-split"
+    assert split_fields["fedpro_match_or_note"] == (
         "RequestClassAttributeValueUpdateRequest; RequestInstanceAttributeValueUpdateRequest"
     )
-    assert "class-scoped and instance-scoped transport commands" in split_row["risk_note"]
-    assert "broader parity claims remain bounded" in split_row["risk_note"]
+    assert split_fields["binding_surface_summary"] == (
+        "Java=present; C++=present; FedPro=present-via-class-and-instance-split"
+    )
+    assert "class-scoped and instance-scoped transport commands" in split_row["boundary_note"]
+    assert "broader parity claims remain bounded" in split_row["boundary_note"]
 
     for requirement_id in ("HLA2025-FI-SVC-193", "HLA2025-FI-SVC-194", "HLA2025-FI-SVC-195", "HLA2025-FI-SVC-196"):
         row = rows[requirement_id]
-        assert row["disposition"] == "covered"
-        assert row["fedpro_surface"] == "not-present-route-boundary-callback-pump-control"
-        assert row["binding_surface_summary"] == (
+        fields = row["backend_fields"]
+        assert row["canonical_status"] == "covered"
+        assert fields["fedpro_surface"] == "not-present-route-boundary-callback-pump-control"
+        assert fields["binding_surface_summary"] == (
             "Java=present; C++=present; FedPro=not-present-route-boundary-callback-pump-control"
         )
-        assert "callback-pump control as a transport RPC" in row["risk_note"]
-        assert "local runtime dispatch policy boundary" in row["risk_note"]
-        assert "not a hosted route semantics gap in the main python1516_2025 lane" in row["risk_note"]
+        assert "callback-pump control as a transport RPC" in row["boundary_note"]
+        assert "local runtime dispatch policy boundary" in row["boundary_note"]
+        assert "not a hosted route semantics gap in the main python1516_2025 lane" in row["boundary_note"]
 
 
 @pytest.mark.requirements("HLA2025-REQ-001")

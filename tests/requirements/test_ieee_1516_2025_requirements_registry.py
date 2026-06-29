@@ -89,8 +89,9 @@ def test_2025_canonical_requirement_catalog_maps_rows_to_owner_docs_shards_and_e
     assert rows["HLA2025-FR-001"]["primary_test_shard"] == "unit-python-2025-core"
 
     assert rows["HLA2025-OMT-COMP-006"]["canonical_status"] == "covered"
-    assert rows["HLA2025-OMT-COMP-006"]["owner_doc"] == "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md"
+    assert rows["HLA2025-OMT-COMP-006"]["owner_doc"] == "docs/requirements/ieee-1516-2025/omt.md"
     assert rows["HLA2025-OMT-COMP-006"]["primary_test_shard"] == "unit-fom-tooling"
+    assert "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md" in rows["HLA2025-OMT-COMP-006"]["evidence_refs"]
 
     assert rows["HLA2025-FI-RET-001"]["canonical_status"] == "retired/legacy-only"
     assert rows["HLA2025-FI-RET-001"]["owner_doc"] == "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md"
@@ -713,7 +714,7 @@ def test_omt_xs_any_markdown_keeps_bounded_payload_preservation_claim_explicit()
             "this bounded-proof note covers the 45 omt component rows",
             "payload preservation, schema-tolerant parsing, and serializer round-trip",
             "does not claim arbitrary third-party extension execution semantics",
-            "bounded omt extension-tolerance owner surface",
+            "bounded omt extension-tolerance evidence note under the canonical `omt.md` owner",
         ],
     )
     _assert_contains_all(

@@ -241,22 +241,22 @@ def _slug(value: str) -> str:
 
 
 def _derive_owner_doc(row: dict[str, str]) -> str:
+    area = row.get("area", "")
+    service_group = row.get("service_group", "")
+    service_or_check = row.get("service_or_check", "")
+
+    # Keep one canonical owner surface for each OMT family; bounded xs:any notes remain evidence, not owners.
+    if area == "OMT component-level conformance":
+        return "docs/requirements/ieee-1516-2025/omt.md"
+
     evidence_refs = _split_semicolon_items(row.get("suggested_repo_evidence_path", ""))
     for evidence_ref in evidence_refs:
         if evidence_ref.startswith("docs/requirements/ieee-1516-2025/") and evidence_ref.endswith(".md"):
             return evidence_ref
 
-    area = row.get("area", "")
-    service_group = row.get("service_group", "")
-    service_or_check = row.get("service_or_check", "")
-
     if area == "Federate Interface service catalog":
         return _SERVICE_GROUP_OWNER_DOCS.get(service_group, "docs/requirements/ieee-1516-2025/federate_interface.md")
     if area == "SOM/FOM service-usage requirements":
-        return "docs/requirements/ieee-1516-2025/omt.md"
-    if area == "OMT component-level conformance":
-        if "xs:any" in service_or_check.lower():
-            return "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md"
         return "docs/requirements/ieee-1516-2025/omt.md"
     if area == "OMT validator-negative conformance":
         return "docs/requirements/ieee-1516-2025/omt.md"

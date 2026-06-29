@@ -1,17 +1,21 @@
 from __future__ import annotations
 
 import ast
-import csv
 import inspect
-import json
 from pathlib import Path
 import re
 import warnings
 
 import pytest
+from hla.verification.repo_internal.requirements.loaders import (
+    load_backend_resolution_catalog,
+    load_canonical_requirement_catalog,
+)
 
 ROOT = Path(__file__).resolve().parents[2]
 ICLOUD_DUPLICATE_SUFFIX = re.compile(r" \d+(?=\.[^.]+$|$)")
+CANONICAL_REQUIREMENTS = ROOT / "requirements/2025/canonical_requirements.json"
+BACKEND_RESOLUTION = ROOT / "requirements/2025/backend_resolution.json"
 
 
 def _canonical_python_module_paths(directory: Path) -> list[Path]:
@@ -65,6 +69,18 @@ def _assert_live_test_anchor(anchor: str) -> None:
 def _assert_live_relative_path(path_text: str) -> None:
     assert (ROOT / path_text).exists(), path_text
 
+
+def _canonical_2025_rows() -> tuple[object, ...]:
+    return load_canonical_requirement_catalog(CANONICAL_REQUIREMENTS).rows
+
+
+def _backend_2025_rows() -> tuple[object, ...]:
+    return load_backend_resolution_catalog(BACKEND_RESOLUTION).rows
+
+
+def _binding_route_rows() -> list[object]:
+    return [row for row in _backend_2025_rows() if row.resolution_type == "binding-route-resolution"]
+
 @pytest.mark.requirements(
     "HLA2025-TRACE-001",
     "HLA2025-TRACE-002",
@@ -94,30 +110,39 @@ def test_2025_python_rti_backend_snapshot_tracks_live_evidence_and_boundaries() 
     test_surface_text = (ROOT / "docs" / "test_surface.md").read_text(encoding="utf-8")
     grpc_transport_text = (ROOT / "tests" / "transport" / "test_grpc_transport_2025.py").read_text(encoding="utf-8")
     runtime_text = (ROOT / "tests" / "test_rti1516_2025_python1516_2025_runtime.py").read_text(encoding="utf-8")
+    canonical_rows = _canonical_2025_rows()
+    binding_rows = _binding_route_rows()
 
-    rollup = json.loads(
-        (ROOT / "requirements" / "2025" / "harmonization" / "hla_2025_requirement_coverage_rollup.json").read_text(
-            encoding="utf-8"
-        )
-    )
-    with (ROOT / "requirements" / "2025" / "harmonization" / "hla_2025_fi_binding_surface_matrix.csv").open(
-        encoding="utf-8", newline=""
-    ) as handle:
-        binding_rows = list(csv.DictReader(handle))
+    covered_rows = [row for row in canonical_rows if row.canonical_status == "covered"]
+    duplicate_rows = [row for row in canonical_rows if row.canonical_status == "duplicate/umbrella"]
+    legacy_rows = [row for row in canonical_rows if row.canonical_status == "retired/legacy-only"]
 
-    assert rollup["covered_row_count"] == rollup["by_disposition"]["covered"]
-    assert sum(rollup["by_disposition"].values()) > rollup["covered_row_count"]
-    assert rollup["fi_binding_surface"]["fi_rows"] > 0
-    assert rollup["fi_binding_surface"]["java_present"] == rollup["fi_binding_surface"]["fi_rows"]
-    assert rollup["fi_binding_surface"]["cpp_present"] == rollup["fi_binding_surface"]["fi_rows"]
-    assert rollup["fi_binding_surface"]["fedpro_present"] <= rollup["fi_binding_surface"]["fi_rows"]
-    assert rollup["fi_binding_surface"]["fedpro_route_boundary_or_missing_review"] >= 1
+    assert len(covered_rows) == 645
+    assert len(duplicate_rows) == 22
+    assert len(legacy_rows) == 24
+    assert len(canonical_rows) == len(covered_rows) + len(duplicate_rows) + len(legacy_rows) == 691
+    assert len(binding_rows) == 196
+    assert sum(1 for row in binding_rows if row.backend_fields["java_surface"] == "present") == 196
+    assert sum(1 for row in binding_rows if row.backend_fields["cpp_surface"] == "present") == 196
+    assert sum(1 for row in binding_rows if row.backend_fields["fedpro_surface"] == "present") == 191
+    assert sum(1 for row in binding_rows if row.backend_fields["fedpro_surface"] == "present-via-class-and-instance-split") == 1
+    assert sum(
+        1
+        for row in binding_rows
+        if row.backend_fields["fedpro_surface"] == "not-present-route-boundary-callback-pump-control"
+    ) == 4
 
-    fedpro_split_rows = [row for row in binding_rows if row["fedpro_surface"] == "present-via-class-and-instance-split"]
-    assert [row["id"] for row in fedpro_split_rows] == ["HLA2025-FI-SVC-070"]
+    fedpro_split_rows = [
+        row for row in binding_rows if row.backend_fields["fedpro_surface"] == "present-via-class-and-instance-split"
+    ]
+    assert [row.requirement_id for row in fedpro_split_rows] == ["HLA2025-FI-SVC-070"]
 
-    fedpro_boundary_rows = [row for row in binding_rows if row["fedpro_surface"] == "not-present-route-boundary-callback-pump-control"]
-    assert {row["id"] for row in fedpro_boundary_rows} >= {
+    fedpro_boundary_rows = [
+        row
+        for row in binding_rows
+        if row.backend_fields["fedpro_surface"] == "not-present-route-boundary-callback-pump-control"
+    ]
+    assert {row.requirement_id for row in fedpro_boundary_rows} >= {
         "HLA2025-FI-SVC-193",
         "HLA2025-FI-SVC-194",
         "HLA2025-FI-SVC-195",
@@ -570,9 +595,8 @@ def test_2025_python_rti_backend_audit_normalizes_primary_runtime_evidence_away_
     support_services_text = (
         ROOT / "docs" / "requirements" / "ieee-1516-2025" / "support_services_bounded_proof.md"
     ).read_text(encoding="utf-8")
-    disposition_ledger_text = (
-        ROOT / "requirements" / "2025" / "harmonization" / "hla_2025_requirement_disposition_ledger.csv"
-    ).read_text(encoding="utf-8")
+    canonical_rows = load_canonical_requirement_catalog(CANONICAL_REQUIREMENTS).rows
+    canonical_evidence_text = "\n".join("; ".join(row.evidence_refs) for row in canonical_rows)
 
     _assert_live_relative_path(runtime_backend_path)
     _assert_live_relative_path("packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/federation_management_runtime.py")
@@ -580,8 +604,8 @@ def test_2025_python_rti_backend_audit_normalizes_primary_runtime_evidence_away_
     _assert_live_relative_path("packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/ownership_runtime.py")
     _assert_live_relative_path("packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/support_services_runtime.py")
 
-    assert runtime_backend_path not in disposition_ledger_text
-    assert shim_backend_path not in disposition_ledger_text
+    assert runtime_backend_path not in canonical_evidence_text
+    assert shim_backend_path not in canonical_evidence_text
     assert shim_backend_path not in requirements_index_text
     assert shim_backend_path not in support_services_text
 
@@ -593,7 +617,7 @@ def test_2025_python_rti_backend_audit_normalizes_primary_runtime_evidence_away_
     )
     assert (
         "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/support_services_runtime.py"
-        in disposition_ledger_text
+        in canonical_evidence_text
     )
 
 
