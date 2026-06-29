@@ -98,6 +98,47 @@ def test_2025_canonical_requirement_catalog_maps_rows_to_owner_docs_shards_and_e
     assert rows["HLA2025-FI-RET-001"]["primary_test_shard"] == "unit-foundation"
 
 
+@pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-TRACE-001", "HLA2025-TRACE-002")
+def test_2025_canonical_requirement_catalog_keeps_family_owner_and_primary_shard_resolution_stable() -> None:
+    rows = _canonical_rows_by_id().values()
+
+    family_groups: dict[tuple[str, str], list[dict[str, object]]] = {}
+    for row in rows:
+        area = str(row["area"])
+        if area == "Federate Interface service catalog":
+            family_key = (area, str(row["service_group"]))
+        else:
+            family_key = (area, "__area_owner__")
+        family_groups.setdefault(family_key, []).append(row)
+
+    for family_key, family_rows in sorted(family_groups.items()):
+        owner_docs = {str(row["owner_doc"]) for row in family_rows}
+        primary_shards = {str(row["primary_test_shard"]) for row in family_rows}
+        primary_commands = {str(row["primary_command"]) for row in family_rows}
+
+        assert len(owner_docs) == 1, family_key
+        assert len(primary_shards) == 1, family_key
+        assert len(primary_commands) == 1, family_key
+
+        owner_doc = next(iter(owner_docs))
+        primary_shard = next(iter(primary_shards))
+        primary_command = next(iter(primary_commands))
+
+        assert owner_doc.startswith("docs/requirements/ieee-1516-2025/"), family_key
+        assert "docs/plans/" not in owner_doc, family_key
+        assert primary_command == f"./tools/test-surface run {primary_shard}", family_key
+
+        for row in family_rows:
+            requirement_id = str(row["requirement_id"])
+            evidence_refs = [str(evidence) for evidence in row["evidence_refs"]]
+            assert evidence_refs, (family_key, requirement_id)
+            assert owner_doc in evidence_refs, (family_key, requirement_id)
+            assert all("docs/plans/" not in evidence for evidence in evidence_refs), (
+                family_key,
+                requirement_id,
+            )
+
+
 @pytest.mark.requirements("HLA2025-BND-001", "HLA2025-BND-002", "HLA2025-BND-003", "HLA2025-FI-CB-001")
 def test_2025_backend_resolution_catalog_keeps_backend_and_route_truth_separate_from_canonical_status() -> None:
     callback_rows = _backend_rows_by_id("HLA2025-FI-SVC-193")
@@ -137,9 +178,7 @@ def test_2025_backend_resolution_catalog_keeps_backend_and_route_truth_separate_
     assert pitch_row["backend_fields"]["pitch_202x_row_resolution"] == "bounded-fi-overlap-only"
     assert pitch_row["backend_fields"]["pitch_202x_vendor_command"] == "./tools/pitch 202x-micro-certify"
 
-    grouped_row = _backend_rows_by_id(
-        "group::0-retired-filter-and-replacement-map::Retired / replacement mapping candidates::Federate Interface legacy API::P1"
-    )[0]
+    grouped_row = _backend_rows_by_id("group::Retired / replacement mapping candidates::area-owner")[0]
     assert grouped_row["row_kind"] == "grouped-projection"
     assert grouped_row["resolution_type"] == "grouped-backend-view"
     assert grouped_row["canonical_owner"] == "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md"
@@ -149,6 +188,9 @@ def test_2025_backend_resolution_catalog_keeps_backend_and_route_truth_separate_
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
         "requirements/2025/canonical_requirements.json",
     ]
+    assert grouped_row["backend_fields"]["closure_wave"] == "0-retired-filter-and-replacement-map"
+    assert grouped_row["backend_fields"]["priority"] == "P1"
+    assert grouped_row["backend_fields"]["row_count"] == "24"
 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-TRACE-001", "HLA2025-TRACE-002")
@@ -209,6 +251,26 @@ def test_2025_backend_resolution_rows_keep_owner_shard_and_evidence_traceability
         for evidence in evidence_refs:
             evidence_path = ROOT / str(evidence).split(":", 1)[0]
             assert evidence_path.exists(), (requirement_id, evidence)
+
+
+@pytest.mark.requirements("HLA2025-BND-001", "HLA2025-TRACE-001", "HLA2025-TRACE-002")
+def test_2025_grouped_backend_resolution_rows_collapse_to_one_row_per_requirement_family() -> None:
+    payload = json.loads(BACKEND_RESOLUTION.read_text(encoding="utf-8"))
+    grouped_rows = [row for row in payload["rows"] if row["resolution_type"] == "grouped-backend-view"]
+
+    assert len(grouped_rows) == 13
+
+    family_counts: dict[tuple[str, str], int] = {}
+    for row in grouped_rows:
+        fields = row["backend_fields"]
+        area = str(fields["area"])
+        if area == "Federate Interface service catalog":
+            family_key = (area, str(fields["service_group"]))
+        else:
+            family_key = (area, "__area_owner__")
+        family_counts[family_key] = family_counts.get(family_key, 0) + 1
+
+    assert all(count == 1 for count in family_counts.values())
 
 
 @pytest.mark.requirements("HLA2025-REQ-001")

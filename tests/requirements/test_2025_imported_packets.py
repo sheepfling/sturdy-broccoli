@@ -164,7 +164,7 @@ def test_imported_requirement_disposition_packet_is_a_generated_projection_over_
     assert sum(1 for row in canonical_rows.values() if row.canonical_status == "duplicate/umbrella") == 22
     assert sum(1 for row in canonical_rows.values() if row.canonical_status == "retired/legacy-only") == 24
     assert len(backend_binding_rows) == 196
-    assert len(backend_pitch_group_rows) == 64
+    assert len(backend_pitch_group_rows) == 13
     assert len(backend_pitch_row_rows) == packet["row_count"] == 691
 
     for row in rows:

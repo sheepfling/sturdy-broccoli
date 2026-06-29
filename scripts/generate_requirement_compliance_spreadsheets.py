@@ -324,7 +324,7 @@ def build_2025_rows() -> tuple[list[dict[str, str]], list[dict[str, str]], list[
         },
         {
             "field": "grouped_packet_scope",
-            "value": "This workbook presents 60 grouped buckets for manager-facing review while requirements/2025/canonical_requirements.json remains the row-level owner ledger and requirements/2025/backend_resolution.json remains the backend-resolution companion truth.",
+            "value": "This workbook presents 13 grouped family buckets for manager-facing review while requirements/2025/canonical_requirements.json remains the row-level owner ledger and requirements/2025/backend_resolution.json remains the backend-resolution companion truth.",
         },
         {
             "field": "python_runtime_resolution_meaning",

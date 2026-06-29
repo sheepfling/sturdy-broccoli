@@ -220,7 +220,7 @@ def test_requirement_compliance_spreadsheet_export_writes_both_editions(tmp_path
     assert "100% dispositioned across all 691 tracked rows" in metadata_map_2025["denominator_rule"]
     assert "645 active normative non-retired non-umbrella rows" in metadata_map_2025["denominator_rule"]
     assert "do not restate this grouped packet as 691 / 691 covered" in metadata_map_2025["denominator_rule"]
-    assert "60 grouped buckets" in metadata_map_2025["grouped_packet_scope"]
+    assert "13 grouped family buckets" in metadata_map_2025["grouped_packet_scope"]
     assert "requirements/2025/canonical_requirements.json remains the row-level owner ledger" in metadata_map_2025["grouped_packet_scope"]
     assert "requirements/2025/backend_resolution.json remains the backend-resolution companion truth" in metadata_map_2025["grouped_packet_scope"]
     assert "bounded hosted-route surface over python1516_2025" in metadata_map_2025["hosted_fedpro_resolution_meaning"]
@@ -280,9 +280,9 @@ def test_pitch_202x_group_resolution_keeps_bounded_vendor_reading_explicit_by_di
     umbrella_rows = [row for row in rows if row["canonical_disposition"] == "duplicate/umbrella"]
     retired_rows = [row for row in rows if row["canonical_disposition"] == "retired/legacy-only"]
 
-    assert len(covered_rows) == 57
-    assert len(umbrella_rows) == 5
-    assert len(retired_rows) == 2
+    assert len(covered_rows) == 10
+    assert len(umbrella_rows) == 2
+    assert len(retired_rows) == 1
 
     assert any(
         row["pitch_202x_resolution"]
@@ -341,8 +341,8 @@ def test_2025_grouped_backend_projection_keeps_non_covered_acceptance_gates_and_
     umbrella_rows = [row for row in rows if row.canonical_status == "duplicate/umbrella"]
     retired_rows = [row for row in rows if row.canonical_status == "retired/legacy-only"]
 
-    assert len(umbrella_rows) == 5
-    assert len(retired_rows) == 2
+    assert len(umbrella_rows) == 2
+    assert len(retired_rows) == 1
 
     assert all(
         "exclusion-owner evidence" in row.boundary_note

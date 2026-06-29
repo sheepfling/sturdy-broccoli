@@ -7730,6 +7730,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -7768,6 +7769,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -7806,6 +7808,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -7844,6 +7847,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -7882,6 +7886,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -7920,6 +7925,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -7958,6 +7964,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -7996,6 +8003,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8034,6 +8042,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8072,6 +8081,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8110,6 +8120,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8148,6 +8159,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8186,6 +8198,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8224,6 +8237,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8262,6 +8276,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8300,6 +8315,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8338,6 +8354,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8376,6 +8393,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8414,6 +8432,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8452,6 +8471,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8490,6 +8510,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8528,6 +8549,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8566,6 +8588,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8604,6 +8627,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8642,6 +8666,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8680,6 +8705,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8718,6 +8744,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8756,6 +8783,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8794,6 +8822,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8832,6 +8861,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8870,6 +8900,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8908,6 +8939,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8946,6 +8978,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -8984,6 +9017,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9022,6 +9056,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9060,6 +9095,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9098,6 +9134,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9136,6 +9173,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9174,6 +9212,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9212,6 +9251,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9250,6 +9290,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9288,6 +9329,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9326,6 +9368,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9364,6 +9407,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9402,6 +9446,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9440,6 +9485,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9478,6 +9524,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9516,6 +9563,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9554,6 +9602,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9592,6 +9641,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9630,6 +9680,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9668,6 +9719,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9706,6 +9758,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9744,6 +9797,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9782,6 +9836,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9820,6 +9875,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9858,6 +9914,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9896,6 +9953,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9934,6 +9992,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -9972,6 +10031,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10010,6 +10070,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10048,6 +10109,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10086,6 +10148,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10124,6 +10187,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10162,6 +10226,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10200,6 +10265,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10238,6 +10304,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10276,6 +10343,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10314,6 +10382,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10352,6 +10421,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10390,6 +10460,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10428,6 +10499,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10466,6 +10538,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10504,6 +10577,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10542,6 +10616,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10580,6 +10655,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10618,6 +10694,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10656,6 +10733,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10694,6 +10772,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10732,6 +10811,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10770,6 +10850,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10808,6 +10889,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10846,6 +10928,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10884,6 +10967,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10922,6 +11006,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10960,6 +11045,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -10998,6 +11084,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11036,6 +11123,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11074,6 +11162,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11112,6 +11201,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11150,6 +11240,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11188,6 +11279,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11226,6 +11318,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11264,6 +11357,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11302,6 +11396,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11340,6 +11435,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11378,6 +11474,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11416,6 +11513,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11454,6 +11552,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11492,6 +11591,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11530,6 +11630,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11568,6 +11669,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11606,6 +11708,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11644,6 +11747,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11682,6 +11786,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11720,6 +11825,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11758,6 +11864,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11796,6 +11903,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11834,6 +11942,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11872,6 +11981,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11910,6 +12020,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11948,6 +12059,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -11986,6 +12098,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12024,6 +12137,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12062,6 +12176,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12100,6 +12215,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12138,6 +12254,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12176,6 +12293,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12214,6 +12332,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12252,6 +12371,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12290,6 +12410,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12328,6 +12449,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12366,6 +12488,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12404,6 +12527,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12442,6 +12566,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12480,6 +12605,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12518,6 +12644,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12556,6 +12683,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12594,6 +12722,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12632,6 +12761,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12670,6 +12800,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12708,6 +12839,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12746,6 +12878,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12784,6 +12917,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12822,6 +12956,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12860,6 +12995,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12898,6 +13034,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12936,6 +13073,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -12974,6 +13112,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13012,6 +13151,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13050,6 +13190,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13088,6 +13229,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13126,6 +13268,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13164,6 +13307,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13202,6 +13346,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13240,6 +13385,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13278,6 +13424,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13316,6 +13463,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13354,6 +13502,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13392,6 +13541,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13430,6 +13580,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13468,6 +13619,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13506,6 +13658,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13544,6 +13697,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13582,6 +13736,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13620,6 +13775,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13658,6 +13814,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13696,6 +13853,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13734,6 +13892,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13772,6 +13931,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13810,6 +13970,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13848,6 +14009,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13886,6 +14048,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13924,6 +14087,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -13962,6 +14126,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14000,6 +14165,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14038,6 +14204,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14076,6 +14243,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14114,6 +14282,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14152,6 +14321,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14190,6 +14360,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14228,6 +14399,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14266,6 +14438,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14304,6 +14477,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14342,6 +14516,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14380,6 +14555,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14418,6 +14594,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14456,6 +14633,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14494,6 +14672,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14532,6 +14711,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14570,6 +14750,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14608,6 +14789,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14646,6 +14828,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14684,6 +14867,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14722,6 +14906,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14760,6 +14945,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14798,6 +14984,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14836,6 +15023,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14874,6 +15062,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14912,6 +15101,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14950,6 +15140,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -14988,6 +15179,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -15026,6 +15218,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -15064,6 +15257,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -15102,6 +15296,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -15140,6 +15335,7 @@
       "closure_wave": "3-som-fom-service-usage-crosscheck",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/factories/test_fom_roundtrip.py",
         "tests/test_rti1516_2025_validation.py",
@@ -15178,6 +15374,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -15215,6 +15412,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -15252,6 +15450,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -15289,6 +15488,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -15326,6 +15526,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -15363,6 +15564,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -15400,6 +15602,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -15437,6 +15640,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -15474,6 +15678,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -15511,6 +15716,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -15548,6 +15754,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -15584,6 +15791,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -15620,6 +15828,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -15657,6 +15866,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -15693,6 +15903,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -15729,6 +15940,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -15766,6 +15978,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -15802,6 +16015,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -15838,6 +16052,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -15875,6 +16090,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -15912,6 +16128,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -15949,6 +16166,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -15986,6 +16204,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -16023,6 +16242,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -16060,6 +16280,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -16097,6 +16318,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -16134,6 +16356,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -16171,6 +16394,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -16208,6 +16432,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -16245,6 +16470,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -16282,6 +16508,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -16319,6 +16546,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -16356,6 +16584,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -16393,6 +16622,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -16430,6 +16660,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -16467,6 +16698,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -16504,6 +16736,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -16540,6 +16773,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -16576,6 +16810,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -16613,6 +16848,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -16649,6 +16885,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -16685,6 +16922,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -16721,6 +16959,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -16757,6 +16996,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -16793,6 +17033,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -16830,6 +17071,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -16867,6 +17109,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -16904,6 +17147,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -16940,6 +17184,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -16976,6 +17221,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17013,6 +17259,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17050,6 +17297,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17087,6 +17335,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17124,6 +17373,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17161,6 +17411,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17198,6 +17449,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17235,6 +17487,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17272,6 +17525,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17309,6 +17563,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17346,6 +17601,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17383,6 +17639,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17420,6 +17677,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17457,6 +17715,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17494,6 +17753,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17531,6 +17791,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17568,6 +17829,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17605,6 +17867,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17642,6 +17905,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17679,6 +17943,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17716,6 +17981,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17753,6 +18019,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17790,6 +18057,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17827,6 +18095,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -17864,6 +18133,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -17900,6 +18170,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -17936,6 +18207,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -17972,6 +18244,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18009,6 +18282,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18046,6 +18320,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -18082,6 +18357,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -18118,6 +18394,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18155,6 +18432,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18192,6 +18470,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -18228,6 +18507,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18265,6 +18545,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18302,6 +18583,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18339,6 +18621,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18376,6 +18659,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18413,6 +18697,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18450,6 +18735,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18487,6 +18773,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18524,6 +18811,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18561,6 +18849,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18598,6 +18887,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18635,6 +18925,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18672,6 +18963,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18709,6 +19001,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18746,6 +19039,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18783,6 +19077,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18820,6 +19115,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18857,6 +19153,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18894,6 +19191,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18931,6 +19229,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -18968,6 +19267,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19005,6 +19305,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19042,6 +19343,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19079,6 +19381,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19116,6 +19419,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19153,6 +19457,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -19189,6 +19494,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -19225,6 +19531,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -19261,6 +19568,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -19297,6 +19605,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19334,6 +19643,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -19370,6 +19680,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19407,6 +19718,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19444,6 +19756,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19481,6 +19794,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19518,6 +19832,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19555,6 +19870,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19592,6 +19908,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19629,6 +19946,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19666,6 +19984,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19703,6 +20022,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19740,6 +20060,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19777,6 +20098,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19814,6 +20136,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19851,6 +20174,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19888,6 +20212,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19925,6 +20250,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19962,6 +20288,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -19999,6 +20326,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20036,6 +20364,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -20072,6 +20401,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20109,6 +20439,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20146,6 +20477,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20183,6 +20515,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20220,6 +20553,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20257,6 +20591,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20294,6 +20629,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20331,6 +20667,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20368,6 +20705,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20405,6 +20743,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20442,6 +20781,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20479,6 +20819,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20516,6 +20857,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20553,6 +20895,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20590,6 +20933,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20627,6 +20971,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20664,6 +21009,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20701,6 +21047,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20738,6 +21085,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20775,6 +21123,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20812,6 +21161,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20849,6 +21199,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20886,6 +21237,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20923,6 +21275,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20960,6 +21313,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -20997,6 +21351,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21034,6 +21389,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21071,6 +21427,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21108,6 +21465,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21145,6 +21503,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21182,6 +21541,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21219,6 +21579,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21256,6 +21617,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -21292,6 +21654,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21329,6 +21692,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -21365,6 +21729,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -21401,6 +21766,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -21437,6 +21803,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21474,6 +21841,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21511,6 +21879,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21548,6 +21917,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21585,6 +21955,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21622,6 +21993,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21659,6 +22031,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21696,6 +22069,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21733,6 +22107,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21770,6 +22145,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21807,6 +22183,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21844,6 +22221,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21881,6 +22259,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21918,6 +22297,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21955,6 +22335,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -21992,6 +22373,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22029,6 +22411,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22066,6 +22449,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22103,6 +22487,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22140,6 +22525,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22177,6 +22563,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22214,6 +22601,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -22250,6 +22638,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22287,6 +22676,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22324,6 +22714,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22361,6 +22752,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
       ],
@@ -22397,6 +22789,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22434,6 +22827,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22471,6 +22865,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22508,6 +22903,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22545,6 +22941,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22582,6 +22979,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22619,6 +23017,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22656,6 +23055,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22693,6 +23093,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22730,6 +23131,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22767,6 +23169,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/factories/test_fom_omt_parsing.py",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22804,6 +23207,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22841,6 +23245,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22878,6 +23283,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22915,6 +23321,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22952,6 +23359,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -22989,6 +23397,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -23026,6 +23435,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -23063,6 +23473,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -23100,6 +23511,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -23137,6 +23549,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -23174,6 +23587,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -23211,6 +23625,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -23248,6 +23663,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -23285,6 +23701,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -23322,6 +23739,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -23359,6 +23777,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "tests/factories/test_fom_omt_parsing.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -23396,6 +23815,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/__init__.py"
@@ -23433,6 +23853,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -23470,6 +23891,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -23507,6 +23929,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -23544,6 +23967,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -23581,6 +24005,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -23618,6 +24043,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -23655,6 +24081,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -23692,6 +24119,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -23729,6 +24157,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -23766,6 +24195,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -23803,6 +24233,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -23840,6 +24271,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -23877,6 +24309,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -23914,6 +24347,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -23951,6 +24385,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -23988,6 +24423,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -24025,6 +24461,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -24062,6 +24499,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -24099,6 +24537,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -24136,6 +24575,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -24173,6 +24613,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -24210,6 +24651,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -24247,6 +24689,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -24284,6 +24727,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -24321,6 +24765,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -24358,6 +24803,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -24395,6 +24841,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -24432,6 +24879,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
@@ -24469,6 +24917,7 @@
       "closure_wave": "2-omt-field-and-validator-fixtures",
       "edition": "2025",
       "evidence_refs": [
+        "docs/requirements/ieee-1516-2025/omt.md",
         "tests/test_rti1516_2025_validation.py",
         "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"

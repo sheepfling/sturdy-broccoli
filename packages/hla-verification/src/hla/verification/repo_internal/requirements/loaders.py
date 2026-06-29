@@ -179,11 +179,17 @@ def _grouped_2025_delta_breakdown(rows: tuple[CanonicalRequirementRow, ...]) -> 
     return f"rows={len(rows)}"
 
 
+def _grouped_2025_family_key(row: CanonicalRequirementRow) -> tuple[str, str]:
+    if row.area == "Federate Interface service catalog":
+        return row.area, row.service_group
+    return row.area, "__area_owner__"
+
+
 def _build_2025_grouped_backend_rows(project_root: Path) -> tuple[BackendResolutionRow, ...]:
     canonical_rows = _load_or_build_2025_canonical_catalog(project_root).rows
-    grouped_rows: dict[tuple[str, str, str, str], list[CanonicalRequirementRow]] = defaultdict(list)
+    grouped_rows: dict[tuple[str, str], list[CanonicalRequirementRow]] = defaultdict(list)
     for row in canonical_rows:
-        grouped_rows[(row.closure_wave, row.area, row.service_group, row.priority)].append(row)
+        grouped_rows[_grouped_2025_family_key(row)].append(row)
 
     backend_rows: list[BackendResolutionRow] = []
     for key in sorted(grouped_rows):
@@ -193,10 +199,13 @@ def _build_2025_grouped_backend_rows(project_root: Path) -> tuple[BackendResolut
         primary_shard = _derive_primary_shard({"area": sample.area}, owner_doc)
         evidence_refs = _grouped_2025_evidence_refs(group, owner_doc)
         resolution_fields = _grouped_2025_resolution_fields(group)
+        closure_waves = sorted({row.closure_wave for row in group if row.closure_wave})
+        priorities = sorted({row.priority for row in group if row.priority})
+        family_token = sample.service_group if sample.area == "Federate Interface service catalog" else "area-owner"
         backend_rows.append(
             BackendResolutionRow(
                 edition="2025",
-                requirement_id=f"group::{sample.closure_wave}::{sample.area}::{sample.service_group}::{sample.priority}",
+                requirement_id=f"group::{sample.area}::{family_token}",
                 row_kind="grouped-projection",
                 resolution_type="grouped-backend-view",
                 canonical_owner=owner_doc,
@@ -208,8 +217,8 @@ def _build_2025_grouped_backend_rows(project_root: Path) -> tuple[BackendResolut
                 boundary_note=_grouped_2025_acceptance_gate(sample.canonical_status),
                 backend_fields={
                     "group_kind": "2025-group",
-                    "closure_wave": sample.closure_wave,
-                    "priority": sample.priority,
+                    "closure_wave": "; ".join(closure_waves),
+                    "priority": "; ".join(priorities),
                     "area": sample.area,
                     "service_group": sample.service_group,
                     "python_runtime_resolution": resolution_fields["python_runtime_resolution"],
@@ -341,9 +350,11 @@ def _derive_tags(row: dict[str, str], owner_doc: str) -> tuple[str, ...]:
     return tuple(deduped)
 
 
-def _normalize_2025_evidence_refs(row: dict[str, str]) -> tuple[str, ...]:
+def _normalize_2025_evidence_refs(row: dict[str, str], owner_doc: str) -> tuple[str, ...]:
     refs = list(_split_semicolon_items(row.get("suggested_repo_evidence_path", "")))
     normalized: list[str] = []
+    if owner_doc:
+        normalized.append(owner_doc)
     for ref in refs:
         if ref in _SPECIAL_2025_EVIDENCE_REFS:
             normalized.append(_SPECIAL_2025_EVIDENCE_REFS[ref])
@@ -385,7 +396,7 @@ def build_2025_canonical_requirement_catalog(project_root: Path) -> NormalizedRe
                 owner_doc=owner_doc,
                 primary_test_shard=primary_test_shard,
                 primary_command=_SHARD_COMMANDS.get(primary_test_shard, ""),
-                evidence_refs=_normalize_2025_evidence_refs(row),
+                evidence_refs=_normalize_2025_evidence_refs(row, owner_doc),
                 boundary_note=_derive_boundary_note(row),
                 source_trace_strength=row.get("source_trace_strength", "").strip(),
                 repo_evidence_status=row.get("repo_evidence_status", "").strip(),
@@ -627,7 +638,10 @@ def load_2025_pitch_group_resolution_rows(project_root: Path) -> tuple[BackendRe
     return tuple(
         BackendResolutionRow(
             edition="2025",
-            requirement_id=f"{row.get('closure_wave','').strip()}::{row.get('area','').strip()}::{row.get('service_group','').strip()}",
+            requirement_id=(
+                f"group::pitch-202x::{row.get('area','').strip()}::"
+                f"{row.get('service_group','').strip() if row.get('area','').strip() == 'Federate Interface service catalog' else 'area-owner'}"
+            ),
             row_kind="grouped-projection",
             resolution_type="vendor-group-resolution",
             canonical_owner=row.get("pitch_202x_owner_doc", "").strip(),
