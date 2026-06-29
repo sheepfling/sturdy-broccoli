@@ -1,4 +1,9 @@
-"""Closeout reporting inventory for the IEEE 1516-2025 requirements tranche."""
+"""Downstream closeout-reporting inventory for the IEEE 1516-2025 lane.
+
+This module builds generated reporting artifacts over the canonical 2025
+requirement catalog and the backend-resolution catalog. It does not define the
+primary requirement-truth owner surface.
+"""
 
 from __future__ import annotations
 # pyright: reportArgumentType=false, reportAttributeAccessIssue=false
@@ -8289,6 +8294,8 @@ class Spec2025Paths:
     executable_rows: Path
     depth_summary: Path
     depth_rows: Path
+    canonical_requirements: Path
+    backend_resolution: Path
     harmonization_rollup: Path
     harmonization_rows: Path
     registry: Path
@@ -8303,6 +8310,8 @@ def _paths(project_root: Path) -> Spec2025Paths:
         executable_rows=req_dir / "executable_tests" / "hla_2025_executable_test_requirements_v3.csv",
         depth_summary=project_root / "requirements" / "2025" / "depth" / "hla_2025_requirement_depth_expansion_summary.json",
         depth_rows=project_root / "requirements" / "2025" / "depth" / "hla_2025_requirement_depth_expansion.csv",
+        canonical_requirements=project_root / "requirements" / "2025" / "canonical_requirements.json",
+        backend_resolution=project_root / "requirements" / "2025" / "backend_resolution.json",
         harmonization_rollup=project_root / "requirements" / "2025" / "harmonization" / "hla_2025_requirement_coverage_rollup.json",
         harmonization_rows=project_root / "requirements" / "2025" / "harmonization" / "hla_2025_requirement_disposition_ledger.csv",
         registry=req_dir / "requirements.json",
@@ -8514,7 +8523,7 @@ def _build_verification_matrix(
 
 @lru_cache(maxsize=None)
 def _build_spec2025_finish_line_snapshot_cached(project_root_text: str) -> dict[str, Any]:
-    """Return the current 2025 requirements closeout-reporting inventory."""
+    """Return the current 2025 downstream closeout-reporting inventory."""
 
     project_root = Path(project_root_text)
     paths = _paths(project_root)
@@ -8600,8 +8609,15 @@ def _build_spec2025_finish_line_snapshot_cached(project_root_text: str) -> dict[
         "by_closure_wave": harmonization_rollup["by_closure_wave"],
         "fi_binding_surface": harmonization_rollup["fi_binding_surface"],
         "covered_row_count": harmonization_rollup["by_disposition"].get("covered", 0),
-        "source": "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv",
+        "owner_source": "requirements/2025/canonical_requirements.json",
+        "backend_resolution_source": "requirements/2025/backend_resolution.json",
+        "projection_source": "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv",
         "status": imported_packets["hla-2025-requirement-coverage-disposition"]["status"],
+        "current_assessment": (
+            "This closeout-reporting packet summarizes the imported harmonization projection, but canonical "
+            "2025 requirement status still belongs to requirements/2025/canonical_requirements.json and backend "
+            "or route truth still belongs to requirements/2025/backend_resolution.json."
+        ),
     }
     requirement_by_requirement_audit = _build_requirement_by_requirement_audit(
         harmonization_rows,
@@ -8784,6 +8800,11 @@ def _build_spec2025_finish_line_snapshot_cached(project_root_text: str) -> dict[
         "registry": {
             "initial_tranche_requirements": len(registry_requirements),
             "imported_packets": [packet["id"] for packet in registry.get("imported_packets", ())],
+        },
+        "owner_sources": {
+            "canonical_requirements": "requirements/2025/canonical_requirements.json",
+            "backend_resolution": "requirements/2025/backend_resolution.json",
+            "closeout_projection": "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv",
         },
         "completion_backlog": completion_backlog,
         "executable_test_backlog": {

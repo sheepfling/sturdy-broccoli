@@ -73,6 +73,9 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     snapshot = build_spec2025_finish_line_snapshot(ROOT)
 
     assert snapshot["scope"] == "IEEE 1516-2025 requirements closeout-reporting inventory, not a conformance claim"
+    assert snapshot["owner_sources"]["canonical_requirements"] == "requirements/2025/canonical_requirements.json"
+    assert snapshot["owner_sources"]["backend_resolution"] == "requirements/2025/backend_resolution.json"
+    assert snapshot["owner_sources"]["closeout_projection"] == "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv"
     assert snapshot["registry"]["initial_tranche_requirements"] == 28
     assert "hla-2025-executable-test-requirements-v3" in snapshot["registry"]["imported_packets"]
 
@@ -95,6 +98,10 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert sum(disposition["by_priority"].values()) == disposition["row_count"]
     assert sum(disposition["by_closure_wave"].values()) == disposition["row_count"]
     assert disposition["covered_row_count"] == disposition["by_disposition"]["covered"]
+    assert disposition["owner_source"] == "requirements/2025/canonical_requirements.json"
+    assert disposition["backend_resolution_source"] == "requirements/2025/backend_resolution.json"
+    assert disposition["projection_source"] == "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv"
+    assert "canonical 2025 requirement status still belongs to requirements/2025/canonical_requirements.json" in disposition["current_assessment"]
 
     backlog = snapshot["completion_backlog"]
     assert backlog["row_count"] > 0

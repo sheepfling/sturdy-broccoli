@@ -11,6 +11,7 @@ REGISTRY = REGISTRY_DIR / "requirements.json"
 CANONICAL_REQUIREMENTS = ROOT / "requirements/2025/canonical_requirements.json"
 BACKEND_RESOLUTION = ROOT / "requirements/2025/backend_resolution.json"
 EXECUTABLE_REQUIREMENTS = REGISTRY_DIR / "executable_tests/hla_2025_executable_test_requirements_v3.csv"
+TEST_SURFACE_MANIFEST = ROOT / "testing/test_surface_manifest.json"
 
 
 def _normalize(text: str) -> str:
@@ -30,6 +31,15 @@ def _canonical_rows_by_id() -> dict[str, dict[str, object]]:
 def _backend_rows_by_id(requirement_id: str) -> list[dict[str, object]]:
     payload = json.loads(BACKEND_RESOLUTION.read_text(encoding="utf-8"))
     return [row for row in payload["rows"] if row["requirement_id"] == requirement_id]
+
+
+def _lane_owner_commands() -> dict[str, str]:
+    payload = json.loads(TEST_SURFACE_MANIFEST.read_text(encoding="utf-8"))
+    return {
+        lane["id"]: " ".join(lane["owner_command"])
+        for lane in payload["lanes"]
+        if lane.get("owner_command")
+    }
 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-REQ-002")
@@ -110,6 +120,38 @@ def test_2025_backend_resolution_catalog_keeps_backend_and_route_truth_separate_
     )
     assert pitch_row["primary_command"] == "./tools/pitch 202x-micro-certify"
     assert pitch_row["backend_fields"]["pitch_202x_row_resolution"] == "bounded-fi-overlap-only"
+
+
+@pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-TRACE-001", "HLA2025-TRACE-002")
+def test_2025_canonical_catalog_rows_keep_owner_shard_and_evidence_traceability_coherent() -> None:
+    rows = _canonical_rows_by_id()
+    lane_commands = _lane_owner_commands()
+    allowed_literal_evidence = {
+        "linked FI/OMT child rows",
+        "migration/compatibility fixture if supported",
+    }
+
+    for requirement_id, row in rows.items():
+        owner_doc = str(row["owner_doc"])
+        owner_path = ROOT / owner_doc
+        assert owner_path.exists(), requirement_id
+
+        primary_shard = str(row["primary_test_shard"])
+        assert primary_shard in lane_commands, requirement_id
+        assert str(row["primary_command"]) == lane_commands[primary_shard], requirement_id
+
+        evidence_refs = list(row["evidence_refs"])
+        assert evidence_refs, requirement_id
+
+        for evidence in evidence_refs:
+            if evidence in allowed_literal_evidence:
+                assert str(row["row_kind"]) in {"framework-umbrella", "legacy-mapping"}, requirement_id
+                continue
+            evidence_path = ROOT / str(evidence).split(":", 1)[0]
+            assert evidence_path.exists(), (requirement_id, evidence)
+
+        if str(row["row_kind"]) in {"framework-umbrella", "legacy-mapping", "delta-umbrella"}:
+            assert owner_doc in evidence_refs, requirement_id
 
 
 @pytest.mark.requirements("HLA2025-REQ-001")

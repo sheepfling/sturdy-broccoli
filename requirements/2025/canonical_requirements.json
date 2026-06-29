@@ -23434,7 +23434,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -23471,7 +23471,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -23508,7 +23508,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -23545,7 +23545,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -23582,7 +23582,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -23619,7 +23619,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -23656,7 +23656,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -23693,7 +23693,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -23730,7 +23730,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -23767,7 +23767,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -23804,7 +23804,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -23841,7 +23841,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -23878,7 +23878,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -23915,7 +23915,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -23952,7 +23952,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -23989,7 +23989,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -24026,7 +24026,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -24063,7 +24063,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -24100,7 +24100,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -24137,7 +24137,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -24174,7 +24174,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -24211,7 +24211,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -24248,7 +24248,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -24285,7 +24285,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -24322,7 +24322,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -24359,7 +24359,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -24396,7 +24396,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -24433,7 +24433,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",
@@ -24470,7 +24470,7 @@
       "edition": "2025",
       "evidence_refs": [
         "tests/test_rti1516_2025_validation.py",
-        "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        "packages/hla-rti-core/src/hla/fom/validation.py",
         "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd"
       ],
       "normative_level": "verification",

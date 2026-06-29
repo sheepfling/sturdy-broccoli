@@ -129,6 +129,10 @@ Generated grouped projection still used by some downstream workflows:
 
 - `requirements/2025/harmonization/hla_2025_harmonization_worklist.csv`
 
+Treat that grouped worklist as a downstream bucketing projection over the
+canonical 2025 row catalog and backend-resolution catalog, not as an owner
+surface.
+
 Human-facing front doors:
 
 - [`../requirements/ieee-1516-2025/README.md`](../requirements/ieee-1516-2025/README.md)
@@ -205,7 +209,7 @@ first, then regenerate the exports.
 
 ## Repeatable Workflow
 
-1. update canonical requirement or harmonization sources
+1. update canonical requirement or backend-resolution sources first
 2. run the normal doc or test proof that justifies the change
 3. regenerate the spreadsheet packet
 4. hand off the `.xlsx` workbook or the `.csv` files as needed

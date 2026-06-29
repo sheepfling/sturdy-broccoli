@@ -220,7 +220,8 @@ def test_requirement_compliance_spreadsheet_export_writes_both_editions(tmp_path
     assert "645 active normative non-retired non-umbrella rows" in metadata_map_2025["denominator_rule"]
     assert "do not restate this grouped packet as 691 / 691 covered" in metadata_map_2025["denominator_rule"]
     assert "64 grouped buckets" in metadata_map_2025["grouped_packet_scope"]
-    assert "691-row canonical denominator" in metadata_map_2025["grouped_packet_scope"]
+    assert "requirements/2025/canonical_requirements.json remains the row-level owner ledger" in metadata_map_2025["grouped_packet_scope"]
+    assert "requirements/2025/backend_resolution.json remains the backend-resolution companion truth" in metadata_map_2025["grouped_packet_scope"]
     assert "bounded hosted-route surface over python1516_2025" in metadata_map_2025["hosted_fedpro_resolution_meaning"]
     assert "Pitch proto HLA 4 / 202X overlap" in metadata_map_2025["pitch_202x_resolution_meaning"]
 
@@ -251,6 +252,8 @@ def test_requirement_compliance_export_doc_keeps_2025_denominator_split_explicit
     assert "`policy_parents`" in text
     assert "9 broad partial rows" in text
     assert "not an open Python gap list" in text
+    assert "downstream bucketing projection" in normalized
+    assert "update canonical requirement or backend-resolution sources first" in normalized
 
 
 def test_pitch_202x_group_resolution_keeps_bounded_vendor_reading_explicit_by_disposition() -> None:
