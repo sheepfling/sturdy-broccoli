@@ -55,11 +55,15 @@ For the current 2025 closeout posture, use:
 - [python_rti_backend.md](python_rti_backend.md)
 - [backend_route_inventory.md](backend_route_inventory.md)
 - [verification/time_model_compliance.md](verification/time_model_compliance.md)
-- [plans/2025_python_rti_backend_audit.md](plans/2025_python_rti_backend_audit.md)
+- [../requirements/2025/canonical_requirements.json](../requirements/2025/canonical_requirements.json)
+- [../requirements/2025/backend_resolution.json](../requirements/2025/backend_resolution.json)
 - [requirements/ieee-1516-2025/README.md](requirements/ieee-1516-2025/README.md)
-- [../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv](../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv)
-- [plans/2025_requirements_finish_line.md](plans/2025_requirements_finish_line.md)
-- [plans/spec2025_route_parity_matrix.md](plans/spec2025_route_parity_matrix.md)
+- [plans/2025_python_rti_backend_audit.md](plans/2025_python_rti_backend_audit.md)
+- [requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md](requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md)
+
+Treat the canonical JSON catalogs as the requirement-truth front door for the
+2025 lane. Read the audit and other plan artifacts only as downstream
+closeout-program tracking over those canonical rows.
 
 For CERTI-specific caveats, baseline-selection commands, and the distinction
 between repo-local patched CERTI and pristine upstream CERTI, see

@@ -136,7 +136,6 @@ Primary evidence anchors:
 
 - `requirements/2025/canonical_requirements.json`
 - `requirements/2025/backend_resolution.json`
-- `docs/plans/2025_requirements_finish_line.md`
 - `docs/plans/2025_python_rti_backend_audit.md`
 - `docs/requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md`
 - `docs/requirements/ieee-1516-2025/save_restore_bounded_proof.md`
@@ -178,6 +177,10 @@ captures the current rollback-family contract for lifecycle control, shared
 rollback, routing/policy rollback, ownership rollback, and time-window/time
 state rollback instead of leaving that evidence only inside the broader
 federation-management note or generated decomposition text.
+
+The generated finish-line snapshot remains useful, but it is downstream
+closeout-reporting over the canonical 2025 requirement and backend-resolution
+catalogs rather than a primary owner surface.
 
 The matching callback note,
 `docs/requirements/ieee-1516-2025/callback_bounded_proof.md`,

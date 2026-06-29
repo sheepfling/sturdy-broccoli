@@ -18,11 +18,12 @@ If you only need the shortest practical route, read these in order:
 2. [package_dependency_tree.md](package_dependency_tree.md)
 3. [../packages/hla-rti1516-2025/README.md](../packages/hla-rti1516-2025/README.md)
 4. [../packages/hla-backend-python1516-2025/README.md](../packages/hla-backend-python1516-2025/README.md)
-5. [plans/spec2025_finish_line.md](plans/spec2025_finish_line.md)
-6. [verification/time_model_compliance.md](verification/time_model_compliance.md)
-7. [requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md](requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md)
-8. [../tests/test_rti1516_2025_python1516_2025_runtime.py](../tests/test_rti1516_2025_python1516_2025_runtime.py)
-9. [../packages/hla-backend-shim/README.md](../packages/hla-backend-shim/README.md)
+5. [../requirements/2025/canonical_requirements.json](../requirements/2025/canonical_requirements.json)
+6. [../requirements/2025/backend_resolution.json](../requirements/2025/backend_resolution.json)
+7. [verification/time_model_compliance.md](verification/time_model_compliance.md)
+8. [requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md](requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md)
+9. [../tests/test_rti1516_2025_python1516_2025_runtime.py](../tests/test_rti1516_2025_python1516_2025_runtime.py)
+10. [../packages/hla-backend-shim/README.md](../packages/hla-backend-shim/README.md)
 
 That sequence gets you from architecture to the current 2025 runtime proof and
 its explicit non-claim boundary with minimal detours.
@@ -88,10 +89,10 @@ are:
   explicit promotion-versus-extraction audit for the current 2025 lane
 - [requirements/ieee-1516-2025/README.md](requirements/ieee-1516-2025/README.md):
   canonical 2025 requirement owner map
-- [../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv](../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv):
-  canonical row-level 2025 disposition ledger
-- [plans/2025_requirements_finish_line.md](plans/2025_requirements_finish_line.md):
-  generated closeout-reporting and blocker snapshot
+- [../requirements/2025/canonical_requirements.json](../requirements/2025/canonical_requirements.json):
+  canonical row-level 2025 requirement truth
+- [../requirements/2025/backend_resolution.json](../requirements/2025/backend_resolution.json):
+  canonical 2025 backend- and route-resolution truth
 - [requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md](requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md):
   explicit excluded-area map for legacy aliases, Java/C++ bindings, hosted
   transport boundaries, duplicate/umbrella rows, retired rows, and
@@ -158,7 +159,7 @@ changes in that path.
 
 For a 2025 route-parity question:
 
-1. `plans/2025_requirements_finish_line.md`
+1. `requirements/2025/backend_resolution.json`
 2. `packages/hla-verification/src/hla/verification/repo_internal/verification/spec2025_route_parity_matrix.py`
 3. `tests/requirements/test_2025_route_parity_matrix.py`
 

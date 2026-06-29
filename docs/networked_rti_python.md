@@ -24,10 +24,10 @@ Those routes are related, but they are not identical claims.
   code
 
 If you need the architecture and evidence posture for that 2025 lane, read
-[`python_rti_backend.md`](python_rti_backend.md) and
-[`plans/2025_requirements_finish_line.md`](plans/2025_requirements_finish_line.md)
-and
-[`plans/2025_python_rti_backend_audit.md`](plans/2025_python_rti_backend_audit.md)
+[`python_rti_backend.md`](python_rti_backend.md),
+[`../requirements/2025/canonical_requirements.json`](../requirements/2025/canonical_requirements.json),
+[`../requirements/2025/backend_resolution.json`](../requirements/2025/backend_resolution.json),
+and [`plans/2025_python_rti_backend_audit.md`](plans/2025_python_rti_backend_audit.md)
 alongside this page.
 
 ## Hosted `python1516e` Route
@@ -229,6 +229,7 @@ owning package root.
 - [`python_environment.md`](python_environment.md)
 - [`package_layout.md`](package_layout.md)
 - [`import_boundary_rules.md`](import_boundary_rules.md)
-- [`plans/2025_requirements_finish_line.md`](plans/2025_requirements_finish_line.md)
+- [`../requirements/2025/canonical_requirements.json`](../requirements/2025/canonical_requirements.json)
+- [`../requirements/2025/backend_resolution.json`](../requirements/2025/backend_resolution.json)
 - [`backend_route_inventory_remote.md`](backend_route_inventory_remote.md)
 - [`../packages/hla-transport-grpc/README.md`](../packages/hla-transport-grpc/README.md)

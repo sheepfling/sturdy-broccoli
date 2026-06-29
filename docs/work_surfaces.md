@@ -26,7 +26,7 @@ Two other top-level reading surfaces sit across those engineering lanes:
 | `UI surfaces` -> FOM Explorer, Federation Visualizer, RTI Bridge API naming, backlog, or product direction | [`runtime_surface_naming_and_backlog.md`](runtime_surface_naming_and_backlog.md) | [`plans/hla_studio_surface_worklist.md`](plans/hla_studio_surface_worklist.md), [`fom_workbench.md`](fom_workbench.md), [`fom_siso_runtime_showcase.md`](fom_siso_runtime_showcase.md), [`reference/runtime_observer_event_schema.md`](reference/runtime_observer_event_schema.md) |
 | `Testing` -> repo green, lane choice, shard reruns, or junior failure diagnosis | [`repo_green_quickstart.md`](repo_green_quickstart.md) | [`test_surface.md`](test_surface.md), [`local_verification_commands.md`](local_verification_commands.md), [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md) |
 | `Requirements` -> claims, proofs, traceability, or requirement-facing evidence | [`requirements/ieee-1516-2010/README.md`](requirements/ieee-1516-2010/README.md) or [`requirements/ieee-1516-2025/README.md`](requirements/ieee-1516-2025/README.md) | [`verification/README.md`](verification/README.md), [`spec_reading_map.md`](spec_reading_map.md), [`requirements_trace_one_method.md`](requirements_trace_one_method.md) |
-| `Requirements exports | status` -> boss-facing spreadsheets, closeout truth, or remaining bucket audit | [`verification/requirement_compliance_exports.md`](verification/requirement_compliance_exports.md) or [`plans/requirements_completion_audit.md`](plans/requirements_completion_audit.md) | [`plans/requirements_remaining_closure.md`](plans/requirements_remaining_closure.md), [`spec_reading_map.md`](spec_reading_map.md) |
+| `Requirements exports | status` -> boss-facing spreadsheets, closeout truth, or remaining bucket audit | [`verification/requirement_compliance_exports.md`](verification/requirement_compliance_exports.md) or [`requirements/ieee-1516-2025/README.md`](requirements/ieee-1516-2025/README.md) | [`plans/requirements_completion_audit.md`](plans/requirements_completion_audit.md), [`plans/requirements_remaining_closure.md`](plans/requirements_remaining_closure.md), [`spec_reading_map.md`](spec_reading_map.md) |
 
 ## Surface 1: Backends And Route Wrapping
 
@@ -190,7 +190,8 @@ Use this when the question is:
 Start here:
 
 - [`verification/requirement_compliance_exports.md`](verification/requirement_compliance_exports.md) for CSV/XLSX handoff packets
-- [`plans/requirements_completion_audit.md`](plans/requirements_completion_audit.md) for the current honest closeout answer
+- [`requirements/ieee-1516-2025/README.md`](requirements/ieee-1516-2025/README.md) plus the canonical JSON catalogs for the current requirement truth
+- [`plans/requirements_completion_audit.md`](plans/requirements_completion_audit.md) for the downstream closeout answer
 
 Then read:
 
@@ -201,7 +202,8 @@ Then read:
 Practical rule:
 
 - spreadsheets are presentation surfaces, not canonical owner ledgers
-- the audit and remaining-closure docs are the truth surfaces for whether the repo can honestly claim completion
+- the audit and remaining-closure docs are downstream closeout surfaces, not requirement-truth owners
+- canonical requirement and backend-resolution catalogs stay primary for exact row truth
 - shard ownership should be named before broader views, closeout-reporting packets, or matrix cuts
 
 ## Simple Decision Rule

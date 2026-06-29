@@ -15,10 +15,15 @@ For the main 2025 Python RTI lane, start instead with:
 
 - [python_rti_backend.md](python_rti_backend.md)
 - [verification/time_model_compliance.md](verification/time_model_compliance.md)
+- [../requirements/2025/canonical_requirements.json](../requirements/2025/canonical_requirements.json)
+- [../requirements/2025/backend_resolution.json](../requirements/2025/backend_resolution.json)
 - [requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md](requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md)
 - [plans/2025_python_rti_backend_audit.md](plans/2025_python_rti_backend_audit.md)
-- [plans/spec2025_finish_line.md](plans/spec2025_finish_line.md)
-- [plans/spec2025_route_parity_matrix.md](plans/spec2025_route_parity_matrix.md)
+- [requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md](requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md)
+
+Those requirement catalogs are the primary truth surfaces. Treat backend audits
+and closeout packets as downstream reporting over canonical requirement and
+backend-resolution rows, not as the owner surfaces themselves.
 
 Use that exclusion note when you need the explicit non-claim boundary around
 the bounded `python1516_2025` working-surface statement, especially for legacy

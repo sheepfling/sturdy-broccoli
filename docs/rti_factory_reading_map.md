@@ -74,7 +74,8 @@ why `hla.backends.shim` is now compatibility-only:
 1. [python_rti_backend.md](python_rti_backend.md)
 2. [../packages/hla-backend-python1516-2025/README.md](../packages/hla-backend-python1516-2025/README.md)
 3. [../packages/hla-backend-shim/README.md](../packages/hla-backend-shim/README.md)
-4. [plans/2025_requirements_finish_line.md](plans/2025_requirements_finish_line.md)
+4. [../requirements/2025/canonical_requirements.json](../requirements/2025/canonical_requirements.json)
+5. [../requirements/2025/backend_resolution.json](../requirements/2025/backend_resolution.json)
 
 ## Current Practical Selection Story
 
@@ -102,7 +103,9 @@ proof first and only then inspect the wrapper alias:
 
 1. `tests/test_hla_factory_composition.py`
 2. `tests/test_rti1516_2025_python1516_2025_runtime.py` (main in-process `python1516_2025` proof suite)
-3. `tests/requirements/test_2025_finish_line_snapshot.py`
+3. `requirements/2025/canonical_requirements.json`
+4. `requirements/2025/backend_resolution.json`
+5. `tests/requirements/test_2025_finish_line_snapshot.py` (downstream closeout-reporting verification)
 
 In practice, `./tools/python verify-main-2025` is the normal proof command for
 that direct factory-selection path, while `./tools/python verify-routes-2025`
@@ -115,7 +118,9 @@ behavior are:
 
 - [../tests/test_hla_factory_composition.py](../tests/test_hla_factory_composition.py)
 - [../tests/test_rti1516_2025_python1516_2025_runtime.py](../tests/test_rti1516_2025_python1516_2025_runtime.py) (main in-process `python1516_2025` proof suite)
-- [../tests/requirements/test_2025_finish_line_snapshot.py](../tests/requirements/test_2025_finish_line_snapshot.py)
+- [../requirements/2025/canonical_requirements.json](../requirements/2025/canonical_requirements.json)
+- [../requirements/2025/backend_resolution.json](../requirements/2025/backend_resolution.json)
+- [../tests/requirements/test_2025_finish_line_snapshot.py](../tests/requirements/test_2025_finish_line_snapshot.py) (downstream closeout-reporting verification)
 
 Use those when changing:
 
