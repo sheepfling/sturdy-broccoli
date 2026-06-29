@@ -49,7 +49,8 @@ other non-leaf bucket rather than a direct executable service claim:
 
 This report should agree with those owner docs.
 If a future harmonization pass changes one of these bucket families, update the
-owner doc first, then reflect the change here and in the finish-line packet.
+owner doc first, then reflect the change here and in the downstream
+closeout/export artifacts.
 
 ## FI Binding Surface
 
@@ -99,8 +100,8 @@ dispositions:
 
 | Coverage risk | What changed in this pass | Remaining gate |
 |---|---|---|
-| Imported rows are only candidates | Every row now has `harmonization_disposition`, `priority`, `closure_wave`, `repo_evidence_status`, and `promotion_rule`, and the current ledger assigns every tracked row to `covered`, `duplicate/umbrella`, or `retired/legacy-only`. | Keep future row changes synchronized with the row-level ledger, worklist, owner docs, and finish-line packet. |
-| FI service depth needs service-level accounting | All 196 FI rows now carry Java/C++/FedPro surface status and service-level closure tasks, and the full FI catalog now points at direct executable Python evidence. | Keep future FI behavior changes synchronized with finish-line slices and executable anchors. |
+| Imported rows are only candidates | Every row now has `harmonization_disposition`, `priority`, `closure_wave`, `repo_evidence_status`, and `promotion_rule`, and the current ledger assigns every tracked row to `covered`, `duplicate/umbrella`, or `retired/legacy-only`. | Keep future row changes synchronized with the row-level ledger, worklist, owner docs, and downstream closeout/export artifacts. |
+| FI service depth needs service-level accounting | All 196 FI rows now carry Java/C++/FedPro surface status and service-level closure tasks, and the full FI catalog now points at direct executable Python evidence. | Keep future FI behavior changes synchronized with canonical owner surfaces and executable anchors. |
 | SOM/FOM service-utilization rows lacked reconciled closure | All 196 service-utilization rows now point at direct parser/roundtrip evidence plus renumbered-differential checks and the covered FI catalog they mirror. | Keep serviceUtilization parser semantics and FI cross-checks synchronized when object-model handling changes. |
 | OMT component depth is not proof | The remaining OMT component rows are now either promoted into the supported shared parser/serializer subset or normalized into explicit bounded owner-doc readings instead of being left partial. | Keep narrowing broad claims, add direct fixtures when support expands, and replace bounded owner-doc language only when parser/serializer/runtime evidence exists. |
 | Delta hints are not standalone proof | Delta rows remain `duplicate/umbrella`, but each current delta row is now tied to concrete child FI/binding evidence and its canonical owner doc rather than left in evidence-anchor debt. | Keep the child-row maps, owner docs, and binding-specific evidence anchors synchronized when the delta families change. |

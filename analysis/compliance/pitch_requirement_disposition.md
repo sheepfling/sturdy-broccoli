@@ -6,8 +6,8 @@ This audit projects the shared HLA 2010 requirements matrix onto Pitch so every 
 
 | Pitch backend | Verified | Blocked | Vendor divergent | Not yet tested | Not applicable | Classification required |
 |---|---:|---:|---:|---:|---:|---:|
-| pitch-jpype | 531 | 4 | 43 | 93 | 26 | 211 |
-| pitch-py4j | 531 | 4 | 43 | 93 | 26 | 211 |
+| pitch-jpype | 561 | 4 | 43 | 105 | 26 | 211 |
+| pitch-py4j | 561 | 4 | 43 | 105 | 26 | 211 |
 
 ## Clause Summary
 
@@ -18,7 +18,7 @@ This audit projects the shared HLA 2010 requirements matrix onto Pitch so every 
 | IEEE 1516.1-2010 (2010 edition) §10 | 86 | 0 | 0 | 0 | 84 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §11 | 37 | 0 | 0 | 0 | 0 | 2 | 35 |
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 0 | 0 | 0 | 9 | 1 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §4 | 281 | 274 | 2 | 3 | 0 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §4 | 323 | 304 | 2 | 3 | 12 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §5 | 52 | 45 | 2 | 0 | 0 | 5 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §6 | 96 | 85 | 0 | 9 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §7 | 39 | 27 | 0 | 10 | 0 | 2 | 0 |
@@ -49,7 +49,7 @@ This audit projects the shared HLA 2010 requirements matrix onto Pitch so every 
 | IEEE 1516.1-2010 (2010 edition) §10 | 86 | 0 | 0 | 0 | 84 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §11 | 37 | 0 | 0 | 0 | 0 | 2 | 35 |
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 0 | 0 | 0 | 9 | 1 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §4 | 281 | 274 | 2 | 3 | 0 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §4 | 323 | 304 | 2 | 3 | 12 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §5 | 52 | 45 | 2 | 0 | 0 | 5 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §6 | 96 | 85 | 0 | 9 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §7 | 39 | 27 | 0 | 10 | 0 | 2 | 0 |
@@ -78,7 +78,7 @@ This audit projects the shared HLA 2010 requirements matrix onto Pitch so every 
 | IEEE 1516.1-2010 (2010 edition) §10 | 86 | 0 | 0 | 0 | 84 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §11 | 37 | 0 | 0 | 0 | 0 | 2 | 35 |
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 0 | 0 | 0 | 9 | 1 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §4 | 281 | 274 | 2 | 3 | 0 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §4 | 323 | 304 | 2 | 3 | 12 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §5 | 52 | 45 | 2 | 0 | 0 | 5 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §6 | 96 | 85 | 0 | 9 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §7 | 39 | 27 | 0 | 10 | 0 | 2 | 0 |
@@ -109,6 +109,18 @@ Rows where `pitch-jpype` and `pitch-py4j` currently have different generated dis
 
 | Document | Clause | Requirement | Kind | Applicability | Title |
 |---|---|---|---|---|
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.10-ARG-001 | extracted-requirement | runtime-or-service-probe | Resign Federation Execution shall accept the clause-defined resign directives and apply their corresponding delete-object cancel-pending-acquisition or unconditional-divest behavior to the current federate state. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.2-ARG-001 | extracted-requirement | runtime-or-service-probe | Connect shall accept and persist the selected callback model argument that governs subsequent RTI callback delivery. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.2-ARG-002 | extracted-requirement | runtime-or-service-probe | Connect shall accept and persist the optional local settings designator argument when one is supplied. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.5-ARG-001 | extracted-requirement | runtime-or-service-probe | Create Federation Execution shall accept and validate the federation execution name argument across creation and duplicate-name rejection paths. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.5-ARG-002 | extracted-requirement | runtime-or-service-probe | Create Federation Execution shall accept and validate the supplied FOM module designators used to assemble the created federation model. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.5-ARG-003 | extracted-requirement | runtime-or-service-probe | Create Federation Execution shall accept and validate the optional explicit MIM designator when the overload surface supplies one. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.5-ARG-004 | extracted-requirement | runtime-or-service-probe | Create Federation Execution shall accept the optional logical time implementation argument when provided and otherwise choose the active logical time factory from the merged federation model or configured default. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.6-ARG-001 | extracted-requirement | runtime-or-service-probe | Destroy Federation Execution shall accept and validate the target federation execution name argument across missing joined and successful destroy paths. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.9-ARG-001 | extracted-requirement | runtime-or-service-probe | Join Federation Execution shall accept an omitted federate-name argument and assign a generated unique federate name to the joiner. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.9-ARG-002 | extracted-requirement | runtime-or-service-probe | Join Federation Execution shall accept and persist the supplied federate type for the joined federate. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.9-ARG-003 | extracted-requirement | runtime-or-service-probe | Join Federation Execution shall accept and resolve the supplied federation execution name to the target federation. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.9-ARG-004 | extracted-requirement | runtime-or-service-probe | Join Federation Execution shall accept and merge the optional additional FOM module designators supplied by the joiner. |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_10-getObjectInstanceName | service-requirement | runtime-or-service-probe | Get Object Instance Name service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_11-getAttributeHandle | service-requirement | runtime-or-service-probe | Get Attribute Handle service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_12-getAttributeName | service-requirement | runtime-or-service-probe | Get Attribute Name service |

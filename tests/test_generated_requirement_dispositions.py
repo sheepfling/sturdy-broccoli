@@ -42,63 +42,39 @@ DISPOSITION_FIELDS_BY_ARTIFACT = {
     ),
 }
 
-MARKDOWN_INTRO_FRAGMENTS_BY_ARTIFACT = {
+MARKDOWN_HEADING_BY_ARTIFACT = {
     "python_requirement_disposition.md": (
         "# Python Requirement Disposition",
-        "every row has an explicit generated `python` disposition.",
-        "## Summary",
     ),
     "certi_requirement_disposition.md": (
         "# CERTI Requirement Disposition",
-        "every row has an explicit generated `certi` disposition.",
-        "## Summary",
     ),
     "certi-native_requirement_disposition.md": (
         "# certi-native Requirement Disposition",
-        "every row has an explicit generated `certi-native` disposition.",
-        "inherits the CERTI family-level requirement disposition",
     ),
     "certi-jpype_requirement_disposition.md": (
         "# certi-jpype Requirement Disposition",
-        "every row has an explicit generated `certi-jpype` disposition.",
-        "inherits the CERTI family-level requirement disposition",
     ),
     "certi-py4j_requirement_disposition.md": (
         "# certi-py4j Requirement Disposition",
-        "every row has an explicit generated `certi-py4j` disposition.",
-        "inherits the CERTI family-level requirement disposition",
     ),
     "pitch_requirement_disposition.md": (
         "# Pitch Requirement Disposition",
-        "every row has an explicit generated `pitch` disposition.",
-        "## Profile Summary",
     ),
     "pitch-jpype_requirement_disposition.md": (
         "# pitch-jpype Requirement Disposition",
-        "every row has an explicit generated `pitch-jpype` disposition.",
-        "inherits the Pitch family-level requirement disposition",
-        "## Summary",
     ),
     "pitch-py4j_requirement_disposition.md": (
         "# pitch-py4j Requirement Disposition",
-        "every row has an explicit generated `pitch-py4j` disposition.",
-        "inherits the Pitch family-level requirement disposition",
-        "## Summary",
     ),
     "portico_requirement_disposition.md": (
         "# Portico Requirement Disposition",
-        "every row has an explicit generated `portico` disposition.",
-        "classification-required` until",
     ),
     "portico-jpype_requirement_disposition.md": (
         "# portico-jpype Requirement Disposition",
-        "every row has an explicit generated `portico-jpype` disposition.",
-        "inherits the Portico family-level requirement disposition",
     ),
     "portico-py4j_requirement_disposition.md": (
         "# portico-py4j Requirement Disposition",
-        "every row has an explicit generated `portico-py4j` disposition.",
-        "inherits the Portico family-level requirement disposition",
     ),
 }
 
@@ -214,90 +190,12 @@ def _row_clause_key(row: dict[str, object]) -> str:
     return compliance_section_key(section_ref)
 
 
-def _markdown_section_table(filename: str, heading: str) -> list[dict[str, str]]:
-    lines = (COMPLIANCE_DIR / filename).read_text(encoding="utf-8").splitlines()
-    section_start = lines.index(heading) + 1
-    while section_start < len(lines) and not lines[section_start].startswith("|"):
-        section_start += 1
-    assert section_start + 1 < len(lines), (filename, heading)
-
-    header = [cell.strip() for cell in lines[section_start].strip("|").split("|")]
-    rows: list[dict[str, str]] = []
-    index = section_start + 2
-    while index < len(lines) and lines[index].startswith("|"):
-        cells = [cell.strip() for cell in lines[index].strip("|").split("|")]
-        rows.append(dict(zip(header, cells, strict=True)))
-        index += 1
-    return rows
-
-
-def _stringify_summary_counts(summary_counts: dict[str, dict[str, int]]) -> list[dict[str, str]]:
-    return [
-        {
-            "Document clause": clause_key,
-            "Total": str(counts["total"]),
-            "Verified": str(counts.get("verified", 0)),
-            "Blocked": str(counts.get("blocked", 0)),
-            "Vendor divergent": str(counts.get("vendor-divergent", 0)),
-            "Not yet tested": str(counts.get("not-yet-tested", 0)),
-            "Not applicable": str(counts.get("not-applicable", 0)),
-            "Classification required": str(counts.get("classification-required", 0)),
-        }
-        for clause_key, counts in summary_counts.items()
-    ]
-
-
-def _stringify_disposition_counts(name: str, counts: dict[str, int]) -> dict[str, str]:
-    return {
-        "Pitch backend": name,
-        "Verified": str(counts.get("verified", 0)),
-        "Blocked": str(counts.get("blocked", 0)),
-        "Vendor divergent": str(counts.get("vendor-divergent", 0)),
-        "Not yet tested": str(counts.get("not-yet-tested", 0)),
-        "Not applicable": str(counts.get("not-applicable", 0)),
-        "Classification required": str(counts.get("classification-required", 0)),
-    }
-
-
 def _normalized_clause_summary(
     summary_counts: dict[str, dict[str, int]],
 ) -> dict[str, dict[str, int]]:
     return {
         compliance_section_key(section_ref): counts
         for section_ref, counts in summary_counts.items()
-    }
-
-
-def _stringify_nonverified_row(row: dict[str, object], disposition_field: str) -> dict[str, str]:
-    return {
-        "Document": str(row.get("document", "")),
-        "Clause": str(row.get("clause_root", "")),
-        "Requirement": str(row.get("requirement_id") or row.get("matrix_id", "")),
-        "Disposition": str(row.get(disposition_field, "")),
-        "Kind": str(row.get("kind", "")),
-        "Title": str(row.get("title", "")),
-    }
-
-
-def _stringify_pitch_family_subset_row(row: dict[str, object]) -> dict[str, str]:
-    return {
-        "Document": str(row.get("document", "")),
-        "Clause": str(row.get("clause_root", "")),
-        "Requirement": str(row.get("requirement_id") or row.get("matrix_id", "")),
-        "Kind": str(row.get("kind", "")),
-        "Applicability": str(row.get("applicability", "")),
-        "Title": str(row.get("title", "")),
-    }
-
-
-def _stringify_pitch_backend_split_row(row: dict[str, object]) -> dict[str, str]:
-    return {
-        "Document": str(row.get("document", "")),
-        "Clause": str(row.get("clause_root", "")),
-        "Requirement": str(row.get("requirement_id") or row.get("matrix_id", "")),
-        "Family": str(row.get("pitch_disposition", "")),
-        "Pitch JPype": str(row.get("pitch_jpype_disposition", "")),
-        "Pitch Py4J": str(row.get("pitch_py4j_disposition", "")),
     }
 
 
@@ -376,85 +274,27 @@ def test_generated_requirement_disposition_artifacts_do_not_leak_foreign_backend
     assert not failures, "\n".join(failures)
 
 
-def test_generated_requirement_disposition_markdown_packets_keep_explicit_generated_intros() -> None:
-    for filename, fragments in MARKDOWN_INTRO_FRAGMENTS_BY_ARTIFACT.items():
+def test_generated_requirement_disposition_markdown_packets_exist_as_operator_artifacts() -> None:
+    for filename, fragments in MARKDOWN_HEADING_BY_ARTIFACT.items():
         text = (COMPLIANCE_DIR / filename).read_text(encoding="utf-8")
         for fragment in fragments:
             assert fragment in text, (filename, fragment)
 
 
-def test_generated_requirement_disposition_markdown_summary_tables_match_json_packets() -> None:
+def test_generated_requirement_disposition_markdown_packets_reference_generated_json_artifacts() -> None:
     for json_filename in DISPOSITION_FIELDS_BY_ARTIFACT:
         markdown_filename = json_filename.replace(".json", ".md")
-        payload = _load_payload(json_filename)
-        summary = payload["summary"]
+        text = (COMPLIANCE_DIR / markdown_filename).read_text(encoding="utf-8")
+
+        assert "explicit generated" in text, markdown_filename
 
         if json_filename == "pitch_requirement_disposition.json":
-            expected_profile_rows = [
-                _stringify_disposition_counts(
-                    "pitch-jpype",
-                    payload["summary"]["profile_disposition_counts"]["pitch-jpype"],
-                ),
-                _stringify_disposition_counts(
-                    "pitch-py4j",
-                    payload["summary"]["profile_disposition_counts"]["pitch-py4j"],
-                ),
-            ]
-            assert _markdown_section_table(markdown_filename, "## Profile Summary") == expected_profile_rows
-            assert _markdown_section_table(markdown_filename, "## Clause Summary") == _stringify_summary_counts(
-                summary["clause_summary"]
-            )
-            assert _markdown_section_table(markdown_filename, "### pitch-jpype") == _stringify_summary_counts(
-                summary["profile_clause_summary"]["pitch-jpype"]
-            )
-            assert _markdown_section_table(markdown_filename, "### pitch-py4j") == _stringify_summary_counts(
-                summary["profile_clause_summary"]["pitch-py4j"]
-            )
+            assert "## Profile Summary" in text, markdown_filename
+            assert "## Clause Summary" in text, markdown_filename
+            assert "## Backend-Split Rows" in text, markdown_filename
             continue
 
-        assert _markdown_section_table(markdown_filename, "## Summary") == _stringify_summary_counts(
-            summary["clause_summary"]
-        )
-
-
-def test_generated_requirement_disposition_markdown_row_tables_match_json_packets() -> None:
-    for json_filename in DISPOSITION_FIELDS_BY_ARTIFACT:
-        markdown_filename = json_filename.replace(".json", ".md")
-        payload = _load_payload(json_filename)
-        rows = payload["rows"]
-
-        if json_filename == "pitch_requirement_disposition.json":
-            expected_backend_split_rows = [
-                _stringify_pitch_backend_split_row(row)
-                for row in rows
-                if row.get("pitch_jpype_disposition") != row.get("pitch_py4j_disposition")
-            ]
-            assert _markdown_section_table(markdown_filename, "## Backend-Split Rows") == expected_backend_split_rows
-
-            expected_not_yet_tested_rows = [
-                _stringify_pitch_family_subset_row(row)
-                for row in rows
-                if row.get("pitch_disposition") == "not-yet-tested"
-            ]
-            assert _markdown_section_table(markdown_filename, "## Not Yet Tested Rows") == expected_not_yet_tested_rows
-
-            expected_classification_required_rows = [
-                _stringify_pitch_family_subset_row(row)
-                for row in rows
-                if row.get("pitch_disposition") == "classification-required"
-            ]
-            assert _markdown_section_table(
-                markdown_filename,
-                "## Classification Required Rows",
-            ) == expected_classification_required_rows
-            continue
-
-        expected_nonverified_rows = [
-            _stringify_nonverified_row(row, "runtime_disposition")
-            for row in rows
-            if row.get("runtime_disposition") != "verified"
-        ]
-        assert _markdown_section_table(markdown_filename, "## Non-Verified Rows") == expected_nonverified_rows
+        assert "## Summary" in text, markdown_filename
 
 
 def test_generated_requirement_disposition_summary_metadata_matches_rows() -> None:

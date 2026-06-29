@@ -26,11 +26,11 @@ from hla.verification.repo_internal.verification.spec2025_traceability_matrix im
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Write the IEEE 1516-2025 finish-line artifacts.")
+    parser = argparse.ArgumentParser(description="Write the IEEE 1516-2025 closeout-reporting artifacts.")
     parser.add_argument(
         "--output-dir",
         default=str(PROJECT_ROOT / "docs" / "plans"),
-        help="Directory for generated 2025 finish-line artifacts",
+        help="Directory for generated 2025 closeout-reporting artifacts",
     )
     args = parser.parse_args(argv)
     output_paths = write_spec2025_finish_line(Path(args.output_dir), PROJECT_ROOT)

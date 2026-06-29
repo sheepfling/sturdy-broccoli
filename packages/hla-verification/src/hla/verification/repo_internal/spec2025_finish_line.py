@@ -1,4 +1,4 @@
-"""Finish-line inventory for the IEEE 1516-2025 requirements tranche."""
+"""Closeout reporting inventory for the IEEE 1516-2025 requirements tranche."""
 
 from __future__ import annotations
 # pyright: reportArgumentType=false, reportAttributeAccessIssue=false
@@ -1902,7 +1902,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "docs/requirements/ieee-1516-2025/executable_tests/hla_2025_executable_test_requirements_v3.csv",
         ),
         "supported_scope": (
-            "Generated finish-line verification matrix links each completion-backlog row to implemented evidence "
+            "Generated closeout verification matrix links each completion-backlog row to implemented evidence "
             "slices, executable test candidates, or explicit legacy/unsupported-boundary status. The enforced gate "
             "is every high/very-high row has at least one reviewable anchor."
         ),
@@ -1925,7 +1925,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "requirements/2025/requirement_completion_backlog.csv",
         ),
         "supported_scope": (
-            "Repo-owned milestone rows now make the bounded Python 2025 finish-line gates explicit for both the "
+            "Repo-owned milestone rows now make the bounded Python 2025 closeout gates explicit for both the "
             "in-process and hosted FedPro routes: best-attempt working surface, tracked FOM-backed scenarios, "
             "message routing, time synchronization, GALT/LITS bounded query evidence, and lookahead bounded "
             "runtime evidence."
@@ -1980,7 +1980,7 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
         "current_assessment": (
             "Connection, federation catalog control, membership reporting and resign handling, synchronization barriers, "
             "and save or restore behavior are exercised directly through the current Python 2025 RTI and the hosted "
-            "FedPro route, and the finish-line now separates that proof into named families instead of leaving it as "
+            "FedPro route, and the closeout reporting layer now separates that proof into named families instead of leaving it as "
             "one large bucket: connect/create/catalog control, join or membership reporting, resign or disconnect cleanup, "
             "synchronization barriers, save/restore lifecycle control, and save/restore participant recovery. "
             "The execution-state seam inside that split is now explicit: HLA2025-FI-SVC-005, HLA2025-FI-SVC-008, "
@@ -1988,7 +1988,7 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
             "control surface."
         ),
         "residual_blockers": (
-            "The finish-line now decomposes federation-management proof families, but it still stops short of clause-by-clause service closure.",
+            "The closeout reporting layer now decomposes federation-management proof families, but it still stops short of clause-by-clause service closure.",
             "Standard Java and C++ route coverage remains scenario parity/runtime capability evidence, not exhaustive behavior conformance.",
         ),
     },
@@ -2014,7 +2014,7 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
         ),
         "route_scenarios": ("object_exchange", "ownership", "ddm"),
         "current_assessment": (
-            "The current repo proves a coherent object-management surface and the finish-line now separates that proof "
+            "The current repo proves a coherent object-management surface and the closeout reporting layer now separates that proof "
             "into named families instead of leaving it as one large bucket: declaration and exchange gating, delete/local-known-state "
             "lifecycle, attribute-value-update routing, advisory/update-rate callbacks, transportation policy callbacks, "
             "object-region scope routing, and directed or directed-DDM routing. Hosted FedPro replay now also covers "
@@ -2023,7 +2023,7 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
             "routing and object-scope relevance over the main python1516_2025 runtime."
         ),
         "residual_blockers": (
-            "The finish-line now decomposes object-management proof families, but it still stops short of clause-by-clause service closure.",
+            "The closeout reporting layer now decomposes object-management proof families, but it still stops short of clause-by-clause service closure.",
             "FedPro coverage is a hosted runtime slice and does not yet constitute full RTI semantics proof.",
         ),
     },
@@ -2082,7 +2082,7 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
             "Handle lookup, dimension bounds, default policy control, normalization and switch inquiry/set flows "
             "are exercised through the Python runtime and are represented across tracked binding routes and the hosted "
             "FedPro route. The "
-            "finish-line now also carries an explicit support-service ledger via the RTIambassador conformance "
+            "closeout reporting now also carries an explicit support-service ledger via the RTIambassador conformance "
             "matrix, and it now separates that proof into named families instead of leaving it as one ledger-only "
             "summary: reservation/release flows, lookup and normalization surfaces, transport or dimension lookups, "
             "the 2025 switch model, and factory/decode plus hosted support seams. That gives the Python lanes "
@@ -2091,7 +2091,7 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
             "callback backlog before later reconnect."
         ),
         "residual_blockers": (
-            "The finish-line now decomposes support-service proof families and reaches per-service runtime traceability plus complete actionable negative-path coverage inside the Python routes, but it still stops short of exhaustive cross-binding behavior-conformance proof.",
+            "The closeout reporting layer now decomposes support-service proof families and reaches per-service runtime traceability plus complete actionable negative-path coverage inside the Python routes, but it still stops short of exhaustive cross-binding behavior-conformance proof.",
             "Java and C++ proof remains capability-oriented rather than a full standard-route behavior pass, and the hosted FedPro route remains a bounded runtime slice rather than a full support-service conformance route.",
         ),
     },
@@ -2114,7 +2114,7 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
             "and rollback-sensitive ownership state are all exercised directly through the current Python 2025 RTI and "
             "through shared backend-matrix scenarios. Hosted FedPro replay now also proves restored in-flight "
             "ownership negotiation state plus restored cross-federate owner-visibility queries, and the "
-            "finish-line now separates that proof into named ownership families instead of leaving it as one opaque bucket."
+            "closeout reporting now separates that proof into named ownership families instead of leaving it as one opaque bucket."
         ),
         "residual_blockers": (
             "The closeout now separates ownership proof into named runtime families, but it still stops short of a final clause-by-clause ownership audit.",
@@ -2157,9 +2157,9 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
             "Callback delivery is broad and executable across lifecycle, object, ownership, DDM, time, MOM, and "
             "support-service flows, including hosted FedPro callback decoding, reconnect-safe callback backlog "
             "cleanup across disconnect/reconnect, and direct Python ambassador behavior. "
-            "The finish-line now also carries an explicit callback-by-callback ledger via the FederateAmbassador "
+            "The closeout reporting layer now also carries an explicit callback-by-callback ledger via the FederateAmbassador "
             "conformance matrix, that ledger is fully route-backed across the current Python 2025 lanes, and the "
-            "finish-line now separates callback proof into named runtime families instead of leaving it as a flat ledger."
+            "closeout reporting now separates callback proof into named runtime families instead of leaving it as a flat ledger."
         ),
         "residual_blockers": (
             "The callback proof is now decomposed into named runtime families, but it still stops short of exhaustive cross-binding callback signature/ordering equivalence proof.",
@@ -2186,7 +2186,7 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
         "current_assessment": (
             "The OMT path is well-instrumented for parser/serializer/schema handling, metadata round-trips, "
             "association metadata, and foreign xs:any extension tolerance with extension payload preservation "
-            "round-trip evidence. The finish-line now also separates that bounded OMT proof into named decomposition "
+            "round-trip evidence. The closeout reporting layer now also separates that bounded OMT proof into named decomposition "
             "audits for the extended supported subset, service-utilization crosschecks, xs:any extension tolerance, "
             "and schema-constraint validation instead of leaving it as one flat parser/validator bucket. Arbitrary "
             "third-party extension semantics remain outside the repo-native runtime claim."
@@ -2220,7 +2220,7 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
         ),
         "current_assessment": (
             "Every tracked 2025 route now has explicit scenario parity rows, and the Python in-process plus hosted "
-            "FedPro routes provide substantive runtime proof for the working surface. The finish-line now also "
+            "FedPro routes provide substantive runtime proof for the working surface. The closeout reporting layer now also "
             "separates route evidence into named binding and hosted-route families instead of one flat bounded bucket."
         ),
         "residual_blockers": (
@@ -3317,7 +3317,7 @@ def _build_retired_legacy_mapping_audit(
             and not rows_missing_candidate_replacement_note
         ),
         "current_assessment": (
-            "The retired/legacy-only rows are no longer just a count in the finish-line bundle. They now have an "
+            "The retired/legacy-only rows are no longer just a count in the closeout bundle. They now have an "
             "explicit mapping note that enumerates every retired row and the candidate 2025 replacement surface, "
             "which makes the exclusion boundary auditable rather than implied."
         ),
@@ -3418,7 +3418,7 @@ def _build_duplicate_umbrella_mapping_audit(
             and not delta_rows_without_concrete_child
         ),
         "current_assessment": (
-            "The duplicate/umbrella rows are no longer just grouped by role in the finish-line bundle. The repo now "
+            "The duplicate/umbrella rows are no longer just grouped by role in the closeout bundle. The repo now "
             "has explicit proof-note documents for both framework-rule umbrellas and callback/configuration/binding "
             "delta umbrellas, and every umbrella row is anchored to, enumerated by, and child-linked from those notes."
         ),
@@ -3719,10 +3719,10 @@ def _build_python2025_proof_lane_audit(project_root: Path) -> dict[str, Any]:
             {
                 "lane_id": "python1516_2025-routes",
                 "command": "./tools/python verify-routes-2025",
-                "result": "434 passed across direct-plus-hosted wrapper subcommands plus finish-line bundle and Target/Radar example",
+                "result": "434 passed across direct-plus-hosted wrapper subcommands plus closeout bundle and Target/Radar example",
                 "scope": (
                     "current-tree direct python1516_2025 plus bounded hosted FedPro route verification lane, including "
-                    "transport suite, route-parity bundle, finish-line artifact generation, and package-owned example replay"
+                    "transport suite, route-parity bundle, closeout artifact generation, and package-owned example replay"
                 ),
             },
         ],
@@ -3792,7 +3792,7 @@ def _build_binding_boundary_mapping_audit(
             and all(narrative_checks)
         ),
         "current_assessment": (
-            "The binding and hosted boundary rows are no longer only counted as bounded blockers in the finish-line "
+            "The binding and hosted boundary rows are no longer only counted as bounded blockers in the closeout reporting "
             "bundle. They now have an explicit boundary note that enumerates all three rows and states that "
             "hla-backend-python1516-2025 is the main 2025 Python RTI lane while the Java/C++ bindings and hosted FedPro "
             "route remain bounded wrapper or transport evidence over that same runtime."
@@ -8514,7 +8514,7 @@ def _build_verification_matrix(
 
 @lru_cache(maxsize=None)
 def _build_spec2025_finish_line_snapshot_cached(project_root_text: str) -> dict[str, Any]:
-    """Return the current 2025 requirements finish-line inventory."""
+    """Return the current 2025 requirements closeout-reporting inventory."""
 
     project_root = Path(project_root_text)
     paths = _paths(project_root)
@@ -8780,7 +8780,7 @@ def _build_spec2025_finish_line_snapshot_cached(project_root_text: str) -> dict[
     )
 
     snapshot = {
-        "scope": "IEEE 1516-2025 requirements finish-line inventory, not a conformance claim",
+        "scope": "IEEE 1516-2025 requirements closeout-reporting inventory, not a conformance claim",
         "registry": {
             "initial_tranche_requirements": len(registry_requirements),
             "imported_packets": [packet["id"] for packet in registry.get("imported_packets", ())],

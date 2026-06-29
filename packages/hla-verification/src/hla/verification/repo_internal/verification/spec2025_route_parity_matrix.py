@@ -112,7 +112,7 @@ def _evidence_artifacts(scenario: str, route: str, status: str) -> tuple[str, ..
     if route == "python1516_2025-fedpro-grpc":
         return (
             "tests/transport/test_grpc_transport_2025.py",
-            "docs/plans/spec2025_finish_line_snapshot.json",
+            "docs/requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md",
         )
     if route == "python1516_2025":
         return ("tests/test_rti1516_2025_python1516_2025_runtime.py",)

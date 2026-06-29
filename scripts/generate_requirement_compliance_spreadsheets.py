@@ -3,6 +3,8 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import sys
+import tomllib
 from collections import Counter
 from pathlib import Path
 from typing import Iterable
@@ -12,6 +14,24 @@ from openpyxl import Workbook
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT_DIR = ROOT / "analysis" / "compliance" / "presentation_packets"
+
+
+def _bootstrap_source_checkout() -> None:
+    pyproject = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    source_roots = pyproject["tool"]["pytest"]["ini_options"]["pythonpath"]
+    for root in reversed(source_roots):
+        source_path = str(ROOT / root)
+        if source_path not in sys.path:
+            sys.path.insert(0, source_path)
+
+
+_bootstrap_source_checkout()
+
+from hla.verification.repo_internal.requirements import (  # noqa: E402
+    load_2025_backend_group_rows,
+    load_backend_resolution_catalog,
+    load_canonical_requirement_catalog,
+)
 
 
 def _read_csv(path: Path) -> list[dict[str, str]]:
@@ -139,28 +159,44 @@ def _build_2010_policy_parent_rows(rows: list[dict[str, str]]) -> list[dict[str,
 
 
 def build_2010_rows() -> tuple[list[dict[str, str]], list[dict[str, str]], list[dict[str, str]], list[dict[str, str]]]:
-    matrix_path = ROOT / "analysis" / "compliance" / "requirements_matrix_2010.csv"
-    rows = _read_csv(matrix_path)
+    catalog = load_canonical_requirement_catalog(ROOT / "requirements" / "2010" / "canonical_requirements.json")
+    backend_rows = load_backend_resolution_catalog(ROOT / "requirements" / "2010" / "backend_resolution.json").rows
+    backend_by_requirement_id = {row.requirement_id: row for row in backend_rows}
     detail_rows: list[dict[str, str]] = []
-    for row in rows:
+    for row in catalog.rows:
+        backend_fields = backend_by_requirement_id.get(row.requirement_id).backend_fields if backend_by_requirement_id.get(row.requirement_id) else {}
         detail_rows.append(
             {
-                "requirement_id": row.get("requirement_id", ""),
-                "matrix_id": row.get("matrix_id", ""),
-                "service_group": row.get("service_group", ""),
-                "title": row.get("title", ""),
-                "section_ref": row.get("section_ref", ""),
-                "canonical_status": row.get("status", ""),
-                "python_runtime_disposition": row.get("python_runtime_disposition", ""),
-                "certi_runtime_disposition": row.get("certi_runtime_disposition", ""),
-                "pitch_runtime_disposition": row.get("pitch_runtime_disposition", ""),
-                "portico_runtime_disposition": row.get("portico_runtime_disposition", ""),
-                "claim_scope": row.get("claim_scope", ""),
-                "artifact_refs": row.get("artifact_refs", ""),
-                "notes": row.get("notes", ""),
+                "requirement_id": row.requirement_id,
+                "matrix_id": "",
+                "service_group": row.service_group,
+                "title": row.service_or_check,
+                "section_ref": row.clause,
+                "canonical_status": row.canonical_status,
+                "python_runtime_disposition": backend_fields.get("python_runtime_disposition", ""),
+                "certi_runtime_disposition": backend_fields.get("certi_runtime_disposition", ""),
+                "pitch_runtime_disposition": backend_fields.get("pitch_runtime_disposition", ""),
+                "portico_runtime_disposition": backend_fields.get("portico_runtime_disposition", ""),
+                "claim_scope": backend_fields.get("claim_scope", ""),
+                "artifact_refs": "; ".join(row.evidence_refs),
+                "notes": row.canonical_status_reason,
             }
         )
-    policy_parent_rows = _build_2010_policy_parent_rows(rows)
+    policy_rows = []
+    for row in catalog.rows:
+        backend_fields = backend_by_requirement_id.get(row.requirement_id).backend_fields if backend_by_requirement_id.get(row.requirement_id) else {}
+        policy_rows.append(
+            {
+                "requirement_id": row.requirement_id,
+                "section_ref": row.clause,
+                "policy_basis": backend_fields.get("policy_basis", ""),
+                "status": row.canonical_status,
+                "python_runtime_disposition": backend_fields.get("python_runtime_disposition", ""),
+                "supported_subset_for": row.parent_requirement_id,
+                "notes": row.canonical_status_reason,
+            }
+        )
+    policy_parent_rows = _build_2010_policy_parent_rows(policy_rows)
 
     status_counts = Counter(row["canonical_status"] for row in detail_rows)
     python_counts = Counter(row["python_runtime_disposition"] for row in detail_rows)
@@ -181,11 +217,11 @@ def build_2010_rows() -> tuple[list[dict[str, str]], list[dict[str, str]], list[
             "metric": "policy_parent_supported_subset_pass_count",
             "value": str(sum(int(row["supported_subset_pass_count"]) for row in policy_parent_rows)),
         },
-        {"metric": "source_artifact", "value": "analysis/compliance/requirements_matrix_2010.csv"},
+        {"metric": "source_artifact", "value": "requirements/2010/canonical_requirements.json"},
     ]
     metadata_rows = [
         {"field": "edition", "value": "2010 / 1516e"},
-        {"field": "primary_source", "value": "analysis/compliance/requirements_matrix_2010.csv"},
+        {"field": "primary_source", "value": "requirements/2010/canonical_requirements.json"},
         {"field": "front_door", "value": "docs/requirements/ieee-1516-2010/README.md"},
         {"field": "inventory", "value": "requirements/2010/README.md"},
         {
@@ -218,33 +254,35 @@ def build_2010_rows() -> tuple[list[dict[str, str]], list[dict[str, str]], list[
 
 
 def build_2025_rows() -> tuple[list[dict[str, str]], list[dict[str, str]], list[dict[str, str]]]:
-    worklist_path = ROOT / "requirements" / "2025" / "harmonization" / "hla_2025_harmonization_worklist.csv"
-    ledger_path = ROOT / "requirements" / "2025" / "harmonization" / "hla_2025_requirement_disposition_ledger.csv"
-    rows = _read_csv(worklist_path)
-    ledger_rows = _read_csv(ledger_path)
+    rows = load_2025_backend_group_rows(ROOT)
+    canonical_catalog = load_canonical_requirement_catalog(ROOT / "requirements" / "2025" / "canonical_requirements.json")
+    canonical_rows = [row.to_mapping() for row in canonical_catalog.rows]
     detail_rows: list[dict[str, str]] = []
     for row in rows:
+        fields = row.backend_fields
         detail_rows.append(
             {
-                "closure_wave": row.get("closure_wave", ""),
-                "priority": row.get("priority", ""),
-                "area": row.get("area", ""),
-                "service_group": row.get("service_group", ""),
-                "canonical_disposition": row.get("canonical_disposition", ""),
-                "python_runtime_resolution": row.get("python_runtime_resolution", ""),
-                "java_cpp_binding_resolution": row.get("java_cpp_binding_resolution", ""),
-                "hosted_fedpro_resolution": row.get("hosted_fedpro_resolution", ""),
-                "pitch_202x_resolution": row.get("pitch_202x_resolution", ""),
-                "row_count": row.get("row_count", ""),
-                "backend_resolution_reference": row.get("backend_resolution_reference", ""),
-                "acceptance_gate": _acceptance_gate_2025_group(row),
+                "closure_wave": fields.get("closure_wave", ""),
+                "priority": fields.get("priority", ""),
+                "area": fields.get("area", ""),
+                "service_group": fields.get("service_group", ""),
+                "canonical_disposition": row.canonical_status,
+                "python_runtime_resolution": fields.get("python_runtime_resolution", ""),
+                "java_cpp_binding_resolution": fields.get("java_cpp_binding_resolution", ""),
+                "hosted_fedpro_resolution": fields.get("hosted_fedpro_resolution", ""),
+                "pitch_202x_resolution": fields.get("pitch_202x_resolution", ""),
+                "row_count": fields.get("row_count", ""),
+                "backend_resolution_reference": fields.get("backend_resolution_reference", ""),
+                "acceptance_gate": _acceptance_gate_2025_group(
+                    {"canonical_disposition": row.canonical_status, "acceptance_gate": row.boundary_note}
+                ),
             }
         )
 
     disposition_counts = Counter(row["canonical_disposition"] for row in detail_rows)
     area_counts = Counter(row["area"] for row in detail_rows)
-    row_level_disposition_counts = Counter(row["harmonization_disposition"] for row in ledger_rows)
-    tracked_row_universe = len(ledger_rows)
+    row_level_disposition_counts = Counter(row["canonical_status"] for row in canonical_rows)
+    tracked_row_universe = len(canonical_rows)
     active_normative_denominator = row_level_disposition_counts.get("covered", 0)
     duplicate_umbrella_row_count = row_level_disposition_counts.get("duplicate/umbrella", 0)
     retired_legacy_only_row_count = row_level_disposition_counts.get("retired/legacy-only", 0)
@@ -265,14 +303,15 @@ def build_2025_rows() -> tuple[list[dict[str, str]], list[dict[str, str]], list[
         {"metric": "duplicate_umbrella_row_count", "value": str(duplicate_umbrella_row_count)},
         {"metric": "retired_legacy_only_row_count", "value": str(retired_legacy_only_row_count)},
         {"metric": "tracked_rows_outside_active_direct_support_denominator", "value": str(non_covered_tracked_rows)},
+        {"metric": "row_level_primary_shard_counts", "value": json.dumps(Counter(row["primary_test_shard"] for row in canonical_rows), sort_keys=True)},
         {"metric": "area_counts", "value": json.dumps(area_counts, sort_keys=True)},
-        {"metric": "source_artifact", "value": "requirements/2025/harmonization/hla_2025_harmonization_worklist.csv"},
-        {"metric": "row_level_source_artifact", "value": "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv"},
+        {"metric": "source_artifact", "value": "requirements/2025/backend_resolution.json"},
+        {"metric": "row_level_source_artifact", "value": "requirements/2025/canonical_requirements.json"},
     ]
     metadata_rows = [
         {"field": "edition", "value": "2025 / 1516_2025"},
-        {"field": "primary_source", "value": "requirements/2025/harmonization/hla_2025_harmonization_worklist.csv"},
-        {"field": "row_level_owner_source", "value": "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv"},
+        {"field": "primary_source", "value": "requirements/2025/backend_resolution.json"},
+        {"field": "row_level_owner_source", "value": "requirements/2025/canonical_requirements.json"},
         {"field": "front_door", "value": "docs/requirements/ieee-1516-2025/README.md"},
         {"field": "inventory", "value": "requirements/2025/README.md"},
         {

@@ -16,9 +16,9 @@ Priority order:
 
 ## Summary
 
-- Rows: 508
-- Status counts: classification-required=214, not-yet-tested=93, not-yet-matrixed=82, positive-path-passing=54, vendor-divergent=54, blocked=8, env-gated-positive=3
-- Priority counts: P1=54, P2=11, P3=175, P4=214, P5=54
+- Rows: 520
+- Status counts: classification-required=214, not-yet-tested=105, not-yet-matrixed=82, positive-path-passing=54, vendor-divergent=54, blocked=8, env-gated-positive=3
+- Priority counts: P1=54, P2=11, P3=187, P4=214, P5=54
 
 | Priority | Backend | Family | Section / Requirement | Status | Next action | Source | Evidence |
 |---|---|---|---|---|---|---|---|
@@ -87,6 +87,18 @@ Priority order:
 | P2 | certi-py4j | vendor-certi-java-bridge | IEEE 1516.1-2010 (2010 edition) §4.25, IEEE 1516.1-2010 (2010 edition) §4.26 | env-gated-positive | rerun or stabilize environment/preflight | analysis/compliance/core_backend_matrix.json | tests/vendors/test_certi_real_backend_exchange_matrix.py |
 | P2 | pitch-requirements | vendor-pitch-java-bridge | HLA1516.1-DM-5.3-002 | blocked | unblock capability or document the hard backend limitation | analysis/compliance/pitch_requirement_disposition.json | packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_unpublish_rejection_scenario, tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_unpublish_rejection_matrix, tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_unpublish_rejection_matrix |
 | P2 | pitch-requirements | vendor-pitch-java-bridge | HLA1516.1-DM-5.5-002 | blocked | unblock capability or document the hard backend limitation | analysis/compliance/pitch_requirement_disposition.json | packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_unpublish_rejection_scenario, tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_unpublish_rejection_matrix, tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_unpublish_rejection_matrix |
+| P3 | pitch-requirements | vendor-pitch-java-bridge | HLA1516.1-FM-4.10-ARG-001 | not-yet-tested | add focused Pitch requirement probe | analysis/compliance/pitch_requirement_disposition.json | - |
+| P3 | pitch-requirements | vendor-pitch-java-bridge | HLA1516.1-FM-4.2-ARG-001 | not-yet-tested | add focused Pitch requirement probe | analysis/compliance/pitch_requirement_disposition.json | - |
+| P3 | pitch-requirements | vendor-pitch-java-bridge | HLA1516.1-FM-4.2-ARG-002 | not-yet-tested | add focused Pitch requirement probe | analysis/compliance/pitch_requirement_disposition.json | - |
+| P3 | pitch-requirements | vendor-pitch-java-bridge | HLA1516.1-FM-4.5-ARG-001 | not-yet-tested | add focused Pitch requirement probe | analysis/compliance/pitch_requirement_disposition.json | - |
+| P3 | pitch-requirements | vendor-pitch-java-bridge | HLA1516.1-FM-4.5-ARG-002 | not-yet-tested | add focused Pitch requirement probe | analysis/compliance/pitch_requirement_disposition.json | - |
+| P3 | pitch-requirements | vendor-pitch-java-bridge | HLA1516.1-FM-4.5-ARG-003 | not-yet-tested | add focused Pitch requirement probe | analysis/compliance/pitch_requirement_disposition.json | - |
+| P3 | pitch-requirements | vendor-pitch-java-bridge | HLA1516.1-FM-4.5-ARG-004 | not-yet-tested | add focused Pitch requirement probe | analysis/compliance/pitch_requirement_disposition.json | - |
+| P3 | pitch-requirements | vendor-pitch-java-bridge | HLA1516.1-FM-4.6-ARG-001 | not-yet-tested | add focused Pitch requirement probe | analysis/compliance/pitch_requirement_disposition.json | - |
+| P3 | pitch-requirements | vendor-pitch-java-bridge | HLA1516.1-FM-4.9-ARG-001 | not-yet-tested | add focused Pitch requirement probe | analysis/compliance/pitch_requirement_disposition.json | - |
+| P3 | pitch-requirements | vendor-pitch-java-bridge | HLA1516.1-FM-4.9-ARG-002 | not-yet-tested | add focused Pitch requirement probe | analysis/compliance/pitch_requirement_disposition.json | - |
+| P3 | pitch-requirements | vendor-pitch-java-bridge | HLA1516.1-FM-4.9-ARG-003 | not-yet-tested | add focused Pitch requirement probe | analysis/compliance/pitch_requirement_disposition.json | - |
+| P3 | pitch-requirements | vendor-pitch-java-bridge | HLA1516.1-FM-4.9-ARG-004 | not-yet-tested | add focused Pitch requirement probe | analysis/compliance/pitch_requirement_disposition.json | - |
 | P3 | certi-jpype | vendor-certi-java-bridge | IEEE 1516.1-2010 (2010 edition) §8.10 | not-yet-matrixed | add focused vendor matrix/probe | analysis/compliance/section8_backend_matrix.json | tests/vendors/test_certi_real_backend_exchange_matrix.py, tests/vendors/test_certi_real_backend_time_matrix.py, tests/vendors/test_certi_real_backend_ownership_matrix.py |
 | P3 | certi-native | vendor-certi | IEEE 1516.1-2010 (2010 edition) §8.10 | not-yet-matrixed | add focused vendor matrix/probe | analysis/compliance/section8_backend_matrix.json | tests/vendors/test_certi_real_backend_exchange_matrix.py, tests/vendors/test_certi_real_backend_time_matrix.py, tests/vendors/test_certi_real_backend_ownership_matrix.py |
 | P3 | certi-py4j | vendor-certi-java-bridge | IEEE 1516.1-2010 (2010 edition) §8.10 | not-yet-matrixed | add focused vendor matrix/probe | analysis/compliance/section8_backend_matrix.json | tests/vendors/test_certi_real_backend_exchange_matrix.py, tests/vendors/test_certi_real_backend_time_matrix.py, tests/vendors/test_certi_real_backend_ownership_matrix.py |

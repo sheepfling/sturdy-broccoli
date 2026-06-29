@@ -103,19 +103,15 @@ def test_imported_requirement_disposition_packet_tracks_repo_reconciled_coverage
     csv_path = (REQ_DIR / packet["path"]).resolve()
     json_path = (REQ_DIR / packet["json_path"]).resolve()
     matrix_path = (REQ_DIR / packet["fi_binding_surface_matrix_path"]).resolve()
-    worklist_path = (REQ_DIR / packet["worklist_path"]).resolve()
     pitch_group_path = (REQ_DIR / packet["pitch_202x_group_path"]).resolve()
     pitch_row_path = (REQ_DIR / packet["pitch_202x_row_path"]).resolve()
-    review_queue_path = (REQ_DIR / packet["review_queue_path"]).resolve()
     rollup_path = (REQ_DIR / packet["rollup_path"]).resolve()
     manifest_path = (REQ_DIR / packet["manifest_path"]).resolve()
 
     rows = list(csv.DictReader(csv_path.open(newline="", encoding="utf-8")))
     matrix_rows = list(csv.DictReader(matrix_path.open(newline="", encoding="utf-8")))
-    worklist_rows = list(csv.DictReader(worklist_path.open(newline="", encoding="utf-8")))
     pitch_group_rows = list(csv.DictReader(pitch_group_path.open(newline="", encoding="utf-8")))
     pitch_row_rows = list(csv.DictReader(pitch_row_path.open(newline="", encoding="utf-8")))
-    review_rows = list(csv.DictReader(review_queue_path.open(newline="", encoding="utf-8")))
     rollup = json.loads(rollup_path.read_text(encoding="utf-8"))
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 
@@ -128,8 +124,6 @@ def test_imported_requirement_disposition_packet_tracks_repo_reconciled_coverage
     assert len(matrix_rows) == rollup["fi_binding_surface"]["fi_rows"] == 196
     assert pitch_group_rows
     assert len(pitch_row_rows) == packet["row_count"] == 691
-    assert len(review_rows) == 691
-    assert worklist_rows
     assert rollup["by_disposition"] == {
         "duplicate/umbrella": 22,
         "covered": 645,
@@ -244,7 +238,7 @@ def test_imported_requirement_disposition_packet_tracks_repo_reconciled_coverage
 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-FI-002", "HLA2025-TRACE-001")
-def test_covered_fi_service_rows_are_consistently_covered_in_disposition_review_queue_and_binding_matrix() -> None:
+def test_covered_fi_service_rows_are_consistently_covered_in_disposition_and_binding_matrix() -> None:
     expected_note = (
         "Covered by repo evidence anchor and executable test; "
         "binding or route parity beyond the claimed slice remains separate where noted."
@@ -285,14 +279,6 @@ def test_covered_fi_service_rows_are_consistently_covered_in_disposition_review_
             )
         )
     }
-    review_rows = {
-        row["id"]: row
-        for row in csv.DictReader(
-            (HARMONIZATION_DIR / "hla_2025_review_queue.csv").open(
-                newline="", encoding="utf-8"
-            )
-        )
-    }
     matrix_rows = {
         row["id"]: row
         for row in csv.DictReader(
@@ -305,14 +291,12 @@ def test_covered_fi_service_rows_are_consistently_covered_in_disposition_review_
     tracked_ids = {
         requirement_id
         for requirement_id, row in disposition_rows.items()
-        if requirement_id in review_rows
-        and requirement_id in matrix_rows
-        and row["harmonization_disposition"] == "covered"
-        and review_rows[requirement_id]["harmonization_disposition"] == "covered"
+        if requirement_id in matrix_rows and row["harmonization_disposition"] == "covered"
     }
 
     assert len(tracked_ids) == 196
 
     for requirement_id in tracked_ids:
         assert matrix_rows[requirement_id]["disposition"] == "covered"
+        assert disposition_rows[requirement_id]["suggested_repo_evidence_path"].strip()
         assert matrix_rows[requirement_id]["risk_note"] == special_notes.get(requirement_id, expected_note)

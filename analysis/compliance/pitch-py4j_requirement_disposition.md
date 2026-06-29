@@ -13,7 +13,7 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) §10 | 86 | 0 | 0 | 0 | 84 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §11 | 37 | 0 | 0 | 0 | 0 | 2 | 35 |
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 0 | 0 | 0 | 9 | 1 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §4 | 281 | 274 | 2 | 3 | 0 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §4 | 323 | 304 | 2 | 3 | 12 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §5 | 52 | 45 | 2 | 0 | 0 | 5 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §6 | 96 | 85 | 0 | 9 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §7 | 39 | 27 | 0 | 10 | 0 | 2 | 0 |
@@ -67,7 +67,19 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-001 | not-applicable | extracted-requirement | The RTI shall implement federation-management services for create, join, resign, destroy, save, restore, synchronization, and related lifecycle behavior |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.5-001 | blocked | extracted-requirement | HLA1516.1-FM-4.1.5-001 |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.5-002 | blocked | extracted-requirement | HLA1516.1-FM-4.1.5-002 |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.10-ARG-001 | not-yet-tested | extracted-requirement | Resign Federation Execution shall accept the clause-defined resign directives and apply their corresponding delete-object cancel-pending-acquisition or unconditional-divest behavior to the current federate state. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.2-ARG-001 | not-yet-tested | extracted-requirement | Connect shall accept and persist the selected callback model argument that governs subsequent RTI callback delivery. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.2-ARG-002 | not-yet-tested | extracted-requirement | Connect shall accept and persist the optional local settings designator argument when one is supplied. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.5-ARG-001 | not-yet-tested | extracted-requirement | Create Federation Execution shall accept and validate the federation execution name argument across creation and duplicate-name rejection paths. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.5-ARG-002 | not-yet-tested | extracted-requirement | Create Federation Execution shall accept and validate the supplied FOM module designators used to assemble the created federation model. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.5-ARG-003 | not-yet-tested | extracted-requirement | Create Federation Execution shall accept and validate the optional explicit MIM designator when the overload surface supplies one. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.5-ARG-004 | not-yet-tested | extracted-requirement | Create Federation Execution shall accept the optional logical time implementation argument when provided and otherwise choose the active logical time factory from the merged federation model or configured default. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.5-EXC-001 | vendor-divergent | extracted-requirement | Create Federation Execution shall distinguish duplicate-name, FOM-open, FOM-read, MIM-open, MIM-read, invalid-time-factory, inconsistent-FOM, and invalid-standard-MIM-designator failures. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.6-ARG-001 | not-yet-tested | extracted-requirement | Destroy Federation Execution shall accept and validate the target federation execution name argument across missing joined and successful destroy paths. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.9-ARG-001 | not-yet-tested | extracted-requirement | Join Federation Execution shall accept an omitted federate-name argument and assign a generated unique federate name to the joiner. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.9-ARG-002 | not-yet-tested | extracted-requirement | Join Federation Execution shall accept and persist the supplied federate type for the joined federate. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.9-ARG-003 | not-yet-tested | extracted-requirement | Join Federation Execution shall accept and resolve the supplied federation execution name to the target federation. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.9-ARG-004 | not-yet-tested | extracted-requirement | Join Federation Execution shall accept and merge the optional additional FOM module designators supplied by the joiner. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.9-EXC-001 | vendor-divergent | extracted-requirement | Join Federation Execution shall distinguish not-connected, missing-federation, duplicate-federate-name, already-joined, save-in-progress, restore-in-progress, FOM-open, FOM-read, invalid-time-factory, and inconsistent-FOM failures. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | AREA-1516.1-5 | not-applicable | section-area | Declaration management |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-001 | not-applicable | extracted-requirement | The RTI shall implement declaration-management services for publication, subscription, registration control, and the associated error and precondition behavior |

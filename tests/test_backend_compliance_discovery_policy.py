@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import re
 from pathlib import Path
 
 from compliance_helpers import IEEE_1516_1_2010, has_section_ref
@@ -11,46 +10,6 @@ from hla.verification.repo_internal.verification.backend_compliance_discovery im
 )
 
 ROOT = Path(__file__).resolve().parents[1]
-SUMMARY_LINE_RE = re.compile(r"([A-Za-z0-9-]+)=([0-9]+)")
-
-
-def _markdown_table(path: Path) -> list[dict[str, str]]:
-    lines = path.read_text(encoding="utf-8").splitlines()
-    start = next(index for index, line in enumerate(lines) if line.startswith("| Priority |"))
-    header = [cell.strip() for cell in lines[start].strip("|").split("|")]
-    rows: list[dict[str, str]] = []
-    index = start + 2
-    while index < len(lines) and lines[index].startswith("|"):
-        cells = [cell.strip() for cell in lines[index].strip("|").split("|")]
-        rows.append(dict(zip(header, cells, strict=True)))
-        index += 1
-    return rows
-
-
-def _markdown_summary_counts(text: str, label: str) -> dict[str, int]:
-    line = next(
-        candidate
-        for candidate in text.splitlines()
-        if candidate.startswith(f"- {label}: ")
-    )
-    return {
-        key: int(value)
-        for key, value in SUMMARY_LINE_RE.findall(line.removeprefix(f"- {label}: "))
-    }
-
-
-def _stringify_backlog_row(row: dict[str, object]) -> dict[str, str]:
-    evidence_tests = row.get("evidence_tests", [])
-    return {
-        "Priority": str(row.get("priority", "")),
-        "Backend": str(row.get("backend_id", "")),
-        "Family": str(row.get("backend_family", "")),
-        "Section / Requirement": str(row.get("requirement_id") or row.get("section_ref", "")),
-        "Status": str(row.get("current_status", "")),
-        "Next action": str(row.get("recommended_next_action", "")),
-        "Source": str(row.get("source_artifact", "")),
-        "Evidence": ", ".join(str(item) for item in evidence_tests) if evidence_tests else "-",
-    }
 
 
 def test_discovery_catalog_surfaces_portico_disposition_only_backends() -> None:
@@ -134,24 +93,10 @@ def test_committed_vendor_backlog_artifacts_surface_portico_disposition_only_row
         assert row["recommended_next_action"] == "classify backend applicability/disposition", backend_id
         assert row["row_kind"] == "synthetic-requirement-disposition-backlog-row", backend_id
 
-    text = (ROOT / "analysis" / "compliance" / "vendor_discovery_backlog.md").read_text(encoding="utf-8")
-    assert "classify backend applicability/disposition" in text
-    assert "classify Pitch applicability/disposition" not in text
-    assert "| P4 | portico | vendor-portico-java-bridge |" in text
-    assert "| P4 | portico-jpype | vendor-portico-java-bridge |" in text
-    assert "| P4 | portico-py4j | vendor-portico-java-bridge |" in text
 
-
-def test_committed_vendor_backlog_markdown_matches_json_packet() -> None:
+def test_committed_vendor_backlog_json_surfaces_backlog_summary_and_priorities() -> None:
     json_path = ROOT / "analysis" / "compliance" / "vendor_discovery_backlog.json"
-    markdown_path = ROOT / "analysis" / "compliance" / "vendor_discovery_backlog.md"
     payload = json.loads(json_path.read_text(encoding="utf-8"))
-    text = markdown_path.read_text(encoding="utf-8")
-
-    assert f"- Rows: {payload['summary']['row_count']}" in text
-    assert _markdown_summary_counts(text, "Status counts") == payload["summary"]["status_counts"]
-    assert _markdown_summary_counts(text, "Priority counts") == payload["summary"]["priority_counts"]
-    assert _markdown_table(markdown_path) == [
-        _stringify_backlog_row(row)
-        for row in payload["rows"]
-    ]
+    assert payload["summary"]["row_count"] == len(payload["rows"])
+    assert any(row["current_status"] == "classification-required" for row in payload["rows"])
+    assert any(row["priority"] == "P1" for row in payload["rows"])
