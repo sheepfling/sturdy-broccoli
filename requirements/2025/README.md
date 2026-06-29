@@ -108,9 +108,9 @@ they are not requirement truth and must not sit in the verification chain.
 
 Current grouped harmonization state:
 
-- `53 covered`
-- `5 duplicate/umbrella`
-- `2 retired/legacy-only`
+- `10 covered`
+- `2 duplicate/umbrella`
+- `1 retired/legacy-only`
 
 That means the grouped coordination view is now fully dispositioned.
 The remaining 2025 closeout work is no longer stale grouped `planned` or

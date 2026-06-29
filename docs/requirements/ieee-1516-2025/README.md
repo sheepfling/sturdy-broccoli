@@ -199,6 +199,21 @@ For 2025 work, the usual ownership pattern is:
 - primary proof shard or lane from [`../../test_surface.md`](../../test_surface.md)
 - generated or executable proof artifact from [`../../verification/README.md`](../../verification/README.md)
 
+Treat `family` narrowly when checking owner and shard resolution:
+
+- for `Federate Interface service catalog`, the stable family key is
+  `area + service_group`, because the clause owner notes split across
+  federation, declaration, object, ownership, DDM, support, and time proof
+  surfaces while still sharing one primary executable shard
+- for `Callback/configuration/binding deltas`, `Framework and Rules`,
+  `SOM/FOM service-usage requirements`, `OMT component-level conformance`,
+  `OMT validator-negative conformance`, and
+  `Retired / replacement mapping candidates`, the family key is the area
+  itself
+- every canonical 2025 family should therefore resolve to one owner doc, one
+  primary shard, and one owner-command pattern before any broader backend or
+  closeout view is consulted
+
 Preferred closure-table columns:
 
 | Column | Meaning |
@@ -226,9 +241,9 @@ Practical rule:
 
 Current grouped harmonization result:
 
-- `53 covered`
-- `5 duplicate/umbrella`
-- `2 retired/legacy-only`
+- `10 covered`
+- `2 duplicate/umbrella`
+- `1 retired/legacy-only`
 
 Use that grouped result carefully:
 

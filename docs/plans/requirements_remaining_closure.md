@@ -238,9 +238,9 @@ Current grouped closure state from the generated harmonization worklist
 projection
 [`../../requirements/2025/harmonization/hla_2025_harmonization_worklist.csv`](../../requirements/2025/harmonization/hla_2025_harmonization_worklist.csv):
 
-- `53 covered`
-- `5 duplicate/umbrella`
-- `2 retired/legacy-only`
+- `10 covered`
+- `2 duplicate/umbrella`
+- `1 retired/legacy-only`
 - `0 planned`
 - `0 partial`
 

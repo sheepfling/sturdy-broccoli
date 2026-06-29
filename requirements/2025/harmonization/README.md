@@ -77,9 +77,9 @@ Reading rule for the grouped worklist:
 
 Current grouped worklist state:
 
-- `53 covered`
-- `5 duplicate/umbrella`
-- `2 retired/legacy-only`
+- `10 covered`
+- `2 duplicate/umbrella`
+- `1 retired/legacy-only`
 
 Practical reading rule:
 

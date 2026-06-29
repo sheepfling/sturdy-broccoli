@@ -221,9 +221,9 @@ The practical rule is simple:
 For the generated 2025 grouped closeout projection specifically:
 
 - the grouped closeout projection is now fully dispositioned:
-  - `53 covered`
-  - `5 duplicate/umbrella`
-  - `2 retired/legacy-only`
+  - `10 covered`
+  - `2 duplicate/umbrella`
+  - `1 retired/legacy-only`
 - that removes stale grouped `planned` and `partial` bucket debt
 - it does not replace the canonical requirement catalog or backend-resolution
   companion, erase row-level bounded-scope limits, or make umbrella and

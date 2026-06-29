@@ -118,5 +118,5 @@ anchor, an executable service test or XML fixture test anchor, a reviewed
 unsupported-boundary decision where applicable, and child-row links for umbrella
 rows.
 
-Under the current ledger state, that rule has already been applied to the 645
+Under the current generated closeout projection, that rule has already been applied to the 645
 rows that remain `covered`.

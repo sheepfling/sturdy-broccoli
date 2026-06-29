@@ -190,10 +190,10 @@ denominator.
 Current packet snapshot:
 
 - `2025` grouped packet summary currently reports:
-  - `60` grouped buckets
-  - `53` `covered`
-  - `5` `duplicate/umbrella`
-  - `2` `retired/legacy-only`
+  - `13` grouped family buckets
+  - `10` `covered`
+  - `2` `duplicate/umbrella`
+  - `1` `retired/legacy-only`
 - `2010` packet summary currently reports:
   - `931` backend-compliance matrix rows
   - `865` `pass`

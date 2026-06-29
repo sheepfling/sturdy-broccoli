@@ -182,6 +182,16 @@ def test_closeout_docs_demote_themselves_beneath_canonical_requirement_truth() -
     execution_queue_text = (ROOT / "docs" / "plans" / "requirements_execution_queue.md").read_text(encoding="utf-8")
     harmonization_readme_text = (ROOT / "requirements" / "2025" / "harmonization" / "README.md").read_text(encoding="utf-8")
     harmonization_worklist_text = (ROOT / "requirements" / "2025" / "harmonization" / "hla_2025_harmonization_worklist.csv").read_text(encoding="utf-8")
+    harmonization_review_queue_text = (ROOT / "requirements" / "2025" / "harmonization" / "hla_2025_review_queue.csv").read_text(encoding="utf-8")
+    harmonization_disposition_csv_text = (
+        ROOT / "requirements" / "2025" / "harmonization" / "hla_2025_requirement_disposition_ledger.csv"
+    ).read_text(encoding="utf-8")
+    harmonization_disposition_json_text = (
+        ROOT / "requirements" / "2025" / "harmonization" / "hla_2025_requirement_disposition_ledger.json"
+    ).read_text(encoding="utf-8")
+    harmonization_closure_report_text = (
+        ROOT / "requirements" / "2025" / "harmonization" / "hla_2025_requirement_coverage_closure_report.md"
+    ).read_text(encoding="utf-8")
     normalized_execution_queue_text = " ".join(execution_queue_text.split())
 
     assert "canonical requirement catalog and backend-resolution companion" in audit_text
@@ -208,6 +218,14 @@ def test_closeout_docs_demote_themselves_beneath_canonical_requirement_truth() -
     assert "keep exact closure in the row-level ledger" not in harmonization_worklist_text
     assert "canonical requirement catalog" in harmonization_worklist_text
     assert "backend-resolution companion" in harmonization_worklist_text
+    assert "Keep the harmonization row linked" not in harmonization_review_queue_text
+    assert "generated projection row linked to its canonical owner doc" in harmonization_review_queue_text
+    assert "Keep the harmonization row linked" not in harmonization_disposition_csv_text
+    assert "Keep the harmonization row linked" not in harmonization_disposition_json_text
+    assert "generated projection row linked to its canonical owner doc" in harmonization_disposition_csv_text
+    assert "generated projection row linked to the canonical owner surface" in harmonization_disposition_json_text
+    assert "Under the current ledger state" not in harmonization_closure_report_text
+    assert "Under the current generated closeout projection" in harmonization_closure_report_text
 
 
 def test_high_traffic_plan_and_verification_entrypoints_route_through_canonical_surfaces() -> None:

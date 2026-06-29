@@ -48,10 +48,10 @@ presentation packet.
   - `22` `duplicate/umbrella`
   - `24` `retired/legacy-only`
 - grouped spreadsheet packet summary:
-  - `60` grouped buckets total
-  - `53` `covered`
-  - `5` `duplicate/umbrella`
-  - `2` `retired/legacy-only`
+  - `13` grouped family buckets total
+  - `10` `covered`
+  - `2` `duplicate/umbrella`
+  - `1` `retired/legacy-only`
 
 ### 2010 / 1516e
 
