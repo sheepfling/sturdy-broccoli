@@ -15,6 +15,8 @@ Primary entry points:
 - [PLN-003_requirements_authoring_plan.md](PLN-003_requirements_authoring_plan.md)
 - [PLN-004_python_rti_100_percent_compliance_plan.md](PLN-004_python_rti_100_percent_compliance_plan.md)
 - [PLN-005_requirements_shards_views_and_verification_plan.md](PLN-005_requirements_shards_views_and_verification_plan.md): execution model for independent shards, overlapping views, backend-resolution columns, and repo-green ownership
+- [PLN-006_normalized_requirement_row_model_execution_plan.md](PLN-006_normalized_requirement_row_model_execution_plan.md): shared typed row-model and canonical projection execution plan
+- [PLN-007_2010_truth_surface_normalization_plan.md](PLN-007_2010_truth_surface_normalization_plan.md): execution plan for converging `2010 / 1516e` onto one canonical requirement list and one backend-resolution companion
 - [2025_python_rti_100_percent_worklist.md](2025_python_rti_100_percent_worklist.md): exact non-covered `2025` row inventory and recommended denominator rule for honest `100%` reporting
 - [2025_python_rti_umbrella_decomposition_worklist.md](2025_python_rti_umbrella_decomposition_worklist.md): exact decomposition map for the 22 `2025` umbrella rows if leadership wants narrower direct claims
 - [2010_python_rti_bounded_family_execution_worklist.md](2010_python_rti_bounded_family_execution_worklist.md): exact execution map for the remaining bounded `2010` mixed-backend and partial-family surfaces

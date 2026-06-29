@@ -19,6 +19,8 @@ Current plans:
 - [PLN-003_requirements_authoring_plan.md](PLN-003_requirements_authoring_plan.md)
 - [PLN-004_python_rti_100_percent_compliance_plan.md](PLN-004_python_rti_100_percent_compliance_plan.md)
 - [PLN-005_requirements_shards_views_and_verification_plan.md](PLN-005_requirements_shards_views_and_verification_plan.md): canonical shard-versus-view model, backend-resolution separation, and verification-flow plan for both editions
+- [PLN-006_normalized_requirement_row_model_execution_plan.md](PLN-006_normalized_requirement_row_model_execution_plan.md): shared typed model and canonical projection plan for both editions
+- [PLN-007_2010_truth_surface_normalization_plan.md](PLN-007_2010_truth_surface_normalization_plan.md): execution plan for reducing `2010 / 1516e` to one leaf-oriented canonical requirement list plus one backend-resolution companion and demoting old drift surfaces
 - [2025_python_rti_100_percent_worklist.md](2025_python_rti_100_percent_worklist.md): concrete 2025 denominator rule plus the exact 46 non-covered rows that block literal `691 / 691 covered`
 - [2025_python_rti_umbrella_decomposition_worklist.md](2025_python_rti_umbrella_decomposition_worklist.md): exact child-row, shard-owner, and promotion criteria for the 22 remaining 2025 umbrella rows
 - [2010_python_rti_bounded_family_execution_worklist.md](2010_python_rti_bounded_family_execution_worklist.md): exact owner-doc, companion-ledger, shard-owner, and tightening criteria for the remaining bounded 2010 families
