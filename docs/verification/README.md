@@ -123,7 +123,7 @@ Use the same ownership model described in
 
 When a requirement bucket changes state, the expected flow is:
 
-1. update the source-side requirement row or harmonization ledger
+1. update the source-side canonical requirement row or backend-resolution row
 2. record the bounded claim or exclusion note in the owning proof document
 3. point at the narrowest shard or command that actually proved the change
 4. widen to broader lanes only when the requirement claim crosses that boundary

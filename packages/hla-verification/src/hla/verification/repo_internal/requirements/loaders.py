@@ -109,6 +109,33 @@ def _derive_boundary_note(row: dict[str, str]) -> str:
     return " ".join(part for part in parts if part)
 
 
+def _primary_shard_from_command(primary_command: str) -> str:
+    command = primary_command.strip()
+    if command == "./tools/test-surface run unit-transport-local":
+        return "unit-transport-local"
+    if command == "./tools/pitch 202x-micro-certify":
+        return "unit-transport-local"
+    return ""
+
+
+def _pitch_202x_evidence_refs(row: dict[str, str]) -> tuple[str, ...]:
+    refs: list[str] = []
+    refs.extend(_split_semicolon_items(row.get("pitch_202x_evidence_packet", "")))
+    refs.extend(
+        ref
+        for ref in (
+            row.get("pitch_202x_owner_doc", "").strip(),
+            row.get("pitch_202x_group_owner", "").strip(),
+        )
+        if ref
+    )
+    deduped: list[str] = []
+    for ref in refs:
+        if ref not in deduped:
+            deduped.append(ref)
+    return tuple(deduped)
+
+
 def _derive_tags(row: dict[str, str], owner_doc: str) -> tuple[str, ...]:
     tags = [
         f"area:{_slug(row.get('area', ''))}",
@@ -125,6 +152,21 @@ def _derive_tags(row: dict[str, str], owner_doc: str) -> tuple[str, ...]:
     for tag in tags:
         if tag not in deduped:
             deduped.append(tag)
+    return tuple(deduped)
+
+
+def _normalize_2025_evidence_refs(row: dict[str, str]) -> tuple[str, ...]:
+    refs = list(_split_semicolon_items(row.get("suggested_repo_evidence_path", "")))
+    normalized: list[str] = []
+    for ref in refs:
+        if ref == "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py":
+            normalized.append("packages/hla-rti-core/src/hla/fom/validation.py")
+        else:
+            normalized.append(ref)
+    deduped: list[str] = []
+    for ref in normalized:
+        if ref not in deduped:
+            deduped.append(ref)
     return tuple(deduped)
 
 
@@ -155,7 +197,7 @@ def build_2025_canonical_requirement_catalog(project_root: Path) -> NormalizedRe
                 owner_doc=owner_doc,
                 primary_test_shard=primary_test_shard,
                 primary_command=_SHARD_COMMANDS.get(primary_test_shard, ""),
-                evidence_refs=_split_semicolon_items(row.get("suggested_repo_evidence_path", "")),
+                evidence_refs=_normalize_2025_evidence_refs(row),
                 boundary_note=_derive_boundary_note(row),
                 source_trace_strength=row.get("source_trace_strength", "").strip(),
                 repo_evidence_status=row.get("repo_evidence_status", "").strip(),
@@ -252,11 +294,14 @@ def build_2010_backend_resolution_catalog(project_root: Path) -> BackendResoluti
         BackendResolutionRow(
             edition="2010",
             requirement_id=row.get("requirement_id", "").strip() or row.get("matrix_id", "").strip(),
+            row_kind="requirement-row",
+            resolution_type="backend-runtime-disposition",
             canonical_owner="",
             canonical_status=row.get("status", "").strip(),
             primary_shard="",
             primary_command="",
             evidence_artifact=row.get("artifact_refs", "").strip(),
+            evidence_refs=_split_semicolon_items(row.get("artifact_refs", "")),
             boundary_note=row.get("notes", "").strip(),
             backend_fields={
                 "python_runtime_disposition": row.get("python_runtime_disposition", "").strip(),
@@ -292,15 +337,27 @@ def build_2025_backend_resolution_catalog(project_root: Path) -> BackendResoluti
     backend_rows: list[BackendResolutionRow] = []
     worklist_rows = _read_csv_rows(project_root / WORKLIST_2025_REL)
     for row in worklist_rows:
+        owner_doc = _derive_owner_doc(
+            {
+                "area": row.get("area", ""),
+                "service_group": row.get("service_group", ""),
+                "service_or_check": "",
+                "suggested_repo_evidence_path": row.get("backend_resolution_reference", ""),
+            }
+        )
+        primary_shard = _derive_primary_shard({"area": row.get("area", "")}, owner_doc)
         backend_rows.append(
             BackendResolutionRow(
                 edition="2025",
                 requirement_id=f"group::{row.get('closure_wave','').strip()}::{row.get('area','').strip()}::{row.get('service_group','').strip()}",
-                canonical_owner="",
+                row_kind="grouped-projection",
+                resolution_type="grouped-backend-view",
+                canonical_owner=owner_doc,
                 canonical_status=row.get("canonical_disposition", "").strip(),
-                primary_shard="",
-                primary_command="",
+                primary_shard=primary_shard,
+                primary_command=_SHARD_COMMANDS.get(primary_shard, ""),
                 evidence_artifact=row.get("backend_resolution_reference", "").strip(),
+                evidence_refs=_split_semicolon_items(row.get("backend_resolution_reference", "")),
                 boundary_note=row.get("acceptance_gate", "").strip(),
                 backend_fields={
                     "group_kind": "2025-group",
@@ -389,7 +446,7 @@ def load_2010_backend_resolution_rows(project_root: Path) -> tuple[BackendResolu
 def load_2025_backend_group_rows(project_root: Path) -> tuple[BackendResolutionRow, ...]:
     return tuple(
         row for row in load_backend_resolution_catalog(project_root / BACKEND_2025_REL).rows
-        if row.backend_fields.get("group_kind") == "2025-group"
+        if row.row_kind == "grouped-projection" or row.backend_fields.get("group_kind") == "2025-group"
     )
 
 
@@ -399,15 +456,19 @@ def load_2025_pitch_row_resolution_rows(project_root: Path) -> tuple[BackendReso
         BackendResolutionRow(
             edition="2025",
             requirement_id=row.get("id", "").strip(),
+            row_kind="requirement-row",
+            resolution_type="vendor-route-resolution",
             canonical_owner=row.get("pitch_202x_owner_doc", "").strip(),
             canonical_status=row.get("harmonization_disposition", "").strip(),
-            primary_shard="",
-            primary_command=row.get("pitch_202x_primary_command", "").strip(),
+            primary_shard="unit-transport-local",
+            primary_command=_SHARD_COMMANDS["unit-transport-local"],
             evidence_artifact=row.get("pitch_202x_evidence_packet", "").strip(),
+            evidence_refs=_pitch_202x_evidence_refs(row),
             boundary_note=row.get("pitch_202x_scope_note", "").strip(),
             backend_fields={
                 "pitch_202x_row_resolution": row.get("pitch_202x_row_resolution", "").strip(),
                 "pitch_202x_group_owner": row.get("pitch_202x_group_owner", "").strip(),
+                "pitch_202x_vendor_command": row.get("pitch_202x_primary_command", "").strip(),
             },
         )
         for row in rows
@@ -420,14 +481,19 @@ def load_2025_pitch_group_resolution_rows(project_root: Path) -> tuple[BackendRe
         BackendResolutionRow(
             edition="2025",
             requirement_id=f"{row.get('closure_wave','').strip()}::{row.get('area','').strip()}::{row.get('service_group','').strip()}",
+            row_kind="grouped-projection",
+            resolution_type="vendor-group-resolution",
             canonical_owner=row.get("pitch_202x_owner_doc", "").strip(),
             canonical_status=row.get("canonical_disposition", "").strip(),
-            primary_shard="",
-            primary_command=row.get("pitch_202x_primary_command", "").strip(),
+            primary_shard="unit-transport-local",
+            primary_command=_SHARD_COMMANDS["unit-transport-local"],
             evidence_artifact=row.get("pitch_202x_evidence_packet", "").strip(),
+            evidence_refs=_pitch_202x_evidence_refs(row),
             boundary_note=row.get("pitch_202x_scope_note", "").strip(),
             backend_fields={
+                "group_kind": "pitch-202x-group",
                 "pitch_202x_resolution": row.get("pitch_202x_resolution", "").strip(),
+                "pitch_202x_vendor_command": row.get("pitch_202x_primary_command", "").strip(),
                 "closure_wave": row.get("closure_wave", "").strip(),
                 "area": row.get("area", "").strip(),
                 "service_group": row.get("service_group", "").strip(),
@@ -443,11 +509,14 @@ def load_2025_fi_binding_surface_rows(project_root: Path) -> tuple[BackendResolu
         BackendResolutionRow(
             edition="2025",
             requirement_id=row.get("id", "").strip(),
+            row_kind="requirement-row",
+            resolution_type="binding-route-resolution",
             canonical_owner="docs/requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md",
             canonical_status=row.get("disposition", "").strip(),
             primary_shard="unit-transport-local",
             primary_command="./tools/test-surface run unit-transport-local",
             evidence_artifact=FI_BINDING_2025_REL,
+            evidence_refs=(FI_BINDING_2025_REL,),
             boundary_note=row.get("risk_note", "").strip(),
             backend_fields={
                 "java_surface": row.get("java_surface", "").strip(),

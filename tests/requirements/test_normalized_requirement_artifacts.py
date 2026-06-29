@@ -119,8 +119,13 @@ def test_typed_backend_resolution_loaders_cover_2010_and_2025_companion_surfaces
     rows_2025_binding = load_2025_fi_binding_surface_rows(ROOT)
 
     rows_2010_by_id = {row.requirement_id: row for row in rows_2010}
+    assert rows_2010_by_id["HLA1516.1-FM-4.1.5-001"].row_kind == "requirement-row"
+    assert rows_2010_by_id["HLA1516.1-FM-4.1.5-001"].resolution_type == "backend-runtime-disposition"
     assert rows_2010_by_id["HLA1516.1-FM-4.1.5-001"].backend_fields["python_runtime_disposition"] == "verified"
     assert rows_2010_by_id["REQ-OMT-SCHEMA-001"].backend_fields["pitch_runtime_disposition"] == "classification-required"
+    assert any(row.row_kind == "requirement-row" and row.resolution_type == "vendor-route-resolution" for row in rows_2025_pitch)
     assert any(row.backend_fields["pitch_202x_row_resolution"] == "bounded-fi-overlap-only" for row in rows_2025_pitch)
+    assert any(row.row_kind == "grouped-projection" and row.resolution_type == "vendor-group-resolution" for row in groups_2025_pitch)
     assert any(row.backend_fields["pitch_202x_resolution"].startswith("vendor-branded proto HLA 4 / 202X surface") for row in groups_2025_pitch)
+    assert any(row.row_kind == "requirement-row" and row.resolution_type == "binding-route-resolution" for row in rows_2025_binding)
     assert any(row.backend_fields["fedpro_surface"] for row in rows_2025_binding)

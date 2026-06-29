@@ -21,12 +21,22 @@ Use these sources as the truth inputs behind this note:
   [`../../requirements/2010/README.md`](../../requirements/2010/README.md)
 - `2025` source-side inventory:
   [`../../requirements/2025/README.md`](../../requirements/2025/README.md)
-- `2010` master harmonization index:
-  [`../../requirements/2010/hla_1516_master_harmonization_index_v1_0.csv`](../../requirements/2010/hla_1516_master_harmonization_index_v1_0.csv)
+- `2010` canonical requirement catalog:
+  [`../../requirements/2010/canonical_requirements.json`](../../requirements/2010/canonical_requirements.json)
+- `2010` backend-resolution catalog:
+  [`../../requirements/2010/backend_resolution.json`](../../requirements/2010/backend_resolution.json)
+- `2025` canonical requirement catalog:
+  [`../../requirements/2025/canonical_requirements.json`](../../requirements/2025/canonical_requirements.json)
+- `2025` backend-resolution catalog:
+  [`../../requirements/2025/backend_resolution.json`](../../requirements/2025/backend_resolution.json)
 - `2025` completion backlog:
   [`../../requirements/2025/requirement_completion_backlog.csv`](../../requirements/2025/requirement_completion_backlog.csv)
 - `2025` harmonization worklist:
   [`../../requirements/2025/harmonization/hla_2025_harmonization_worklist.csv`](../../requirements/2025/harmonization/hla_2025_harmonization_worklist.csv)
+
+Treat the backlog and harmonization worklist as downstream closeout-program
+projection inputs. They do not replace the canonical requirement and
+backend-resolution catalogs as requirement truth.
 
 ## What "Remaining" Means
 
@@ -100,7 +110,7 @@ Example shape:
 
 | Edition | Requirement family | Requirement IDs | Canonical status | Backend resolution | Primary shard | Widen to | View tags | Primary command | Evidence artifact | Notes / boundary |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `2025` | FI Ownership group | grouped ownership worklist rows | `planned` | `python=covered`, `Pitch=planned`, `CERTI=not-applicable` in the linked disposition ledger until each backend closes | `unit-python-2025-core` | `python1516_2025-routes` | `2025-core`, `ownership` | `./tools/test-focus run python-2025-ownership` | `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv` | widen only when hosted replay matters |
+| `2025` | FI Ownership group | grouped ownership worklist rows | `planned` | `python=covered`, `Pitch=planned`, `CERTI=not-applicable` in the linked backend-resolution companion until each backend closes | `unit-python-2025-core` | `python1516_2025-routes` | `2025-core`, `ownership` | `./tools/test-focus run python-2025-ownership` | `requirements/2025/canonical_requirements.json` plus `requirements/2025/backend_resolution.json` | widen only when hosted replay matters |
 | `2025` | hosted FedPro parity | `HLA2025-BND-003` and route-parity rows | `partial` | backend/route resolution lives in the route-parity and hosted-boundary artifacts, not the canonical status cell | `unit-transport-local` | `python1516_2025-routes` | `transport`, `2025-core`, `finish-line` | `./tools/test-surface run transport` | `docs/requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md` | bounded hosted-route parity, not a second RTI |
 | `2010` | Clause 10 Support Services | grouped support-family rows | `partial` | `python=verified`; vendor-specific differences stay in `requirements_matrix_2010.*` and backend disposition ledgers | `unit-python-core` | `python1516_2025-main` only if shared runtime code changes | `2010-core`, `setup-preflight` | `python3 -m pytest tests/backends/test_python_backend_support_services.py tests/scenarios/test_support_services_backend_matrix.py` | `requirements/2010/hla1516_1_sup_detailed_reconciliation.csv` | keep row `partial` if proof only covers narrower supported scope |
 
@@ -217,7 +227,8 @@ family before falling back to a broader lane:
 ## 2025 Remaining Closure
 
 The `2025` surface is structurally linked and collected.
-The grouped harmonization worklist is now fully dispositioned.
+The grouped harmonization worklist is now a fully dispositioned downstream
+projection over the canonical requirement and backend-resolution catalogs.
 There are no remaining active `2025` closeout buckets in this note.
 The remaining `2025` non-plain-covered rows are now maintained through owner
 notes for umbrella rows, retired rows, backend-resolution lanes, route-bounded

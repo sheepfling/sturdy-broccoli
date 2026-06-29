@@ -60,4 +60,5 @@ Read the broader bounded claim and current evidence posture in:
 - [`../../python_rti_backend.md`](../../python_rti_backend.md)
 - [`README.md`](README.md)
 - [`binding_and_hosted_route_boundaries.md`](binding_and_hosted_route_boundaries.md)
-- [`../../../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`](../../../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv)
+- [`../../../requirements/2025/canonical_requirements.json`](../../../requirements/2025/canonical_requirements.json)
+- [`../../../requirements/2025/backend_resolution.json`](../../../requirements/2025/backend_resolution.json)

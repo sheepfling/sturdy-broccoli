@@ -1,7 +1,8 @@
 # Retired and Legacy Mapping Rows
 
 Source: IEEE 1516.1-2010 to IEEE 1516.1-2025 / IEEE 1516.2-2025 differential
-rows that remain `retired/legacy-only` in the harmonization ledger.
+rows that remain `retired/legacy-only` in the canonical 2025 requirement
+catalog.
 
 These rows are not active 2025 obligations for the repo's main Python RTI lane.
 They exist to keep legacy 2010 spellings and schema tokens from being
@@ -14,7 +15,7 @@ compatibility wrapper and is not the runtime owner for these retired rows.
 - canonical owner doc: `docs/requirements/ieee-1516-2025/retired_legacy_mapping.md`
 - primary shard: `unit-foundation`
 - widen to: only when the retired mapping changes generated audits or
-  harmonization ledgers
+  downstream projection artifacts
 - typical view tags: `2025-core`, `setup-preflight`
 
 ## Final Claim Rule
@@ -85,7 +86,7 @@ Default final stance:
 ## Latest Investigated Decision
 
 The retired/legacy-only slice was re-audited on `2026-06-26` against the
-current owner doc, harmonization ledger, grouped worklist rows, replacement
+current owner doc, canonical requirement rows, grouped projection rows, replacement
 mapping notes, and companion closeout evidence artifacts for:
 
 - `HLA2025-FI-RET-001` through `HLA2025-FI-RET-011`
@@ -98,7 +99,8 @@ Decision:
 
 Reason:
 
-1. the current differential and harmonization packets already establish that
+1. the current differential packet, canonical requirement catalog, and grouped
+   projection artifacts already establish that
    these are legacy 2010 spellings or schema tokens rather than active native
    2025 obligations
 2. the candidate 2025 replacements are already carried by the native 2025 FI,
@@ -111,7 +113,8 @@ Reason:
 
 Current evidence reviewed for this decision included:
 
-- `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
+- `requirements/2025/canonical_requirements.json`
+- `requirements/2025/backend_resolution.json`
 - `requirements/2025/harmonization/hla_2025_harmonization_worklist.csv`
 - `requirements/2025/harmonization/hla_2025_requirement_coverage_rollup.json`
 - `docs/requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md`
@@ -129,7 +132,7 @@ Treat this bucket as closed for current closeout purposes when all of these are
 true:
 
 1. all 24 retired rows remain anchored to this owner doc and the row-level
-   disposition ledger
+   canonical requirement catalog
 2. the final claim language keeps them explicit as exclusions rather than
    accidental coverage gaps
 3. no generated packet, audit note, or grouped worklist reclassifies them as

@@ -39,8 +39,14 @@ Use this backend audit as a bounded runtime-lane rollup over those owner docs,
 not as a replacement for them.
 
 When you need canonical row status or backend-resolution detail behind those
-boundaries, read the linked harmonization companions such as
-`hla_2025_requirement_disposition_ledger.csv`,
+boundaries, read the canonical requirement and backend-resolution catalogs
+first:
+
+- `requirements/2025/canonical_requirements.json`
+- `requirements/2025/backend_resolution.json`
+
+Then use older harmonization or route-specific companion CSVs only as
+downstream projection or backend-detail artifacts, such as
 `hla_2025_fi_binding_surface_matrix.csv`,
 `hla_2025_pitch_202x_group_resolution.csv`, and
 `hla_2025_pitch_202x_row_resolution.csv`.

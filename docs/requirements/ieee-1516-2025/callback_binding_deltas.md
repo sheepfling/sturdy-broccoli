@@ -2,7 +2,8 @@
 
 Source: IEEE 1516.1-2025 callback/configuration/binding delta backlog rows.
 
-These rows remain `duplicate/umbrella` in the harmonization ledger. They are
+These rows remain `duplicate/umbrella` in the canonical 2025 requirement
+catalog. They are
 not standalone runtime claims. Each row closes only through the linked child
 FI/binding rows plus executable evidence on the main `hla-backend-python1516-2025`
 runtime lane and the bounded route artifacts that sit above it.
@@ -76,7 +77,7 @@ disposition.
 ## Latest Investigated Decision
 
 The configuration and authorization umbrella slice was re-audited on
-`2026-06-26` against the current owner doc, harmonization ledger, connect
+`2026-06-26` against the current owner doc, canonical requirement rows, connect
 runtime tests, factory composition tests, hosted FedPro request mapping, and
 factory/auth implementation anchors for:
 
@@ -112,7 +113,7 @@ Current evidence reviewed for this decision included:
 - `tests/transport/test_grpc_transport_2025.py`
 - `packages/hla-rti-core/src/hla/rti/factory.py`
 - `packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/federation_bootstrap_runtime.py`
-- `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
+- `requirements/2025/canonical_requirements.json`
 
 Operational effect:
 
@@ -123,7 +124,7 @@ Operational effect:
   implementation claim
 
 The callback-control umbrella slice was also re-audited on `2026-06-26`
-against the current owner doc, harmonization ledger, direct runtime tests,
+against the current owner doc, canonical requirement rows, direct runtime tests,
 support-services backend tests, Java route evidence, and hosted FedPro
 transport coverage for:
 
@@ -156,7 +157,7 @@ Current evidence reviewed for this decision included:
 - `tests/backends/test_python_backend_support_services.py`
 - `tests/transport/test_grpc_transport_2025.py`
 - `docs/evidence/shim_routes/java-standard-2025.json`
-- `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
+- `requirements/2025/canonical_requirements.json`
 
 Operational effect:
 
@@ -167,7 +168,7 @@ Operational effect:
   umbrella-row implementation claim
 
 The directed-interaction callback umbrella slice was also re-audited on
-`2026-06-26` against the current owner doc, harmonization ledger, direct
+`2026-06-26` against the current owner doc, canonical requirement rows, direct
 runtime tests, hosted FedPro transport tests, and route-parity artifacts for:
 
 - `HLA2025-FI-CB-007`
@@ -198,7 +199,7 @@ Current evidence reviewed for this decision included:
 - `tests/test_rti1516_2025_python1516_2025_runtime.py`
 - `tests/transport/test_grpc_transport_2025.py`
 - `packages/hla-verification/src/hla/verification/repo_internal/verification/spec2025_route_parity_matrix.py`
-- `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
+- `requirements/2025/canonical_requirements.json`
 
 Operational effect:
 
@@ -209,7 +210,7 @@ Operational effect:
   umbrella-row implementation claim
 
 The FedPro protocol umbrella slice was also re-audited on `2026-06-26`
-against the current owner doc, harmonization ledger, hosted-route transport
+against the current owner doc, canonical requirement rows, hosted-route transport
 tests, route-parity artifacts, and the tracked FedPro protobuf surface for:
 
 - `HLA2025-BIND-FEDPRO-001`
@@ -236,7 +237,7 @@ Current evidence reviewed for this decision included:
 - `tests/transport/test_grpc_transport_2025.py`
 - `packages/hla-verification/src/hla/verification/repo_internal/verification/spec2025_route_parity_matrix.py`
 - `packages/hla-transport-grpc/proto/rti1516_2025/fedpro`
-- `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
+- `requirements/2025/canonical_requirements.json`
 
 Operational effect:
 
@@ -247,7 +248,7 @@ Operational effect:
   standalone umbrella-row implementation claim
 
 The Java/C++ binding umbrella slice was also re-audited on `2026-06-26`
-against the current owner doc, harmonization ledger, standard-shim artifact
+against the current owner doc, canonical requirement rows, standard-shim artifact
 tests, route-parity matrix, shim-route evidence packets, and route traces for:
 
 - `HLA2025-BIND-JAVA-CPP-001`
@@ -277,7 +278,7 @@ Current evidence reviewed for this decision included:
 - `docs/evidence/shim_routes/java-standard-2025.json`
 - `docs/evidence/shim_routes/cpp-standard-2025.json`
 - `docs/evidence/shim_routes/route_traces/`
-- `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
+- `requirements/2025/canonical_requirements.json`
 
 Operational effect:
 
@@ -293,7 +294,7 @@ Treat this bucket as closed for current closeout purposes when all of these are
 true:
 
 1. all callback/configuration/binding umbrella rows remain anchored to this
-   owner doc and the row-level disposition ledger
+   owner doc and the canonical row-level requirement catalog
 2. the final claim language keeps them explicit as parent or normalization rows
    rather than accidental standalone runtime proof
 3. no generated packet, audit note, or grouped worklist reclassifies them as

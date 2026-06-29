@@ -10,6 +10,8 @@ do not treat this file as the main conformance plan.
 Use these 2025 evidence anchors instead:
 
 - [`../requirements/ieee-1516-2025/README.md`](../requirements/ieee-1516-2025/README.md)
+- [`../../requirements/2025/canonical_requirements.json`](../../requirements/2025/canonical_requirements.json)
+- [`../../requirements/2025/backend_resolution.json`](../../requirements/2025/backend_resolution.json)
 - [`../python_rti_backend.md`](../python_rti_backend.md)
 - [`../verification/time_model_compliance.md`](time_model_compliance.md)
 - [`../requirements/ieee-1516-2025/python1516_2025_direct_bounded_proof.md`](../requirements/ieee-1516-2025/python1516_2025_direct_bounded_proof.md)
@@ -59,7 +61,7 @@ Use the same ownership model as
 - `shards` own executable pass or fail meaning
 - `views` are overlapping requirement, backend, or audit cuts across shards
 - this verification plan helps choose proof depth, but it does not replace the
-  owning shard, source ledger, or backend-resolution companion artifact
+  owning shard, canonical requirement catalog, or backend-resolution companion artifact
 - when backend truth differs, keep it in separate backend-resolution columns or
   linked artifacts instead of collapsing it into one conformance label
 

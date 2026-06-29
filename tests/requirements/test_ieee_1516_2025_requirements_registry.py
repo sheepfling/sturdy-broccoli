@@ -118,8 +118,32 @@ def test_2025_backend_resolution_catalog_keeps_backend_and_route_truth_separate_
         row for row in callback_rows
         if row["canonical_owner"] == "docs/requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md"
     )
-    assert pitch_row["primary_command"] == "./tools/pitch 202x-micro-certify"
+    assert pitch_row["row_kind"] == "requirement-row"
+    assert pitch_row["resolution_type"] == "vendor-route-resolution"
+    assert pitch_row["primary_shard"] == "unit-transport-local"
+    assert pitch_row["primary_command"] == "./tools/test-surface run unit-transport-local"
+    assert pitch_row["evidence_refs"] == [
+        "artifacts/pitch_202x_micro_certification/pitch_202x_micro_certification_summary.json",
+        "artifacts/pitch_202x_micro_certification/pitch_202x_micro_certification_report.md",
+        "packages/hla-vendor-pitch/docs/pitch_vs_python_baseline.md",
+        "docs/requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md",
+        "requirements/2025/harmonization/hla_2025_pitch_202x_group_resolution.csv",
+    ]
     assert pitch_row["backend_fields"]["pitch_202x_row_resolution"] == "bounded-fi-overlap-only"
+    assert pitch_row["backend_fields"]["pitch_202x_vendor_command"] == "./tools/pitch 202x-micro-certify"
+
+    grouped_row = _backend_rows_by_id(
+        "group::0-retired-filter-and-replacement-map::Retired / replacement mapping candidates::Federate Interface legacy API"
+    )[0]
+    assert grouped_row["row_kind"] == "grouped-projection"
+    assert grouped_row["resolution_type"] == "grouped-backend-view"
+    assert grouped_row["canonical_owner"] == "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md"
+    assert grouped_row["primary_shard"] == "unit-foundation"
+    assert grouped_row["primary_command"] == "./tools/test-surface run unit-foundation"
+    assert grouped_row["evidence_refs"] == [
+        "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
+        "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv",
+    ]
 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-TRACE-001", "HLA2025-TRACE-002")
@@ -152,6 +176,38 @@ def test_2025_canonical_catalog_rows_keep_owner_shard_and_evidence_traceability_
 
         if str(row["row_kind"]) in {"framework-umbrella", "legacy-mapping", "delta-umbrella"}:
             assert owner_doc in evidence_refs, requirement_id
+
+
+@pytest.mark.requirements("HLA2025-BND-001", "HLA2025-TRACE-001", "HLA2025-TRACE-002")
+def test_2025_backend_resolution_rows_keep_owner_shard_and_evidence_traceability_coherent() -> None:
+    payload = json.loads(BACKEND_RESOLUTION.read_text(encoding="utf-8"))
+    lane_commands = _lane_owner_commands()
+    allowed_row_kinds = {"requirement-row", "grouped-projection"}
+    allowed_resolution_types = {
+        "binding-route-resolution",
+        "vendor-group-resolution",
+        "vendor-route-resolution",
+        "grouped-backend-view",
+    }
+
+    for row in payload["rows"]:
+        requirement_id = str(row["requirement_id"])
+        assert str(row["row_kind"]) in allowed_row_kinds, requirement_id
+        assert str(row["resolution_type"]) in allowed_resolution_types, requirement_id
+
+        owner_doc = str(row["canonical_owner"])
+        assert owner_doc, requirement_id
+        assert (ROOT / owner_doc).exists(), requirement_id
+
+        primary_shard = str(row["primary_shard"])
+        assert primary_shard in lane_commands, requirement_id
+        assert str(row["primary_command"]) == lane_commands[primary_shard], requirement_id
+
+        evidence_refs = list(row["evidence_refs"])
+        assert evidence_refs, requirement_id
+        for evidence in evidence_refs:
+            evidence_path = ROOT / str(evidence).split(":", 1)[0]
+            assert evidence_path.exists(), (requirement_id, evidence)
 
 
 @pytest.mark.requirements("HLA2025-REQ-001")
@@ -250,7 +306,8 @@ def test_ieee_1516_2025_requirements_readme_calls_out_basic_execution_rules() ->
     assert "after destroy succeeds, later destroy or join attempts against that missing federation reject with `FederationExecutionDoesNotExist`" in normalized
     assert "federation membership listing and reporting" in normalized
     assert "resign and disconnect cleanup after membership changes" in normalized
-    assert "hla_2025_requirement_disposition_ledger.csv" in text
+    assert "requirements/2025/canonical_requirements.json" in text
+    assert "requirements/2025/backend_resolution.json" in text
     assert "../execution_membership_rules.md" in text
     assert "`federation_management_bounded_proof.md`" in text
     assert "`object_management_bounded_proof.md`" in text
@@ -513,7 +570,7 @@ def test_framework_rules_markdown_maps_umbrella_rows_to_child_evidence() -> None
     text = (REGISTRY_DIR / "framework_rules.md").read_text(encoding="utf-8")
     normalized = " ".join(text.split())
 
-    assert "These rows remain `duplicate/umbrella` in the harmonization ledger." in text
+    assert "These rows remain `duplicate/umbrella` in the canonical 2025 requirement catalog." in normalized
     assert "`HLA2025-REQ-001`, `HLA2025-OMT-001`, `HLA2025-OMT-005`, `HLA2025-OMT-006`" in text
     assert "`HLA2025-FI-001`, `HLA2025-FI-SVC-057`, `HLA2025-FI-SVC-059`, `HLA2025-FI-SVC-060`, `HLA2025-FI-SVC-063`, `HLA2025-FI-SVC-064`" in text
     assert "`HLA2025-FI-009`, `HLA2025-MOD-006`, `HLA2025-FI-SVC-101`, `HLA2025-FI-SVC-107`, `HLA2025-FI-SVC-112`, `HLA2025-FI-SVC-121`" in text
@@ -561,7 +618,7 @@ def test_callback_binding_delta_markdown_maps_umbrella_rows_to_runtime_and_bindi
     text = (REGISTRY_DIR / "callback_binding_deltas.md").read_text(encoding="utf-8")
     normalized = " ".join(text.split())
 
-    assert "These rows remain `duplicate/umbrella` in the harmonization ledger." in text
+    assert "These rows remain `duplicate/umbrella` in the canonical 2025 requirement catalog." in normalized
     assert "`HLA2025-FI-SVC-193`" in text
     assert "`HLA2025-FI-SVC-194`" in text
     assert "`HLA2025-FI-SVC-195`, `HLA2025-FI-SVC-196`" in text

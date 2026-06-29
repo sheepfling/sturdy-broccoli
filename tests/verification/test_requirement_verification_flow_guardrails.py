@@ -143,6 +143,32 @@ def test_2025_finish_line_requirement_test_is_explicitly_downstream_reporting() 
     assert "not itself a\nrequirement-truth owner surface" in text
 
 
+def test_closeout_docs_demote_themselves_beneath_canonical_requirement_truth() -> None:
+    audit_text = (ROOT / "docs" / "plans" / "requirements_completion_audit.md").read_text(encoding="utf-8")
+    closure_text = (ROOT / "docs" / "plans" / "requirements_remaining_closure.md").read_text(encoding="utf-8")
+
+    assert "canonical requirement catalog and backend-resolution companion" in audit_text
+    assert "not themselves requirement-truth owner surfaces" in audit_text
+    assert "canonical requirement and\nbackend-resolution catalogs as requirement truth" in closure_text
+    assert "downstream closeout-program\nprojection inputs" in closure_text
+
+
+def test_high_traffic_plan_and_verification_entrypoints_route_through_canonical_surfaces() -> None:
+    plans_readme = (ROOT / "docs" / "plans" / "README.md").read_text(encoding="utf-8")
+    verification_plan = (ROOT / "docs" / "verification" / "verification_plan.md").read_text(encoding="utf-8")
+    verification_readme = (ROOT / "docs" / "verification" / "README.md").read_text(encoding="utf-8")
+    backend_audit = (ROOT / "docs" / "plans" / "2025_python_rti_backend_audit.md").read_text(encoding="utf-8")
+
+    assert "canonical requirement catalog and backend-resolution companion" in plans_readme
+    assert "downstream reporting and sequencing\nsurfaces" in plans_readme
+    assert "requirements/2025/canonical_requirements.json" in verification_plan
+    assert "requirements/2025/backend_resolution.json" in verification_plan
+    assert "source-side canonical requirement row or backend-resolution row" in verification_readme
+    assert "requirements/2025/canonical_requirements.json" in backend_audit
+    assert "requirements/2025/backend_resolution.json" in backend_audit
+    assert "downstream projection or backend-detail artifacts" in backend_audit
+
+
 def test_requirement_tests_do_not_read_plan_or_closeout_docs_as_truth_sources() -> None:
     violations: list[str] = []
 

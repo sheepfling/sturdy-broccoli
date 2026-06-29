@@ -37,8 +37,14 @@ Current plans:
 
 Reading rule for closeout work:
 
-1. use `requirements_completion_audit.md` for the truthful "are we done?" answer
-2. use `requirements_remaining_closure.md` for the exact bucket shape and shard/view ownership model
-3. use `PLN-005_requirements_shards_views_and_verification_plan.md` when you need the canonical shard-versus-view execution model
-4. use `requirements_gap_register.md` and `requirements_execution_queue.md` for the next runnable closeout slices
-5. use `requirement_compliance_exports.md` only when you need presentation packets, not canonical requirement ownership
+1. open the edition requirement front door first, then the canonical requirement catalog and backend-resolution companion
+2. use `requirements_completion_audit.md` for the truthful downstream "are we done?" answer
+3. use `requirements_remaining_closure.md` for the exact bucket shape and shard/view ownership model
+4. use `PLN-005_requirements_shards_views_and_verification_plan.md` when you need the canonical shard-versus-view execution model
+5. use `requirements_gap_register.md` and `requirements_execution_queue.md` for the next runnable closeout slices
+6. use `requirement_compliance_exports.md` only when you need presentation packets, not canonical requirement ownership
+
+Closeout packets in this directory are downstream reporting and sequencing
+surfaces. They do not replace `canonical_requirements.json`,
+`backend_resolution.json`, bounded proof notes, or shard-owned executable
+evidence as requirement truth.

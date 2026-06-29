@@ -13,7 +13,9 @@ semantics or interpretation as native HLA metadata.
 - canonical owner doc:
   `docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md`
 - owner companion:
-  `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
+  `requirements/2025/canonical_requirements.json`
+- backend-resolution companion:
+  `requirements/2025/backend_resolution.json`
 - primary shard: `unit-fom-tooling`
 - widen to: only when a future change deliberately introduces executable
   third-party extension semantics
@@ -55,7 +57,7 @@ Default final stance:
 
 - `tests/test_rti1516_2025_validation.py`
 - `packages/hla-rti1516e/src/hla/rti1516e/fom.py`
-- `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
+- `requirements/2025/canonical_requirements.json`
 
 ## Family Mapping
 
@@ -97,7 +99,7 @@ Default final stance:
   into native HLA elements.
 - `packages/hla-rti1516e/src/hla/rti1516e/fom.py` is the implementation anchor
   that preserves those foreign XML fragments during parse/serialize handling.
-- The row-level disposition ledger records the same bounded claim at canonical
+- The canonical requirement catalog records the same bounded claim at
   row granularity, while this note explains why those 45 rows are `covered`
   only as payload-preserving tolerance.
 
@@ -113,7 +115,7 @@ Treat this bucket as closed for current closeout purposes when all of these are
 true:
 
 1. all 45 `xs:any` extension rows remain anchored to this owner doc and the
-   row-level disposition ledger
+   canonical row-level requirement catalog
 2. the final claim language keeps them explicit as payload-preserving tolerance
    rather than native extension execution semantics
 3. no generated packet, audit note, or grouped worklist reclassifies them as

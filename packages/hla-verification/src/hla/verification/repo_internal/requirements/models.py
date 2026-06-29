@@ -251,11 +251,14 @@ class RequirementMappingRow:
 class BackendResolutionRow:
     edition: str
     requirement_id: str
+    row_kind: str
+    resolution_type: str
     canonical_owner: str
     canonical_status: str
     primary_shard: str
     primary_command: str
     evidence_artifact: str
+    evidence_refs: tuple[str, ...]
     boundary_note: str
     backend_fields: dict[str, str]
 
@@ -265,11 +268,14 @@ class BackendResolutionRow:
         return cls(
             edition=_string(payload.get("edition")),
             requirement_id=_string(payload.get("requirement_id")),
+            row_kind=_string(payload.get("row_kind")),
+            resolution_type=_string(payload.get("resolution_type")),
             canonical_owner=_string(payload.get("canonical_owner")),
             canonical_status=_string(payload.get("canonical_status")),
             primary_shard=_string(payload.get("primary_shard")),
             primary_command=_string(payload.get("primary_command")),
             evidence_artifact=_string(payload.get("evidence_artifact")),
+            evidence_refs=_string_tuple(payload.get("evidence_refs")),
             boundary_note=_string(payload.get("boundary_note")),
             backend_fields={
                 _string(key): _string(value)
@@ -283,11 +289,14 @@ class BackendResolutionRow:
         return {
             "edition": self.edition,
             "requirement_id": self.requirement_id,
+            "row_kind": self.row_kind,
+            "resolution_type": self.resolution_type,
             "canonical_owner": self.canonical_owner,
             "canonical_status": self.canonical_status,
             "primary_shard": self.primary_shard,
             "primary_command": self.primary_command,
             "evidence_artifact": self.evidence_artifact,
+            "evidence_refs": list(self.evidence_refs),
             "boundary_note": self.boundary_note,
             "backend_fields": dict(self.backend_fields),
         }

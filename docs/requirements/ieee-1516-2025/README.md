@@ -101,7 +101,8 @@ Primary owner surfaces:
   route truth across Python, Java/C++, hosted FedPro, and Pitch proto HLA 4 /
   `202X`
 - `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
-  as a generated legacy projection for row-shaped harmonization review
+  only as a generated legacy projection for row-shaped harmonization review,
+  not as a primary owner surface
 - [`../execution_membership_rules.md`](../execution_membership_rules.md) for
   one cross-edition index covering join, destroy, update, delete, query, and
   region-gated not-joined rules
@@ -298,7 +299,8 @@ Use this index when the question is not "what service row proves this?" but
 Reading rule:
 
 1. start with the owner doc above
-2. then open the linked bounded proof or harmonization ledger
+2. then open the linked bounded proof note first, and only use a harmonization
+   ledger when you need a historical projection view
 3. only after that widen to route parity, closeout/reporting exports, or
    generated packet artifacts
 
@@ -413,6 +415,7 @@ rather than the next missing implementation frontier by itself.
 - [`../../../requirements/2025/README.md`](../../../requirements/2025/README.md)
 - [`../../verification/README.md`](../../verification/README.md)
 - [`../../verification/requirement_compliance_exports.md`](../../verification/requirement_compliance_exports.md)
+  Legacy projections:
 - [`../../../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`](../../../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv)
 - [`../../../requirements/2025/harmonization/hla_2025_requirement_coverage_rollup.json`](../../../requirements/2025/harmonization/hla_2025_requirement_coverage_rollup.json)
 - [`../../../requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv`](../../../requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv)

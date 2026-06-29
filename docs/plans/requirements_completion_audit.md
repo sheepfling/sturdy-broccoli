@@ -16,7 +16,8 @@ Use it with this reading rule:
 2. open the edition owner doc before changing any requirement status:
    - [`../../docs/requirements/ieee-1516-2010/README.md`](../../docs/requirements/ieee-1516-2010/README.md)
    - [`../../docs/requirements/ieee-1516-2025/README.md`](../../docs/requirements/ieee-1516-2025/README.md)
-3. open the source-side owner ledger named from that front door
+3. open the canonical requirement catalog and backend-resolution companion
+   named from that front door
 4. use [`../verification/requirement_compliance_exports.md`](../verification/requirement_compliance_exports.md)
    only when you need the generated boss-facing CSV/XLSX packet, not when you
    need canonical ownership
@@ -24,7 +25,8 @@ Use it with this reading rule:
 Presentation rule:
 
 - spreadsheet packets are downstream presentation outputs
-- canonical requirement status lives in the owner ledgers, bounded proof notes,
+- canonical requirement status lives in the canonical requirement catalogs,
+  bounded proof notes,
   and linked backend-resolution companions
 - backend-specific support must stay in explicit backend-resolution columns or
   linked artifacts rather than being collapsed into the audit conclusion
@@ -109,11 +111,16 @@ This audit is based on the current state of:
 - [`requirements_finish_line.md`](requirements_finish_line.md)
 - [`../../requirements/2010/README.md`](../../requirements/2010/README.md)
 - [`../../requirements/2025/README.md`](../../requirements/2025/README.md)
-- [`../../requirements/2010/hla_1516_master_harmonization_index_v1_0.csv`](../../requirements/2010/hla_1516_master_harmonization_index_v1_0.csv)
-- [`../../requirements/2025/harmonization/hla_2025_requirement_coverage_closure_report.md`](../../requirements/2025/harmonization/hla_2025_requirement_coverage_closure_report.md)
+- [`../../requirements/2010/canonical_requirements.json`](../../requirements/2010/canonical_requirements.json)
+- [`../../requirements/2010/backend_resolution.json`](../../requirements/2010/backend_resolution.json)
+- [`../../requirements/2025/canonical_requirements.json`](../../requirements/2025/canonical_requirements.json)
+- [`../../requirements/2025/backend_resolution.json`](../../requirements/2025/backend_resolution.json)
 - [`2025_requirement_by_requirement_audit.md`](2025_requirement_by_requirement_audit.md)
 - [`2025_requirements_finish_line.md`](2025_requirements_finish_line.md)
 - [`../verification/requirement_compliance_exports.md`](../verification/requirement_compliance_exports.md)
+
+Treat the plan and finish-line artifacts above as downstream closeout-reporting
+inputs. They are not themselves requirement-truth owner surfaces.
 
 ## Completion Standard
 
