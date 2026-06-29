@@ -8,7 +8,8 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 REGISTRY_DIR = ROOT / "docs/requirements/ieee-1516-2025"
 REGISTRY = REGISTRY_DIR / "requirements.json"
-HARMONIZATION_WORKLIST = ROOT / "requirements/2025/harmonization/hla_2025_harmonization_worklist.csv"
+CANONICAL_REQUIREMENTS = ROOT / "requirements/2025/canonical_requirements.json"
+BACKEND_RESOLUTION = ROOT / "requirements/2025/backend_resolution.json"
 EXECUTABLE_REQUIREMENTS = REGISTRY_DIR / "executable_tests/hla_2025_executable_test_requirements_v3.csv"
 
 
@@ -19,6 +20,16 @@ def _normalize(text: str) -> str:
 def _assert_contains_all(text: str, snippets: list[str]) -> None:
     for snippet in snippets:
         assert snippet in text
+
+
+def _canonical_rows_by_id() -> dict[str, dict[str, object]]:
+    payload = json.loads(CANONICAL_REQUIREMENTS.read_text(encoding="utf-8"))
+    return {row["requirement_id"]: row for row in payload["rows"]}
+
+
+def _backend_rows_by_id(requirement_id: str) -> list[dict[str, object]]:
+    payload = json.loads(BACKEND_RESOLUTION.read_text(encoding="utf-8"))
+    return [row for row in payload["rows"] if row["requirement_id"] == requirement_id]
 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-REQ-002")
@@ -36,6 +47,69 @@ def test_ieee_1516_2025_requirements_registry_has_initial_tranche() -> None:
     assert "two-federate-core-exchange" in requirements["HLA2025-FR-003"]["tests"]
     assert "full interface service surface accounting" in requirements["HLA2025-FI-002"]["tests"]
     assert "validate_hla_name" in requirements["HLA2025-OMT-001"]["tests"]
+
+
+@pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-TRACE-001", "HLA2025-BND-003")
+def test_2025_canonical_requirement_catalog_maps_rows_to_owner_docs_shards_and_evidence() -> None:
+    rows = _canonical_rows_by_id()
+
+    assert len(rows) == 691
+
+    assert rows["HLA2025-FI-SVC-001"]["canonical_status"] == "covered"
+    assert rows["HLA2025-FI-SVC-001"]["owner_doc"] == "docs/requirements/ieee-1516-2025/federation_management_bounded_proof.md"
+    assert rows["HLA2025-FI-SVC-001"]["primary_test_shard"] == "unit-python-2025-core"
+    assert rows["HLA2025-FI-SVC-001"]["primary_command"] == "./tools/test-surface run unit-python-2025-core"
+    assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in rows["HLA2025-FI-SVC-001"]["evidence_refs"]
+
+    assert rows["HLA2025-FI-SVC-057"]["canonical_status"] == "covered"
+    assert rows["HLA2025-FI-SVC-057"]["owner_doc"] == "docs/requirements/ieee-1516-2025/object_management_bounded_proof.md"
+    assert rows["HLA2025-FI-SVC-057"]["primary_test_shard"] == "unit-python-2025-core"
+    assert "tests/scenarios/test_object_management_backend_matrix.py" in rows["HLA2025-FI-SVC-057"]["evidence_refs"]
+
+    assert rows["HLA2025-FI-CB-001"]["canonical_status"] == "duplicate/umbrella"
+    assert rows["HLA2025-FI-CB-001"]["owner_doc"] == "docs/requirements/ieee-1516-2025/callback_binding_deltas.md"
+    assert rows["HLA2025-FI-CB-001"]["primary_test_shard"] == "unit-shim-tooling"
+
+    assert rows["HLA2025-FR-001"]["canonical_status"] == "duplicate/umbrella"
+    assert rows["HLA2025-FR-001"]["owner_doc"] == "docs/requirements/ieee-1516-2025/framework_rules.md"
+    assert rows["HLA2025-FR-001"]["primary_test_shard"] == "unit-python-2025-core"
+
+    assert rows["HLA2025-OMT-COMP-006"]["canonical_status"] == "covered"
+    assert rows["HLA2025-OMT-COMP-006"]["owner_doc"] == "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md"
+    assert rows["HLA2025-OMT-COMP-006"]["primary_test_shard"] == "unit-fom-tooling"
+
+    assert rows["HLA2025-FI-RET-001"]["canonical_status"] == "retired/legacy-only"
+    assert rows["HLA2025-FI-RET-001"]["owner_doc"] == "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md"
+    assert rows["HLA2025-FI-RET-001"]["primary_test_shard"] == "unit-foundation"
+
+
+@pytest.mark.requirements("HLA2025-BND-001", "HLA2025-BND-002", "HLA2025-BND-003", "HLA2025-FI-CB-001")
+def test_2025_backend_resolution_catalog_keeps_backend_and_route_truth_separate_from_canonical_status() -> None:
+    callback_rows = _backend_rows_by_id("HLA2025-FI-SVC-193")
+    assert len(callback_rows) == 2
+
+    owners = {row["canonical_owner"] for row in callback_rows}
+    assert owners == {
+        "docs/requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md",
+        "docs/requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md",
+    }
+
+    binding_route_row = next(
+        row for row in callback_rows
+        if row["canonical_owner"] == "docs/requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md"
+    )
+    assert binding_route_row["primary_shard"] == "unit-transport-local"
+    assert binding_route_row["primary_command"] == "./tools/test-surface run unit-transport-local"
+    assert binding_route_row["backend_fields"]["java_surface"] == "present"
+    assert binding_route_row["backend_fields"]["cpp_surface"] == "present"
+    assert binding_route_row["backend_fields"]["fedpro_surface"] == "not-present-route-boundary-callback-pump-control"
+
+    pitch_row = next(
+        row for row in callback_rows
+        if row["canonical_owner"] == "docs/requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md"
+    )
+    assert pitch_row["primary_command"] == "./tools/pitch 202x-micro-certify"
+    assert pitch_row["backend_fields"]["pitch_202x_row_resolution"] == "bounded-fi-overlap-only"
 
 
 @pytest.mark.requirements("HLA2025-REQ-001")

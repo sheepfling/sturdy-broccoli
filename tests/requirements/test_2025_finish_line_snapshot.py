@@ -1,3 +1,10 @@
+"""Downstream closeout-reporting verification for the 2025 lane.
+
+This module verifies generated reporting artifacts built from the canonical
+2025 requirement and backend-resolution surfaces. It is not itself a
+requirement-truth owner surface.
+"""
+
 from __future__ import annotations
 
 import json

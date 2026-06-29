@@ -11,8 +11,8 @@ DIFFERENTIAL_SET = ROOT / "requirements/2025/differentials/HLA_1516_2025_vs_2010
 REUSE_DISPOSITION = ROOT / "requirements/2025/differentials/HLA_1516_2025_vs_2010_Code_Reuse_Disposition.csv"
 STRICT_DOC_INVENTORY = ROOT / "requirements/2025/STRICT_DOC_INVENTORY.json"
 SOURCE_TRACE = ROOT / "requirements/2025/SOURCE_TRACE.md"
-HARMONIZATION_DISPOSITION_CSV = ROOT / "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv"
-HARMONIZATION_DISPOSITION_JSON = ROOT / "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.json"
+CANONICAL_REQUIREMENTS = ROOT / "requirements/2025/canonical_requirements.json"
+BACKEND_RESOLUTION = ROOT / "requirements/2025/backend_resolution.json"
 FI_BINDING_SURFACE_MATRIX = ROOT / "requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv"
 FEDPRO_PROTO_DIR = ROOT / "packages/hla-transport-grpc/proto/rti1516_2025/fedpro"
 FEDPRO_2025_TEST = ROOT / "tests/transport/test_grpc_transport_2025.py"
@@ -24,12 +24,25 @@ def _csv_rows(path: Path) -> list[dict[str, str]]:
         return [{key: value or "" for key, value in row.items()} for row in csv.DictReader(handle)]
 
 
-def _json_rows(path: Path) -> list[dict[str, object]]:
-    return json.loads(path.read_text(encoding="utf-8"))
+def _canonical_requirement_rows() -> list[dict[str, object]]:
+    return json.loads(CANONICAL_REQUIREMENTS.read_text(encoding="utf-8"))["rows"]
 
 
-def _matching_rows(rows: list[dict[str, object]] | list[dict[str, str]], ids: set[str]) -> list[dict[str, object] | dict[str, str]]:
-    return [row for row in rows if str(row.get("id", "")) in ids]
+def _backend_resolution_rows() -> list[dict[str, object]]:
+    return json.loads(BACKEND_RESOLUTION.read_text(encoding="utf-8"))["rows"]
+
+
+def _matching_requirement_rows(rows: list[dict[str, object]], ids: set[str]) -> list[dict[str, object]]:
+    return [row for row in rows if str(row.get("requirement_id", "")) in ids]
+
+
+def _canonical_service_rows(start: int, end: int) -> list[dict[str, object]]:
+    return [
+        row
+        for row in _canonical_requirement_rows()
+        if str(row.get("requirement_id", "")).startswith("HLA2025-FI-SVC-")
+        and start <= int(str(row.get("requirement_id", "")).split("-")[-1]) <= end
+    ]
 
 
 PYTHON2025_BACKEND_EVIDENCE_PATH = "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/backend.py"
@@ -100,179 +113,115 @@ DIRECT_SERVICE_USAGE_EVIDENCE = (
 
 @pytest.mark.requirements("HLA2025-MIL-001", "HLA2025-MIL-002", "HLA2025-TRACE-001")
 def test_harmonization_packets_keep_covered_runtime_evidence_on_python2025_lane() -> None:
-    disposition_rows = _csv_rows(HARMONIZATION_DISPOSITION_CSV)
-    disposition_json_rows = _json_rows(HARMONIZATION_DISPOSITION_JSON)
-
-    for rows in (disposition_rows,):
-        covered_rows = [row for row in rows if row.get("harmonization_disposition") == "covered"]
-        assert covered_rows
-        assert any(PYTHON2025_BACKEND_PACKAGE_PATH in row.get("suggested_repo_evidence_path", "") for row in covered_rows)
-        assert all(SHIM_BACKEND_EVIDENCE_PATH not in row.get("suggested_repo_evidence_path", "") for row in covered_rows)
-
-    covered_json_rows = [row for row in disposition_json_rows if row.get("harmonization_disposition") == "covered"]
-    assert covered_json_rows
-    assert any(PYTHON2025_BACKEND_PACKAGE_PATH in str(row.get("suggested_repo_evidence_path", "")) for row in covered_json_rows)
-    assert all(SHIM_BACKEND_EVIDENCE_PATH not in str(row.get("suggested_repo_evidence_path", "")) for row in covered_json_rows)
+    covered_rows = [row for row in _canonical_requirement_rows() if row.get("canonical_status") == "covered"]
+    assert covered_rows
+    assert any(PYTHON2025_BACKEND_PACKAGE_PATH in "; ".join(row.get("evidence_refs", [])) for row in covered_rows)
+    assert all(SHIM_BACKEND_EVIDENCE_PATH not in "; ".join(row.get("evidence_refs", [])) for row in covered_rows)
 
 
 @pytest.mark.requirements("HLA2025-MIL-001", "HLA2025-REQ-001")
 def test_covered_2025_rows_do_not_keep_stale_not_promoted_status_markers() -> None:
-    for rows in (
-        _csv_rows(HARMONIZATION_DISPOSITION_CSV),
-        _json_rows(HARMONIZATION_DISPOSITION_JSON),
-    ):
-        covered_rows = [row for row in rows if str(row.get("harmonization_disposition", "")) == "covered"]
-        assert covered_rows
-        assert all(str(row.get("repo_evidence_status", "")) != STALE_COVERED_STATUS for row in covered_rows)
+    covered_rows = [row for row in _canonical_requirement_rows() if str(row.get("canonical_status", "")) == "covered"]
+    assert covered_rows
+    assert all(str(row.get("repo_evidence_status", "")) != STALE_COVERED_STATUS for row in covered_rows)
 
-        service_rows = [row for row in covered_rows if str(row.get("row_role", "")) == "service-or-callback"]
-        assert service_rows
-        assert all(str(row.get("repo_evidence_status", "")) == SERVICE_COVERED_STATUS for row in service_rows)
+    service_rows = [row for row in covered_rows if str(row.get("row_kind", "")) == "service-or-callback"]
+    assert service_rows
+    assert all(str(row.get("repo_evidence_status", "")) == SERVICE_COVERED_STATUS for row in service_rows)
 
-        service_usage_rows = [row for row in covered_rows if str(row.get("row_role", "")) == "service-usage-crosscheck"]
-        assert service_usage_rows
-        assert all(str(row.get("repo_evidence_status", "")) == SERVICE_USAGE_COVERED_STATUS for row in service_usage_rows)
-        assert all(str(row.get("suggested_repo_evidence_path", "")) == DIRECT_SERVICE_USAGE_EVIDENCE for row in service_usage_rows)
-        assert all("tests/requirements/" not in str(row.get("suggested_repo_evidence_path", "")) for row in service_usage_rows)
+    service_usage_rows = [row for row in covered_rows if str(row.get("row_kind", "")) == "service-usage-crosscheck"]
+    assert service_usage_rows
+    assert all(str(row.get("repo_evidence_status", "")) == SERVICE_USAGE_COVERED_STATUS for row in service_usage_rows)
+    assert all("; ".join(row.get("evidence_refs", [])) == DIRECT_SERVICE_USAGE_EVIDENCE for row in service_usage_rows)
+    assert all("tests/requirements/" not in "; ".join(row.get("evidence_refs", [])) for row in service_usage_rows)
 
 
 @pytest.mark.requirements("HLA2025-FI-CB-001", "HLA2025-BIND-FEDPRO-001", "HLA2025-BIND-JAVA-CPP-001")
 def test_harmonization_packets_repoint_delta_umbrella_rows_to_real_callback_binding_evidence() -> None:
     placeholder_prefix = "tests/hla2025/fi/deltas/"
-
-    for rows in (
-        _csv_rows(HARMONIZATION_DISPOSITION_CSV),
-        _json_rows(HARMONIZATION_DISPOSITION_JSON),
-    ):
-        matched = [row for row in rows if row.get("id") in DELTA_UMBRELLA_IDS]
-        assert len(matched) == len(DELTA_UMBRELLA_IDS)
-        for row in matched:
-            evidence = str(row.get("suggested_repo_evidence_path", ""))
-            assert CALLBACK_BINDING_DELTA_DOC in evidence
-            assert placeholder_prefix not in evidence
+    matched = _matching_requirement_rows(_canonical_requirement_rows(), DELTA_UMBRELLA_IDS)
+    assert len(matched) == len(DELTA_UMBRELLA_IDS)
+    for row in matched:
+        evidence = "; ".join(row.get("evidence_refs", []))
+        assert CALLBACK_BINDING_DELTA_DOC in evidence
+        assert placeholder_prefix not in evidence
 
 
 @pytest.mark.requirements("HLA2025-FI-CB-001", "HLA2025-FI-CB-008", "HLA2025-BIND-FEDPRO-001", "HLA2025-BIND-JAVA-CPP-001")
 def test_delta_umbrella_rows_are_explicit_evidenced_owner_doc_closures_not_missing_evidence_rows() -> None:
-    for rows in (_csv_rows(HARMONIZATION_DISPOSITION_CSV), _json_rows(HARMONIZATION_DISPOSITION_JSON)):
-        matched = _matching_rows(rows, DELTA_UMBRELLA_IDS)
-        assert len(matched) == len(DELTA_UMBRELLA_IDS)
-        for row in matched:
-            assert str(row.get("harmonization_disposition", "")) == "duplicate/umbrella"
-            assert str(row.get("row_role", "")) == "delta-umbrella"
+    matched = _matching_requirement_rows(_canonical_requirement_rows(), DELTA_UMBRELLA_IDS)
+    assert len(matched) == len(DELTA_UMBRELLA_IDS)
+    for row in matched:
+        assert str(row.get("canonical_status", "")) == "duplicate/umbrella"
+        assert str(row.get("row_kind", "")) == "delta-umbrella"
 
-            evidence = str(row.get("suggested_repo_evidence_path", ""))
-            assert CALLBACK_BINDING_DELTA_DOC in evidence
-            assert "test_2025_finish_line_snapshot.py" not in evidence
-            assert "test_2025_tail_backlog_evidence.py" not in evidence
+        evidence = "; ".join(row.get("evidence_refs", []))
+        assert CALLBACK_BINDING_DELTA_DOC in evidence
+        assert "test_2025_finish_line_snapshot.py" not in evidence
+        assert "test_2025_tail_backlog_evidence.py" not in evidence
 
-            repo_status = str(row.get("repo_evidence_status", ""))
-            assert repo_status.startswith("owner-doc-closed:")
-            assert "keep duplicate/umbrella" in repo_status
+        repo_status = str(row.get("repo_evidence_status", ""))
+        assert repo_status.startswith("owner-doc-closed:")
+        assert "keep duplicate/umbrella" in repo_status
 
-            rationale = str(row.get("disposition_rationale", ""))
-            assert "non-standalone umbrella" in rationale
-            assert "child FI/binding rows" in rationale
-
-            closure_task = str(row.get("closure_task", ""))
-            assert "child-row links" in closure_task
-            assert "do not relabel this umbrella row as standalone proof" in closure_task
-
-            risk = str(row.get("coverage_risk_addressed", ""))
-            assert "binding-specific test anchors" in risk
-            assert "double-counting" in risk
-
-            promotion_rule = str(row.get("promotion_rule", ""))
-            assert promotion_rule.startswith("Promote to covered only if")
-            assert "child-row map" in promotion_rule
-            assert "duplicate/umbrella" in promotion_rule
+        rationale = str(row.get("canonical_status_reason", ""))
+        assert "non-standalone umbrella" in rationale
+        assert "child FI/binding rows" in rationale
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FR-010")
 def test_framework_umbrella_rows_are_explicit_evidenced_owner_doc_closures_not_missing_evidence_rows() -> None:
-    for rows in (_csv_rows(HARMONIZATION_DISPOSITION_CSV), _json_rows(HARMONIZATION_DISPOSITION_JSON)):
-        matched = _matching_rows(rows, FRAMEWORK_UMBRELLA_IDS)
-        assert len(matched) == len(FRAMEWORK_UMBRELLA_IDS)
-        for row in matched:
-            assert str(row.get("harmonization_disposition", "")) == "duplicate/umbrella"
-            assert str(row.get("row_role", "")) == "framework-umbrella"
+    matched = _matching_requirement_rows(_canonical_requirement_rows(), FRAMEWORK_UMBRELLA_IDS)
+    assert len(matched) == len(FRAMEWORK_UMBRELLA_IDS)
+    for row in matched:
+        assert str(row.get("canonical_status", "")) == "duplicate/umbrella"
+        assert str(row.get("row_kind", "")) == "framework-umbrella"
 
-            evidence = str(row.get("suggested_repo_evidence_path", ""))
-            assert FRAMEWORK_RULES_DOC in evidence
-            assert "traceability_matrix.json" in evidence
-            assert "linked FI/OMT child rows" in evidence
+        evidence = "; ".join(row.get("evidence_refs", []))
+        assert FRAMEWORK_RULES_DOC in evidence
+        assert "traceability_matrix.json" in evidence
+        assert "linked FI/OMT child rows" in evidence
 
-            repo_status = str(row.get("repo_evidence_status", ""))
-            assert repo_status.startswith("owner-doc-closed:")
-            assert "child-row links" in repo_status
-            assert "keep duplicate/umbrella" in repo_status
+        repo_status = str(row.get("repo_evidence_status", ""))
+        assert repo_status.startswith("owner-doc-closed:")
+        assert "child-row links" in repo_status
+        assert "keep duplicate/umbrella" in repo_status
 
-            rationale = str(row.get("disposition_rationale", ""))
-            assert "non-standalone parent" in rationale
-            assert "linked child FI/OMT/runtime rows" in rationale
-
-            closure_task = str(row.get("closure_task", ""))
-            assert "child-row map" in closure_task
-            assert "do not relabel this framework umbrella as standalone proof" in closure_task
-
-            risk = str(row.get("coverage_risk_addressed", ""))
-            assert "concrete child requirements" in risk
-            assert "parent normalization rows" in risk
-
-            promotion_rule = str(row.get("promotion_rule", ""))
-            assert promotion_rule.startswith("Promote to covered only if")
-            assert "standalone framework claim" in promotion_rule
-            assert "duplicate/umbrella" in promotion_rule
+        rationale = str(row.get("canonical_status_reason", ""))
+        assert "non-standalone parent" in rationale
+        assert "linked child FI/OMT/runtime rows" in rationale
 
 
 @pytest.mark.requirements("HLA2025-RET-001", "HLA2025-RET-003")
 def test_retired_legacy_rows_are_explicit_evidenced_owner_doc_closures_not_missing_evidence_rows() -> None:
     expected_evidence = "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md; migration/compatibility fixture if supported"
+    matched = _matching_requirement_rows(_canonical_requirement_rows(), RETIRED_LEGACY_IDS)
+    assert len(matched) == len(RETIRED_LEGACY_IDS)
+    for row in matched:
+        assert str(row.get("canonical_status", "")) == "retired/legacy-only"
+        assert str(row.get("row_kind", "")) == "legacy-mapping"
+        assert "; ".join(row.get("evidence_refs", [])) == expected_evidence
 
-    for rows in (_csv_rows(HARMONIZATION_DISPOSITION_CSV), _json_rows(HARMONIZATION_DISPOSITION_JSON)):
-        matched = _matching_rows(rows, RETIRED_LEGACY_IDS)
-        assert len(matched) == len(RETIRED_LEGACY_IDS)
-        for row in matched:
-            assert str(row.get("harmonization_disposition", "")) == "retired/legacy-only"
-            assert str(row.get("row_role", "")) == "legacy-mapping"
-            assert str(row.get("suggested_repo_evidence_path", "")) == expected_evidence
+        rationale = str(row.get("canonical_status_reason", ""))
+        assert "Legacy-only diff row" in rationale
+        assert "keep out of 2025 normative coverage" in rationale
 
-            rationale = str(row.get("disposition_rationale", ""))
-            assert "Legacy-only diff row" in rationale
-            assert "keep out of 2025 normative coverage" in rationale
-
-            assert str(row.get("repo_evidence_status", "")) == "legacy-only: excluded unless compatibility support is intentional"
-
-            closure_task = str(row.get("closure_task", ""))
-            assert "Confirm retired/replacement mapping" in closure_task
-            assert "excluded from 2025 normative coverage counts" in closure_task
-
-            risk = str(row.get("coverage_risk_addressed", ""))
-            assert "miscounted as 2025 obligations" in risk
-
-            promotion_rule = str(row.get("promotion_rule", ""))
-            assert promotion_rule.startswith("Promote to covered only after")
-            assert "repo evidence anchor" in promotion_rule
-            assert "executable/fixture test anchor" in promotion_rule
+        assert str(row.get("repo_evidence_status", "")) == "legacy-only: excluded unless compatibility support is intentional"
 
 @pytest.mark.requirements("HLA2025-OMT-COMP-006", "HLA2025-OMT-COMP-039", "HLA2025-OMT-COMP-224")
 def test_harmonization_packets_keep_xs_any_rows_on_bounded_omt_tolerance_evidence() -> None:
-    for rows in (
-        _csv_rows(HARMONIZATION_DISPOSITION_CSV),
-        _json_rows(HARMONIZATION_DISPOSITION_JSON),
-    ):
-        matched = [
-            row
-            for row in rows
-            if str(row.get("id", "")).startswith("HLA2025-OMT-COMP-")
-            and "xs:any" in str(row.get("service_or_check", ""))
-        ]
-        assert len(matched) == 45
-        for row in matched:
-            evidence = str(row.get("suggested_repo_evidence_path", ""))
-            assert OMT_XS_ANY_DOC in evidence
-            assert "tests/test_rti1516_2025_validation.py" in evidence
-            assert "packages/hla-rti-core/src/hla/fom/__init__.py" in evidence
+    matched = [
+        row
+        for row in _canonical_requirement_rows()
+        if str(row.get("requirement_id", "")).startswith("HLA2025-OMT-COMP-")
+        and "xs:any" in str(row.get("service_or_check", ""))
+    ]
+    assert len(matched) == 45
+    for row in matched:
+        evidence = "; ".join(row.get("evidence_refs", []))
+        assert OMT_XS_ANY_DOC in evidence
+        assert "tests/test_rti1516_2025_validation.py" in evidence
+        assert "packages/hla-rti-core/src/hla/fom/__init__.py" in evidence
 
 
 @pytest.mark.requirements("HLA2025-OMT-COMP-006", "HLA2025-OMT-COMP-039", "HLA2025-OMT-COMP-224")
@@ -336,16 +285,12 @@ def test_omt_xs_any_bounded_proof_doc_enumerates_all_tracked_rows() -> None:
 
 @pytest.mark.requirements("HLA2025-RET-001", "HLA2025-RET-003")
 def test_harmonization_packets_keep_retired_rows_on_explicit_legacy_mapping_doc() -> None:
-    for rows in (
-        _csv_rows(HARMONIZATION_DISPOSITION_CSV),
-        _json_rows(HARMONIZATION_DISPOSITION_JSON),
-    ):
-        matched = [row for row in rows if row.get("id") in RETIRED_LEGACY_IDS]
-        assert len(matched) == len(RETIRED_LEGACY_IDS)
-        for row in matched:
-            evidence = str(row.get("suggested_repo_evidence_path", ""))
-            assert RETIRED_LEGACY_MAPPING_DOC in evidence
-            assert str(row.get("harmonization_disposition", "")) == "retired/legacy-only"
+    matched = _matching_requirement_rows(_canonical_requirement_rows(), RETIRED_LEGACY_IDS)
+    assert len(matched) == len(RETIRED_LEGACY_IDS)
+    for row in matched:
+        evidence = "; ".join(row.get("evidence_refs", []))
+        assert RETIRED_LEGACY_MAPPING_DOC in evidence
+        assert str(row.get("canonical_status", "")) == "retired/legacy-only"
 
 
 @pytest.mark.requirements("HLA2025-RET-001", "HLA2025-RET-003")
@@ -365,23 +310,19 @@ def test_retired_legacy_mapping_doc_accounts_for_all_retired_rows() -> None:
 
 @pytest.mark.requirements("HLA2025-REQ-001")
 def test_harmonization_packets_keep_support_service_rows_on_bounded_support_service_evidence() -> None:
-    for rows in (
-        _csv_rows(HARMONIZATION_DISPOSITION_CSV),
-        _json_rows(HARMONIZATION_DISPOSITION_JSON),
-    ):
-        matched = [
-            row
-            for row in rows
-            if str(row.get("id", "")).startswith("HLA2025-FI-SVC-")
-            and str(row.get("service_group", "")) == "Support services"
-        ]
-        assert len(matched) == 59
-        for row in matched:
-            evidence = str(row.get("suggested_repo_evidence_path", ""))
-            assert SUPPORT_SERVICES_DOC in evidence
-            assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in evidence
-            assert "tests/transport/test_grpc_transport_2025.py" in evidence
-            assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/support_services_runtime.py" in evidence
+    matched = [
+        row
+        for row in _canonical_requirement_rows()
+        if str(row.get("requirement_id", "")).startswith("HLA2025-FI-SVC-")
+        and str(row.get("service_group", "")) == "Support services"
+    ]
+    assert len(matched) == 59
+    for row in matched:
+        evidence = "; ".join(row.get("evidence_refs", []))
+        assert SUPPORT_SERVICES_DOC in evidence
+        assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in evidence
+        assert "tests/transport/test_grpc_transport_2025.py" in evidence
+        assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/support_services_runtime.py" in evidence
 
 
 @pytest.mark.requirements("HLA2025-BND-001", "HLA2025-BND-002", "HLA2025-BND-003")
@@ -428,130 +369,76 @@ def test_fi_binding_surface_matrix_keeps_fedpro_route_boundaries_explicit() -> N
 
 @pytest.mark.requirements("HLA2025-REQ-001")
 def test_harmonization_packets_keep_time_management_rows_on_time_management_proof_note() -> None:
-    for rows in (
-        _csv_rows(HARMONIZATION_DISPOSITION_CSV),
-        _json_rows(HARMONIZATION_DISPOSITION_JSON),
-    ):
-        matched = [
-            row
-            for row in rows
-            if str(row.get("id", "")).startswith("HLA2025-FI-SVC-")
-            and 101 <= int(str(row.get("id", "")).split("-")[-1]) <= 125
-        ]
-        assert len(matched) == 25
-        for row in matched:
-            evidence = str(row.get("suggested_repo_evidence_path", ""))
-            assert TIME_MANAGEMENT_DOC in evidence
-            assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in evidence
-            assert "tests/transport/test_grpc_transport_2025.py" in evidence
-            assert "packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py" in evidence
+    matched = _canonical_service_rows(101, 125)
+    assert len(matched) == 25
+    for row in matched:
+        evidence = "; ".join(row.get("evidence_refs", []))
+        assert TIME_MANAGEMENT_DOC in evidence
+        assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in evidence
+        assert "tests/transport/test_grpc_transport_2025.py" in evidence
+        assert "packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py" in evidence
 
 
 @pytest.mark.requirements("HLA2025-REQ-001")
 def test_harmonization_packets_keep_federation_management_rows_on_federation_management_proof_note() -> None:
-    for rows in (
-        _csv_rows(HARMONIZATION_DISPOSITION_CSV),
-        _json_rows(HARMONIZATION_DISPOSITION_JSON),
-    ):
-        matched = [
-            row
-            for row in rows
-            if str(row.get("id", "")).startswith("HLA2025-FI-SVC-")
-            and 1 <= int(str(row.get("id", "")).split("-")[-1]) <= 34
-        ]
-        assert len(matched) == 34
-        for row in matched:
-            evidence = str(row.get("suggested_repo_evidence_path", ""))
-            assert FEDERATION_MANAGEMENT_DOC in evidence
-            assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in evidence
-            assert "tests/transport/test_grpc_transport_2025.py" in evidence
-            assert "tests/scenarios/test_federation_management_backend_matrix.py" in evidence
+    matched = _canonical_service_rows(1, 34)
+    assert len(matched) == 34
+    for row in matched:
+        evidence = "; ".join(row.get("evidence_refs", []))
+        assert FEDERATION_MANAGEMENT_DOC in evidence
+        assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in evidence
+        assert "tests/transport/test_grpc_transport_2025.py" in evidence
+        assert "tests/scenarios/test_federation_management_backend_matrix.py" in evidence
 
 
 @pytest.mark.requirements("HLA2025-REQ-001")
 def test_harmonization_packets_keep_declaration_management_rows_on_declaration_management_proof_note() -> None:
-    for rows in (
-        _csv_rows(HARMONIZATION_DISPOSITION_CSV),
-        _json_rows(HARMONIZATION_DISPOSITION_JSON),
-    ):
-        matched = [
-            row
-            for row in rows
-            if str(row.get("id", "")).startswith("HLA2025-FI-SVC-")
-            and 35 <= int(str(row.get("id", "")).split("-")[-1]) <= 50
-        ]
-        assert len(matched) == 16
-        for row in matched:
-            evidence = str(row.get("suggested_repo_evidence_path", ""))
-            assert DECLARATION_MANAGEMENT_DOC in evidence
-            assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in evidence
-            assert "tests/scenarios/test_object_management_backend_matrix.py" in evidence
-            assert "tests/transport/test_grpc_transport_2025.py" in evidence
+    matched = _canonical_service_rows(35, 50)
+    assert len(matched) == 16
+    for row in matched:
+        evidence = "; ".join(row.get("evidence_refs", []))
+        assert DECLARATION_MANAGEMENT_DOC in evidence
+        assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in evidence
+        assert "tests/scenarios/test_object_management_backend_matrix.py" in evidence
+        assert "tests/transport/test_grpc_transport_2025.py" in evidence
 
 
 @pytest.mark.requirements("HLA2025-REQ-001")
 def test_harmonization_packets_keep_object_management_rows_on_object_management_proof_note() -> None:
-    for rows in (
-        _csv_rows(HARMONIZATION_DISPOSITION_CSV),
-        _json_rows(HARMONIZATION_DISPOSITION_JSON),
-    ):
-        matched = [
-            row
-            for row in rows
-            if str(row.get("id", "")).startswith("HLA2025-FI-SVC-")
-            and 51 <= int(str(row.get("id", "")).split("-")[-1]) <= 82
-        ]
-        assert len(matched) == 32
-        for row in matched:
-            evidence = str(row.get("suggested_repo_evidence_path", ""))
-            assert OBJECT_MANAGEMENT_DOC in evidence
-            assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in evidence
-            assert "tests/scenarios/test_object_management_backend_matrix.py" in evidence
-            assert "tests/transport/test_grpc_transport_2025.py" in evidence
+    matched = _canonical_service_rows(51, 82)
+    assert len(matched) == 32
+    for row in matched:
+        evidence = "; ".join(row.get("evidence_refs", []))
+        assert OBJECT_MANAGEMENT_DOC in evidence
+        assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in evidence
+        assert "tests/scenarios/test_object_management_backend_matrix.py" in evidence
+        assert "tests/transport/test_grpc_transport_2025.py" in evidence
 
 
 @pytest.mark.requirements("HLA2025-REQ-001")
 def test_harmonization_packets_keep_ownership_management_rows_on_ownership_management_proof_note() -> None:
-    for rows in (
-        _csv_rows(HARMONIZATION_DISPOSITION_CSV),
-        _json_rows(HARMONIZATION_DISPOSITION_JSON),
-    ):
-        matched = [
-            row
-            for row in rows
-            if str(row.get("id", "")).startswith("HLA2025-FI-SVC-")
-            and 83 <= int(str(row.get("id", "")).split("-")[-1]) <= 100
-        ]
-        assert len(matched) == 18
-        for row in matched:
-            evidence = str(row.get("suggested_repo_evidence_path", ""))
-            assert OWNERSHIP_MANAGEMENT_DOC in evidence
-            assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in evidence
-            assert "tests/scenarios/test_ownership_management_backend_matrix.py" in evidence
-            assert "tests/backends/test_python_backend_object_ownership_extended.py" in evidence
-            assert "tests/transport/test_grpc_transport_2025.py" in evidence
+    matched = _canonical_service_rows(83, 100)
+    assert len(matched) == 18
+    for row in matched:
+        evidence = "; ".join(row.get("evidence_refs", []))
+        assert OWNERSHIP_MANAGEMENT_DOC in evidence
+        assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in evidence
+        assert "tests/scenarios/test_ownership_management_backend_matrix.py" in evidence
+        assert "tests/backends/test_python_backend_object_ownership_extended.py" in evidence
+        assert "tests/transport/test_grpc_transport_2025.py" in evidence
 
 
 @pytest.mark.requirements("HLA2025-REQ-001")
 def test_harmonization_packets_keep_ddm_rows_on_ddm_proof_note() -> None:
-    for rows in (
-        _csv_rows(HARMONIZATION_DISPOSITION_CSV),
-        _json_rows(HARMONIZATION_DISPOSITION_JSON),
-    ):
-        matched = [
-            row
-            for row in rows
-            if str(row.get("id", "")).startswith("HLA2025-FI-SVC-")
-            and 126 <= int(str(row.get("id", "")).split("-")[-1]) <= 137
-        ]
-        assert len(matched) == 12
-        for row in matched:
-            evidence = str(row.get("suggested_repo_evidence_path", ""))
-            assert DDM_MANAGEMENT_DOC in evidence
-            assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in evidence
-            assert "tests/backends/test_python_backend_time_ddm_extended.py" in evidence
-            assert "tests/scenarios/test_ddm_backend_matrix.py" in evidence
-            assert "tests/transport/test_grpc_transport_2025.py" in evidence
+    matched = _canonical_service_rows(126, 137)
+    assert len(matched) == 12
+    for row in matched:
+        evidence = "; ".join(row.get("evidence_refs", []))
+        assert DDM_MANAGEMENT_DOC in evidence
+        assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in evidence
+        assert "tests/backends/test_python_backend_time_ddm_extended.py" in evidence
+        assert "tests/scenarios/test_ddm_backend_matrix.py" in evidence
+        assert "tests/transport/test_grpc_transport_2025.py" in evidence
 
 
 @pytest.mark.requirements("HLA2025-BLG-001",
