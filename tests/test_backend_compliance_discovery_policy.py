@@ -79,11 +79,12 @@ def test_discovery_text_backlog_renders_portico_disposition_only_profile() -> No
     assert "classify backend applicability/disposition" in text
 
 
-def test_committed_vendor_backlog_artifacts_surface_portico_disposition_only_rows() -> None:
-    payload = json.loads((ROOT / "analysis" / "compliance" / "vendor_discovery_backlog.json").read_text(encoding="utf-8"))
+def test_generated_vendor_backlog_surfaces_portico_disposition_only_rows() -> None:
+    payload = build_discovery_payload(".")
+    backlog = payload["backlog"]
     rows_by_backend = {
         row["backend_id"]: row
-        for row in payload["rows"]
+        for row in backlog["rows"]
         if str(row.get("backend_id", "")).startswith("portico")
     }
 
@@ -94,9 +95,9 @@ def test_committed_vendor_backlog_artifacts_surface_portico_disposition_only_row
         assert row["row_kind"] == "synthetic-requirement-disposition-backlog-row", backend_id
 
 
-def test_committed_vendor_backlog_json_surfaces_backlog_summary_and_priorities() -> None:
-    json_path = ROOT / "analysis" / "compliance" / "vendor_discovery_backlog.json"
-    payload = json.loads(json_path.read_text(encoding="utf-8"))
-    assert payload["summary"]["row_count"] == len(payload["rows"])
-    assert any(row["current_status"] == "classification-required" for row in payload["rows"])
-    assert any(row["priority"] == "P1" for row in payload["rows"])
+def test_generated_vendor_backlog_surfaces_backlog_summary_and_priorities() -> None:
+    payload = build_discovery_payload(".")
+    backlog = payload["backlog"]
+    assert backlog["summary"]["row_count"] == len(backlog["rows"])
+    assert any(row["current_status"] == "classification-required" for row in backlog["rows"])
+    assert any(row["priority"] == "P1" for row in backlog["rows"])
