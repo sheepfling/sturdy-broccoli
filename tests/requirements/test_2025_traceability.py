@@ -72,6 +72,7 @@ def test_spec2025_traceability_matrix_routes_through_canonical_owner_and_live_ev
         assert row["owner_doc"].startswith("docs/requirements/ieee-1516-2025/")
         assert row["child_requirement_ids"]
         assert row["evidence_anchors"]
+        assert row["requirement_resolution_source"] == "canonical-row"
         assert "docs/plans/" not in row["owner_doc"]
         assert "worklist" not in row["owner_doc"]
         for anchor in row["evidence_anchors"]:
@@ -81,21 +82,25 @@ def test_spec2025_traceability_matrix_routes_through_canonical_owner_and_live_ev
 
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-MOM-001", "HLA2025-TRACE-001")
-def test_spec2025_packet_only_traceability_rows_get_requirement_facing_owner_docs_and_direct_anchors() -> None:
+def test_spec2025_owner_doc_derived_traceability_rows_get_requirement_facing_owner_docs_and_direct_anchors() -> None:
     matrix = build_spec2025_traceability_matrix(ROOT)
     rows = {row["requirement_id"]: row for row in matrix["rows"]}
 
+    assert rows["HLA2025-FI-001"]["requirement_resolution_source"] == "owner-doc-derived"
+    assert rows["HLA2025-FI-001"]["harmonization_disposition"] == "owner-doc-derived"
     assert rows["HLA2025-FI-001"]["owner_doc"] == "docs/requirements/ieee-1516-2025/federate_interface.md"
     assert rows["HLA2025-FI-001"]["direct_evidence_anchors"] == [
         "docs/requirements/ieee-1516-2025/federate_interface.md",
         "docs/requirements/ieee-1516-2025",
     ]
 
+    assert rows["HLA2025-MOM-001"]["requirement_resolution_source"] == "owner-doc-derived"
     assert rows["HLA2025-MOM-001"]["owner_doc"] == "docs/requirements/ieee-1516-2025/traceability_matrix.md"
     assert rows["HLA2025-MOM-001"]["direct_evidence_anchors"] == [
         "docs/requirements/ieee-1516-2025/traceability_matrix.md",
     ]
 
+    assert rows["HLA2025-TRACE-001"]["requirement_resolution_source"] == "owner-doc-derived"
     assert rows["HLA2025-TRACE-001"]["owner_doc"] == "docs/requirements/ieee-1516-2025/traceability_matrix.md"
     assert rows["HLA2025-TRACE-001"]["direct_evidence_anchors"] == [
         "docs/requirements/ieee-1516-2025/traceability_matrix.md",
@@ -191,7 +196,8 @@ def _make_traceability_anchor_test(pytest_candidate: str, parent_requirement_id:
         assert matrix_row["traceability_basis"] in {
             "direct-requirement-evidence",
             "duplicate-umbrella-child-evidence",
-            "packet-only-no-direct-anchor",
+            "owner-doc-direct-evidence",
+            "owner-doc-no-direct-anchor",
         }
         assert isinstance(matrix_row["evidence_anchors"], list)
 

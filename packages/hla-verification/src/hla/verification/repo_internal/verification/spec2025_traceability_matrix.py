@@ -208,6 +208,14 @@ def build_spec2025_traceability_matrix(project_root: Path) -> dict[str, Any]:
             if anchor not in evidence_anchors:
                 evidence_anchors.append(anchor)
         canonical_row = canonical_rows_by_requirement.get(requirement_id)
+        if child_ids:
+            traceability_basis = "duplicate-umbrella-child-evidence"
+        elif canonical_row and direct_evidence_anchors:
+            traceability_basis = "direct-requirement-evidence"
+        elif direct_evidence_anchors:
+            traceability_basis = "owner-doc-direct-evidence"
+        else:
+            traceability_basis = "owner-doc-no-direct-anchor"
         rows.append(
             {
                 "requirement_id": requirement_id,
@@ -217,17 +225,14 @@ def build_spec2025_traceability_matrix(project_root: Path) -> dict[str, Any]:
                 "requirement_summary": packet_row["requirement_summary"],
                 "expected_result_from_extraction": packet_row["expected_result_from_extraction"],
                 "expected_status": packet_row["expected_status"],
-                "traceability_basis": (
-                    "duplicate-umbrella-child-evidence"
-                    if child_ids
-                    else "direct-requirement-evidence"
-                    if direct_evidence_anchors
-                    else "packet-only-no-direct-anchor"
+                "traceability_basis": traceability_basis,
+                "requirement_resolution_source": (
+                    "canonical-row" if canonical_row else "owner-doc-derived"
                 ),
                 "harmonization_disposition": (
-                    canonical_row["canonical_status"] if canonical_row else "packet-only"
+                    canonical_row["canonical_status"] if canonical_row else "owner-doc-derived"
                 ),
-                "row_role": canonical_row["row_kind"] if canonical_row else "packet-traceability",
+                "row_role": canonical_row["row_kind"] if canonical_row else "owner-doc-traceability",
                 "owner_doc": owner_doc_by_requirement.get(
                     requirement_id,
                     canonical_row["owner_doc"] if canonical_row else _packet_owner_doc(requirement_id),
@@ -269,6 +274,7 @@ def build_spec2025_traceability_matrix(project_root: Path) -> dict[str, Any]:
                 "expected_result_from_extraction": "",
                 "expected_status": "",
                 "traceability_basis": "duplicate-umbrella-child-evidence",
+                "requirement_resolution_source": "canonical-row",
                 "harmonization_disposition": canonical_row["canonical_status"],
                 "row_role": canonical_row["row_kind"],
                 "owner_doc": owner_doc_by_requirement.get(requirement_id, canonical_row["owner_doc"]),
@@ -288,7 +294,7 @@ def build_spec2025_traceability_matrix(project_root: Path) -> dict[str, Any]:
         "artifact": "spec2025-traceability-matrix",
         "scope": (
             "2025 executable packet traceability rows mapped to direct evidence anchors, "
-            "or to explicit umbrella child evidence / packet-only no-direct-anchor states"
+            "or to explicit umbrella child evidence / owner-doc-derived no-direct-anchor states"
         ),
         "row_count": len(rows),
         "rows": rows,
