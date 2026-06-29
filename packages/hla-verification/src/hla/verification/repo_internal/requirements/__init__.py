@@ -16,9 +16,13 @@ from .loaders import (
     load_backend_resolution_catalog,
     load_canonical_requirement_catalog,
     write_2010_backend_resolution_catalog,
+    write_2010_backend_resolution_catalog_csv,
     write_2010_canonical_requirement_catalog,
+    write_2010_canonical_requirement_catalog_csv,
     write_2025_backend_resolution_catalog,
+    write_2025_backend_resolution_catalog_csv,
     write_2025_canonical_requirement_catalog,
+    write_2025_canonical_requirement_catalog_csv,
 )
 from .models import (
     BackendResolutionCatalog,
@@ -55,8 +59,12 @@ __all__ = [
     "load_canonical_requirement_catalog",
     "survey_requirement_artifacts",
     "write_2010_backend_resolution_catalog",
+    "write_2010_backend_resolution_catalog_csv",
     "write_2010_canonical_requirement_catalog",
+    "write_2010_canonical_requirement_catalog_csv",
     "write_2025_backend_resolution_catalog",
+    "write_2025_backend_resolution_catalog_csv",
     "write_2025_canonical_requirement_catalog",
+    "write_2025_canonical_requirement_catalog_csv",
     "write_requirement_artifact_survey",
 ]

@@ -42,9 +42,13 @@ Keep verification docs in this order:
 - [../requirements/ieee-1516-2010/support_services_bounded_family.md](../requirements/ieee-1516-2010/support_services_bounded_family.md): canonical reading for the maintained Clause 10 bounded reconciliation tail after owner-summary closeout
 - [../requirements/ieee-1516-2025/README.md](../requirements/ieee-1516-2025/README.md): 2025 requirements-facing claim map and bounded proof-note index
 - [../../requirements/2010/canonical_requirements.json](../../requirements/2010/canonical_requirements.json): canonical 2010 row-level requirement truth
+- [../../requirements/2010/canonical_requirements.csv](../../requirements/2010/canonical_requirements.csv): same canonical 2010 row-level truth in CSV form
 - [../../requirements/2010/backend_resolution.json](../../requirements/2010/backend_resolution.json): canonical 2010 backend-resolution truth
+- [../../requirements/2010/backend_resolution.csv](../../requirements/2010/backend_resolution.csv): same canonical 2010 backend-resolution truth in CSV form
 - [../../requirements/2025/canonical_requirements.json](../../requirements/2025/canonical_requirements.json): canonical 2025 row-level requirement truth
+- [../../requirements/2025/canonical_requirements.csv](../../requirements/2025/canonical_requirements.csv): same canonical 2025 row-level truth in CSV form
 - [../../requirements/2025/backend_resolution.json](../../requirements/2025/backend_resolution.json): canonical 2025 backend- and route-resolution truth
+- [../../requirements/2025/backend_resolution.csv](../../requirements/2025/backend_resolution.csv): same canonical 2025 backend- and route-resolution truth in CSV form
 - [shard_registry.md](shard_registry.md): canonical runnable shard registry and repo-green gating map
 - [view_registry.md](view_registry.md): canonical focused-target and overlapping audit-view registry
 - [requirements_verification_flow.md](requirements_verification_flow.md): canonical rule for requirements -> live evidence -> code flow, and the ban on using plan/worklist prose as a requirement truth source
@@ -108,8 +112,8 @@ surfaces and should not sit in the primary verification chain.
 - use `requirements_completion_audit.md` or other closeout docs as downstream
   reporting over canonical requirement rows
 - do not use worklists, finish-line packets, or plan prose as substitutes for
-  `canonical_requirements.json`, `backend_resolution.json`, owner docs, shards,
-  or executable evidence
+  `canonical_requirements.{json,csv}`, `backend_resolution.{json,csv}`, owner
+  docs, shards, or executable evidence
 
 ## Shard And View Rule
 

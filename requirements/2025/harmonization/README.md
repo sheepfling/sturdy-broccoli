@@ -7,7 +7,9 @@ requirement and backend-resolution catalogs.
 Canonical rule:
 
 - the primary 2025 requirement truth is `../canonical_requirements.json`
+- the matching canonical CSV export is `../canonical_requirements.csv`
 - the primary backend and route companion truth is `../backend_resolution.json`
+- the matching canonical CSV export is `../backend_resolution.csv`
 - this directory is a generated or review-facing projection layer over those
   canonical edition surfaces, not the first truth surface to read
 
@@ -44,10 +46,10 @@ fixtures, and unsupported-boundary decisions where applicable are recorded.
 
 Verification rule:
 
-- treat `../canonical_requirements.json` as the only row-level requirement
-  truth
-- treat `../backend_resolution.json` as the only backend- and route-resolution
-  truth
+- treat `../canonical_requirements.json` and `../canonical_requirements.csv`
+  as the same row-level requirement truth surface in two encodings
+- treat `../backend_resolution.json` and `../backend_resolution.csv` as the
+  same backend- and route-resolution truth surface in two encodings
 - treat every file in this directory as a downstream grouped, row-shaped, or
   review-sequencing projection over those canonical surfaces
 

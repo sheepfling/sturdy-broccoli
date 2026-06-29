@@ -235,9 +235,13 @@ When `generate_compliance_artifacts.py` finishes, the best operator entrypoints 
 - `analysis/compliance/verification_traceability.csv`: flat clause-to-asset traceability
 - `analysis/compliance/requirements_ledger.csv`: requirement-level pass/partial/fail ledger
 - `requirements/2010/canonical_requirements.json`: canonical 2010 requirement truth surface
+- `requirements/2010/canonical_requirements.csv`: same canonical 2010 requirement truth surface in CSV form
 - `requirements/2010/backend_resolution.json`: canonical 2010 backend-resolution surface
+- `requirements/2010/backend_resolution.csv`: same canonical 2010 backend-resolution surface in CSV form
 - `requirements/2025/canonical_requirements.json`: canonical 2025 requirement truth surface
+- `requirements/2025/canonical_requirements.csv`: same canonical 2025 requirement truth surface in CSV form
 - `requirements/2025/backend_resolution.json`: canonical 2025 backend-resolution surface
+- `requirements/2025/backend_resolution.csv`: same canonical 2025 backend-resolution surface in CSV form
 - `analysis/compliance/requirements_matrix_2010.csv`: generated whole-spec 2010 matrix spanning section areas, service rows, and verification slices
 - `analysis/compliance/python_requirement_disposition.md`: generated Python backend requirement disposition packet
 - `analysis/compliance/certi_requirement_disposition.md`: generated aggregate CERTI family requirement disposition packet

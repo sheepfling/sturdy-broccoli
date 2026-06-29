@@ -25,6 +25,8 @@ def _classify_csv(path: str, header: list[str]) -> tuple[str, str, str]:
         return "requirement-mapping", "2010 detailed reconciliation bridge shape", "2010"
     if path.endswith("hla_2025_requirement_disposition_ledger.csv"):
         return "historical", "legacy row-shaped 2025 closeout projection", "2025"
+    if path.endswith("canonical_requirements.csv"):
+        return "canonical-requirement", "normalized canonical export", _edition_for_path(path)
     if path.endswith("canonical_requirements.json"):
         return "canonical-requirement", "normalized canonical export", _edition_for_path(path)
     if path.endswith("hla_2025_harmonization_worklist.csv"):

@@ -179,6 +179,27 @@
       "path": "docs/requirements/ieee-1516-2025/requirements.json"
     },
     {
+      "classification_basis": "backend or binding resolution companion surface",
+      "edition": "2010",
+      "family": "backend-resolution",
+      "fields": [
+        "edition",
+        "requirement_id",
+        "row_kind",
+        "resolution_type",
+        "canonical_owner",
+        "canonical_status",
+        "primary_shard",
+        "primary_command",
+        "evidence_artifact",
+        "evidence_refs",
+        "boundary_note",
+        "backend_fields"
+      ],
+      "format": "csv",
+      "path": "requirements/2010/backend_resolution.csv"
+    },
+    {
       "classification_basis": "unclassified machine-readable requirement artifact retained for audit",
       "edition": "2010",
       "family": "historical",
@@ -191,6 +212,39 @@
       ],
       "format": "json",
       "path": "requirements/2010/backend_resolution.json"
+    },
+    {
+      "classification_basis": "normalized canonical export",
+      "edition": "2010",
+      "family": "canonical-requirement",
+      "fields": [
+        "edition",
+        "requirement_id",
+        "source_document",
+        "clause",
+        "page",
+        "area",
+        "service_group",
+        "service_or_check",
+        "priority",
+        "closure_wave",
+        "requirement_text",
+        "normative_level",
+        "row_kind",
+        "parent_requirement_id",
+        "canonical_status",
+        "canonical_status_reason",
+        "owner_doc",
+        "primary_test_shard",
+        "primary_command",
+        "evidence_refs",
+        "boundary_note",
+        "source_trace_strength",
+        "repo_evidence_status",
+        "tags"
+      ],
+      "format": "csv",
+      "path": "requirements/2010/canonical_requirements.csv"
     },
     {
       "classification_basis": "normalized canonical export",
@@ -968,6 +1022,27 @@
       "path": "requirements/2025/STRICT_DOC_INVENTORY.json"
     },
     {
+      "classification_basis": "backend or binding resolution companion surface",
+      "edition": "2025",
+      "family": "backend-resolution",
+      "fields": [
+        "edition",
+        "requirement_id",
+        "row_kind",
+        "resolution_type",
+        "canonical_owner",
+        "canonical_status",
+        "primary_shard",
+        "primary_command",
+        "evidence_artifact",
+        "evidence_refs",
+        "boundary_note",
+        "backend_fields"
+      ],
+      "format": "csv",
+      "path": "requirements/2025/backend_resolution.csv"
+    },
+    {
       "classification_basis": "unclassified machine-readable requirement artifact retained for audit",
       "edition": "2025",
       "family": "historical",
@@ -980,6 +1055,39 @@
       ],
       "format": "json",
       "path": "requirements/2025/backend_resolution.json"
+    },
+    {
+      "classification_basis": "normalized canonical export",
+      "edition": "2025",
+      "family": "canonical-requirement",
+      "fields": [
+        "edition",
+        "requirement_id",
+        "source_document",
+        "clause",
+        "page",
+        "area",
+        "service_group",
+        "service_or_check",
+        "priority",
+        "closure_wave",
+        "requirement_text",
+        "normative_level",
+        "row_kind",
+        "parent_requirement_id",
+        "canonical_status",
+        "canonical_status_reason",
+        "owner_doc",
+        "primary_test_shard",
+        "primary_command",
+        "evidence_refs",
+        "boundary_note",
+        "source_trace_strength",
+        "repo_evidence_status",
+        "tags"
+      ],
+      "format": "csv",
+      "path": "requirements/2025/canonical_requirements.csv"
     },
     {
       "classification_basis": "normalized canonical export",
@@ -1987,7 +2095,7 @@
       "path": "requirements/normalized/row_shape_survey.json"
     }
   ],
-  "entry_count": 95,
+  "entry_count": 99,
   "scoped_roots": [
     "requirements",
     "docs/requirements",

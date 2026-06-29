@@ -29,11 +29,15 @@ Use one of these, then stay inside that edition:
 - `2010` human-facing front door: [`../docs/requirements/ieee-1516-2010/README.md`](../docs/requirements/ieee-1516-2010/README.md)
 - `2010` source-side collected inventory: [`2010/README.md`](2010/README.md)
 - `2010` canonical row-level truth: [`2010/canonical_requirements.json`](2010/canonical_requirements.json)
+- `2010` canonical row-level CSV projection with the same row schema: [`2010/canonical_requirements.csv`](2010/canonical_requirements.csv)
 - `2010` canonical backend-resolution truth: [`2010/backend_resolution.json`](2010/backend_resolution.json)
+- `2010` canonical backend-resolution CSV projection with the same row schema: [`2010/backend_resolution.csv`](2010/backend_resolution.csv)
 - `2025` human-facing front door: [`../docs/requirements/ieee-1516-2025/README.md`](../docs/requirements/ieee-1516-2025/README.md)
 - `2025` source-side collected inventory: [`2025/README.md`](2025/README.md)
 - `2025` canonical row-level truth: [`2025/canonical_requirements.json`](2025/canonical_requirements.json)
 - `2025` canonical backend-resolution truth: [`2025/backend_resolution.json`](2025/backend_resolution.json)
+- `2025` canonical row-level CSV projection with the same row schema: [`2025/canonical_requirements.csv`](2025/canonical_requirements.csv)
+- `2025` canonical backend-resolution CSV projection with the same row schema: [`2025/backend_resolution.csv`](2025/backend_resolution.csv)
 
 Use it to track the three standards as three requirement sources:
 
@@ -102,7 +106,17 @@ into the committed import tree; see the import README for the policy note.
 
 Use the files together like this:
 
-`canonical_requirements.json + backend_resolution.json -> generated projections -> tests/verification/*`
+`canonical_requirements.{json,csv} + backend_resolution.{json,csv} -> generated projections -> tests/verification/*`
+
+Truth-surface rule:
+
+- only `canonical_requirements.json`, `canonical_requirements.csv`,
+  `backend_resolution.json`, and `backend_resolution.csv` are canonical
+  requirements-facing machine-readable truth surfaces
+- the JSON and CSV forms for a given surface must carry the same row schema
+  and the same row set
+- all other CSV or JSON files under `requirements/2010/` and `requirements/2025/`
+  are generated projections, imports, history, or audit aids
 
 ## Honest Test Rule
 

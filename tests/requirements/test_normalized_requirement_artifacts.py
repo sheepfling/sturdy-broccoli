@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import json
 from pathlib import Path
 
@@ -21,6 +22,10 @@ ROOT = Path(__file__).resolve().parents[2]
 SURVEY = ROOT / "requirements/normalized/row_shape_survey.json"
 CANONICAL_2010 = ROOT / "requirements/2010/canonical_requirements.json"
 CANONICAL_2025 = ROOT / "requirements/2025/canonical_requirements.json"
+CANONICAL_2010_CSV = ROOT / "requirements/2010/canonical_requirements.csv"
+CANONICAL_2025_CSV = ROOT / "requirements/2025/canonical_requirements.csv"
+BACKEND_2010_CSV = ROOT / "requirements/2010/backend_resolution.csv"
+BACKEND_2025_CSV = ROOT / "requirements/2025/backend_resolution.csv"
 
 
 def test_requirement_row_shape_survey_checked_in_artifact_matches_live_generation() -> None:
@@ -32,6 +37,10 @@ def test_requirement_row_shape_survey_checked_in_artifact_matches_live_generatio
     assert checked_in["entry_count"] == len(checked_in["entries"])
 
     entries_by_path = {entry["path"]: entry for entry in checked_in["entries"]}
+    assert entries_by_path["requirements/2010/canonical_requirements.csv"]["family"] == "canonical-requirement"
+    assert entries_by_path["requirements/2025/canonical_requirements.csv"]["family"] == "canonical-requirement"
+    assert entries_by_path["requirements/2010/backend_resolution.csv"]["family"] == "backend-resolution"
+    assert entries_by_path["requirements/2025/backend_resolution.csv"]["family"] == "backend-resolution"
     assert entries_by_path["requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv"]["family"] == "historical"
     assert entries_by_path["requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv"]["classification_basis"] == "legacy row-shaped 2025 closeout projection"
     assert entries_by_path["requirements/2025/harmonization/hla_2025_harmonization_worklist.csv"]["family"] == "grouped-view"
@@ -87,6 +96,72 @@ def test_2025_canonical_requirement_catalog_loader_reads_checked_in_projection()
     assert rows_by_id["HLA2025-FI-SVC-001"].primary_command == "./tools/test-surface run unit-python-2025-core"
     assert rows_by_id["HLA2025-OMT-SU-001"].primary_command == "./tools/test-surface run unit-fom-tooling"
     assert rows_by_id["HLA2025-FI-CB-001"].canonical_status == "duplicate/umbrella"
+
+
+def test_canonical_requirement_csv_truth_surfaces_share_one_schema_across_editions() -> None:
+    with CANONICAL_2010_CSV.open(newline="", encoding="utf-8") as handle:
+        rows_2010 = list(csv.DictReader(handle))
+        header_2010 = list(rows_2010[0].keys())
+    with CANONICAL_2025_CSV.open(newline="", encoding="utf-8") as handle:
+        rows_2025 = list(csv.DictReader(handle))
+        header_2025 = list(rows_2025[0].keys())
+
+    assert header_2010 == header_2025
+    assert header_2010 == [
+        "edition",
+        "requirement_id",
+        "source_document",
+        "clause",
+        "page",
+        "area",
+        "service_group",
+        "service_or_check",
+        "priority",
+        "closure_wave",
+        "requirement_text",
+        "normative_level",
+        "row_kind",
+        "parent_requirement_id",
+        "canonical_status",
+        "canonical_status_reason",
+        "owner_doc",
+        "primary_test_shard",
+        "primary_command",
+        "evidence_refs",
+        "boundary_note",
+        "source_trace_strength",
+        "repo_evidence_status",
+        "tags",
+    ]
+    assert len(rows_2010) == 950
+    assert len(rows_2025) == 691
+
+
+def test_backend_resolution_csv_truth_surfaces_share_one_schema_across_editions() -> None:
+    with BACKEND_2010_CSV.open(newline="", encoding="utf-8") as handle:
+        rows_2010 = list(csv.DictReader(handle))
+        header_2010 = list(rows_2010[0].keys())
+    with BACKEND_2025_CSV.open(newline="", encoding="utf-8") as handle:
+        rows_2025 = list(csv.DictReader(handle))
+        header_2025 = list(rows_2025[0].keys())
+
+    assert header_2010 == header_2025
+    assert header_2010 == [
+        "edition",
+        "requirement_id",
+        "row_kind",
+        "resolution_type",
+        "canonical_owner",
+        "canonical_status",
+        "primary_shard",
+        "primary_command",
+        "evidence_artifact",
+        "evidence_refs",
+        "boundary_note",
+        "backend_fields",
+    ]
+    assert len(rows_2010) == 950
+    assert len(rows_2025) == 913
 
 
 def test_2010_fm_reconciliation_loader_reads_typed_mapping_rows() -> None:

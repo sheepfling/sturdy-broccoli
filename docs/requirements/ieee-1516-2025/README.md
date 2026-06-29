@@ -12,15 +12,19 @@ Start here, then continue into:
 2. [`../../verification/README.md`](../../verification/README.md)
 3. [`../../spec_reading_map.md`](../../spec_reading_map.md)
 4. [`../../../requirements/2025/canonical_requirements.json`](../../../requirements/2025/canonical_requirements.json)
-5. [`../../../requirements/2025/backend_resolution.json`](../../../requirements/2025/backend_resolution.json)
-6. one bounded proof note or generated or legacy projection from the family you care about
+5. [`../../../requirements/2025/canonical_requirements.csv`](../../../requirements/2025/canonical_requirements.csv)
+6. [`../../../requirements/2025/backend_resolution.json`](../../../requirements/2025/backend_resolution.json)
+7. [`../../../requirements/2025/backend_resolution.csv`](../../../requirements/2025/backend_resolution.csv)
+8. one bounded proof note or generated or legacy projection from the family you care about
 
 Use this reading rule:
 
 - this README is the human-facing front door for the 2025 requirement surface
 - `requirements/2025/README.md` is the collected source-side inventory
 - `requirements/2025/canonical_requirements.json` is the canonical row-level requirement truth for 2025
+- `requirements/2025/canonical_requirements.csv` is the same canonical row-level truth in CSV form
 - `requirements/2025/backend_resolution.json` is the canonical backend-resolution companion for 2025
+- `requirements/2025/backend_resolution.csv` is the same canonical backend-resolution truth in CSV form
 - `verification/README.md` explains where executable or generated proof artifacts live
 - `spec_reading_map.md` tells you which proof note or requirement packet to read first for a concrete standards question
 

@@ -14,10 +14,14 @@ Use these as the source of truth for requirement verification:
 
 1. one canonical requirement catalog per edition:
    - `requirements/2010/canonical_requirements.json`
+   - `requirements/2010/canonical_requirements.csv`
    - `requirements/2025/canonical_requirements.json`
+   - `requirements/2025/canonical_requirements.csv`
 2. one backend-resolution companion per edition when backend divergence matters:
    - `requirements/2010/backend_resolution.json`
+   - `requirements/2010/backend_resolution.csv`
    - `requirements/2025/backend_resolution.json`
+   - `requirements/2025/backend_resolution.csv`
 3. bounded proof notes that name the exact requirement family and boundary
 4. live executable evidence:
    - pytest anchors
@@ -29,6 +33,9 @@ Old requirement ledgers, worklists, and reconciliation CSVs are no longer
 requirement truth sources. They may remain as generated projections,
 compatibility artifacts, or historical bridges, but requirement verification
 should resolve through the canonical edition catalog first.
+
+The JSON and CSV forms above are not separate schemas. They are the same
+canonical surfaces in two machine-readable encodings.
 
 Management and sequencing docs are not truth sources for requirement status:
 

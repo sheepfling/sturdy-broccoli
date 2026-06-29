@@ -35,7 +35,9 @@ Treat this as the single source-side list for the 2025 edition:
 
 - `README.md`: edition front door for the 2025 source-side surface
 - `canonical_requirements.json`: canonical row-level requirement truth for 2025
+- `canonical_requirements.csv`: canonical row-level CSV projection for 2025 with the same row schema as the JSON catalog
 - `backend_resolution.json`: canonical backend-resolution companion for 2025
+- `backend_resolution.csv`: canonical backend-resolution CSV projection for 2025 with the same row schema as the JSON catalog
 - `MERGE_REPORT.md`: merge summary for the 2025 spec package union
 - `NOTICE.md`: attribution and source notice for the generated package
 - `SOURCE_TRACE.md`: Java/C++ method-to-Python source trace
@@ -71,11 +73,13 @@ Use this order:
 
 1. `docs/requirements/ieee-1516-2025/README.md` for the human-facing owner map
 2. `canonical_requirements.json` when you need exact row-by-row canonical disposition and evidence paths
-3. `backend_resolution.json` when backend or route truth differs from canonical status
-4. `harmonization/hla_2025_requirement_coverage_rollup.json` when you need grouped counts or denominator math
-5. `harmonization/hla_2025_fi_binding_surface_matrix.csv` and `harmonization/hla_2025_pitch_202x_*_resolution.csv` only when you need a generated backend-specific projection
-6. `depth/` and `differentials/` only when you need source derivation history or 2025-vs-2010 change shape
-7. `requirement_completion_backlog.csv`, `harmonization/hla_2025_harmonization_worklist.csv`, and `harmonization/hla_2025_review_queue.csv` only for editable coordination or review sequencing, not for requirement truth
+3. `canonical_requirements.csv` when you need that same canonical row surface in CSV form
+4. `backend_resolution.json` when backend or route truth differs from canonical status
+5. `backend_resolution.csv` when you need that same backend-resolution surface in CSV form
+6. `harmonization/hla_2025_requirement_coverage_rollup.json` when you need grouped counts or denominator math
+7. `harmonization/hla_2025_fi_binding_surface_matrix.csv` and `harmonization/hla_2025_pitch_202x_*_resolution.csv` only when you need a generated backend-specific projection
+8. `depth/` and `differentials/` only when you need source derivation history or 2025-vs-2010 change shape
+9. `requirement_completion_backlog.csv`, `harmonization/hla_2025_harmonization_worklist.csv`, and `harmonization/hla_2025_review_queue.csv` only for editable coordination or review sequencing, not for requirement truth
 
 Initial executable implementation work is tracked against the differential
 packets. The first 2025-native Python RTI slice covers federation execution
@@ -91,7 +95,9 @@ The `harmonization/` packet is the next reconciliation layer. The canonical
 edition truth lives in:
 
 - `canonical_requirements.json`
+- `canonical_requirements.csv`
 - `backend_resolution.json`
+- `backend_resolution.csv`
 
 The older harmonization projections still live in:
 
@@ -105,6 +111,15 @@ The grouped worklist, closure report, and review queue are derived working
 surfaces built from the canonical requirement and backend-resolution catalogs
 plus the older harmonization projections. They are useful for coordination, but
 they are not requirement truth and must not sit in the verification chain.
+
+Schema rule for machine-readable truth:
+
+- `canonical_requirements.json` and `canonical_requirements.csv` carry the same
+  row schema and the same row set
+- `backend_resolution.json` and `backend_resolution.csv` carry the same row
+  schema and the same row set
+- older harmonization CSVs remain generated projections and must not introduce
+  alternate truth schemas
 
 Current grouped harmonization state:
 

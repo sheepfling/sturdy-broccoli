@@ -11,15 +11,19 @@ Start here, then continue into:
 1. [`../../../requirements/2010/README.md`](../../../requirements/2010/README.md)
 2. [`../../verification/README.md`](../../verification/README.md)
 3. [`../../../requirements/2010/canonical_requirements.json`](../../../requirements/2010/canonical_requirements.json)
-4. [`../../../requirements/2010/backend_resolution.json`](../../../requirements/2010/backend_resolution.json)
-5. one focused generated or legacy family projection when you need the older CSV form
+4. [`../../../requirements/2010/canonical_requirements.csv`](../../../requirements/2010/canonical_requirements.csv)
+5. [`../../../requirements/2010/backend_resolution.json`](../../../requirements/2010/backend_resolution.json)
+6. [`../../../requirements/2010/backend_resolution.csv`](../../../requirements/2010/backend_resolution.csv)
+7. one focused generated or legacy family projection when you need the older CSV form
 
 Use this reading rule:
 
 - this README is the human-facing front door for the 2010 requirement surface
 - `requirements/2010/README.md` is the collected source-side inventory
 - `requirements/2010/canonical_requirements.json` is the canonical row-level requirement truth for 2010
+- `requirements/2010/canonical_requirements.csv` is the same canonical row-level truth in CSV form
 - `requirements/2010/backend_resolution.json` is the canonical backend-resolution companion for 2010
+- `requirements/2010/backend_resolution.csv` is the same canonical backend-resolution truth in CSV form
 - `verification/README.md` explains where proof packets, clause matrices, and generated evidence live
 
 ## Edition Inventory

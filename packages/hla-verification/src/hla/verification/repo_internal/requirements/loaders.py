@@ -19,6 +19,48 @@ PITCH_ROW_2025_REL = "requirements/2025/harmonization/hla_2025_pitch_202x_row_re
 PITCH_GROUP_2025_REL = "requirements/2025/harmonization/hla_2025_pitch_202x_group_resolution.csv"
 FI_BINDING_2025_REL = "requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv"
 
+CANONICAL_CSV_FIELDNAMES = [
+    "edition",
+    "requirement_id",
+    "source_document",
+    "clause",
+    "page",
+    "area",
+    "service_group",
+    "service_or_check",
+    "priority",
+    "closure_wave",
+    "requirement_text",
+    "normative_level",
+    "row_kind",
+    "parent_requirement_id",
+    "canonical_status",
+    "canonical_status_reason",
+    "owner_doc",
+    "primary_test_shard",
+    "primary_command",
+    "evidence_refs",
+    "boundary_note",
+    "source_trace_strength",
+    "repo_evidence_status",
+    "tags",
+]
+
+BACKEND_RESOLUTION_CSV_FIELDNAMES = [
+    "edition",
+    "requirement_id",
+    "row_kind",
+    "resolution_type",
+    "canonical_owner",
+    "canonical_status",
+    "primary_shard",
+    "primary_command",
+    "evidence_artifact",
+    "evidence_refs",
+    "boundary_note",
+    "backend_fields",
+]
+
 _SLUG_NON_ALNUM = re.compile(r"[^a-z0-9]+")
 
 _SPECIAL_2025_EVIDENCE_REFS = {
@@ -238,6 +280,72 @@ def _build_2025_grouped_backend_rows(project_root: Path) -> tuple[BackendResolut
 def _read_csv_rows(path: Path) -> list[dict[str, str]]:
     with path.open(newline="", encoding="utf-8") as handle:
         return [{key: value or "" for key, value in row.items()} for row in csv.DictReader(handle)]
+
+
+def _write_csv_rows(path: Path, fieldnames: list[str], rows: list[dict[str, str]]) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in rows:
+            writer.writerow(row)
+    return path
+
+
+def _canonical_rows_to_csv_rows(rows: tuple[CanonicalRequirementRow, ...]) -> list[dict[str, str]]:
+    csv_rows: list[dict[str, str]] = []
+    for row in rows:
+        csv_rows.append(
+            {
+                "edition": row.edition,
+                "requirement_id": row.requirement_id,
+                "source_document": row.source_document,
+                "clause": row.clause,
+                "page": row.page,
+                "area": row.area,
+                "service_group": row.service_group,
+                "service_or_check": row.service_or_check,
+                "priority": row.priority,
+                "closure_wave": row.closure_wave,
+                "requirement_text": row.requirement_text,
+                "normative_level": row.normative_level,
+                "row_kind": row.row_kind,
+                "parent_requirement_id": row.parent_requirement_id,
+                "canonical_status": row.canonical_status,
+                "canonical_status_reason": row.canonical_status_reason,
+                "owner_doc": row.owner_doc,
+                "primary_test_shard": row.primary_test_shard,
+                "primary_command": row.primary_command,
+                "evidence_refs": "; ".join(row.evidence_refs),
+                "boundary_note": row.boundary_note,
+                "source_trace_strength": row.source_trace_strength,
+                "repo_evidence_status": row.repo_evidence_status,
+                "tags": "; ".join(row.tags),
+            }
+        )
+    return csv_rows
+
+
+def _backend_rows_to_csv_rows(rows: tuple[BackendResolutionRow, ...]) -> list[dict[str, str]]:
+    csv_rows: list[dict[str, str]] = []
+    for row in rows:
+        csv_rows.append(
+            {
+                "edition": row.edition,
+                "requirement_id": row.requirement_id,
+                "row_kind": row.row_kind,
+                "resolution_type": row.resolution_type,
+                "canonical_owner": row.canonical_owner,
+                "canonical_status": row.canonical_status,
+                "primary_shard": row.primary_shard,
+                "primary_command": row.primary_command,
+                "evidence_artifact": row.evidence_artifact,
+                "evidence_refs": "; ".join(row.evidence_refs),
+                "boundary_note": row.boundary_note,
+                "backend_fields": json.dumps(row.backend_fields, sort_keys=True),
+            }
+        )
+    return csv_rows
 
 
 def _split_semicolon_items(value: str) -> tuple[str, ...]:
@@ -474,12 +582,24 @@ def write_2010_canonical_requirement_catalog(project_root: Path, output_path: Pa
     return target
 
 
+def write_2010_canonical_requirement_catalog_csv(project_root: Path, output_path: Path | None = None) -> Path:
+    target = output_path if output_path is not None else project_root / "requirements/2010/canonical_requirements.csv"
+    catalog = build_2010_canonical_requirement_catalog(project_root)
+    return _write_csv_rows(target, CANONICAL_CSV_FIELDNAMES, _canonical_rows_to_csv_rows(catalog.rows))
+
+
 def write_2025_canonical_requirement_catalog(project_root: Path, output_path: Path | None = None) -> Path:
     target = output_path if output_path is not None else project_root / CANONICAL_2025_REL
     target.parent.mkdir(parents=True, exist_ok=True)
     payload = build_2025_canonical_requirement_catalog(project_root).to_mapping()
     target.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return target
+
+
+def write_2025_canonical_requirement_catalog_csv(project_root: Path, output_path: Path | None = None) -> Path:
+    target = output_path if output_path is not None else project_root / "requirements/2025/canonical_requirements.csv"
+    catalog = build_2025_canonical_requirement_catalog(project_root)
+    return _write_csv_rows(target, CANONICAL_CSV_FIELDNAMES, _canonical_rows_to_csv_rows(catalog.rows))
 
 
 def load_canonical_requirement_catalog(path: Path) -> NormalizedRequirementCatalog:
@@ -532,6 +652,12 @@ def write_2010_backend_resolution_catalog(project_root: Path, output_path: Path 
     return target
 
 
+def write_2010_backend_resolution_catalog_csv(project_root: Path, output_path: Path | None = None) -> Path:
+    target = output_path if output_path is not None else project_root / "requirements/2010/backend_resolution.csv"
+    catalog = build_2010_backend_resolution_catalog(project_root)
+    return _write_csv_rows(target, BACKEND_RESOLUTION_CSV_FIELDNAMES, _backend_rows_to_csv_rows(catalog.rows))
+
+
 def build_2025_backend_resolution_catalog(project_root: Path) -> BackendResolutionCatalog:
     backend_rows: list[BackendResolutionRow] = list(_build_2025_grouped_backend_rows(project_root))
     backend_rows.extend(load_2025_pitch_row_resolution_rows(project_root))
@@ -552,6 +678,12 @@ def write_2025_backend_resolution_catalog(project_root: Path, output_path: Path 
     payload = build_2025_backend_resolution_catalog(project_root).to_mapping()
     target.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return target
+
+
+def write_2025_backend_resolution_catalog_csv(project_root: Path, output_path: Path | None = None) -> Path:
+    target = output_path if output_path is not None else project_root / "requirements/2025/backend_resolution.csv"
+    catalog = build_2025_backend_resolution_catalog(project_root)
+    return _write_csv_rows(target, BACKEND_RESOLUTION_CSV_FIELDNAMES, _backend_rows_to_csv_rows(catalog.rows))
 
 
 def load_backend_resolution_catalog(path: Path) -> BackendResolutionCatalog:

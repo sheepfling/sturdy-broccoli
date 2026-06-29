@@ -20,7 +20,9 @@ Treat this as the single source-side list for the 2010 edition:
 
 - `README.md`: edition front door for the 2010 source-side surface
 - `canonical_requirements.json`: canonical row-level requirement truth for 2010
+- `canonical_requirements.csv`: canonical row-level CSV projection for 2010 with the same row schema as the JSON catalog
 - `backend_resolution.json`: canonical backend-resolution companion for 2010
+- `backend_resolution.csv`: canonical backend-resolution CSV projection for 2010 with the same row schema as the JSON catalog
 - `hla1516_framework_rules.csv`: framework and architecture rule seeds
 - `hla1516_framework_detailed_reconciliation.csv`: detailed framework reconciliation
 - `hla1516_clause_12_save_restore.csv`: clause-level save/restore tranche
@@ -63,9 +65,11 @@ Treat this as the single source-side list for the 2010 edition:
 Use this order:
 
 1. `canonical_requirements.json` for the primary row-level requirement surface
-2. `backend_resolution.json` when backend truth differs by runtime
-3. `traceability_matrix.csv` or one clause or family reconciliation file only when you need a generated or legacy projection
-4. `hla_1516_master_harmonization_index_v1_0.csv` only when you need the whole imported-master view
+2. `canonical_requirements.csv` when you need the same canonical row surface in CSV form
+3. `backend_resolution.json` when backend truth differs by runtime
+4. `backend_resolution.csv` when you need the same backend-resolution surface in CSV form
+5. `traceability_matrix.csv` or one clause or family reconciliation file only when you need a generated or legacy projection
+6. `hla_1516_master_harmonization_index_v1_0.csv` only when you need the whole imported-master view
 
 ## Canonical Owner Surfaces
 
@@ -75,7 +79,9 @@ bucket families:
 | Bucket | Canonical owner file |
 | --- | --- |
 | canonical 2010 requirement catalog | `canonical_requirements.json` |
+| canonical 2010 requirement catalog CSV projection | `canonical_requirements.csv` |
 | canonical 2010 backend-resolution catalog | `backend_resolution.json` |
+| canonical 2010 backend-resolution catalog CSV projection | `backend_resolution.csv` |
 | framework and architecture reconciliation | `hla1516_framework_detailed_reconciliation.csv` |
 | framework bounded-family reading | `docs/requirements/ieee-1516-2010/framework_bounded_family.md` |
 | federation management | `hla1516_1_fm_detailed_reconciliation.csv` |
@@ -99,6 +105,10 @@ JSON catalog first, then reflect the change in any generated or legacy
 projection such as `traceability_matrix.csv`,
 `hla_1516_master_harmonization_index_v1_0.csv`, and the relevant verification
 artifact.
+
+The CSV companions `canonical_requirements.csv` and `backend_resolution.csv`
+are canonical exports, not alternate schemas. They must stay row-for-row and
+field-for-field aligned with the matching JSON catalogs.
 
 Use `hla1516_1_priority_backend_resolution.csv` when the canonical owner row is
 already closed for the repo-supported claim but the backend truth still differs
