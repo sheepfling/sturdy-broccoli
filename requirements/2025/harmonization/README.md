@@ -1,7 +1,8 @@
 # HLA 1516-2025 requirement harmonization packet
 
-This directory carries the repo-reconciled disposition layer over the 691-row
-requirement-depth expansion in `../depth/`.
+This directory carries generated 2025 harmonization projections derived from
+the 691-row requirement-depth expansion in `../depth/` plus the canonical
+requirement and backend-resolution catalogs.
 
 Canonical rule:
 
@@ -11,23 +12,25 @@ Canonical rule:
   canonical edition surfaces, not the first truth surface to read
 
 The files remain reviewable harmonization artifacts rather than blanket
-conformance claims, but rows may now be promoted to `covered` where direct repo
-evidence and executable anchors have been reconciled:
+conformance claims. They are synchronized downstream projections, and any row
+promotion to `covered` must already be reflected in the canonical requirement
+catalog with direct repo evidence and executable anchors reconciled:
 
-- `hla_2025_requirement_disposition_ledger.csv` and `.json`: row-level
-  disposition, priority, closure wave, binding/source trace fields, evidence
-  path suggestions, closure tasks, and promotion rules.
+- `hla_2025_requirement_disposition_ledger.csv` and `.json`: generated
+  row-shaped closeout projection with disposition, priority, closure wave,
+  binding/source trace fields, evidence path suggestions, closure tasks, and
+  promotion rules.
 - `hla_2025_fi_binding_surface_matrix.csv`: FI service rows with Java, C++,
   and FedPro official surface accounting.
 - `hla_2025_harmonization_worklist.csv`: grouped execution waves by area,
   service group, canonical disposition, `python_runtime_resolution`,
   `java_cpp_binding_resolution`, `hosted_fedpro_resolution`,
   `pitch_202x_resolution`, and backend-resolution references.
-- `hla_2025_pitch_202x_group_resolution.csv`: grouped companion ledger for the
-  Pitch proto HLA 4 / `202X` backend-resolution field.
-- `hla_2025_pitch_202x_row_resolution.csv`: row-level companion ledger for the
-  same Pitch proto HLA 4 / `202X` backend-resolution reading across all 691
-  harmonization rows.
+- `hla_2025_pitch_202x_group_resolution.csv`: generated grouped companion
+  projection for the Pitch proto HLA 4 / `202X` backend-resolution field.
+- `hla_2025_pitch_202x_row_resolution.csv`: generated row-level companion
+  projection for the same Pitch proto HLA 4 / `202X` backend-resolution
+  reading across all 691 harmonization rows.
 - `hla_2025_review_queue.csv`: sorted row queue for implementation and evidence
   review.
 - `hla_2025_requirement_coverage_rollup.json`: machine-readable counts by
@@ -38,6 +41,15 @@ evidence and executable anchors have been reconciled:
 
 Rows move to `covered` only after repo evidence anchors, executable tests or
 fixtures, and unsupported-boundary decisions where applicable are recorded.
+
+Verification rule:
+
+- treat `../canonical_requirements.json` as the only row-level requirement
+  truth
+- treat `../backend_resolution.json` as the only backend- and route-resolution
+  truth
+- treat every file in this directory as a downstream grouped, row-shaped, or
+  review-sequencing projection over those canonical surfaces
 
 Reading rule for the grouped worklist:
 
@@ -76,7 +88,8 @@ Practical reading rule:
 - start from `../backend_resolution.json` when backend or route support differs
   from canonical requirement status
 - do not treat this grouped packet as an open backlog of missing runtime proof
-- treat it as a synchronized grouped owner surface over the row-level ledger
+- treat it as a synchronized grouped projection over the canonical requirement
+  catalog and backend-resolution companion
 - when the repo still is not “done,” the blocker is now usually one of:
   - row-level bounded supported-scope language
   - umbrella-row final-claim hygiene

@@ -180,6 +180,7 @@ def test_closeout_docs_demote_themselves_beneath_canonical_requirement_truth() -
     structure_packet_text = (ROOT / "docs" / "verification" / "requirements_structure_packet.md").read_text(encoding="utf-8")
     view_registry_text = (ROOT / "docs" / "verification" / "view_registry.md").read_text(encoding="utf-8")
     execution_queue_text = (ROOT / "docs" / "plans" / "requirements_execution_queue.md").read_text(encoding="utf-8")
+    harmonization_readme_text = (ROOT / "requirements" / "2025" / "harmonization" / "README.md").read_text(encoding="utf-8")
     normalized_execution_queue_text = " ".join(execution_queue_text.split())
 
     assert "canonical requirement catalog and backend-resolution companion" in audit_text
@@ -196,6 +197,11 @@ def test_closeout_docs_demote_themselves_beneath_canonical_requirement_truth() -
     assert "does not replace the canonical requirement catalog or backend-resolution\n  companion" in structure_packet_text
     assert "canonical requirement catalog, backend-resolution companion" in view_registry_text
     assert "canonical requirement catalog, or backend-resolution companion has gone stale" in normalized_execution_queue_text
+    assert "generated 2025 harmonization projections" in harmonization_readme_text
+    assert "only row-level requirement\n  truth" in harmonization_readme_text
+    assert "only backend- and route-resolution\n  truth" in harmonization_readme_text
+    assert "downstream grouped, row-shaped, or\n  review-sequencing projection" in harmonization_readme_text
+    assert "synchronized grouped projection over the canonical requirement\n  catalog and backend-resolution companion" in harmonization_readme_text
 
 
 def test_high_traffic_plan_and_verification_entrypoints_route_through_canonical_surfaces() -> None:
