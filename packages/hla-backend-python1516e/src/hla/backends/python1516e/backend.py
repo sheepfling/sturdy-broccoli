@@ -4,13 +4,16 @@ from __future__ import annotations
 from typing import Any, Mapping
 
 import hla.fom.mom as hla_mom
+from hla.backends.common import BackendInfo, Invocation, RTIBackend, UnsupportedBackendService, resolve_java_arguments
+from hla.backends.common import time_management as tm
+from hla.fom import FOMCatalog, FOMResolver
+from hla.rti1516e.api_metadata import API_METADATA
 from hla.rti1516e.enums import ResignAction
 from hla.rti1516e.exceptions import (
     FederateNotExecutionMember,
     NotConnected,
     RTIexception,
 )
-from hla.fom import FOMCatalog, FOMResolver
 from hla.rti1516e.handles import (
     AttributeHandle,
     InteractionClassHandle,
@@ -18,11 +21,8 @@ from hla.rti1516e.handles import (
     RegionHandle,
     TransportationTypeHandle,
 )
-from hla.rti1516e.raw_api import API_METADATA
 from hla.rti1516e.time import LogicalTimeFactory
-from hla.backends.common import BackendInfo, Invocation, RTIBackend, UnsupportedBackendService
-from hla.backends.common import resolve_java_arguments
-from hla.backends.common import time_management as tm
+
 from .callbacks import PythonRTICallbacksMixin
 from .ddm import PythonRTIDdmMixin
 from .ddm_regions import PythonRTIDdmRegionMixin

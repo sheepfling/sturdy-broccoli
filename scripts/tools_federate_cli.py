@@ -132,9 +132,9 @@ def _jsonable(value: Any) -> Any:
 
 def _null_ambassador_class(edition: str) -> type[Any]:
     if edition == "2025":
-        module = importlib.import_module("hla.rti1516_2025.federate_ambassador")
+        module = importlib.import_module("hla.rti1516_2025")
     else:
-        module = importlib.import_module("hla.rti1516e.federate_ambassador")
+        module = importlib.import_module("hla.rti1516e")
     return getattr(module, "NullFederateAmbassador")
 
 

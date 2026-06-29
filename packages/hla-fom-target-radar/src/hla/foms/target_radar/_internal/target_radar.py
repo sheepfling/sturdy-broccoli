@@ -17,10 +17,10 @@ from dataclasses import dataclass, field
 from importlib import import_module
 from typing import Any, Callable, Iterable, Mapping, Protocol
 
+from hla.rti1516e import NullFederateAmbassador
 from hla.rti1516e.enums import CallbackModel, ResignAction
 from hla.rti1516e.exceptions import FederatesCurrentlyJoined, FederationExecutionAlreadyExists, FederationExecutionDoesNotExist, RTIexception
 from hla.rti1516e.handles import AttributeHandle, InteractionClassHandle, ObjectClassHandle, ObjectInstanceHandle, ParameterHandle
-from hla.rti1516e import NullFederateAmbassador
 from hla.rti1516e.time import HLAinteger64Time
 
 TARGET_CLASS = "HLAobjectRoot.Target"
@@ -275,6 +275,15 @@ class TargetFederate(NullFederateAmbassador):
         if self.rcs_attr in set(the_attributes):
             self._pending_rcs_requests.append((the_object, b"rcs-response:" + bytes(user_supplied_tag)))
 
+    def provideAttributeValueUpdate(
+        self,
+        theObject: ObjectInstanceHandle,
+        theAttributes: Iterable[AttributeHandle],
+        userSuppliedTag: bytes,
+        *extra: Any,
+    ) -> None:
+        self.provide_attribute_value_update(theObject, theAttributes, userSuppliedTag, *extra)
+
     def flush_pending_rcs_requests(self) -> int:
         pending = self._pending_rcs_requests
         self._pending_rcs_requests = []
@@ -369,6 +378,11 @@ class RadarFederate(NullFederateAmbassador):
             self.contacts[the_object] = RadarContact(the_object, str(object_name))
             self._emit("discover", (the_object, the_object_class, object_name))
 
+    def discoverObjectInstance(
+        self, theObject: ObjectInstanceHandle, theObjectClass: ObjectClassHandle, objectName: str, *extra: Any
+    ) -> None:
+        self.discover_object_instance(theObject, theObjectClass, objectName, *extra)
+
     def reflect_attribute_values(
         self,
         the_object: ObjectInstanceHandle,
@@ -393,6 +407,24 @@ class RadarFederate(NullFederateAmbassador):
         self._emit("reflect", (the_object, dict(the_attributes), user_supplied_tag))
         if rcs_updated and contact.position is not None and contact.rcs_square_meters is not None:
             self._pending_track_contacts.append(the_object)
+
+    def reflectAttributeValues(
+        self,
+        theObject: ObjectInstanceHandle,
+        theAttributes: Mapping[AttributeHandle, bytes],
+        userSuppliedTag: bytes,
+        sentOrdering: Any,
+        transportationType: Any,
+        *extra: Any,
+    ) -> None:
+        self.reflect_attribute_values(
+            theObject,
+            theAttributes,
+            userSuppliedTag,
+            sentOrdering,
+            transportationType,
+            *extra,
+        )
 
     def query_rcs_for_all_contacts(self) -> None:
         assert self.rti is not None

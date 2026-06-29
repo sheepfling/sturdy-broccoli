@@ -7,7 +7,6 @@ from copy import deepcopy
 from dataclasses import dataclass, field
 from importlib import import_module
 from pathlib import Path
-from types import SimpleNamespace
 
 from hla.transports.grpc.fedpro2025 import FederateAmbassador_2025_pb2 as callback_pb2
 from hla.transports.grpc.fedpro2025 import HLA2025RTITransport_pb2_grpc as pb2_grpc
@@ -92,20 +91,18 @@ def _callback_request() -> callback_pb2.CallbackRequest:
 
 def _logical_time_value(time: datatypes_pb2.LogicalTime) -> float:
     raw = time.data.decode("ascii") if time.data else "HLAinteger64Time:0"
-    _, _, value = raw.partition(":")
-    try:
-        return float(value or raw)
-    except ValueError:
-        return 0.0
+    kind, sep, value = raw.partition(":")
+    if sep and kind not in {"HLAinteger64Time", "HLAfloat64Time"}:
+        raise ValueError(f"Unsupported logical time type: {kind}")
+    return float(value if sep else raw)
 
 
 def _logical_interval_value(interval: datatypes_pb2.LogicalTimeInterval) -> float:
     raw = interval.data.decode("ascii") if interval.data else "HLAinteger64Interval:0"
-    _, _, value = raw.partition(":")
-    try:
-        return float(value or raw)
-    except ValueError:
-        return 0.0
+    kind, sep, value = raw.partition(":")
+    if sep and kind not in {"HLAinteger64Interval", "HLAfloat64Interval"}:
+        raise ValueError(f"Unsupported logical interval type: {kind}")
+    return float(value if sep else raw)
 
 
 def _handle(handle_type: type, value: str | int):
@@ -4985,8 +4982,10 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             time_kind, time_value = raw_time.split(":", 1)
             if time_kind == "HLAfloat64Time":
                 encoded_time = time_module.HLAfloat64Time(float(time_value)).encode()
-            else:
+            elif time_kind == "HLAinteger64Time":
                 encoded_time = time_module.HLAinteger64Time(int(float(time_value))).encode()
+            else:
+                raise ValueError(f"Unsupported logical time type: {time_kind}")
             self._queue_mom_report(
                 report_class,
                 {

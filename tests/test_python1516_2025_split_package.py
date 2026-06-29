@@ -132,31 +132,20 @@ def test_split_python2025_runtime_backend_imports_runtime_modules_directly() -> 
         "time_management",
         "update_rate",
     }
-    required_runtime_modules = {
-        "attribute_policy_runtime",
-        "catalog_access_runtime",
+    required_surface_modules = {
+        "ambassador_core_surface_mixin",
+        "backend_factory_runtime",
         "declaration_ddm_surface_mixin",
-        "delivery_state_runtime",
-        "federation_bootstrap_runtime",
-        "federation_management_runtime",
-        "federation_state_runtime",
         "federation_time_surface_mixin",
-        "input_guard_runtime",
-        "interaction_policy_runtime",
         "mom_surface_mixin",
         "object_ownership_surface_mixin",
         "runtime_helper_surface_mixin",
-        "save_restore_lifecycle",
+        "runtime_state",
         "support_surface_mixin",
-        "attribute_scope_runtime",
-        "object_model_runtime",
-        "object_reflection_runtime",
-        "time_management_runtime",
-        "update_rate_runtime",
     }
 
     assert forbidden_alias_modules.isdisjoint(imported_modules)
-    assert required_runtime_modules <= imported_modules
+    assert required_surface_modules <= imported_modules
 
 
 def test_split_python2025_runtime_modules_do_not_import_compatibility_export_modules() -> None:

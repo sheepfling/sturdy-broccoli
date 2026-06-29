@@ -6,14 +6,12 @@ from typing import Any
 
 from google.protobuf.descriptor import FieldDescriptor
 from google.protobuf.message import Message
-
 from hla.transports.common import TransportError, TransportRequest, TransportResponse
 from hla.transports.common.transport_codecs import decode_bytes
 
-from .fedpro2010 import RTIambassador_pb2 as rti_pb2
 from .fedpro2010 import FederateAmbassador_pb2 as callback_pb2
+from .fedpro2010 import RTIambassador_pb2 as rti_pb2
 from .fedpro2010 import datatypes_pb2
-
 
 _COMMAND_REQUESTS: Mapping[str, str] = {
     "ABORT_FEDERATION_RESTORE": "abortFederationRestoreRequest",

@@ -19,9 +19,9 @@ from hla.runtime.rti1516_2025_factory import create_rti_ambassador as create_202
 from hla.rti1516e import NullFederateAmbassador as NullFederateAmbassador2010
 from hla.rti1516e.enums import CallbackModel as CallbackModel2010
 from hla.rti1516e.enums import ResignAction as ResignAction2010
+from hla.rti1516_2025 import NullFederateAmbassador as NullFederateAmbassador2025
 from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
 from hla.rti1516_2025.enums import ResignAction as ResignAction2025
-from hla.rti1516_2025.federate_ambassador import NullFederateAmbassador as NullFederateAmbassador2025
 
 
 def _jsonable(value: Any) -> Any:

@@ -11,16 +11,15 @@ from hla.rti1516_2025.exceptions import (
     FederateNotExecutionMember,
     InvalidAttributeHandle,
     InvalidObjectInstanceHandle,
-    InvalidUpdateRateDesignator,
     InvalidRangeBound,
     InvalidRegion,
+    InvalidUpdateRateDesignator,
 )
 from hla.rti1516_2025.handles import (
     AttributeHandle,
     FederateHandle,
     MessageRetractionHandle,
     ObjectInstanceHandle,
-    ParameterHandle,
     RegionHandle,
     TransportationTypeHandle,
 )
@@ -66,6 +65,12 @@ from .catalog_runtime import (
     parameter_handles,
     synchronization_required_federates,
     transportation_handle_by_name,
+)
+from .ddm_default_attribute_policy import (
+    ranges_overlap,
+    region_owner_key,
+    region_sets_overlap,
+    regions_overlap_pair,
 )
 from .delivery_state_runtime import (
     add_attribute_candidate,
@@ -144,11 +149,7 @@ from .object_region_runtime import (
     attribute_region_pairs,
     coerce_range_bounds,
     object_instance_region_values,
-    region_owner_key,
-    region_sets_overlap,
     region_values_from_handles,
-    regions_overlap_pair,
-    ranges_overlap,
 )
 from .update_rate_runtime import (
     apply_update_rate_reduction_for_subscriber,

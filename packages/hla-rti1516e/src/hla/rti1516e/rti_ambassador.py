@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Protocol, Sequence, Set
+from typing import Protocol, Sequence, Set, overload
 
 from .datatypes import MessageRetractionReturn, RangeBounds, TimeQueryReturn
 from .enums import CallbackModel, OrderType, ResignAction, ServiceGroup, TransportationType
@@ -41,8 +41,26 @@ from .handles import (
 )
 from .time import LogicalTime, LogicalTimeFactory, LogicalTimeInterval
 
+
 class RTIambassador(Protocol):
-    """Runtime protocol surface. Strict overloads live in the .pyi stub and SOURCE_TRACE.md."""
+    """Runtime protocol surface for IEEE 1516.1-2010 RTIambassador."""
+
+    @overload
+    def connect(
+        self,
+        federateReference: FederateAmbassador,
+        callbackModel: CallbackModel,
+    ) -> None:
+        ...
+
+    @overload
+    def connect(
+        self,
+        federateReference: FederateAmbassador,
+        callbackModel: CallbackModel,
+        localSettingsDesignator: str | None = None,
+    ) -> None:
+        ...
 
     def connect(
         self,
@@ -70,6 +88,35 @@ class RTIambassador(Protocol):
         ...
 
     def listFederationExecutions(self) -> None:
+        ...
+
+    @overload
+    def joinFederationExecution(
+        self,
+        *,
+        federateType: str,
+        federationExecutionName: str,
+    ) -> FederateHandle:
+        ...
+
+    @overload
+    def joinFederationExecution(
+        self,
+        *,
+        federateType: str,
+        federationExecutionName: str,
+        additionalFomModules: Sequence[str],
+    ) -> FederateHandle:
+        ...
+
+    @overload
+    def joinFederationExecution(
+        self,
+        *,
+        federateName: str,
+        federateType: str,
+        federationExecutionName: str,
+    ) -> FederateHandle:
         ...
 
     def joinFederationExecution(
@@ -225,6 +272,24 @@ class RTIambassador(Protocol):
         ...
 
     def localDeleteObjectInstance(self, objectHandle: ObjectInstanceHandle) -> None:
+        ...
+
+    @overload
+    def requestAttributeValueUpdate(
+        self,
+        target: ObjectInstanceHandle,
+        theAttributes: AttributeHandleSet,
+        userSuppliedTag: bytes,
+    ) -> None:
+        ...
+
+    @overload
+    def requestAttributeValueUpdate(
+        self,
+        target: ObjectClassHandle,
+        theAttributes: AttributeHandleSet,
+        userSuppliedTag: bytes,
+    ) -> None:
         ...
 
     def requestAttributeValueUpdate(

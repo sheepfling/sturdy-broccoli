@@ -17,20 +17,38 @@ class DemoFederate(NullFederateAmbassador):
     def discover_object_instance(self, the_object, the_object_class, object_name, *extra):
         self.events.append(("discover", (the_object, the_object_class, object_name, extra)))
 
+    def discoverObjectInstance(self, theObject, theObjectClass, objectName, *extra):
+        self.discover_object_instance(theObject, theObjectClass, objectName, *extra)
+
     def reflect_attribute_values(self, the_object, the_attributes, user_supplied_tag, sent_ordering, the_transport, *extra):
         self.events.append(("reflect", (the_object, the_attributes, user_supplied_tag, sent_ordering, the_transport, extra)))
+
+    def reflectAttributeValues(self, theObject, theAttributes, userSuppliedTag, sentOrdering, theTransport, *extra):
+        self.reflect_attribute_values(theObject, theAttributes, userSuppliedTag, sentOrdering, theTransport, *extra)
 
     def receive_interaction(self, interaction_class, the_parameters, user_supplied_tag, sent_ordering, the_transport, *extra):
         self.events.append(("interaction", (interaction_class, the_parameters, user_supplied_tag, sent_ordering, the_transport, extra)))
 
+    def receiveInteraction(self, interactionClass, theParameters, userSuppliedTag, sentOrdering, theTransport, *extra):
+        self.receive_interaction(interactionClass, theParameters, userSuppliedTag, sentOrdering, theTransport, *extra)
+
     def time_regulation_enabled(self, time):
         self.events.append(("time_regulation_enabled", time))
+
+    def timeRegulationEnabled(self, time):
+        self.time_regulation_enabled(time)
 
     def time_constrained_enabled(self, time):
         self.events.append(("time_constrained_enabled", time))
 
+    def timeConstrainedEnabled(self, time):
+        self.time_constrained_enabled(time)
+
     def time_advance_grant(self, the_time):
         self.events.append(("time_advance_grant", the_time))
+
+    def timeAdvanceGrant(self, theTime):
+        self.time_advance_grant(theTime)
 
 
 def drain_callbacks(rti: Any) -> None:

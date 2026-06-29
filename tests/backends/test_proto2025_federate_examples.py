@@ -19,11 +19,20 @@ class ExampleReceiver(NullFederateAmbassador):
     def discover_object_instance(self, the_object, the_object_class, object_name, *extra):  # noqa: ANN001
         self.discoveries.append((the_object, the_object_class, object_name, extra))
 
+    def discoverObjectInstance(self, theObject, theObjectClass, objectName, *extra):  # noqa: ANN001, N802
+        self.discover_object_instance(theObject, theObjectClass, objectName, *extra)
+
     def reflect_attribute_values(self, the_object, the_attributes, user_supplied_tag, sent_ordering, transport, *extra):  # noqa: ANN001
         self.reflections.append((the_object, the_attributes, user_supplied_tag, sent_ordering, transport, extra))
 
+    def reflectAttributeValues(self, theObject, theAttributes, userSuppliedTag, sentOrdering, transport, *extra):  # noqa: ANN001, N802
+        self.reflect_attribute_values(theObject, theAttributes, userSuppliedTag, sentOrdering, transport, *extra)
+
     def receive_interaction(self, interaction_class, parameters, user_supplied_tag, sent_ordering, transport, *extra):  # noqa: ANN001
         self.interactions.append((interaction_class, parameters, user_supplied_tag, sent_ordering, transport, extra))
+
+    def receiveInteraction(self, interactionClass, parameters, userSuppliedTag, sentOrdering, transport, *extra):  # noqa: ANN001, N802
+        self.receive_interaction(interactionClass, parameters, userSuppliedTag, sentOrdering, transport, *extra)
 
 
 def _drain(*rtis: object) -> None:

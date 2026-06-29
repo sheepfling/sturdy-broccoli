@@ -26,7 +26,7 @@ This page is the deterministic cross-language mapping reference for the Java HLA
 
 ## Source Authorities
 
-- `packages/hla-rti1516e/src/hla/rti1516e/api_metadata.json` via `hla.rti1516e.raw_api.API_METADATA`
+- `packages/hla-rti1516e/src/hla/rti1516e/api_metadata.json` via `hla.rti1516e.api_metadata.API_METADATA`
 - `packages/hla-backend-common/src/hla/backends/common/invocation.py` deterministic router table
 - `packages/hla-rti1516-2025/src/hla/rti1516_2025/rti_ambassador.py`
 - `packages/hla-rti1516-2025/src/hla/rti1516_2025/federate_ambassador.py`

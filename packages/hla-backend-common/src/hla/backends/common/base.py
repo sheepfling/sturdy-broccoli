@@ -7,9 +7,9 @@ from dataclasses import dataclass, field
 from types import TracebackType
 from typing import Any, Mapping, MutableMapping, cast
 
-from hla.rti1516e.exceptions import CallNotAllowedFromWithinCallback, RTIexception, RTIinternalError
-from hla.rti1516e.raw_api import API_METADATA
 from hla.rti1516e import NullFederateAmbassador, RTIambassador
+from hla.rti1516e.api_metadata import API_METADATA
+from hla.rti1516e.exceptions import CallNotAllowedFromWithinCallback, RTIexception, RTIinternalError
 
 RTI_METHOD_NAMES: tuple[str, ...] = tuple(API_METADATA["RTIambassador"].keys())
 CALLBACK_METHOD_NAMES: tuple[str, ...] = tuple(API_METADATA["FederateAmbassador"].keys())

@@ -24,7 +24,7 @@ class PythonJavaBindingProfile:
     encoding_module: Any
     fom_module: Any
     null_federate_ambassador_type: type[Any]
-    raw_api_metadata: dict[str, Any] | None = None
+    api_metadata: dict[str, Any] | None = None
 
     @property
     def edition(self) -> str:
@@ -63,7 +63,7 @@ class PythonJavaBindingProfile:
         }
 
     def callback_parameter_types(self, method_name: str, arg_count: int | None = None) -> tuple[str | None, ...]:
-        metadata = self.raw_api_metadata or {}
+        metadata = self.api_metadata or {}
         overloads = [
             overload
             for overload in metadata.get("FederateAmbassador", {}).get(method_name, ())
@@ -83,12 +83,11 @@ class PythonJavaBindingProfile:
 def load_python_java_binding_profile(profile: str | JavaApiProfile) -> PythonJavaBindingProfile:
     api_profile = java_api_profile(profile) if isinstance(profile, str) else profile
     root_module = importlib.import_module(api_profile.python_package)
-    federate_module = importlib.import_module(f"{api_profile.python_package}.federate_ambassador")
-    raw_api_metadata = None
+    api_metadata = None
     try:
-        raw_api_metadata = importlib.import_module(f"{api_profile.python_package}.raw_api").API_METADATA
+        api_metadata = importlib.import_module(f"{api_profile.python_package}.api_metadata").API_METADATA
     except Exception:
-        raw_api_metadata = None
+        api_metadata = None
     return PythonJavaBindingProfile(
         api_profile=api_profile,
         root_module=root_module,
@@ -99,8 +98,8 @@ def load_python_java_binding_profile(profile: str | JavaApiProfile) -> PythonJav
         time_module=importlib.import_module(f"{api_profile.python_package}.time"),
         encoding_module=importlib.import_module(f"{api_profile.python_package}.encoding"),
         fom_module=importlib.import_module("hla.fom"),
-        null_federate_ambassador_type=getattr(federate_module, "NullFederateAmbassador"),
-        raw_api_metadata=raw_api_metadata,
+        null_federate_ambassador_type=getattr(root_module, "NullFederateAmbassador"),
+        api_metadata=api_metadata,
     )
 
 
