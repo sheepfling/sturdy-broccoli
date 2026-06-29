@@ -108,7 +108,7 @@ they are not requirement truth and must not sit in the verification chain.
 
 Current grouped harmonization state:
 
-- `57 covered`
+- `53 covered`
 - `5 duplicate/umbrella`
 - `2 retired/legacy-only`
 

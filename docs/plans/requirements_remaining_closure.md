@@ -237,7 +237,7 @@ claims, and tolerance-only boundaries.
 Current grouped closure state from
 [`../../requirements/2025/harmonization/hla_2025_harmonization_worklist.csv`](../../requirements/2025/harmonization/hla_2025_harmonization_worklist.csv):
 
-- `57 covered`
+- `53 covered`
 - `5 duplicate/umbrella`
 - `2 retired/legacy-only`
 - `0 planned`

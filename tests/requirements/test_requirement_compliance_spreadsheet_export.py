@@ -163,20 +163,20 @@ def test_requirement_compliance_spreadsheet_export_writes_both_editions(tmp_path
     assert any(
         row["service_group"] == "Federation management"
         and row["canonical_disposition"] == "covered"
-        and "hla_2025_requirement_disposition_ledger.csv" in row["backend_resolution_reference"]
+        and "canonical_requirements.json" in row["backend_resolution_reference"]
         and "hla_2025_fi_binding_surface_matrix.csv" in row["backend_resolution_reference"]
         for row in execution_groups_2025
     )
     assert any(
         row["service_group"] == "Object management"
         and row["canonical_disposition"] == "covered"
-        and row["python_runtime_resolution"] == "grouped row set already has direct python1516_2025 evidence; keep per-service truth in the harmonization ledger"
+        and row["python_runtime_resolution"] == "grouped row set already has direct python1516_2025 evidence; keep per-service truth in the canonical requirement ledger"
         for row in execution_groups_2025
     )
     assert any(
         row["service_group"] == "Data distribution management"
         and row["canonical_disposition"] == "covered"
-        and row["hosted_fedpro_resolution"] == "FedPro route/support is tracked separately in the FI binding matrix and harmonization ledger"
+        and row["hosted_fedpro_resolution"] == "FedPro route/support is tracked separately in the FI binding matrix and canonical requirement ledger"
         for row in execution_groups_2025
     )
     assert any(
@@ -220,7 +220,7 @@ def test_requirement_compliance_spreadsheet_export_writes_both_editions(tmp_path
     assert "100% dispositioned across all 691 tracked rows" in metadata_map_2025["denominator_rule"]
     assert "645 active normative non-retired non-umbrella rows" in metadata_map_2025["denominator_rule"]
     assert "do not restate this grouped packet as 691 / 691 covered" in metadata_map_2025["denominator_rule"]
-    assert "64 grouped buckets" in metadata_map_2025["grouped_packet_scope"]
+    assert "60 grouped buckets" in metadata_map_2025["grouped_packet_scope"]
     assert "requirements/2025/canonical_requirements.json remains the row-level owner ledger" in metadata_map_2025["grouped_packet_scope"]
     assert "requirements/2025/backend_resolution.json remains the backend-resolution companion truth" in metadata_map_2025["grouped_packet_scope"]
     assert "bounded hosted-route surface over python1516_2025" in metadata_map_2025["hosted_fedpro_resolution_meaning"]

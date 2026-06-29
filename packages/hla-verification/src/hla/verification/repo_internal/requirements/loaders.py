@@ -4,6 +4,7 @@ import csv
 import json
 from pathlib import Path
 import re
+from collections import Counter, defaultdict
 
 from .models import BackendResolutionCatalog, BackendResolutionRow, CanonicalRequirementRow, NormalizedRequirementCatalog, RequirementMappingRow
 
@@ -14,7 +15,6 @@ BACKEND_2025_REL = "requirements/2025/backend_resolution.json"
 HARMONIZATION_LEDGER_REL = "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv"
 COMPLIANCE_2010_REL = "analysis/compliance/requirements_matrix_2010.csv"
 FM_RECONCILIATION_2010_REL = "requirements/2010/hla1516_1_fm_detailed_reconciliation.csv"
-WORKLIST_2025_REL = "requirements/2025/harmonization/hla_2025_harmonization_worklist.csv"
 PITCH_ROW_2025_REL = "requirements/2025/harmonization/hla_2025_pitch_202x_row_resolution.csv"
 PITCH_GROUP_2025_REL = "requirements/2025/harmonization/hla_2025_pitch_202x_group_resolution.csv"
 FI_BINDING_2025_REL = "requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv"
@@ -43,6 +43,187 @@ _SHARD_COMMANDS = {
     "unit-python-2025-core": "./tools/test-surface run unit-python-2025-core",
     "unit-transport-local": "./tools/test-surface run unit-transport-local",
 }
+
+_COMPARISON_2010_PATTERN = re.compile(r"2010 comparison=([^;]+)")
+
+
+def _load_or_build_2025_canonical_catalog(project_root: Path) -> NormalizedRequirementCatalog:
+    canonical_path = project_root / CANONICAL_2025_REL
+    if canonical_path.exists():
+        return load_canonical_requirement_catalog(canonical_path)
+    return build_2025_canonical_requirement_catalog(project_root)
+
+
+def _grouped_2025_owner_doc(rows: tuple[CanonicalRequirementRow, ...]) -> str:
+    sample = rows[0]
+    owner_doc = _derive_owner_doc(
+        {
+            "area": sample.area,
+            "service_group": sample.service_group,
+            "service_or_check": "",
+            "suggested_repo_evidence_path": "",
+        }
+    )
+    return owner_doc or sample.owner_doc
+
+
+def _grouped_2025_evidence_refs(rows: tuple[CanonicalRequirementRow, ...], owner_doc: str) -> tuple[str, ...]:
+    sample = rows[0]
+    refs: list[str] = []
+    if owner_doc:
+        refs.append(owner_doc)
+    refs.append(CANONICAL_2025_REL)
+    distinct_member_owners = sorted({row.owner_doc for row in rows if row.owner_doc and row.owner_doc != owner_doc})
+    refs.extend(distinct_member_owners)
+    if sample.area in {"Federate Interface service catalog", "Callback/configuration/binding deltas"}:
+        refs.append(FI_BINDING_2025_REL)
+    deduped: list[str] = []
+    for ref in refs:
+        if ref and ref not in deduped:
+            deduped.append(ref)
+    return tuple(deduped)
+
+
+def _grouped_2025_acceptance_gate(canonical_status: str) -> str:
+    if canonical_status == "duplicate/umbrella":
+        return (
+            "Every row in this group has explicit owner-doc evidence, row-level disposition, child-row or "
+            "backend-resolution references, and promotion/no-promote semantics reviewed."
+        )
+    if canonical_status == "retired/legacy-only":
+        return (
+            "Every row in this group has explicit exclusion-owner evidence, replacement mapping, row-level "
+            "disposition, and compatibility-only promotion semantics reviewed."
+        )
+    return "Every row in this group stays tied to canonical owner evidence, executable proof, and explicit backend-resolution boundaries."
+
+
+def _grouped_2025_resolution_fields(rows: tuple[CanonicalRequirementRow, ...]) -> dict[str, str]:
+    sample = rows[0]
+    area = sample.area
+    canonical_status = sample.canonical_status
+
+    if canonical_status == "retired/legacy-only":
+        return {
+            "python_runtime_resolution": "retired/legacy-only exclusion, not active runtime ownership",
+            "java_cpp_binding_resolution": "legacy mapping only; not an active behavior-support claim",
+            "hosted_fedpro_resolution": "legacy mapping only; not an active hosted-route claim",
+            "pitch_202x_resolution": "legacy mapping only; not an active Pitch proto HLA 4 / 202X behavior-support claim",
+            "closure_goal": "Confirm retired/replacement mapping, decide compatibility mode, and ensure legacy-only item is excluded from 2025 normative coverage counts.",
+        }
+    if canonical_status == "duplicate/umbrella":
+        if area == "Callback/configuration/binding deltas":
+            return {
+                "python_runtime_resolution": "not a standalone runtime claim; resolve through child FI service rows and bounded callback notes",
+                "java_cpp_binding_resolution": "binding/callback umbrella only; resolve backend support through child FI rows and binding notes",
+                "hosted_fedpro_resolution": "not a standalone hosted-route claim; use child FI rows where hosted parity is actually claimed",
+                "pitch_202x_resolution": "umbrella only; any Pitch proto HLA 4 / 202X claim must resolve through child FI rows and binding boundary notes",
+                "closure_goal": "Tie delta theme to concrete FI service rows and binding-specific tests; do not count as proof by itself.",
+            }
+        return {
+            "python_runtime_resolution": "umbrella/framework owner only; resolve executable support through child FI or OMT rows",
+            "java_cpp_binding_resolution": "n/a at framework umbrella level",
+            "hosted_fedpro_resolution": "n/a at framework umbrella level",
+            "pitch_202x_resolution": "n/a at framework umbrella level; use child FI or OMT owner artifacts if Pitch proto HLA 4 / 202X becomes relevant",
+            "closure_goal": "Keep the child-row map and framework owner reading synchronized; do not relabel parent normalization rows as standalone proof without a narrower direct claim.",
+        }
+    if area == "Federate Interface service catalog":
+        return {
+            "python_runtime_resolution": "grouped row set already has direct python1516_2025 evidence; keep per-service truth in the canonical requirement ledger",
+            "java_cpp_binding_resolution": "official Java/C++ surfaces are tracked separately in the FI binding matrix; behavior closure stays row-level",
+            "hosted_fedpro_resolution": "FedPro route/support is tracked separately in the FI binding matrix and canonical requirement ledger",
+            "pitch_202x_resolution": "vendor-branded proto HLA 4 / 202X surface may overlap this FI bucket, but grouped Pitch parity still has to be read from linked owner artifacts rather than inferred here",
+            "closure_goal": "Keep the covered row set aligned with the canonical requirement ledger, executable evidence, and truthful scope boundaries.",
+        }
+    if area == "SOM/FOM service-usage requirements":
+        return {
+            "python_runtime_resolution": "cross-check against parser/import-export and mirrored FI proof; keep exact closure in the row-level ledger",
+            "java_cpp_binding_resolution": "n/a at grouped service-usage level except where mirrored FI rows carry binding surface evidence",
+            "hosted_fedpro_resolution": "n/a at grouped service-usage level unless the mirrored FI row explicitly widens to hosted route proof",
+            "pitch_202x_resolution": "n/a at grouped service-usage level unless a mirrored FI owner artifact explicitly records Pitch proto HLA 4 / 202X support or divergence",
+            "closure_goal": "Keep the covered row set aligned with mirrored FI proof, parser/import/export behavior, and truthful optional-table and malformed-row boundaries.",
+        }
+    if area == "OMT validator-negative conformance":
+        return {
+            "python_runtime_resolution": "parser/validator/import-export closure, not backend-runtime ownership",
+            "java_cpp_binding_resolution": "n/a: standard bindings are not the owning proof surface for this OMT bucket",
+            "hosted_fedpro_resolution": "n/a: hosted FedPro route is not the owning proof surface for this OMT bucket",
+            "pitch_202x_resolution": "n/a: this grouped OMT bucket is parser or validator owned, not a Pitch proto HLA 4 / 202X runtime claim",
+            "closure_goal": "Keep the covered row set aligned with recorded parser/validator fixtures and truthful non-runtime ownership boundaries.",
+        }
+    return {
+        "python_runtime_resolution": "parser/validator/import-export closure, not backend-runtime ownership",
+        "java_cpp_binding_resolution": "n/a: standard bindings are not the owning proof surface for this OMT bucket",
+        "hosted_fedpro_resolution": "n/a: hosted FedPro route is not the owning proof surface for this OMT bucket",
+        "pitch_202x_resolution": "n/a: this grouped OMT bucket is parser or validator owned, not a Pitch proto HLA 4 / 202X runtime claim",
+        "closure_goal": "Keep the covered row set aligned with recorded parser/import/export fixtures and truthful non-runtime ownership boundaries.",
+    }
+
+
+def _grouped_2025_delta_breakdown(rows: tuple[CanonicalRequirementRow, ...]) -> str:
+    sample = rows[0]
+    if sample.canonical_status == "retired/legacy-only":
+        return f"retired={len(rows)}"
+
+    counts: Counter[str] = Counter()
+    for row in rows:
+        if sample.area == "Callback/configuration/binding deltas" and "binding-specific conformance boundary" in row.boundary_note:
+            counts["binding-specific"] += 1
+            continue
+        comparison = _COMPARISON_2010_PATTERN.search(row.boundary_note)
+        if comparison:
+            counts[comparison.group(1).strip()] += 1
+
+    if counts:
+        return "; ".join(f"{key}={counts[key]}" for key in sorted(counts))
+    return f"rows={len(rows)}"
+
+
+def _build_2025_grouped_backend_rows(project_root: Path) -> tuple[BackendResolutionRow, ...]:
+    canonical_rows = _load_or_build_2025_canonical_catalog(project_root).rows
+    grouped_rows: dict[tuple[str, str, str, str], list[CanonicalRequirementRow]] = defaultdict(list)
+    for row in canonical_rows:
+        grouped_rows[(row.closure_wave, row.area, row.service_group, row.priority)].append(row)
+
+    backend_rows: list[BackendResolutionRow] = []
+    for key in sorted(grouped_rows):
+        group = tuple(grouped_rows[key])
+        sample = group[0]
+        owner_doc = _grouped_2025_owner_doc(group)
+        primary_shard = _derive_primary_shard({"area": sample.area}, owner_doc)
+        evidence_refs = _grouped_2025_evidence_refs(group, owner_doc)
+        resolution_fields = _grouped_2025_resolution_fields(group)
+        backend_rows.append(
+            BackendResolutionRow(
+                edition="2025",
+                requirement_id=f"group::{sample.closure_wave}::{sample.area}::{sample.service_group}::{sample.priority}",
+                row_kind="grouped-projection",
+                resolution_type="grouped-backend-view",
+                canonical_owner=owner_doc,
+                canonical_status=sample.canonical_status,
+                primary_shard=primary_shard,
+                primary_command=_SHARD_COMMANDS.get(primary_shard, ""),
+                evidence_artifact="; ".join(evidence_refs),
+                evidence_refs=evidence_refs,
+                boundary_note=_grouped_2025_acceptance_gate(sample.canonical_status),
+                backend_fields={
+                    "group_kind": "2025-group",
+                    "closure_wave": sample.closure_wave,
+                    "priority": sample.priority,
+                    "area": sample.area,
+                    "service_group": sample.service_group,
+                    "python_runtime_resolution": resolution_fields["python_runtime_resolution"],
+                    "java_cpp_binding_resolution": resolution_fields["java_cpp_binding_resolution"],
+                    "hosted_fedpro_resolution": resolution_fields["hosted_fedpro_resolution"],
+                    "pitch_202x_resolution": resolution_fields["pitch_202x_resolution"],
+                    "backend_resolution_reference": "; ".join(evidence_refs),
+                    "row_count": str(len(group)),
+                    "delta_breakdown": _grouped_2025_delta_breakdown(group),
+                    "closure_goal": resolution_fields["closure_goal"],
+                },
+            )
+        )
+    return tuple(backend_rows)
 
 
 def _read_csv_rows(path: Path) -> list[dict[str, str]]:
@@ -341,55 +522,14 @@ def write_2010_backend_resolution_catalog(project_root: Path, output_path: Path 
 
 
 def build_2025_backend_resolution_catalog(project_root: Path) -> BackendResolutionCatalog:
-    backend_rows: list[BackendResolutionRow] = []
-    worklist_rows = _read_csv_rows(project_root / WORKLIST_2025_REL)
-    for row in worklist_rows:
-        owner_doc = _derive_owner_doc(
-            {
-                "area": row.get("area", ""),
-                "service_group": row.get("service_group", ""),
-                "service_or_check": "",
-                "suggested_repo_evidence_path": row.get("backend_resolution_reference", ""),
-            }
-        )
-        primary_shard = _derive_primary_shard({"area": row.get("area", "")}, owner_doc)
-        backend_rows.append(
-            BackendResolutionRow(
-                edition="2025",
-                requirement_id=f"group::{row.get('closure_wave','').strip()}::{row.get('area','').strip()}::{row.get('service_group','').strip()}",
-                row_kind="grouped-projection",
-                resolution_type="grouped-backend-view",
-                canonical_owner=owner_doc,
-                canonical_status=row.get("canonical_disposition", "").strip(),
-                primary_shard=primary_shard,
-                primary_command=_SHARD_COMMANDS.get(primary_shard, ""),
-                evidence_artifact=row.get("backend_resolution_reference", "").strip(),
-                evidence_refs=_split_semicolon_items(row.get("backend_resolution_reference", "")),
-                boundary_note=row.get("acceptance_gate", "").strip(),
-                backend_fields={
-                    "group_kind": "2025-group",
-                    "closure_wave": row.get("closure_wave", "").strip(),
-                    "priority": row.get("priority", "").strip(),
-                    "area": row.get("area", "").strip(),
-                    "service_group": row.get("service_group", "").strip(),
-                    "python_runtime_resolution": row.get("python_runtime_resolution", "").strip(),
-                    "java_cpp_binding_resolution": row.get("java_cpp_binding_resolution", "").strip(),
-                    "hosted_fedpro_resolution": row.get("hosted_fedpro_resolution", "").strip(),
-                    "pitch_202x_resolution": row.get("pitch_202x_resolution", "").strip(),
-                    "backend_resolution_reference": row.get("backend_resolution_reference", "").strip(),
-                    "row_count": row.get("row_count", "").strip(),
-                    "delta_breakdown": row.get("delta_breakdown", "").strip(),
-                    "closure_goal": row.get("closure_goal", "").strip(),
-                },
-            )
-        )
+    backend_rows: list[BackendResolutionRow] = list(_build_2025_grouped_backend_rows(project_root))
     backend_rows.extend(load_2025_pitch_row_resolution_rows(project_root))
     backend_rows.extend(load_2025_pitch_group_resolution_rows(project_root))
     backend_rows.extend(load_2025_fi_binding_surface_rows(project_root))
     return BackendResolutionCatalog(
         artifact="backend-resolution-catalog",
         edition="2025",
-        generated_from=(WORKLIST_2025_REL, PITCH_ROW_2025_REL, PITCH_GROUP_2025_REL, FI_BINDING_2025_REL),
+        generated_from=(CANONICAL_2025_REL, PITCH_ROW_2025_REL, PITCH_GROUP_2025_REL, FI_BINDING_2025_REL),
         row_count=len(backend_rows),
         rows=tuple(backend_rows),
     )

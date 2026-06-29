@@ -137,7 +137,7 @@ def test_2025_backend_resolution_catalog_keeps_backend_and_route_truth_separate_
     assert pitch_row["backend_fields"]["pitch_202x_vendor_command"] == "./tools/pitch 202x-micro-certify"
 
     grouped_row = _backend_rows_by_id(
-        "group::0-retired-filter-and-replacement-map::Retired / replacement mapping candidates::Federate Interface legacy API"
+        "group::0-retired-filter-and-replacement-map::Retired / replacement mapping candidates::Federate Interface legacy API::P1"
     )[0]
     assert grouped_row["row_kind"] == "grouped-projection"
     assert grouped_row["resolution_type"] == "grouped-backend-view"
@@ -146,7 +146,7 @@ def test_2025_backend_resolution_catalog_keeps_backend_and_route_truth_separate_
     assert grouped_row["primary_command"] == "./tools/test-surface run unit-foundation"
     assert grouped_row["evidence_refs"] == [
         "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-        "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv",
+        "requirements/2025/canonical_requirements.json",
     ]
 
 

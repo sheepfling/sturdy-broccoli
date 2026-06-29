@@ -188,8 +188,8 @@ denominator.
 Current packet snapshot:
 
 - `2025` grouped packet summary currently reports:
-  - `64` grouped buckets
-  - `57` `covered`
+  - `60` grouped buckets
+  - `53` `covered`
   - `5` `duplicate/umbrella`
   - `2` `retired/legacy-only`
 - `2010` packet summary currently reports:

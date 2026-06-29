@@ -324,7 +324,7 @@ def build_2025_rows() -> tuple[list[dict[str, str]], list[dict[str, str]], list[
         },
         {
             "field": "grouped_packet_scope",
-            "value": "This workbook presents 64 grouped buckets for manager-facing review while requirements/2025/canonical_requirements.json remains the row-level owner ledger and requirements/2025/backend_resolution.json remains the backend-resolution companion truth.",
+            "value": "This workbook presents 60 grouped buckets for manager-facing review while requirements/2025/canonical_requirements.json remains the row-level owner ledger and requirements/2025/backend_resolution.json remains the backend-resolution companion truth.",
         },
         {
             "field": "python_runtime_resolution_meaning",
@@ -342,7 +342,7 @@ def build_2025_rows() -> tuple[list[dict[str, str]], list[dict[str, str]], list[
             "field": "pitch_202x_resolution_meaning",
             "value": "Whether any Pitch proto HLA 4 / 202X overlap is explicit vendor-resolution context rather than inferred grouped coverage.",
         },
-        {"field": "notes", "value": "Boss-facing export generated from the canonical 2025 requirement catalog plus the backend-resolution catalog, with grouped harmonization used only as a downstream bucketing projection; spreadsheets are secondary presentation surfaces."},
+        {"field": "notes", "value": "Boss-facing export generated from the canonical 2025 requirement catalog plus the backend-resolution catalog, with the grouped packet derived canonically as a downstream presentation projection; spreadsheets are secondary presentation surfaces."},
     ]
     return summary_rows, detail_rows, metadata_rows
 

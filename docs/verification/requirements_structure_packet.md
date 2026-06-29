@@ -221,7 +221,7 @@ The practical rule is simple:
 For the 2025 grouped harmonization surface specifically:
 
 - the grouped worklist is now fully dispositioned:
-  - `57 covered`
+  - `53 covered`
   - `5 duplicate/umbrella`
   - `2 retired/legacy-only`
 - that removes stale grouped `planned` and `partial` bucket debt

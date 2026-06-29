@@ -48,8 +48,8 @@ presentation packet.
   - `22` `duplicate/umbrella`
   - `24` `retired/legacy-only`
 - grouped spreadsheet packet summary:
-  - `64` grouped buckets total
-  - `57` `covered`
+  - `60` grouped buckets total
+  - `53` `covered`
   - `5` `duplicate/umbrella`
   - `2` `retired/legacy-only`
 
